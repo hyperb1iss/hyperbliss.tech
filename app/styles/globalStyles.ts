@@ -30,10 +30,22 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1.6rem;
     color: var(--color-text);
     background-color: var(--color-background);
-    background-image: url('/images/cyberpunk-bg.jpg'); /* Add a cyberpunk background image */
+    background-image: url('/images/cyberpunk-bg.webp');
     background-size: cover;
     background-attachment: fixed;
     overflow-x: hidden;
+    position: relative; /* Ensure the overlay stays relative to the body */
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8); /* Adjust opacity to control darkness */
+    z-index: -1; /* Ensure the overlay is behind the content */
   }
 
   h1, h2, h3, h4, h5, h6 {
