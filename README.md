@@ -32,10 +32,10 @@ Welcome to **Hyperbliss.tech**, the personal website of [Stefanie Jane](https://
 
 ## 📁 Project Structure
 
-The project follows a clean, modular structure within the `src/` directory:
+The project follows a clean, modular structure:
 
 ```
-src/
+/
 ├── app/
 │   ├── components/
 │   ├── lib/
@@ -44,9 +44,17 @@ src/
 │   ├── blog/
 │   ├── projects/
 │   └── page.tsx
-├── posts/
-└── projects/
+├── public/
+├── src/
+│   ├── posts/
+│   └── projects/
+└── package.json
 ```
+
+- `app/`: Contains the Next.js application code, components, and pages
+- `src/posts/`: Markdown files for blog posts
+- `src/projects/`: Markdown files for project descriptions
+- `public/`: Static assets like images and fonts
 
 ## 🚀 Getting Started
 
@@ -58,12 +66,14 @@ src/
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/hyperb1iss/hyperbliss.tech.git
    cd hyperbliss.tech
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    # or
@@ -71,6 +81,7 @@ src/
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    # or
@@ -81,16 +92,56 @@ src/
 
 ## 📝 Content Management
 
-- Blog posts are stored as Markdown files in `src/posts/`
-- Project descriptions are stored as Markdown files in `src/projects/`
-- Use frontmatter in Markdown files for metadata (title, date, excerpt, etc.)
+### Adding New Content
+
+1. **Blog Posts**:
+
+   - Create a new Markdown file in `src/posts/`
+   - Add frontmatter at the top of the file:
+
+     ```markdown
+     ---
+     title: "Your Blog Post Title"
+     date: "YYYY-MM-DD"
+     excerpt: "A brief description of your post"
+     ---
+
+     Your blog post content here...
+     ```
+
+2. **Projects**:
+
+   - Create a new Markdown file in `src/projects/`
+   - Add frontmatter at the top of the file:
+
+     ```markdown
+     ---
+     title: "Your Project Title"
+     description: "A brief description of your project"
+     github: "https://github.com/yourusername/project-repo"
+     ---
+
+     Your project details here...
+     ```
+
+### Generating Content
+
+After adding or modifying content in `src/posts/` or `src/projects/`, run the build command to generate the static pages:
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+This process will create static pages for your new content, making it available on the website.
 
 ## 🔧 Customization
 
 - Modify `app/styles/globals.css` for global styles and CSS variables
-- Update `app/components/` for reusable UI components
+- Update components in `app/components/` for reusable UI elements
 - Adjust SEO settings in `app/lib/next-seo.config.ts`
 
 ## 🌐 Deployment
 
-The site is set up for continuous deployment with Netlify. Push to the `main` branch to trigger a new deployment.
+The site is set up for continuous deployment with Netlify. Push to the `main` branch to trigger a new deployment. Ensure you run `npm run build` locally and commit the changes before pushing to ensure all new content is included in the deployment.
