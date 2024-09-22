@@ -1,11 +1,11 @@
 // app/about/page.tsx
 
-'use client';
+"use client";
 
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const PageContainer = styled.div`
   min-height: 100vh;

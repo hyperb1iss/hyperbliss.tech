@@ -1,21 +1,21 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { Project } from '../types';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import { Project } from "../types";
 
 async function getProjects(): Promise<Project[]> {
-  const projectsDirectory = path.join(process.cwd(), 'app', 'projects');
+  const projectsDirectory = path.join(process.cwd(), "app", "projects");
   const filenames = fs.readdirSync(projectsDirectory);
 
   const projects = filenames.map((filename) => {
     const filePath = path.join(projectsDirectory, filename);
-    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const fileContents = fs.readFileSync(filePath, "utf8");
     const { data: frontmatter } = matter(fileContents);
     return {
-      slug: filename.replace('.md', ''),
-      frontmatter: frontmatter as Project['frontmatter'],
+      slug: filename.replace(".md", ""),
+      frontmatter: frontmatter as Project["frontmatter"],
     };
   });
 
@@ -51,7 +51,8 @@ export default async function Projects() {
 
 export function generateMetadata() {
   return {
-    title: 'Hyperbliss | Projects',
-    description: 'Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.',
+    title: "Hyperbliss | Projects",
+    description:
+      "Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.",
   };
 }

@@ -1,22 +1,22 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import ReactMarkdown from 'react-markdown';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import ReactMarkdown from "react-markdown";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export async function generateStaticParams() {
-  const files = fs.readdirSync(path.join('app', 'posts'));
-  
+  const files = fs.readdirSync(path.join("app", "posts"));
+
   return files.map((filename) => ({
-    slug: filename.replace('.md', ''),
+    slug: filename.replace(".md", ""),
   }));
 }
 
 function getPostContent(slug: string) {
-  const folder = path.join('app', 'posts');
+  const folder = path.join("app", "posts");
   const file = `${folder}/${slug}.md`;
-  const content = fs.readFileSync(file, 'utf8');
+  const content = fs.readFileSync(file, "utf8");
   const matterResult = matter(content);
   return matterResult;
 }

@@ -1,13 +1,8 @@
 // app/components/Footer.tsx
 
-'use client';
-import styled from 'styled-components';
-import {
-  FaMastodon,
-  FaInstagram,
-  FaLinkedin,
-  FaGithub,
-} from 'react-icons/fa';
+"use client";
+import styled from "styled-components";
+import { FaMastodon, FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);

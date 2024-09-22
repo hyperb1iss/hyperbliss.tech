@@ -1,11 +1,11 @@
 // app/page.tsx
 
-'use client';
+"use client";
 
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
-import Header from './components/Header';
-import Footer from './components/Footer';
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const HeroSection = styled.section`
   min-height: 100vh;
@@ -15,7 +15,7 @@ const HeroSection = styled.section`
   align-items: center;
   text-align: center;
   padding: 0 2rem;
-  background: url('/images/cyberpunk-hero.jpg') center/cover no-repeat;
+  background: url("/images/cyberpunk-hero.jpg") center/cover no-repeat;
 `;
 
 const Title = styled(motion.h1)`

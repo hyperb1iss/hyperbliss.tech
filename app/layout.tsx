@@ -1,10 +1,10 @@
-'use client'; // Keep the use client directive
+"use client"; // Keep the use client directive
 
-import StyledComponentsRegistry from './components/StyledComponentsRegistry';
-import { GlobalStyle } from './styles/globalStyles';
-import { GoogleAnalytics } from 'nextjs-google-analytics';
-import { DefaultSeo } from 'next-seo';
-import SEO from './next-seo.config';
+import StyledComponentsRegistry from "./components/StyledComponentsRegistry";
+import { GlobalStyle } from "./styles/globalStyles";
+import { GoogleAnalytics } from "nextjs-google-analytics";
+import { DefaultSeo } from "next-seo";
+import SEO from "./next-seo.config";
 
 export default function RootLayout({
   children,

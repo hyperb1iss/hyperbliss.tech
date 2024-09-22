@@ -86,9 +86,9 @@ All blog posts are written in Markdown and located in the `src/posts/` directory
 
 ```markdown
 ---
-title: 'Exploring Modern Web Development'
-date: '2024-01-01'
-excerpt: 'Why Next.js and React are the future of modern web development.'
+title: "Exploring Modern Web Development"
+date: "2024-01-01"
+excerpt: "Why Next.js and React are the future of modern web development."
 ---
 
 # Introduction
@@ -104,9 +104,9 @@ Project descriptions are also written in Markdown and stored in the `src/project
 
 ```markdown
 ---
-title: 'HyperAwesome Project'
-description: 'A groundbreaking project revolutionizing the way we approach software development.'
-github: 'https://github.com/hyperb1iss/hyperawesome-project'
+title: "HyperAwesome Project"
+description: "A groundbreaking project revolutionizing the way we approach software development."
+github: "https://github.com/hyperb1iss/hyperawesome-project"
 ---
 
 # Project Overview
@@ -198,18 +198,19 @@ The project uses **Next SEO** for search engine optimization. SEO configuration 
 
 ```typescript
 const SEO = {
-  title: 'Hyperbliss',
-  description: 'The personal website of Stefanie Kondik—developer, designer, and tech enthusiast.',
+  title: "Hyperbliss",
+  description:
+    "The personal website of Stefanie Kondik—developer, designer, and tech enthusiast.",
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://hyperbliss.tech/',
-    site_name: 'Hyperbliss',
+    type: "website",
+    locale: "en_US",
+    url: "https://hyperbliss.tech/",
+    site_name: "Hyperbliss",
   },
   twitter: {
-    handle: '@hyperb1iss',
-    site: '@hyperb1iss',
-    cardType: 'summary_large_image',
+    handle: "@hyperb1iss",
+    site: "@hyperb1iss",
+    cardType: "summary_large_image",
   },
 };
 
@@ -264,4 +265,3 @@ Ensure your GitHub repository is up to date, as this serves as the primary backu
 - **Framer Motion**: [https://www.framer.com/motion/](https://www.framer.com/motion/)
 - **Markdown Guide**: [https://www.markdownguide.org/](https://www.markdownguide.org/)
 - **Google Analytics**: [https://analytics.google.com/](https://analytics.google.com/)
-
