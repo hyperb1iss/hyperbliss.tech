@@ -1,5 +1,4 @@
-// src/components/Footer.tsx
-
+'use client';
 import styled from 'styled-components';
 import {
   FaMastodon,

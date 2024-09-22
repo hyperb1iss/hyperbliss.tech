@@ -1,9 +1,4 @@
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Hyperbliss',
-  description: 'The personal website of Stefanie Kondik—developer, designer, and tech enthusiast.',
-}
+import StyledComponentsRegistry from './components/StyledComponentsRegistry'
 
 export default function RootLayout({
   children,
@@ -11,8 +6,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html>
+      <body>
+        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      </body>
     </html>
   )
 }

@@ -1,34 +1,32 @@
-// src/pages/projects.tsx
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Head from 'next/head';
-import { GetStaticProps } from 'next';
-import { Project } from './types';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import { Project } from '../types';
 
-/**
- * ProjectsProps defines the props for the Projects component.
- */
-interface ProjectsProps {
-  projects: Project[];
+async function getProjects(): Promise<Project[]> {
+  const projectsDirectory = path.join(process.cwd(), 'app', 'projects');
+  const filenames = fs.readdirSync(projectsDirectory);
+
+  const projects = filenames.map((filename) => {
+    const filePath = path.join(projectsDirectory, filename);
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const { data: frontmatter } = matter(fileContents);
+    return {
+      slug: filename.replace('.md', ''),
+      frontmatter: frontmatter as Project['frontmatter'],
+    };
+  });
+
+  return projects;
 }
 
-/**
- * Projects component lists all projects.
- */
-const Projects: React.FC<ProjectsProps> = ({ projects }) => {
+export default async function Projects() {
+  const projects = await getProjects();
+
   return (
     <>
-      <Head>
-        <title>Hyperbliss | Projects</title>
-        <meta
-          name="description"
-          content="Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology."
-        />
-      </Head>
       <Header />
       <main>
         <h1>Projects</h1>
@@ -49,35 +47,11 @@ const Projects: React.FC<ProjectsProps> = ({ projects }) => {
       <Footer />
     </>
   );
-};
+}
 
-/**
- * getStaticProps fetches the list of projects at build time.
- */
-export const getStaticProps: GetStaticProps = async () => {
-  const files = fs.readdirSync(path.join(process.cwd(), 'src', 'projects'));
-
-  const projects = files.map((filename) => {
-    const slug = filename.replace('.md', '');
-
-    const markdownWithMeta = fs.readFileSync(
-      path.join(process.cwd(), 'src', 'projects', filename),
-      'utf-8'
-    );
-
-    const { data: frontmatter } = matter(markdownWithMeta);
-
-    return {
-      slug,
-      frontmatter,
-    };
-  });
-
+export function generateMetadata() {
   return {
-    props: {
-      projects,
-    },
+    title: 'Hyperbliss | Projects',
+    description: 'Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.',
   };
-};
-
-export default Projects;
+}

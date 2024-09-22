@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export async function generateStaticParams() {
-  const files = fs.readdirSync(path.join('src', 'posts'));
+  const files = fs.readdirSync(path.join('app', 'blog','posts'));
   
   return files.map((filename) => ({
     slug: filename.replace('.md', ''),
@@ -14,11 +14,11 @@ export async function generateStaticParams() {
 }
 
 function getPostData() {
-  const files = fs.readdirSync(path.join('src', 'posts'));
+  const files = fs.readdirSync(path.join('app', 'blog', 'posts'));
   
   const posts = files.map((filename) => {
     const slug = filename.replace('.md', '');
-    const markdownWithMeta = fs.readFileSync(path.join('src', 'posts', filename), 'utf-8');
+    const markdownWithMeta = fs.readFileSync(path.join('app', 'blog','posts', filename), 'utf-8');
     const { data: frontmatter } = matter(markdownWithMeta);
     
     return {
@@ -27,7 +27,7 @@ function getPostData() {
     };
   });
 
-  return posts.sort((a, b) => new Date(b.frontmatter.date) - new Date(a.frontmatter.date));
+  return posts.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
 }
 
 export default function Blog() {
