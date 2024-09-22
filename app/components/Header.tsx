@@ -1,3 +1,5 @@
+// app/components/Header.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -6,39 +8,30 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 
 const Nav = styled.nav`
-  background-color: rgba(10, 10, 20, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 1.5rem 2rem;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 1rem 2rem;
   position: fixed;
+  width: 100%;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 1000;
-  border-bottom: 2px solid #ff00ff;
-  box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
 `;
 
 const NavContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
 `;
 
 const Logo = styled(Link)`
   font-family: var(--font-heading);
-  font-size: 3.2rem;
-  font-weight: 700;
-  color: #ff00ff;
-  text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-size: 3rem;
+  color: var(--color-primary);
+  text-shadow: 0 0 5px var(--color-primary);
+  transition: color 0.3s ease;
 
   &:hover {
-    color: #00ffff;
-    text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+    color: var(--color-accent);
+    text-shadow: 0 0 10px var(--color-accent);
   }
 `;
 
@@ -46,17 +39,23 @@ const NavLinks = styled.ul`
   list-style: none;
   display: flex;
   gap: 2rem;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const NavItem = styled.li`
   position: relative;
 `;
 
-const NavLink = styled(Link)<{ active: boolean }>`
+const NavLink = styled(Link).withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})<{ active: boolean }>`
   font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 500;
-  color: ${props => props.active ? '#00ffff' : '#f0f0f0'};
+  color: ${(props) => (props.active ? '#00ffff' : '#f0f0f0')};
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
   position: relative;
@@ -85,38 +84,70 @@ const NavLink = styled(Link)<{ active: boolean }>`
   }
 `;
 
-const ActiveIndicator = styled(motion.div)`
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #00ffff;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+const MobileMenuIcon = styled.div`
+  display: none;
+  font-size: 2.4rem;
+  color: var(--color-text);
+  cursor: pointer;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
 `;
+
+const MobileNavLinks = styled.ul<{ open: boolean }>`
+  list-style: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  width: 200px;
+  flex-direction: column;
+  display: ${(props) => (props.open ? 'flex' : 'none')};
+
+  li {
+    padding: 1rem;
+    text-align: right;
+  }
+`;
+
+import { useState } from 'react';
+import { FaBars } from 'react-icons/fa';
 
 const Header: React.FC = () => {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <Nav>
       <NavContent>
-        <Logo href="/">
-          Hyperbliss
-        </Logo>
+        <Logo href="/">Hyperbliss</Logo>
         <NavLinks>
           {['About', 'Blog', 'Projects'].map((item) => (
             <NavItem key={item}>
               <NavLink href={`/${item.toLowerCase()}`} active={pathname === `/${item.toLowerCase()}`}>
                 {item}
-                {pathname === `/${item.toLowerCase()}` && (
-                  <ActiveIndicator layoutId="activeIndicator" />
-                )}
               </NavLink>
             </NavItem>
           ))}
         </NavLinks>
+        <MobileMenuIcon onClick={() => setMenuOpen(!menuOpen)}>
+          <FaBars />
+        </MobileMenuIcon>
       </NavContent>
+      <MobileNavLinks open={menuOpen}>
+        {['About', 'Blog', 'Projects'].map((item) => (
+          <NavItem key={item}>
+            <NavLink
+              href={`/${item.toLowerCase()}`}
+              active={pathname === `/${item.toLowerCase()}`}
+              onClick={() => setMenuOpen(false)}
+            >
+              {item}
+            </NavLink>
+          </NavItem>
+        ))}
+      </MobileNavLinks>
     </Nav>
   );
 };

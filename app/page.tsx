@@ -1,3 +1,5 @@
+// app/page.tsx
+
 'use client';
 
 import styled from 'styled-components';
@@ -13,14 +15,14 @@ const HeroSection = styled.section`
   align-items: center;
   text-align: center;
   padding: 0 2rem;
-  background: linear-gradient(135deg, var(--color-background), var(--color-secondary));
+  background: url('/images/cyberpunk-hero.jpg') center/cover no-repeat;
 `;
 
 const Title = styled(motion.h1)`
   font-size: 6rem;
   margin-bottom: 2rem;
-  color: var(--color-accent);
-  text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+  color: var(--color-primary);
+  text-shadow: 0 0 10px var(--color-primary);
 
   @media (max-width: 768px) {
     font-size: 4rem;
@@ -39,9 +41,10 @@ const Subtitle = styled(motion.p)`
 `;
 
 const CTAButton = styled(motion.a)`
-  background-color: var(--color-accent);
-  color: var(--color-background);
+  background-color: transparent;
+  color: var(--color-accent);
   padding: 1.5rem 3rem;
+  border: 2px solid var(--color-accent);
   border-radius: 50px;
   font-size: 1.8rem;
   font-weight: bold;
@@ -50,9 +53,9 @@ const CTAButton = styled(motion.a)`
   cursor: pointer;
 
   &:hover {
-    background-color: var(--color-primary);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    box-shadow: 0 0 10px var(--color-accent);
   }
 `;
 
@@ -66,7 +69,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Welcome to Hyperbliss
+          Welcome to <span className="glow">Hyperbliss</span>
         </Title>
         <Subtitle
           initial={{ opacity: 0 }}

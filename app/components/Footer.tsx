@@ -1,3 +1,5 @@
+// app/components/Footer.tsx
+
 'use client';
 import styled from 'styled-components';
 import {
@@ -7,38 +9,33 @@ import {
   FaGithub,
 } from 'react-icons/fa';
 
-/**
- * FooterContainer styles the footer section.
- */
 const FooterContainer = styled.footer`
-  background-color: #0e0b16;
+  background-color: rgba(0, 0, 0, 0.95);
   padding: 2rem;
   text-align: center;
-  color: #e7dfdd;
+  color: var(--color-text);
 
   .socials {
     margin-bottom: 1rem;
-  }
 
-  a {
-    margin: 0 0.5rem;
-    color: #e7dfdd;
-    font-size: 1.5rem;
-    transition: color 0.2s ease-in-out;
-  }
+    a {
+      margin: 0 1rem;
+      color: var(--color-text);
+      font-size: 2.4rem;
+      transition: color 0.2s ease-in-out;
 
-  a:hover {
-    color: #a239ca;
+      &:hover {
+        color: var(--color-accent);
+        text-shadow: 0 0 10px var(--color-accent);
+      }
+    }
   }
 
   p {
-    font-size: 0.9rem;
+    font-size: 1.4rem;
   }
 `;
 
-/**
- * Footer component contains social media links and footer text.
- */
 const Footer: React.FC = () => {
   return (
     <FooterContainer>
