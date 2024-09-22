@@ -76,7 +76,7 @@ export default function Home() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          Hi, I&apos;m Stefanie Kondik—a developer, designer, and tech enthusiast.
+          Hi, I&apos;m Stefanie Jane—a developer, designer, and tech enthusiast.
           Explore my projects, read my thoughts on tech, and connect with me.
         </Subtitle>
         <CTAButton

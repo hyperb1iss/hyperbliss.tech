@@ -47,6 +47,6 @@ export default function Projects() {
 export function generateMetadata() {
   return {
     title: "Hyperbliss | Projects",
-    description: "Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.",
+    description: "Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.",
   };
 }

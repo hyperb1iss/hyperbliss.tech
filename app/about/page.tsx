@@ -58,8 +58,8 @@ const About: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Hey there! I&apos;m <Highlight>Stefanie Kondik</Highlight>, but you
-          might know me as <Highlight>Hyperbliss</Highlight> in the tech world.
+          Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
+          might know me as <Highlight>@hyperb1iss</Highlight> in the tech world.
           With a passion for creating innovative software solutions and a keen
           eye for design, I love blending technology with creativity.
         </Paragraph>
