@@ -1,8 +1,7 @@
 // app/components/Footer.tsx
-
-"use client";
-import styled from "styled-components";
-import { FaMastodon, FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+'use client';
+import styled from 'styled-components';
+import { SOCIAL_LINKS } from '../lib/socials';
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
@@ -35,38 +34,17 @@ const Footer: React.FC = () => {
   return (
     <FooterContainer>
       <div className="socials">
-        <a
-          href="https://hachyderm.io/@bliss"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Mastodon"
-        >
-          <FaMastodon />
-        </a>
-        <a
-          href="https://instagram.com/hyperb1iss"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram"
-        >
-          <FaInstagram />
-        </a>
-        <a
-          href="https://linkedin.com/in/hyperb1iss"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="LinkedIn"
-        >
-          <FaLinkedin />
-        </a>
-        <a
-          href="https://github.com/hyperb1iss"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub"
-        >
-          <FaGithub />
-        </a>
+        {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={label}
+          >
+            <Icon />
+          </a>
+        ))}
       </div>
       <p>&copy; {new Date().getFullYear()} Hyperbliss</p>
     </FooterContainer>

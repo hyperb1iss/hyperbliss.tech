@@ -58,26 +58,36 @@ const About: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
-          might know me as <Highlight>@hyperb1iss</Highlight> in the tech world.
-          With a passion for creating innovative software solutions and a keen
-          eye for design, I love blending technology with creativity.
+          Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you might
+          know me as <Highlight>@hyperb1iss</Highlight> in the tech world. I&apos;m
+          a full-stack developer and designer with a passion for creating innovative
+          software solutions that make a difference.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          From developing sleek user interfaces to exploring the latest in tech
-          trends, I&apos;m all about pushing the boundaries of what&apos;s
-          possible. When I&apos;m not coding or designing, you can find me
-          sharing insights on my blog, tinkering with new projects, or
-          connecting with like-minded enthusiasts.
+          I believe in the power of technology to transform lives, and I&apos;m
+          always exploring new ways to push the boundaries of what&apos;s possible.
+          Whether it&apos;s developing sleek user interfaces, crafting intuitive
+          user experiences, or diving into the latest tech trends, I&apos;m all
+          about blending technology with creativity.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          When I&apos;m not coding or designing, you can find me sharing insights
+          on my blog, contributing to open-source projects, or connecting with the
+          tech community. I&apos;m an avid learner, constantly seeking new
+          knowledge and skills to stay ahead in this ever-evolving field.
+        </Paragraph>
+        <Paragraph
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
         >
           Let&apos;s embark on a journey through technology and creativity
           together!

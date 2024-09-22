@@ -1,4 +1,4 @@
-/* app/globals.css */
+/* app/styles/globals.css */
 
 :root {
   --font-heading: 'Orbitron', sans-serif;
@@ -6,8 +6,8 @@
   --font-mono: 'Share Tech Mono', monospace;
   --color-background: #0a0a14;
   --color-text: #e0e0e0;
-  --color-primary: #ff007f;
-  --color-secondary: #7f00ff;
+  --color-primary: #a259ff; /* Adjusted to a more prominent purple */
+  --color-secondary: #ff75d8; /* Adjusted secondary color */
   --color-accent: #00fff0;
   --color-muted: #a0a0a0;
 }
@@ -35,7 +35,7 @@ body {
 }
 
 body::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;

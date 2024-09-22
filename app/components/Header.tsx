@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
+import { NAV_ITEMS } from '../lib/navigation';
 
 const Nav = styled.nav`
   background-color: rgba(0, 0, 0, 0.9);
@@ -119,7 +120,7 @@ const Header: React.FC = () => {
       <NavContent>
         <Logo href="/">Hyperbliss</Logo>
         <NavLinks>
-          {["About", "Blog", "Projects"].map((item) => (
+          {NAV_ITEMS.map((item) => (
             <NavItem key={item}>
               <NavLink
                 href={`/${item.toLowerCase()}`}
@@ -135,7 +136,7 @@ const Header: React.FC = () => {
         </MobileMenuIcon>
       </NavContent>
       <MobileNavLinks open={menuOpen}>
-        {["About", "Blog", "Projects"].map((item) => (
+        {NAV_ITEMS.map((item) => (
           <NavItem key={item}>
             <NavLink
               href={`/${item.toLowerCase()}`}
