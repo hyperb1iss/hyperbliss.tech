@@ -1,5 +1,6 @@
 // app/components/HomeContent.tsx
-'use client'
+
+"use client";
 
 import styled from "styled-components";
 import { motion } from "framer-motion";

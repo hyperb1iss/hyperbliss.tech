@@ -58,10 +58,10 @@ const About: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Hey there! I&apos;m <Highlight>Stefanie Kondik</Highlight>, but you might
-          know me as <Highlight>Hyperbliss</Highlight> in the tech world. With a
-          passion for creating innovative software solutions and a keen eye for
-          design, I love blending technology with creativity.
+          Hey there! I&apos;m <Highlight>Stefanie Kondik</Highlight>, but you
+          might know me as <Highlight>Hyperbliss</Highlight> in the tech world.
+          With a passion for creating innovative software solutions and a keen
+          eye for design, I love blending technology with creativity.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
@@ -69,17 +69,18 @@ const About: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           From developing sleek user interfaces to exploring the latest in tech
-          trends, I&apos;m all about pushing the boundaries of what&apos;s possible. When
-          I&apos;m not coding or designing, you can find me sharing insights on my
-          blog, tinkering with new projects, or connecting with like-minded
-          enthusiasts.
+          trends, I&apos;m all about pushing the boundaries of what&apos;s
+          possible. When I&apos;m not coding or designing, you can find me
+          sharing insights on my blog, tinkering with new projects, or
+          connecting with like-minded enthusiasts.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          Let&apos;s embark on a journey through technology and creativity together!
+          Let&apos;s embark on a journey through technology and creativity
+          together!
         </Paragraph>
       </MainContent>
       <Footer />
