@@ -2,21 +2,28 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import BlogList from "../components/BlogList";
+
+interface Post {
+  slug: string;
+  frontmatter: {
+    title: string;
+    date: string;
+    excerpt: string;
+  };
+}
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join("src", "posts"));
-
   return files.map((filename) => ({
     slug: filename.replace(".md", ""),
   }));
 }
 
-function getPostData() {
+function getPostData(): Post[] {
   const files = fs.readdirSync(path.join("src", "posts"));
-
   const posts = files.map((filename) => {
     const slug = filename.replace(".md", "");
     const markdownWithMeta = fs.readFileSync(
@@ -24,10 +31,13 @@ function getPostData() {
       "utf-8"
     );
     const { data: frontmatter } = matter(markdownWithMeta);
-
     return {
       slug,
-      frontmatter,
+      frontmatter: {
+        title: frontmatter.title as string,
+        date: frontmatter.date as string,
+        excerpt: frontmatter.excerpt as string,
+      },
     };
   });
 
@@ -44,18 +54,7 @@ export default function Blog() {
   return (
     <>
       <Header />
-      <main>
-        <h1>Blog</h1>
-        {posts.map(({ slug, frontmatter }) => (
-          <article key={slug}>
-            <h2>
-              <Link href={`/blog/${slug}`}>{frontmatter.title}</Link>
-            </h2>
-            <p>{frontmatter.excerpt}</p>
-            <p>{frontmatter.date}</p>
-          </article>
-        ))}
-      </main>
+      <BlogList posts={posts} />
       <Footer />
     </>
   );

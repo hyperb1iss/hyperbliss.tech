@@ -2,13 +2,12 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import ReactMarkdown from "react-markdown";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import BlogPost from "../../components/BlogPost";
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join("src", "posts"));
-
   return files.map((filename) => ({
     slug: filename.replace(".md", ""),
   }));
@@ -29,13 +28,11 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   return (
     <>
       <Header />
-      <main>
-        <article>
-          <h1>{frontmatter.title}</h1>
-          <p>{frontmatter.date}</p>
-          <ReactMarkdown>{content}</ReactMarkdown>
-        </article>
-      </main>
+      <BlogPost
+        title={frontmatter.title}
+        date={frontmatter.date}
+        content={content}
+      />
       <Footer />
     </>
   );
