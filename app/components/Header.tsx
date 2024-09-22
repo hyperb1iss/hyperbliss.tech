@@ -5,7 +5,6 @@
 import Link from "next/link";
 import styled from "styled-components";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
 
 const Nav = styled.nav`
   background-color: rgba(0, 0, 0, 0.9);
