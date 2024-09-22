@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import { Project } from "../types";
 
 async function getProjects(): Promise<Project[]> {
-  const projectsDirectory = path.join(process.cwd(), "app", "projects");
+  const projectsDirectory = path.join(process.cwd(), "src", "projects");
   const filenames = fs.readdirSync(projectsDirectory);
 
   const projects = filenames.map((filename) => {

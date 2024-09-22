@@ -6,7 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export async function generateStaticParams() {
-  const files = fs.readdirSync(path.join("app", "blog", "posts"));
+  const files = fs.readdirSync(path.join("src", "posts"));
 
   return files.map((filename) => ({
     slug: filename.replace(".md", ""),
@@ -14,12 +14,12 @@ export async function generateStaticParams() {
 }
 
 function getPostData() {
-  const files = fs.readdirSync(path.join("app", "blog", "posts"));
+  const files = fs.readdirSync(path.join("src", "posts"));
 
   const posts = files.map((filename) => {
     const slug = filename.replace(".md", "");
     const markdownWithMeta = fs.readFileSync(
-      path.join("app", "blog", "posts", filename),
+      path.join("src", "posts", filename),
       "utf-8"
     );
     const { data: frontmatter } = matter(markdownWithMeta);

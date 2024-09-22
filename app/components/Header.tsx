@@ -1,10 +1,11 @@
 // app/components/Header.tsx
-
 "use client";
 
 import Link from "next/link";
 import styled from "styled-components";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { FaBars } from "react-icons/fa";
 
 const Nav = styled.nav`
   background-color: rgba(0, 0, 0, 0.9);
@@ -48,9 +49,7 @@ const NavItem = styled.li`
   position: relative;
 `;
 
-const NavLink = styled(Link).withConfig({
-  shouldForwardProp: (prop) => prop !== "active",
-})<{ active: boolean }>`
+const NavLink = styled(Link)<{ active: boolean }>`
   font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 500;
@@ -109,9 +108,6 @@ const MobileNavLinks = styled.ul<{ open: boolean }>`
     text-align: right;
   }
 `;
-
-import { useState } from "react";
-import { FaBars } from "react-icons/fa";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
