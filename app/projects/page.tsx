@@ -1,11 +1,21 @@
+// app/projects/page.tsx
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Project } from "../types";
+import ProjectsPageContent from "../components/ProjectsPageContent";
 
-async function getProjects(): Promise<Project[]> {
+interface Project {
+  slug: string;
+  frontmatter: {
+    title: string;
+    description: string;
+    github: string;
+  };
+}
+
+function getProjects(): Project[] {
   const projectsDirectory = path.join(process.cwd(), "src", "projects");
   const filenames = fs.readdirSync(projectsDirectory);
 
@@ -22,28 +32,13 @@ async function getProjects(): Promise<Project[]> {
   return projects;
 }
 
-export default async function Projects() {
-  const projects = await getProjects();
+export default function Projects() {
+  const projects = getProjects();
 
   return (
     <>
       <Header />
-      <main>
-        <h1>Projects</h1>
-        {projects.map(({ slug, frontmatter }) => (
-          <article key={slug}>
-            <h2>{frontmatter.title}</h2>
-            <p>{frontmatter.description}</p>
-            <a
-              href={frontmatter.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on GitHub
-            </a>
-          </article>
-        ))}
-      </main>
+      <ProjectsPageContent projects={projects} />
       <Footer />
     </>
   );
@@ -52,7 +47,6 @@ export default async function Projects() {
 export function generateMetadata() {
   return {
     title: "Hyperbliss | Projects",
-    description:
-      "Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.",
+    description: "Discover the projects developed by Stefanie Kondik, showcasing innovation and creativity in technology.",
   };
 }

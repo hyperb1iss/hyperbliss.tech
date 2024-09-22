@@ -1,3 +1,9 @@
+---
+title: "Git-Iris: AI-Powered Git Workflow Assistant"
+description: "A comprehensive AI-powered Git workflow assistant that enhances your development process from start to finish."
+github: "https://github.com/hyperb1iss/git-iris"
+---
+
 # Git-Iris: AI-Powered Git Workflow Assistant
 
 ![Git-Iris Logo](https://raw.githubusercontent.com/hyperb1iss/git-iris/main/docs/images/git-iris-logo.png)

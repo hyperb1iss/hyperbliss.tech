@@ -1,3 +1,9 @@
+---
+title: "Cosmosys: Stellar Release Management"
+description: "A powerful, flexible, and customizable release management tool designed to streamline your software deployment process."
+github: "https://github.com/hyperb1iss/cosmosys"
+---
+
 # Cosmosys: Stellar Release Management 🌠
 
 Cosmosys is a powerful, flexible, and customizable release management tool designed to streamline your software deployment process. Whether you're working on a small personal project or managing a complex multi-language ecosystem, Cosmosys provides the tools you need to make your releases smooth, consistent, and enjoyable.
