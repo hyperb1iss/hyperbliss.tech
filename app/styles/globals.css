@@ -18,11 +18,18 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 html {
   font-size: 62.5%; /* 1rem = 10px */
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-body);
   font-size: 1.6rem;
   color: var(--color-text);
@@ -36,7 +43,7 @@ body {
 
 body::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;

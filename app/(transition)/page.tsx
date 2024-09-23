@@ -5,8 +5,14 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+`;
+
 const HeroSection = styled.section`
-  min-height: 100vh;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -59,7 +65,7 @@ const CTAButton = styled(motion.a)`
 
 export default function Home() {
   return (
-    <>
+    <PageWrapper>
       <HeroSection>
         <Title
           initial={{ opacity: 0, y: -50 }}
@@ -87,6 +93,6 @@ export default function Home() {
           Learn More About Me
         </CTAButton>
       </HeroSection>
-    </>
+    </PageWrapper>
   );
 }

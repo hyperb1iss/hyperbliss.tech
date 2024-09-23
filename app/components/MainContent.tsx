@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 const MainContentWrapper = styled(motion.main)`
-  padding-top: 80px; // Adjust this value based on your header height
-  min-height: calc(100vh - 80px); // Adjust this value based on your header height
+  flex: 1;
+  padding-top: 10px;
 `;
 
 const pageVariants = {
