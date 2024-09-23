@@ -1,10 +1,9 @@
-// app/blog/page.tsx
+// app/(transition)blog/page.tsx
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import BlogList from "../components/BlogList";
+import BlogList from "../../components/BlogList";
+import MainContent from "../../components/MainContent";
 
 interface Post {
   slug: string;
@@ -52,10 +51,8 @@ export default function Blog() {
   const posts = getPostData();
 
   return (
-    <>
-      <Header />
+    <MainContent>
       <BlogList posts={posts} />
-      <Footer />
-    </>
+    </MainContent>
   );
 }

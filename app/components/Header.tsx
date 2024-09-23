@@ -7,7 +7,8 @@ import styled from "styled-components";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
-import { NAV_ITEMS } from '../lib/navigation';
+import { NAV_ITEMS } from "../lib/navigation";
+import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 
 const Nav = styled.nav`
   background-color: rgba(0, 0, 0, 0.9);
@@ -51,16 +52,17 @@ const NavItem = styled.li`
   position: relative;
 `;
 
-const NavLink = styled(Link)<{ active: boolean }>`
+const StyledNavLink = styled.a<{ $active: boolean }>`
   font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 500;
-  color: ${(props) => (props.active ? "#00ffff" : "#f0f0f0")};
+  color: ${(props) => (props.$active ? "#00ffff" : "#f0f0f0")};
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
   position: relative;
   text-transform: uppercase;
   letter-spacing: 1px;
+  cursor: pointer;
 
   &:hover {
     color: #00ffff;
@@ -114,20 +116,28 @@ const MobileNavLinks = styled.ul<{ open: boolean }>`
 const Header: React.FC = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const animateAndNavigate = useAnimatedNavigation();
+
+  const handleNavigation = (href: string) => {
+    setMenuOpen(false);
+    animateAndNavigate(href);
+  };
 
   return (
     <Nav>
       <NavContent>
-        <Logo href="/">Hyperbliss</Logo>
+        <Logo as="a" onClick={() => handleNavigation("/")}>
+          Hyperbliss
+        </Logo>
         <NavLinks>
           {NAV_ITEMS.map((item) => (
             <NavItem key={item}>
-              <NavLink
-                href={`/${item.toLowerCase()}`}
-                active={pathname === `/${item.toLowerCase()}`}
+              <StyledNavLink
+                onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
+                $active={pathname === `/${item.toLowerCase()}`}
               >
                 {item}
-              </NavLink>
+              </StyledNavLink>
             </NavItem>
           ))}
         </NavLinks>
@@ -138,13 +148,12 @@ const Header: React.FC = () => {
       <MobileNavLinks open={menuOpen}>
         {NAV_ITEMS.map((item) => (
           <NavItem key={item}>
-            <NavLink
-              href={`/${item.toLowerCase()}`}
-              active={pathname === `/${item.toLowerCase()}`}
-              onClick={() => setMenuOpen(false)}
+            <StyledNavLink
+              onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
+              $active={pathname === `/${item.toLowerCase()}`}
             >
               {item}
-            </NavLink>
+            </StyledNavLink>
           </NavItem>
         ))}
       </MobileNavLinks>

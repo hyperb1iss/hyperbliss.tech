@@ -1,11 +1,9 @@
-// app/about/page.tsx
+// app/(transition)/about/page.tsx
 
 "use client";
 
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -44,7 +42,6 @@ const Highlight = styled.span`
 const About: React.FC = () => {
   return (
     <PageContainer>
-      <Header />
       <MainContent>
         <Title
           initial={{ opacity: 0, y: -20 }}
@@ -58,10 +55,10 @@ const About: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you might
-          know me as <Highlight>@hyperb1iss</Highlight> in the tech world. I&apos;m
-          a full-stack developer and designer with a passion for creating innovative
-          software solutions that make a difference.
+          Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
+          might know me as <Highlight>@hyperb1iss</Highlight> in the tech world.
+          I&apos;m a full-stack developer and designer with a passion for
+          creating innovative software solutions that make a difference.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
@@ -69,20 +66,21 @@ const About: React.FC = () => {
           transition={{ duration: 0.5, delay: 0.4 }}
         >
           I believe in the power of technology to transform lives, and I&apos;m
-          always exploring new ways to push the boundaries of what&apos;s possible.
-          Whether it&apos;s developing sleek user interfaces, crafting intuitive
-          user experiences, or diving into the latest tech trends, I&apos;m all
-          about blending technology with creativity.
+          always exploring new ways to push the boundaries of what&apos;s
+          possible. Whether it&apos;s developing sleek user interfaces, crafting
+          intuitive user experiences, or diving into the latest tech trends,
+          I&apos;m all about blending technology with creativity.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          When I&apos;m not coding or designing, you can find me sharing insights
-          on my blog, contributing to open-source projects, or connecting with the
-          tech community. I&apos;m an avid learner, constantly seeking new
-          knowledge and skills to stay ahead in this ever-evolving field.
+          When I&apos;m not coding or designing, you can find me sharing
+          insights on my blog, contributing to open-source projects, or
+          connecting with the tech community. I&apos;m an avid learner,
+          constantly seeking new knowledge and skills to stay ahead in this
+          ever-evolving field.
         </Paragraph>
         <Paragraph
           initial={{ opacity: 0 }}
@@ -93,7 +91,6 @@ const About: React.FC = () => {
           together!
         </Paragraph>
       </MainContent>
-      <Footer />
     </PageContainer>
   );
 };

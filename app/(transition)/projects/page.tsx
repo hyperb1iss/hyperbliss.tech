@@ -2,9 +2,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import ProjectsPageContent from "../components/ProjectsPageContent";
+import ProjectsPageContent from "../../components/ProjectsPageContent";
+import MainContent from "../../components/MainContent";
 
 interface Project {
   slug: string;
@@ -36,17 +35,16 @@ export default function Projects() {
   const projects = getProjects();
 
   return (
-    <>
-      <Header />
+    <MainContent>
       <ProjectsPageContent projects={projects} />
-      <Footer />
-    </>
+    </MainContent>
   );
 }
 
 export function generateMetadata() {
   return {
     title: "Hyperbliss | Projects",
-    description: "Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.",
+    description:
+      "Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.",
   };
 }

@@ -1,10 +1,9 @@
-// app/blog/[slug]/page.tsx
+// app/(transition)/blog/[slug]/page.tsx
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import BlogPost from "../../components/BlogPost";
+import BlogPost from "../../../components/BlogPost";
+import MainContent from "../../../components/MainContent";
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join("src", "posts"));
@@ -26,14 +25,12 @@ export default function PostPage({ params }: { params: { slug: string } }) {
   const { data: frontmatter, content } = getPostContent(slug);
 
   return (
-    <>
-      <Header />
+    <MainContent>
       <BlogPost
         title={frontmatter.title}
         date={frontmatter.date}
         content={content}
       />
-      <Footer />
-    </>
+    </MainContent>
   );
 }
