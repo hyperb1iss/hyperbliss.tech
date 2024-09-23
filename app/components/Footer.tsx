@@ -5,17 +5,16 @@ import { SOCIAL_LINKS } from '../lib/socials';
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
-  padding: 2rem;
+  padding-top: 2rem;
   text-align: center;
   color: var(--color-text);
 
   .socials {
-    margin-bottom: 1rem;
 
     a {
       margin: 0 1rem;
       color: var(--color-text);
-      font-size: 2.4rem;
+      font-size: 3rem;
       transition: color 0.2s ease-in-out;
 
       &:hover {
@@ -24,10 +23,10 @@ const FooterContainer = styled.footer`
       }
     }
   }
+`;
 
-  p {
-    font-size: 1.4rem;
-  }
+const FooterText = styled.p`
+  font-size: 1.5rem;
 `;
 
 const Footer: React.FC = () => {
@@ -46,7 +45,7 @@ const Footer: React.FC = () => {
           </a>
         ))}
       </div>
-      <p>&copy; {new Date().getFullYear()} Hyperbliss</p>
+      <FooterText>&copy; {new Date().getFullYear()} Stefanie Jane 🌠</FooterText>
     </FooterContainer>
   );
 };
