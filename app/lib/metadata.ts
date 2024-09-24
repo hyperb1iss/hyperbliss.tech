@@ -1,15 +1,23 @@
-// app/metadata.ts
+// app/lib/metadata.ts
 import { Metadata } from "next";
 
+const AUTHOR_NAME = "Stefanie Jane";
+const BASE_URL = "https://hyperbliss.tech";
+const SITE_TITLE = "Hyperbliss | Stefanie Jane";
+const SITE_DESCRIPTION =
+  "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.";
+const SITE_NAME = "🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹";
+const OG_LOCALE = "en_US";
+
 const siteMetadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
-    default: "Hyperbliss | Stefanie Jane",
+    default: SITE_TITLE,
     template: "%s | Hyperbliss",
   },
-  description:
-    "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
+  description: SITE_DESCRIPTION,
   keywords: [
-    "Stefanie Jane",
+    AUTHOR_NAME,
     "hyperb1iss",
     "hyperbliss",
     "web development",
@@ -17,16 +25,16 @@ const siteMetadata: Metadata = {
     "technology",
     "blog",
   ],
-  authors: [{ name: "Stefanie Jane" }],
-  creator: "Stefanie Jane",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
+  authors: [{ name: AUTHOR_NAME }],
+  creator: AUTHOR_NAME,
+  openGraph: {
+    type: "website",
+    locale: OG_LOCALE,
+    url: `${BASE_URL}/`,
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a14" },
-  ],
   robots: {
     index: true,
     follow: true,

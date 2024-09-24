@@ -93,7 +93,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
           hidden: { opacity: 0 },
         }}
       >
-        {projects.map(({ slug, frontmatter }, index) => (
+        {projects.map(({ slug, frontmatter }) => (
           <ProjectCard
             key={slug}
             variants={{
