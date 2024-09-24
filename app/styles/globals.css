@@ -34,7 +34,7 @@ body {
   font-size: 1.6rem;
   color: var(--color-text);
   background-color: var(--color-background);
-  background-image: url('/images/cyberpunk-bg.webp');
+  background-image: url('/images/background.jpg');
   background-size: cover;
   background-attachment: fixed;
   overflow-x: hidden;
