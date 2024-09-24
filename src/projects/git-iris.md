@@ -1,12 +1,8 @@
 ---
-title: "Git-Iris: AI-Powered Git Workflow Assistant"
+title: "🔮 Git-Iris: AI-Powered Git Workflow Assistant"
 description: "A comprehensive AI-powered Git workflow assistant that enhances your development process from start to finish."
 github: "https://github.com/hyperb1iss/git-iris"
 ---
-
-# Git-Iris: AI-Powered Git Workflow Assistant
-
-![Git-Iris Logo](https://raw.githubusercontent.com/hyperb1iss/git-iris/main/docs/images/git-iris-logo.png)
 
 Git-Iris is a comprehensive AI-powered Git workflow assistant that enhances your development process from start to finish. By leveraging advanced AI models, Git-Iris boosts your productivity and improves the quality of your project documentation.
 
@@ -61,14 +57,7 @@ git-iris release-notes --from v1.0.0 --to v1.1.0
 
 For more detailed information on using Git-Iris, please refer to our [documentation](https://github.com/hyperb1iss/git-iris/wiki).
 
-## Contributing
-
-We welcome contributions! Please see our [CONTRIBUTING.md](https://github.com/hyperb1iss/git-iris/blob/main/CONTRIBUTING.md) for details on how to get started.
-
 ## License
 
 Git-Iris is distributed under the Apache 2.0 License. See `LICENSE` for more information.
 
----
-
-Created with ❤️ by [Stefanie Jane](https://github.com/hyperb1iss)
