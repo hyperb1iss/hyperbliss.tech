@@ -3,26 +3,11 @@
 
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
-import { motion } from "framer-motion";
-
-const ProjectContainer = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-`;
-
-const ProjectHeader = styled.div`
-  text-align: center;
-  margin-bottom: 3rem;
-`;
-
-const ProjectTitle = styled(motion.h1)`
-  font-size: 4rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-`;
+import PageTitle from "./PageTitle";
+import PageLayout from "./PageLayout";
 
 const ProjectLinks = styled.div`
+  text-align: center;
   margin-top: 1rem;
 `;
 
@@ -115,24 +100,16 @@ export default function ProjectDetail({
   content,
 }: ProjectDetailProps) {
   return (
-    <ProjectContainer>
-      <ProjectHeader>
-        <ProjectTitle
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {title}
-        </ProjectTitle>
-        <ProjectLinks>
-          <ProjectLink href={github} target="_blank" rel="noopener noreferrer">
-            View on GitHub
-          </ProjectLink>
-        </ProjectLinks>
-      </ProjectHeader>
+    <PageLayout>
+      <PageTitle>{title}</PageTitle>
+      <ProjectLinks>
+        <ProjectLink href={github} target="_blank" rel="noopener noreferrer">
+          View on GitHub
+        </ProjectLink>
+      </ProjectLinks>
       <ProjectContent>
         <ReactMarkdown>{content}</ReactMarkdown>
       </ProjectContent>
-    </ProjectContainer>
+    </PageLayout>
   );
 }

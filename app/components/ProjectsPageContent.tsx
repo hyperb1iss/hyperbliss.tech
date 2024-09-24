@@ -1,19 +1,9 @@
 // app/components/ProjectsPageContent.tsx
 "use client";
 
-import styled from "styled-components";
 import ProjectList from "./ProjectList";
-
-const MainContent = styled.main`
-  padding-top: 80px; // Adjust this value based on your header height
-`;
-
-const ProjectsTitle = styled.h1`
-  font-size: 4rem;
-  color: var(--color-primary);
-  text-align: center;
-  margin: 2rem 0;
-`;
+import PageTitle from "./PageTitle";
+import PageLayout from "./PageLayout";
 
 interface Project {
   slug: string;
@@ -28,11 +18,15 @@ interface ProjectsPageContentProps {
   projects: Project[];
 }
 
-export default function ProjectsPageContent({ projects }: ProjectsPageContentProps) {
+const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({
+  projects,
+}) => {
   return (
-    <MainContent>
-      <ProjectsTitle>Projects</ProjectsTitle>
+    <PageLayout>
+      <PageTitle>Projects</PageTitle>
       <ProjectList projects={projects} />
-    </MainContent>
+    </PageLayout>
   );
-}
+};
+
+export default ProjectsPageContent;

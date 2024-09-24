@@ -3,35 +3,30 @@
 
 import Link from "next/link";
 import styled from "styled-components";
+import { motion } from "framer-motion";
+import PageTitle from "./PageTitle";
+import PageLayout from "./PageLayout";
 
-const MainContent = styled.main`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 120px 20px 40px;
-`;
-
-const Title = styled.h1`
-  font-size: 4rem;
-  color: var(--color-primary);
-  margin-bottom: 2rem;
-  text-align: center;
-`;
-
-const PostList = styled.div`
+const PostList = styled(motion.div)`
   display: grid;
   grid-template-columns: 1fr;
   gap: 3rem;
 `;
 
-const PostCard = styled.article`
+const PostCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
   }
 `;
 
@@ -74,11 +69,32 @@ interface BlogListProps {
 
 export default function BlogList({ posts }: BlogListProps) {
   return (
-    <MainContent>
-      <Title>Blog</Title>
-      <PostList>
+    <PageLayout>
+      <PageTitle>Blog</PageTitle>
+      <PostList
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            opacity: 1,
+            transition: {
+              delayChildren: 0.2,
+              staggerChildren: 0.15,
+            },
+          },
+          hidden: { opacity: 0 },
+        }}
+      >
         {posts.map(({ slug, frontmatter }) => (
-          <PostCard key={slug}>
+          <PostCard
+            key={slug}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
             <PostTitle>
               <PostLink href={`/blog/${slug}`}>{frontmatter.title}</PostLink>
             </PostTitle>
@@ -89,6 +105,6 @@ export default function BlogList({ posts }: BlogListProps) {
           </PostCard>
         ))}
       </PostList>
-    </MainContent>
+    </PageLayout>
   );
 }

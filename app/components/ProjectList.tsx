@@ -5,13 +5,13 @@ import Link from "next/link";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-const ProjectsContainer = styled.div`
+const ProjectsContainer = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 `;
 
-const ProjectsGrid = styled.div`
+const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
@@ -19,17 +19,19 @@ const ProjectsGrid = styled.div`
 
 const ProjectCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 15px;
+  border-radius: 20px; // Increased border radius
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.3s ease;
   height: 100%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); // Enhanced shadow
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-5px);
+    transform: translateY(-10px) scale(1.05); // Slightly increased scale
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3); // Enhanced hover shadow
   }
 `;
 
@@ -45,7 +47,7 @@ const ProjectDescription = styled.p`
   margin-bottom: 2rem;
 `;
 
-const ProjectLink = styled.a`
+const ProjectLink = styled(Link)`
   font-size: 1.6rem;
   color: var(--color-accent);
   text-decoration: none;
@@ -70,26 +72,49 @@ interface ProjectListProps {
   projects: Project[];
 }
 
-export default function ProjectList({ projects }: ProjectListProps) {
+const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
   return (
-    <ProjectsContainer>
-      <ProjectsGrid>
-        {projects.map(({ slug, frontmatter }) => (
+    <ProjectsContainer
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
+    >
+      <ProjectsGrid
+        initial="hidden"
+        animate="visible"
+        variants={{
+          visible: {
+            opacity: 1,
+            transition: {
+              delayChildren: 0.2,
+              staggerChildren: 0.15,
+            },
+          },
+          hidden: { opacity: 0 },
+        }}
+      >
+        {projects.map(({ slug, frontmatter }, index) => (
           <ProjectCard
             key={slug}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
           >
             <div>
               <ProjectTitle>{frontmatter.title}</ProjectTitle>
               <ProjectDescription>{frontmatter.description}</ProjectDescription>
             </div>
             <div>
-              <Link href={`/projects/${slug}`} passHref>
-                <ProjectLink>Learn More</ProjectLink>
-              </Link>
+              <ProjectLink href={`/projects/${slug}`}>Learn More</ProjectLink>
               {" | "}
-              <ProjectLink href={frontmatter.github} target="_blank" rel="noopener noreferrer">
+              <ProjectLink
+                href={frontmatter.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 GitHub
               </ProjectLink>
             </div>
@@ -98,4 +123,6 @@ export default function ProjectList({ projects }: ProjectListProps) {
       </ProjectsGrid>
     </ProjectsContainer>
   );
-}
+};
+
+export default ProjectList;

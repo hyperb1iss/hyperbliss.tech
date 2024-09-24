@@ -3,19 +3,8 @@
 
 import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
-
-const MainContent = styled.main`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 120px 20px 40px;
-`;
-
-const PostTitle = styled.h1`
-  font-size: 4rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-  text-align: center;
-`;
+import PageTitle from "./PageTitle";
+import PageLayout from "./PageLayout";
 
 const PostDate = styled.p`
   font-size: 1.6rem;
@@ -108,12 +97,12 @@ interface BlogPostProps {
 
 export default function BlogPost({ title, date, content }: BlogPostProps) {
   return (
-    <MainContent>
-      <PostTitle>{title}</PostTitle>
+    <PageLayout>
+      <PageTitle>{title}</PageTitle>
       <PostDate>{new Date(date).toLocaleDateString()}</PostDate>
       <PostContent>
         <ReactMarkdown>{content}</ReactMarkdown>
       </PostContent>
-    </MainContent>
+    </PageLayout>
   );
 }
