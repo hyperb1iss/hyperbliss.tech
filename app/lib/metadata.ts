@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 const AUTHOR_NAME = "Stefanie Jane";
 const BASE_URL = "https://hyperbliss.tech";
-const SITE_TITLE = "Hyperbliss | Stefanie Jane";
+const SITE_TITLE = "@hyperb1iss | Stefanie Jane";
 const SITE_DESCRIPTION =
   "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.";
 const SITE_NAME = "🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹";
@@ -51,7 +51,6 @@ const siteMetadata: Metadata = {
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
-  manifest: "/site.webmanifest",
 };
 
 export default siteMetadata;
