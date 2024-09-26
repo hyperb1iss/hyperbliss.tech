@@ -1,2 +1,2 @@
 // app/lib/navigation.ts
-export const NAV_ITEMS = ['About', 'Blog', 'Projects'];
+export const NAV_ITEMS = ["About", "Blog", "Projects", "Resume"];

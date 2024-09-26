@@ -1,27 +1,19 @@
 // app/(transition)/blog/[slug]/page.tsx
-import fs from "fs";
-import matter from "gray-matter";
-import path from "path";
 import BlogPost from "../../../components/BlogPost";
+import { getAllMarkdownSlugs, getMarkdownContent } from "../../../lib/markdown";
 
 export async function generateStaticParams() {
-  const files = fs.readdirSync(path.join("src", "posts"));
-  return files.map((filename) => ({
-    slug: filename.replace(".md", ""),
-  }));
+  const slugs = await getAllMarkdownSlugs("src/posts");
+  return slugs.map((slug) => ({ slug }));
 }
 
-function getPostContent(slug: string) {
-  const folder = path.join("src", "posts");
-  const file = `${folder}/${slug}.md`;
-  const content = fs.readFileSync(file, "utf8");
-  const matterResult = matter(content);
-  return matterResult;
-}
-
-export default function PostPage({ params }: { params: { slug: string } }) {
+export default async function PostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
-  const { data: frontmatter, content } = getPostContent(slug);
+  const { frontmatter, content } = await getMarkdownContent("src/posts", slug);
 
   return (
     <BlogPost

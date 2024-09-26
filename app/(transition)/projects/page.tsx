@@ -1,8 +1,6 @@
 // app/(transition)/projects/page.tsx
-import fs from "fs";
-import matter from "gray-matter";
-import path from "path";
 import ProjectsPageContent from "../../components/ProjectsPageContent";
+import { getAllMarkdownSlugs, getMarkdownContent } from "../../lib/markdown";
 
 interface Project {
   slug: string;
@@ -13,33 +11,23 @@ interface Project {
   };
 }
 
-function getProjects(): Project[] {
-  const projectsDirectory = path.join(process.cwd(), "src", "projects");
-  const filenames = fs.readdirSync(projectsDirectory);
-
-  const projects = filenames.map((filename) => {
-    const filePath = path.join(projectsDirectory, filename);
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const { data: frontmatter } = matter(fileContents);
-    return {
-      slug: filename.replace(".md", ""),
-      frontmatter: frontmatter as Project["frontmatter"],
-    };
-  });
-
-  return projects;
-}
-
-export default function Projects() {
-  const projects = getProjects();
+export default async function Projects() {
+  const slugs = await getAllMarkdownSlugs("src/projects");
+  const projects = await Promise.all(
+    slugs.map(async (slug) => {
+      const { frontmatter } = await getMarkdownContent("src/projects", slug);
+      return {
+        slug,
+        frontmatter: frontmatter as Project["frontmatter"],
+      };
+    })
+  );
 
   return <ProjectsPageContent projects={projects} />;
 }
 
-export function generateMetadata() {
-  return {
-    title: "Hyperbliss | Projects",
-    description:
-      "Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.",
-  };
-}
+export const metadata = {
+  title: "Hyperbliss | Projects",
+  description:
+    "Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.",
+};
