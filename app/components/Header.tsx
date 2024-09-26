@@ -6,26 +6,45 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
+import { initializeCanvas } from "../lib/headerEffects";
 import { NAV_ITEMS } from "../lib/navigation";
-import { initializeCanvas } from "../lib/headerEffects"; // Import the effect
+
+// Define the keyframes for the gradient animation
+const animateGradient = keyframes`
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+`;
+
+// Styled Components
 
 const Nav = styled.nav`
-  position: relative;
+  position: fixed;
+  top: 0;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
   padding: 1rem 2rem;
-  position: fixed;
-  width: 100%;
-  top: 0;
   z-index: 1000;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const NavContent = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  max-width: 1200px;
 `;
 
 const Logo = styled(Link)`
@@ -33,6 +52,7 @@ const Logo = styled(Link)`
   align-items: center;
   text-decoration: none;
   cursor: pointer;
+  position: relative; /* For accurate bounding rect calculations */
 `;
 
 const LogoText = styled.span`
@@ -40,10 +60,9 @@ const LogoText = styled.span`
   font-size: 2.4rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
-  -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: 10s ease infinite;
+  animation: ${animateGradient} 10s ease infinite;
   text-shadow: 0 0 5px var(--color-primary);
   transition: text-shadow 0.3s ease;
 
@@ -65,6 +84,10 @@ const NavLinks = styled.ul`
   @media (max-width: 768px) {
     display: none;
   }
+`;
+
+const NavItem = styled.li`
+  position: relative;
 `;
 
 const StyledNavLink = styled.a<{ $active: boolean }>`
@@ -121,6 +144,7 @@ const MobileNavLinks = styled.ul<{ open: boolean }>`
   width: 200px;
   flex-direction: column;
   display: ${(props) => (props.open ? "flex" : "none")};
+  z-index: 999; /* Ensure the menu appears above other elements */
 
   li {
     padding: 1rem;
@@ -135,19 +159,25 @@ const Canvas = styled.canvas`
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: -1; /* Place the canvas behind the nav content */
 `;
+
+// Header Component
 
 const Header: React.FC = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const animateAndNavigate = useAnimatedNavigation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const logoRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const cleanupCanvas = initializeCanvas(canvasRef.current); // Initialize effects
+    let cleanupCanvas: () => void = () => {};
+    if (canvasRef.current && logoRef.current) {
+      cleanupCanvas = initializeCanvas(canvasRef.current, logoRef.current);
+    }
     return () => {
-      cleanupCanvas(); // Clean up on unmount
+      if (cleanupCanvas) cleanupCanvas();
     };
   }, []);
 
@@ -160,21 +190,21 @@ const Header: React.FC = () => {
     <Nav>
       <Canvas ref={canvasRef} />
       <NavContent>
-        <Logo as="a" onClick={() => handleNavigation("/")}>
+        <Logo href="/" onClick={() => handleNavigation("/")} ref={logoRef}>
           <LogoEmojis>🌠</LogoEmojis>
           <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
           <LogoEmojis>✨ ⎊ ⨳ ✵ ⊹</LogoEmojis>
         </Logo>
         <NavLinks>
           {NAV_ITEMS.map((item) => (
-            <li key={item}>
+            <NavItem key={item}>
               <StyledNavLink
                 onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
                 $active={pathname === `/${item.toLowerCase()}`}
               >
                 {item}
               </StyledNavLink>
-            </li>
+            </NavItem>
           ))}
         </NavLinks>
         <MobileMenuIcon onClick={() => setMenuOpen(!menuOpen)}>
@@ -183,14 +213,14 @@ const Header: React.FC = () => {
       </NavContent>
       <MobileNavLinks open={menuOpen}>
         {NAV_ITEMS.map((item) => (
-          <li key={item}>
+          <NavItem key={item}>
             <StyledNavLink
               onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
               $active={pathname === `/${item.toLowerCase()}`}
             >
               {item}
             </StyledNavLink>
-          </li>
+          </NavItem>
         ))}
       </MobileNavLinks>
     </Nav>
