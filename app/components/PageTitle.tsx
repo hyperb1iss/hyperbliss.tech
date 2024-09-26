@@ -1,12 +1,12 @@
 // app/components/PageTitle.tsx
-import styled from "styled-components";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 
 const TitleWrapper = styled(motion.h1)`
   font-size: 4rem;
   color: var(--color-primary);
   text-align: center;
-  margin: 2rem 0;
+  margin-bottom: 2rem;
   text-shadow: 0 0 5px var(--color-primary);
 
   @media (max-width: 768px) {

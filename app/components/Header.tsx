@@ -3,12 +3,12 @@
 "use client";
 
 import Link from "next/link";
-import styled from "styled-components";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
-import { NAV_ITEMS } from "../lib/navigation";
+import styled from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
+import { NAV_ITEMS } from "../lib/navigation";
 
 const Nav = styled.nav`
   background-color: rgba(0, 0, 0, 0.9);

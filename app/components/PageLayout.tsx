@@ -1,11 +1,12 @@
 // app/components/PageLayout.tsx
-import styled from "styled-components";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 
 const MainContentWrapper = styled(motion.main)`
+  flex: 1;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 40px 20px 40px;
+  padding: 80px 20px 40px;
 
   @media (max-width: 768px) {
     padding: 80px 20px 20px;

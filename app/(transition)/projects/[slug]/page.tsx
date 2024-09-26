@@ -1,9 +1,8 @@
 // app/(transition)/projects/[slug]/page.tsx
-import fs from "fs"; 
-import path from "path";
+import fs from "fs";
 import matter from "gray-matter";
+import path from "path";
 import ProjectDetail from "../../../components/ProjectDetail";
-import MainContent from "../../../components/MainContent";
 
 export async function generateStaticParams() {
   const files = fs.readdirSync(path.join("src", "projects"));
@@ -25,13 +24,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
   const { data: frontmatter, content } = getProjectContent(slug);
 
   return (
-    <MainContent>
-      <ProjectDetail
-        title={frontmatter.title}
-        github={frontmatter.github}
-        content={content}
-      />
-    </MainContent>
+    <ProjectDetail
+      title={frontmatter.title}
+      github={frontmatter.github}
+      content={content}
+    />
   );
 }
 

@@ -1,10 +1,10 @@
 // app/components/BlogPost.tsx
 "use client";
 
-import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
-import PageTitle from "./PageTitle";
+import styled from "styled-components";
 import PageLayout from "./PageLayout";
+import PageTitle from "./PageTitle";
 
 const PostDate = styled.p`
   font-size: 1.6rem;

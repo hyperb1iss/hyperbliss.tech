@@ -2,24 +2,16 @@
 
 "use client";
 
-import styled from "styled-components";
 import { motion } from "framer-motion";
-
-const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding-top: 100px;
-`;
+import styled from "styled-components";
 
 const HeroSection = styled.section`
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 0 2rem;
-  background: url("/images/cyberpunk-hero.jpg") center/cover no-repeat;
+  padding: 100px 2rem 2rem;
+  flex: 1; /* Ensure it takes up available space */
 `;
 
 const Title = styled(motion.h1)`
@@ -65,34 +57,32 @@ const CTAButton = styled(motion.a)`
 
 export default function Home() {
   return (
-    <PageWrapper>
-      <HeroSection>
-        <Title
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Welcome to <span className="glow">Hyperbliss</span>
-        </Title>
-        <Subtitle
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-        >
-          Hi, I&apos;m Stefanie Jane—a developer, designer, and tech enthusiast.
-          Explore my projects, read my thoughts on tech, and connect with me.
-        </Subtitle>
-        <CTAButton
-          href="/about"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          Learn More About Me
-        </CTAButton>
-      </HeroSection>
-    </PageWrapper>
+    <HeroSection>
+      <Title
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        Welcome to <span className="glow">Hyperbliss</span>
+      </Title>
+      <Subtitle
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+      >
+        Hi, I&apos;m Stefanie Jane—a developer, designer, and tech enthusiast.
+        Explore my projects, read my thoughts on tech, and connect with me.
+      </Subtitle>
+      <CTAButton
+        href="/about"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Learn More About Me
+      </CTAButton>
+    </HeroSection>
   );
 }

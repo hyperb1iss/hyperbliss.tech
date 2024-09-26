@@ -1,7 +1,7 @@
 // app/components/Footer.tsx
-'use client';
-import styled from 'styled-components';
-import { SOCIAL_LINKS } from '../lib/socials';
+"use client";
+import styled from "styled-components";
+import { SOCIAL_LINKS } from "../lib/socials";
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
@@ -10,7 +10,6 @@ const FooterContainer = styled.footer`
   color: var(--color-text);
 
   .socials {
-
     a {
       margin: 0 1rem;
       color: var(--color-text);
@@ -45,7 +44,9 @@ const Footer: React.FC = () => {
           </a>
         ))}
       </div>
-      <FooterText>&copy; {new Date().getFullYear()} Stefanie Jane 🌠</FooterText>
+      <FooterText>
+        &copy; {new Date().getFullYear()} Stefanie Jane 🌠
+      </FooterText>
     </FooterContainer>
   );
 };

@@ -1,9 +1,9 @@
 /* app/styles/globals.css */
 
 :root {
-  --font-heading: 'Orbitron', sans-serif;
-  --font-body: 'Rajdhani', sans-serif;
-  --font-mono: 'Share Tech Mono', monospace;
+  --font-heading: "Orbitron", sans-serif;
+  --font-body: "Rajdhani", sans-serif;
+  --font-mono: "Share Tech Mono", monospace;
   --color-background: #0a0a14;
   --color-text: #e0e0e0;
   --color-primary: #a259ff; /* Adjusted to a more prominent purple */
@@ -12,13 +12,16 @@
   --color-muted: #a0a0a0;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
 }
@@ -30,11 +33,12 @@ html {
 body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh; /* Ensure the body takes up the full viewport height */
   font-family: var(--font-body);
   font-size: 1.6rem;
   color: var(--color-text);
   background-color: var(--color-background);
-  background-image: url('/images/background.jpg');
+  background-image: url("/images/background.jpg");
   background-size: cover;
   background-attachment: fixed;
   overflow-x: hidden;
@@ -42,7 +46,7 @@ body {
 }
 
 body::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -52,7 +56,12 @@ body::before {
   z-index: -1; /* Ensure the overlay is behind the content */
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
   color: var(--color-primary);
   text-transform: uppercase;

@@ -1,11 +1,11 @@
 // app/components/BlogList.tsx
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import PageTitle from "./PageTitle";
 import PageLayout from "./PageLayout";
+import PageTitle from "./PageTitle";
 
 const PostList = styled(motion.div)`
   display: grid;

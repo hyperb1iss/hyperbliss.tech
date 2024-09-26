@@ -1,9 +1,8 @@
-// app/projects/page.tsx
+// app/(transition)/projects/page.tsx
 import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
+import path from "path";
 import ProjectsPageContent from "../../components/ProjectsPageContent";
-import MainContent from "../../components/MainContent";
 
 interface Project {
   slug: string;
@@ -34,11 +33,7 @@ function getProjects(): Project[] {
 export default function Projects() {
   const projects = getProjects();
 
-  return (
-    <MainContent>
-      <ProjectsPageContent projects={projects} />
-    </MainContent>
-  );
+  return <ProjectsPageContent projects={projects} />;
 }
 
 export function generateMetadata() {

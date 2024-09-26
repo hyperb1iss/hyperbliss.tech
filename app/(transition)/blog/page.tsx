@@ -1,9 +1,8 @@
-// app/(transition)blog/page.tsx
+// app/(transition)/blog/page.tsx
 import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
+import path from "path";
 import BlogList from "../../components/BlogList";
-import MainContent from "../../components/MainContent";
 
 interface Post {
   slug: string;
@@ -34,7 +33,7 @@ function getPostData(): Post[] {
       slug,
       frontmatter: {
         title: frontmatter.title as string,
-        date: frontmatter.date as string,
+        date: frontmatter.datZe as string,
         excerpt: frontmatter.excerpt as string,
       },
     };
@@ -50,9 +49,5 @@ function getPostData(): Post[] {
 export default function Blog() {
   const posts = getPostData();
 
-  return (
-    <MainContent>
-      <BlogList posts={posts} />
-    </MainContent>
-  );
+  return <BlogList posts={posts} />;
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
+import React, { ReactNode } from "react";
+import styled from "styled-components";
 
 const MainContentWrapper = styled(motion.main)`
   flex: 1;
@@ -16,8 +16,8 @@ const pageVariants = {
 };
 
 const pageTransition = {
-  type: 'tween',
-  ease: 'anticipate',
+  type: "tween",
+  ease: "anticipate",
   duration: 0.5,
 };
 
