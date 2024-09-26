@@ -4,6 +4,7 @@
   --font-heading: "Orbitron", sans-serif;
   --font-body: "Rajdhani", sans-serif;
   --font-mono: "Share Tech Mono", monospace;
+  --font-logo: "Noto Sans", sans-serif;
   --color-background: #0a0a14;
   --color-text: #e0e0e0;
   --color-primary: #a259ff; /* Adjusted to a more prominent purple */
@@ -106,6 +107,27 @@ p {
   opacity: 0;
   transform: translateY(-20px);
   transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Logo styling */
+.logo {
+  font-family: "Orbitron", sans-serif;
+  font-size: 3.6rem;
+  color: #00fff0;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.6),
+    0 0 40px rgba(0, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.logo:hover {
+  color: #ff00ff;
+  text-shadow: 0 0 15px rgba(255, 0, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.6),
+    0 0 50px rgba(255, 0, 255, 0.4);
+  transform: scale(1.05);
 }
 
 /* Responsive Typography */
