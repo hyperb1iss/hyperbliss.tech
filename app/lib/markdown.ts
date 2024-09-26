@@ -6,7 +6,7 @@ import path from "path";
 // Define the interface for markdown files with a flexible frontmatter type
 export interface MarkdownFile {
   slug: string;
-  frontmatter: Record<string, any>; // Using a flexible dictionary for frontmatter
+  frontmatter: Record<string, string>;
   content: string;
 }
 

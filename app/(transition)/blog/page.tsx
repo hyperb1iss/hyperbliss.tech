@@ -2,15 +2,6 @@
 import BlogList from "../../components/BlogList";
 import { getAllMarkdownSlugs, getMarkdownContent } from "../../lib/markdown";
 
-interface Post {
-  slug: string;
-  frontmatter: {
-    title: string;
-    date: string;
-    excerpt: string;
-  };
-}
-
 export default async function Blog() {
   const slugs = await getAllMarkdownSlugs("src/posts");
   const posts = await Promise.all(
