@@ -5,7 +5,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { FaBars } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { NAV_ITEMS } from "../lib/navigation";
@@ -24,7 +23,40 @@ const animateGradient = keyframes`
   }
 `;
 
-// Styled Components
+// Define keyframes for mobile menu slide-in
+const slideDown = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+const slideUp = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+`;
+
+// Define the slideIn animation
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
 
 const Nav = styled.nav`
   position: fixed;
@@ -61,19 +93,28 @@ const LogoText = styled.span`
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
+  -webkit-background-clip: text;
   color: transparent;
   animation: ${animateGradient} 10s ease infinite;
-  text-shadow: 0 0 5px var(--color-primary);
+  text-shadow: 0 0 10px var(--color-primary);
   transition: text-shadow 0.3s ease;
 
   &:hover {
-    text-shadow: 0 0 10px var(--color-accent);
+    text-shadow: 0 0 15px var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
   }
 `;
 
 const LogoEmojis = styled.span`
   font-size: 2.4rem;
   margin: 0 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const NavLinks = styled.ul`
@@ -104,7 +145,7 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
 
   &:hover {
     color: #00ffff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
   }
 
   &::after {
@@ -122,33 +163,91 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
   &:hover::after {
     transform: scaleX(1);
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+    padding: 0.5rem 0;
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: ${(props) => (props.$active ? "#00ffff" : "#f0f0f0")};
+
+    &::after {
+      bottom: 0;
+    }
+  }
 `;
 
-const MobileMenuIcon = styled.div`
+// Add a new keyframe for the menu icon animation
+const rotateMenu = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+`;
+
+// Update the MobileMenuIcon styled component
+const MobileMenuIcon = styled.div<{ open: boolean }>`
   display: none;
   font-size: 2.4rem;
-  color: var(--color-text);
+  color: var(--color-accent);
   cursor: pointer;
+  z-index: 1100;
+  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
+  transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(0deg)")};
+
+  &:hover {
+    color: var(--color-secondary);
+    text-shadow: 0 0 10px var(--color-secondary),
+      0 0 20px var(--color-secondary);
+  }
 
   @media (max-width: 768px) {
     display: block;
   }
 `;
 
+// Update the MobileNavLinks styled component
 const MobileNavLinks = styled.ul<{ open: boolean }>`
   list-style: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.95);
-  width: 200px;
+  position: fixed;
+  top: 80px; // Adjust based on your header height
+  right: 20px; // Position from the right side
+  background-color: rgba(10, 10, 20, 0.95); // Darker background
+  width: 200px; // Fixed width
   flex-direction: column;
-  display: ${(props) => (props.open ? "flex" : "none")};
-  z-index: 999; /* Ensure the menu appears above other elements */
+  display: flex;
+  z-index: 1001;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3); // Glowing effect
+  border: 1px solid rgba(162, 89, 255, 0.2); // Subtle border
+  opacity: ${(props) => (props.open ? 1 : 0)};
+  transform: ${(props) =>
+    props.open ? "translateY(0) scale(1)" : "translateY(-20px) scale(0.95)"};
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: ${(props) => (props.open ? "all" : "none")};
 
   li {
     padding: 1rem;
-    text-align: right;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: rgba(162, 89, 255, 0.2);
+    }
+  }
+`;
+
+// Update the MobileNavItem styled component
+const MobileNavItem = styled(NavItem)<{ index: number; open: boolean }>`
+  @media (max-width: 768px) {
+    opacity: 0;
+    transform: translateX(20px);
+    animation: ${slideIn} 0.3s forwards;
+    animation-delay: ${(props) => (props.open ? props.index * 0.1 : 0)}s;
   }
 `;
 
@@ -163,7 +262,6 @@ const Canvas = styled.canvas`
 `;
 
 // Header Component
-
 const Header: React.FC = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -212,20 +310,20 @@ const Header: React.FC = () => {
             </NavItem>
           ))}
         </NavLinks>
-        <MobileMenuIcon onClick={() => setMenuOpen(!menuOpen)}>
-          <FaBars />
+        <MobileMenuIcon open={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
         </MobileMenuIcon>
       </NavContent>
       <MobileNavLinks open={menuOpen}>
-        {NAV_ITEMS.map((item) => (
-          <NavItem key={item}>
+        {NAV_ITEMS.map((item, index) => (
+          <MobileNavItem key={item} index={index} open={menuOpen}>
             <StyledNavLink
               onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
               $active={pathname === `/${item.toLowerCase()}`}
             >
               {item}
             </StyledNavLink>
-          </NavItem>
+          </MobileNavItem>
         ))}
       </MobileNavLinks>
     </Nav>

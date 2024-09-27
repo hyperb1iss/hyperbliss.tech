@@ -44,6 +44,7 @@ body {
   background-attachment: fixed;
   overflow-x: hidden;
   position: relative; /* Ensure the overlay stays relative to the body */
+  z-index: 0; /* Ensure body has a stacking context */
 }
 
 body::before {
