@@ -5,6 +5,7 @@ import {
   getRandomCyberpunkHue,
   project,
 } from "./headerEffectsUtils";
+import { applyGlitchEffect, applyChromaticAberration } from "./glitchEffects";
 
 /**
  * Initializes the canvas and sets up the header animation effects.
@@ -224,6 +225,13 @@ export const initializeCanvas = (
     });
   };
 
+  // Initialize glitch effect variables outside the animation loop
+  let isGlitching = false;
+  let lastGlitchTime = 0;
+  let glitchIntensity = 0;
+  let glitchInterval = 5000; // Increased to 5 seconds between glitch effects
+  let glitchDuration = 200; // Kept at 0.2 seconds duration for each glitch effect
+
   /**
    * The main animation loop that updates and draws particles and shapes.
    */
@@ -265,6 +273,29 @@ export const initializeCanvas = (
 
     // Connect particles with lines
     connectParticles(particlesArray, ctx);
+
+    // Apply glitch effects
+    const currentTime = Date.now();
+    if (!isGlitching && currentTime - lastGlitchTime > glitchInterval) {
+      isGlitching = true;
+      glitchIntensity = Math.random() * 0.7 + 0.3; // Random intensity between 0.3 and 1
+      glitchDuration = Math.random() * 300 + 100; // Random duration between 100ms and 400ms
+      lastGlitchTime = currentTime;
+      
+      // Randomly adjust the next glitch interval
+      glitchInterval = Math.random() * 5000 + 5000; // Random interval between 5s and 10s
+    }
+
+    if (isGlitching) {
+      const glitchProgress = (currentTime - lastGlitchTime) / glitchDuration;
+      if (glitchProgress >= 1) {
+        isGlitching = false;
+      } else {
+        const fadeIntensity = Math.sin(glitchProgress * Math.PI) * glitchIntensity;
+        applyGlitchEffect(ctx, width, height, fadeIntensity);
+        applyChromaticAberration(ctx, width, height, fadeIntensity * 15);
+      }
+    }
 
     // Continue the animation loop
     animationFrameId = requestAnimationFrame(animate);
