@@ -53,6 +53,7 @@ export const applyGlitchEffect = (
     const x = Math.random() * width;
     const gradient = ctx.createLinearGradient(x, 0, x, height);
     gradient.addColorStop(0, `hsl(${Math.random() * 360}, 100%, 50%)`);
+    gradient.addColorStop(0.5, `hsl(${Math.random() * 360}, 100%, 50%)`);
     gradient.addColorStop(1, `hsl(${Math.random() * 360}, 100%, 50%)`);
     ctx.strokeStyle = gradient;
     ctx.lineWidth = Math.random() * 5 + 1;
@@ -107,29 +108,6 @@ export const applyGlitchEffect = (
     ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
     ctx.fillRect(0, y, width, 1);
   }
-
-  // Add glowing text effect
-  const glitchText = "CYBERPUNK";
-  ctx.font = `bold ${Math.floor(height / 10)}px Arial`;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-
-  const gradient = ctx.createLinearGradient(0, 0, width, 0);
-  gradient.addColorStop(0, "rgba(0, 255, 255, 0.8)");
-  gradient.addColorStop(0.5, "rgba(255, 0, 255, 0.8)");
-  gradient.addColorStop(1, "rgba(0, 255, 255, 0.8)");
-
-  ctx.fillStyle = gradient;
-  ctx.globalAlpha = intensity * 0.7;
-  ctx.fillText(glitchText, width / 2, height / 2);
-
-  // Add glow effect
-  ctx.shadowColor = "rgba(0, 255, 255, 0.8)";
-  ctx.shadowBlur = 10;
-  ctx.fillText(glitchText, width / 2, height / 2);
-
-  ctx.globalAlpha = 1;
-  ctx.shadowBlur = 0;
 };
 
 /**
