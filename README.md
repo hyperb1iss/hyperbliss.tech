@@ -26,6 +26,7 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 - 🖼️ A showcase of various projects demonstrating expertise
 - 🔭 SEO optimization to enhance visibility and reach
 - 🕯️ Google Analytics integration for data-driven improvements
+- 🌠 CyberScape: An immersive, interactive background animation
 
 ## 🛠️ Technology Stack
 
@@ -37,6 +38,7 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 - **Icons**: React Icons
 - **SEO**: Next SEO
 - **Analytics**: Google Analytics (via nextjs-google-analytics)
+- **Interactive Background**: CyberScape (custom animation)
 
 ## 🏗️ Project Structure
 
@@ -54,7 +56,13 @@ src/
 │   ├── styles/
 │   └── layout.tsx
 ├── posts/
-└── projects/
+├── projects/
+└── cyberscape/
+    ├── CyberScape.ts
+    ├── CyberScapeUtils.ts
+    ├── Particle.ts
+    ├── VectorShape.ts
+    └── glitchEffects.ts
 ```
 
 ## 🚀 Getting Started
@@ -90,6 +98,51 @@ src/
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+
+## 🌠 CyberScape: Immersive Interactive Background
+
+CyberScape is a custom-built, interactive background animation that brings the cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive environment that reacts to user interactions and adds depth to the overall user experience.
+
+### Key Features of CyberScape
+
+- **Interactive Particles**: A field of glowing particles that respond to cursor movements.
+- **Vector Shapes**: 3D wireframe shapes (cubes, pyramids, stars) floating in space.
+- **Dynamic Connections**: Lines connecting nearby particles to create a network effect.
+- **Glitch Effects**: Occasional glitch animations for an authentic cyberpunk feel.
+- **Responsive Design**: Adapts to different screen sizes and device capabilities.
+
+### How CyberScape Works
+
+1. **Initialization**: The `initializeCyberScape` function sets up the canvas and initializes particles and shapes.
+
+2. **Animation Loop**: A continuous loop updates and renders all elements:
+
+   - Particles and shapes move and rotate.
+   - Connections between particles are calculated and drawn.
+   - Glitch effects are randomly applied.
+
+3. **User Interaction**: The animation responds to mouse movements when the cursor is over the header area.
+
+4. **Performance Optimization**: Various techniques are used to ensure smooth performance:
+
+   - Throttled event listeners.
+   - Efficient rendering techniques.
+   - Adjusting the number of elements based on screen size.
+
+5. **Visual Effects**:
+   - Dynamic color transitions.
+   - Glow effects on particles and shapes.
+   - Chromatic aberration and CRT effects during glitch animations.
+
+### CyberScape Components
+
+- `CyberScape.ts`: Main controller for the animation.
+- `Particle.ts`: Defines the behavior of individual particles.
+- `VectorShape.ts`: Manages the 3D vector shapes.
+- `CyberScapeUtils.ts`: Utility functions for colors, projections, and more.
+- `glitchEffects.ts`: Implements various glitch and distortion effects.
+
+CyberScape exemplifies the fusion of art and technology, creating an engaging and visually stunning backdrop for the hyperbliss.tech experience.
 
 ## 🎨 Styling
 
