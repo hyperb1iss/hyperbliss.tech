@@ -73,11 +73,51 @@ export const applyGlitchEffect = (
     const blockHeight = Math.random() * 100 + 20;
     const x = Math.random() * (width - blockWidth);
     const y = Math.random() * (height - blockHeight);
-    ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${Math.random() * 0.5 + 0.2})`;
+    ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${
+      Math.random() * 0.5 + 0.2
+    })`;
     ctx.fillRect(x, y, blockWidth, blockHeight);
   }
 
+  // Add digital noise
+  const noiseIntensity = intensity * 0.2;
+  for (let i = 0; i < data.length; i += 4) {
+    if (Math.random() < noiseIntensity) {
+      const noise = Math.random() * 255;
+      data[i] = data[i + 1] = data[i + 2] = noise;
+    }
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  // Add scanlines
+  ctx.globalAlpha = intensity * 0.1;
+  for (let y = 0; y < height; y += 2) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    ctx.fillRect(0, y, width, 1);
+  }
+
+  // Add glowing text effect
+  const glitchText = "CYBERPUNK";
+  ctx.font = `bold ${Math.floor(height / 10)}px Arial`;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  const gradient = ctx.createLinearGradient(0, 0, width, 0);
+  gradient.addColorStop(0, "rgba(0, 255, 255, 0.8)");
+  gradient.addColorStop(0.5, "rgba(255, 0, 255, 0.8)");
+  gradient.addColorStop(1, "rgba(0, 255, 255, 0.8)");
+
+  ctx.fillStyle = gradient;
+  ctx.globalAlpha = intensity * 0.7;
+  ctx.fillText(glitchText, width / 2, height / 2);
+
+  // Add glow effect
+  ctx.shadowColor = "rgba(0, 255, 255, 0.8)";
+  ctx.shadowBlur = 10;
+  ctx.fillText(glitchText, width / 2, height / 2);
+
   ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
 };
 
 /**
@@ -101,9 +141,15 @@ export const applyChromaticAberration = (
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4;
-      const redX = Math.max(0, Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5)));
+      const redX = Math.max(
+        0,
+        Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5))
+      );
       const greenX = x;
-      const blueX = Math.max(0, Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5)));
+      const blueX = Math.max(
+        0,
+        Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5))
+      );
       const redI = (y * width + redX) * 4;
       const greenI = (y * width + greenX) * 4;
       const blueI = (y * width + blueX) * 4;
@@ -116,4 +162,73 @@ export const applyChromaticAberration = (
   }
 
   ctx.putImageData(newImageData, 0, 0);
+};
+
+/**
+ * Applies a CRT screen effect to the canvas.
+ * @param ctx - The 2D rendering context of the canvas.
+ * @param width - The width of the canvas.
+ * @param height - The height of the canvas.
+ * @param intensity - The intensity of the effect (0-1).
+ */
+export const applyCRTEffect = (
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  intensity: number
+) => {
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  // Add CRT screen curvature
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const dx = x - width / 2;
+      const dy = y - height / 2;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const maxDistance = Math.sqrt(
+        (width * width) / 4 + (height * height) / 4
+      );
+      const normalizedDistance = distance / maxDistance;
+
+      const bendFactor = 0.1 * intensity;
+      const bendX = x + dx * normalizedDistance * bendFactor;
+      const bendY = y + dy * normalizedDistance * bendFactor;
+
+      if (bendX >= 0 && bendX < width && bendY >= 0 && bendY < height) {
+        const sourceIndex = (Math.floor(bendY) * width + Math.floor(bendX)) * 4;
+        const targetIndex = (y * width + x) * 4;
+
+        data[targetIndex] = data[sourceIndex];
+        data[targetIndex + 1] = data[sourceIndex + 1];
+        data[targetIndex + 2] = data[sourceIndex + 2];
+      }
+    }
+  }
+
+  // Add scanlines
+  for (let y = 0; y < height; y += 2) {
+    for (let x = 0; x < width; x++) {
+      const index = (y * width + x) * 4;
+      data[index] *= 0.8;
+      data[index + 1] *= 0.8;
+      data[index + 2] *= 0.8;
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+
+  // Add vignette effect
+  const gradient = ctx.createRadialGradient(
+    width / 2,
+    height / 2,
+    0,
+    width / 2,
+    height / 2,
+    Math.max(width, height) / 2
+  );
+  gradient.addColorStop(0, "rgba(0,0,0,0)");
+  gradient.addColorStop(1, `rgba(0,0,0,${0.7 * intensity})`);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
 };

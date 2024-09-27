@@ -5,7 +5,11 @@ import {
   getRandomCyberpunkHue,
   project,
 } from "./headerEffectsUtils";
-import { applyGlitchEffect, applyChromaticAberration } from "./glitchEffects";
+import {
+  applyGlitchEffect,
+  applyChromaticAberration,
+  applyCRTEffect,
+} from "./glitchEffects";
 
 /**
  * Initializes the canvas and sets up the header animation effects.
@@ -281,7 +285,7 @@ export const initializeCanvas = (
       glitchIntensity = Math.random() * 0.7 + 0.3; // Random intensity between 0.3 and 1
       glitchDuration = Math.random() * 300 + 100; // Random duration between 100ms and 400ms
       lastGlitchTime = currentTime;
-      
+
       // Randomly adjust the next glitch interval
       glitchInterval = Math.random() * 5000 + 5000; // Random interval between 5s and 10s
     }
@@ -291,9 +295,11 @@ export const initializeCanvas = (
       if (glitchProgress >= 1) {
         isGlitching = false;
       } else {
-        const fadeIntensity = Math.sin(glitchProgress * Math.PI) * glitchIntensity;
+        const fadeIntensity =
+          Math.sin(glitchProgress * Math.PI) * glitchIntensity;
         applyGlitchEffect(ctx, width, height, fadeIntensity);
         applyChromaticAberration(ctx, width, height, fadeIntensity * 15);
+        applyCRTEffect(ctx, width, height, fadeIntensity * 0.5);
       }
     }
 
