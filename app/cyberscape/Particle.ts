@@ -472,4 +472,12 @@ export class ParticleAtCollision extends Particle {
       }
     }
   }
+
+  /**
+   * Sets the fade-out duration for the particle.
+   * @param duration - The duration of the fade-out effect in milliseconds.
+   */
+  public setFadeOutDuration(duration: number): void {
+    this.fadeOutDuration = duration;
+  }
 }

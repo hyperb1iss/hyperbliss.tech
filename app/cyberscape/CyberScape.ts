@@ -344,6 +344,8 @@ export const initializeCyberScape = (
           explosionParticlesCount--;
           currentExplosions = Math.max(0, currentExplosions - 1);
         });
+        particle.lifespan = 2000;
+        particle.setFadeOutDuration(2000);
         particlesArray.push(particle);
         explosionParticlesCount++;
       }
@@ -373,6 +375,11 @@ export const initializeCyberScape = (
   };
 
   triggerAnimation = triggerSpecialAnimation;
+
+  // Add these new constants at the top of the file
+  const MAX_DATASTREAM_PARTICLES = 100;
+  const DATASTREAM_PARTICLE_LIFESPAN = 2000; // 2 seconds
+  const DATASTREAM_FADE_OUT_DURATION = 500; // 0.5 seconds
 
   /**
    * The main animation loop for CyberScape.
@@ -466,94 +473,15 @@ export const initializeCyberScape = (
         animationProgress = 0;
       } else {
         const intensity = Math.sin(animationProgress * Math.PI);
-
-        // Draw expanding circles
-        ctx.save();
-        ctx.globalAlpha = intensity * 0.5;
-        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-        ctx.lineWidth = 2;
-        const maxRadius = Math.max(width, height) * 0.4;
-        for (let i = 0; i < 5; i++) {
-          const radius = intensity * maxRadius * (1 - i * 0.2);
-          ctx.beginPath();
-          ctx.arc(animationCenterX, animationCenterY, radius, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-        ctx.restore();
-
-        // Draw noise effect
-        ctx.save();
-        ctx.globalAlpha = intensity * 0.2;
-        const noiseSize = 4;
-        for (let x = 0; x < width; x += noiseSize) {
-          for (let y = 0; y < height; y += noiseSize) {
-            if (Math.random() < 0.5) {
-              ctx.fillStyle = `hsl(${hue}, 100%, ${Math.random() * 50 + 50}%)`;
-              ctx.fillRect(x, y, noiseSize, noiseSize);
-            }
-          }
-        }
-        ctx.restore();
-
-        // Emit particles
-        if (animationProgress < 0.1) {
-          const particlesToEmit = Math.min(
-            30,
-            MAX_EXPLOSION_PARTICLES - explosionParticlesCount
-          );
-          for (let i = 0; i < particlesToEmit; i++) {
-            const particle = getParticleFromPool(
-              width,
-              height,
-              true
-            ) as ParticleAtCollision;
-            particle.init(animationCenterX, animationCenterY, 0, () => {
-              explosionParticlesCount--;
-            });
-            particlesArray.push(particle);
-            explosionParticlesCount++;
-          }
-        }
-
-        // Affect nearby shapes
-        shapesArray.forEach((shape) => {
-          shape.rotationSpeed = {
-            x: intensity * 0.1,
-            y: intensity * 0.1,
-            z: intensity * 0.1,
-          };
-          const dx = animationCenterX - shape.position.x;
-          const dy = animationCenterY - shape.position.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const force = (intensity * 5) / (distance + 1);
-          shape.velocity.x += dx * force * 0.01;
-          shape.velocity.y += dy * force * 0.01;
-        });
-
-        // Apply glitch effects
-        if (Math.random() < intensity * 0.4) {
-          applyGlitchEffect(ctx, width, height, intensity * 0.7);
-          applyChromaticAberration(ctx, width, height, intensity * 15);
-        }
-
-        // Draw energy lines
-        ctx.save();
-        ctx.globalAlpha = intensity * 0.7;
-        ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
-        ctx.lineWidth = 1;
-        for (let i = 0; i < 20; i++) {
-          const angle = Math.random() * Math.PI * 2;
-          const length = Math.random() * maxRadius * 0.8;
-          const startX = animationCenterX + Math.cos(angle) * length * 0.2;
-          const startY = animationCenterY + Math.sin(angle) * length * 0.2;
-          const endX = animationCenterX + Math.cos(angle) * length;
-          const endY = animationCenterY + Math.sin(angle) * length;
-          ctx.beginPath();
-          ctx.moveTo(startX, startY);
-          ctx.lineTo(endX, endY);
-          ctx.stroke();
-        }
-        ctx.restore();
+        drawDatastreamEffect(
+          ctx,
+          animationCenterX,
+          animationCenterY,
+          intensity,
+          hue,
+          width,
+          height
+        );
       }
     }
 
@@ -571,6 +499,190 @@ export const initializeCyberScape = (
     }
 
     animationFrameId = requestAnimationFrame(animateCyberScape);
+  };
+
+  /**
+   * Draws the datastream effect.
+   * @param ctx - The 2D rendering context of the canvas.
+   * @param centerX - The x-coordinate of the effect center.
+   * @param centerY - The y-coordinate of the effect center.
+   * @param intensity - The intensity of the effect (0-1).
+   * @param hue - The base hue for the effect colors.
+   * @param width - The width of the canvas.
+   * @param height - The height of the canvas.
+   */
+  const drawDatastreamEffect = (
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    intensity: number,
+    hue: number,
+    width: number,
+    height: number
+  ) => {
+    // Draw expanding circles
+    drawExpandingCircles(ctx, centerX, centerY, intensity, hue, width, height);
+
+    // Draw noise effect
+    drawNoiseEffect(ctx, centerX, centerY, intensity, hue, width, height);
+
+    // Emit particles
+    emitDatastreamParticles(centerX, centerY, intensity);
+
+    // Affect nearby shapes
+    affectNearbyShapes(centerX, centerY, intensity);
+
+    // Apply glitch effects
+    applyGlitchEffects(ctx, intensity, width, height);
+
+    // Draw energy lines
+    drawEnergyLines(ctx, centerX, centerY, intensity, hue, width, height);
+  };
+
+  const drawExpandingCircles = (
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    intensity: number,
+    hue: number,
+    width: number,
+    height: number
+  ) => {
+    ctx.save();
+    ctx.globalAlpha = intensity * 0.5;
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.lineWidth = 2;
+    const maxRadius = Math.max(width, height) * 0.4;
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const radius = intensity * maxRadius * (1 - i * 0.2);
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    }
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  const drawNoiseEffect = (
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    intensity: number,
+    hue: number,
+    width: number,
+    height: number
+  ) => {
+    ctx.save();
+    ctx.globalAlpha = intensity * 0.2;
+    const noiseSize = 4;
+    const noiseRadius = Math.max(width, height) * 0.2;
+    for (
+      let x = centerX - noiseRadius;
+      x < centerX + noiseRadius;
+      x += noiseSize
+    ) {
+      for (
+        let y = centerY - noiseRadius;
+        y < centerY + noiseRadius;
+        y += noiseSize
+      ) {
+        if (
+          Math.random() < 0.5 &&
+          Math.hypot(x - centerX, y - centerY) <= noiseRadius
+        ) {
+          ctx.fillStyle = `hsl(${hue}, 100%, ${Math.random() * 50 + 50}%)`;
+          ctx.fillRect(x, y, noiseSize, noiseSize);
+        }
+      }
+    }
+    ctx.restore();
+  };
+
+  const emitDatastreamParticles = (
+    centerX: number,
+    centerY: number,
+    intensity: number
+  ) => {
+    if (animationProgress < 0.1) {
+      const particlesToEmit = Math.min(
+        10,
+        MAX_DATASTREAM_PARTICLES - explosionParticlesCount
+      );
+      for (let i = 0; i < particlesToEmit; i++) {
+        const particle = getParticleFromPool(
+          width,
+          height,
+          true
+        ) as ParticleAtCollision;
+        particle.init(centerX, centerY, 0, () => {
+          explosionParticlesCount--;
+        });
+        particle.lifespan = DATASTREAM_PARTICLE_LIFESPAN;
+        particle.setFadeOutDuration(DATASTREAM_FADE_OUT_DURATION);
+        particlesArray.push(particle);
+        explosionParticlesCount++;
+      }
+    }
+  };
+
+  const affectNearbyShapes = (
+    centerX: number,
+    centerY: number,
+    intensity: number
+  ) => {
+    shapesArray.forEach((shape) => {
+      shape.rotationSpeed = {
+        x: intensity * 0.1,
+        y: intensity * 0.1,
+        z: intensity * 0.1,
+      };
+      const dx = centerX - shape.position.x;
+      const dy = centerY - shape.position.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const force = (intensity * 5) / (distance + 1);
+      shape.velocity.x += dx * force * 0.01;
+      shape.velocity.y += dy * force * 0.01;
+    });
+  };
+
+  const applyGlitchEffects = (
+    ctx: CanvasRenderingContext2D,
+    intensity: number,
+    width: number,
+    height: number
+  ) => {
+    if (Math.random() < intensity * 0.4) {
+      applyGlitchEffect(ctx, width, height, intensity * 0.7);
+      applyChromaticAberration(ctx, width, height, intensity * 15);
+    }
+  };
+
+  const drawEnergyLines = (
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    intensity: number,
+    hue: number,
+    width: number,
+    height: number
+  ) => {
+    ctx.save();
+    ctx.globalAlpha = intensity * 0.7;
+    ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
+    ctx.lineWidth = 1;
+    const maxRadius = Math.max(width, height) * 0.4;
+    ctx.beginPath();
+    for (let i = 0; i < 20; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const length = Math.random() * maxRadius * 0.8;
+      const startX = centerX + Math.cos(angle) * length * 0.2;
+      const startY = centerY + Math.sin(angle) * length * 0.2;
+      const endX = centerX + Math.cos(angle) * length;
+      const endY = centerY + Math.sin(angle) * length;
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+    }
+    ctx.stroke();
+    ctx.restore();
   };
 
   animateCyberScape(0);
