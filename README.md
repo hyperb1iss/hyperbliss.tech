@@ -1,80 +1,81 @@
-# 🌟 Hyperbliss.tech 🌟
+# 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹
 
-Welcome to **Hyperbliss.tech**, the personal website of [Stefanie Jane](https://hyperbliss.tech)—developer, designer, and tech enthusiast. This website is built with **Next.js 13+** and **TypeScript**, leveraging the new App Router for enhanced performance and developer experience. It's designed to showcase projects, blog posts, and personal brand in a modern, feminine, and high-tech style.
+Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane—code sorceress, pixel enchantress, and digital oracle. 🔮👩‍💻⚡
 
-## 🛠️ Tech Stack
+## 🌌 Vision
 
-- **Framework**: [Next.js 13+](https://nextjs.org/) with TypeScript and App Router
-- **Styling**: [Styled Components](https://styled-components.com/) for dynamic, component-scoped styles
-- **Content Management**: Markdown files with frontmatter for blog posts and project descriptions
-- **Markdown Processing**: [gray-matter](https://github.com/jonschlinkert/gray-matter) for frontmatter parsing, [react-markdown](https://github.com/remarkjs/react-markdown) for rendering
-- **Animations**: [Framer Motion](https://www.framer.com/motion/) for smooth transitions and animations
-- **Icons**: [React Icons](https://react-icons.github.io/react-icons/) for social media and UI icons
-- **SEO**: [Next SEO](https://github.com/garmeeh/next-seo) for search engine optimization
-- **Analytics**: [Google Analytics](https://analytics.google.com/) integration using [nextjs-google-analytics](https://github.com/MauricioRobayo/nextjs-google-analytics)
-- **Deployment**: [Netlify](https://www.netlify.com/) for continuous deployment
+In the vast expanse of the internet, hyperbliss.tech stands as a beacon—a fusion of technology and creativity. This digital portfolio serves as a testament to the art of web development, a gallery of innovative projects, and a hub for nerds, ADHD catgirls, and magical creatures.
 
-## 🎨 Design Features
+Here, you'll find:
 
-- Modern, feminine, and high-tech aesthetic
-- Prominent purple color scheme with complementary neutral tones
-- Typography featuring Proxima Nova and other modern, tech-inspired fonts
-- Responsive design for optimal viewing on all devices
-- Interactive elements and smooth animations for engaging user experience
+- 🕸️ Intricately crafted code, weaving responsive designs that adapt to any device
+- 📜 Insightful blog posts, exploring the ever-evolving digital landscape
+- 🔧 Innovative projects that push the boundaries of web technology
+- 🌟 Interfaces that come alive with smooth, ethereal animations
+- 🔍 Optimized pathways ensuring discoverability across the web
+- 📊 Analytics to understand and enhance user experiences
 
-## 🚀 Key Features
+Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technology wizard. Her expertise spans the entire software stack, from crafting captivating user interfaces with front-end sorcery, to conjuring scalable infrastructure, and the arcane arts of embedded systems and operating systems. With an alchemical blend of technical prowess and artistic vision, she creates holistic software experiences that are as beautiful as they are powerful.
 
-- **Home Page**: Engaging introduction with animated elements
-- **About Page**: Personal bio and professional background
-- **Blog**: Articles on tech, design, and development
-- **Projects**: Showcase of personal and professional projects
-- **Contact**: Social media links for easy connection
+## ✨ Features
 
-## 📁 Project Structure
+- 🌙 Sleek, modern design with a touch of digital mystique
+- 📱 Responsive layout that morphs seamlessly across all devices
+- 🔮 Interactive elements that respond to user interaction
+- 📜 A blog that serves as a conduit for insights and knowledge
+- 🖼️ A showcase of various projects demonstrating expertise
+- 🔭 SEO optimization to enhance visibility and reach
+- 🕯️ Google Analytics integration for data-driven improvements
 
-The project follows a clean, modular structure:
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 13+ with TypeScript
+- **Styling**: Styled Components
+- **Routing**: Next.js App Router
+- **Content Management**: Markdown files with gray-matter and react-markdown
+- **Animations**: Framer Motion
+- **Icons**: React Icons
+- **SEO**: Next SEO
+- **Analytics**: Google Analytics (via nextjs-google-analytics)
+
+## 🏗️ Project Structure
 
 ```
-/
+src/
 ├── app/
+│   ├── (transition)/
+│   │   ├── about/
+│   │   ├── blog/
+│   │   ├── projects/
+│   │   └── resume/
 │   ├── components/
+│   ├── hooks/
 │   ├── lib/
 │   ├── styles/
-│   ├── about/
-│   ├── blog/
-│   ├── projects/
-│   └── page.tsx
-├── public/
-├── src/
-│   ├── posts/
-│   └── projects/
-└── package.json
+│   └── layout.tsx
+├── posts/
+└── projects/
 ```
-
-- `app/`: Contains the Next.js application code, components, and pages
-- `src/posts/`: Markdown files for blog posts
-- `src/projects/`: Markdown files for project descriptions
-- `public/`: Static assets like images and fonts
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (LTS version recommended)
-- npm or Yarn
+- Node.js (v14 or later)
+- npm or yarn
 
 ### Installation
 
 1. Clone the repository:
 
-   ```bash
+   ```
    git clone https://github.com/hyperb1iss/hyperbliss.tech.git
    cd hyperbliss.tech
    ```
 
 2. Install dependencies:
 
-   ```bash
+   ```
    npm install
    # or
    yarn install
@@ -82,7 +83,7 @@ The project follows a clean, modular structure:
 
 3. Run the development server:
 
-   ```bash
+   ```
    npm run dev
    # or
    yarn dev
@@ -90,58 +91,94 @@ The project follows a clean, modular structure:
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
+## 🎨 Styling
+
+The project uses Styled Components for styling, with global styles and variables defined in `src/app/styles/globals.css`. The color scheme focuses on purple hues with complementary colors:
+
+- Primary: `#a259ff`
+- Secondary: `#ff75d8`
+- Accent: `#00fff0`
+- Background: `#0a0a14`
+- Text: `#e0e0e0`
+
 ## 📝 Content Management
 
-### Adding New Content
+Blog posts and project descriptions are managed through Markdown files located in the `src/posts/` and `src/projects/` directories respectively. Each Markdown file includes frontmatter for metadata.
 
-1. **Blog Posts**:
+## 🔍 SEO and Analytics
 
-   - Create a new Markdown file in `src/posts/`
-   - Add frontmatter at the top of the file:
+SEO is managed through Next SEO, with configurations in `src/app/lib/next-seo.config.ts`. Google Analytics is integrated using `nextjs-google-analytics`.
 
-     ```markdown
-     ---
-     title: "Your Blog Post Title"
-     date: "YYYY-MM-DD"
-     excerpt: "A brief description of your post"
-     ---
+## 🌟 Key Components
 
-     Your blog post content here...
-     ```
+### Header (`Header.tsx`)
 
-2. **Projects**:
+Main navigation component with animated logo and responsive design.
 
-   - Create a new Markdown file in `src/projects/`
-   - Add frontmatter at the top of the file:
+### Footer (`Footer.tsx`)
 
-     ```markdown
-     ---
-     title: "Your Project Title"
-     description: "A brief description of your project"
-     github: "https://github.com/yourusername/project-repo"
-     ---
+Displays social media links and copyright information.
 
-     Your project details here...
-     ```
+### PageWrapper (`PageWrapper.tsx`)
 
-### Generating Content
+Handles page transitions and layout consistency.
 
-After adding or modifying content in `src/posts/` or `src/projects/`, run the build command to generate the static pages:
+### BlogList (`BlogList.tsx`) & BlogPost (`BlogPost.tsx`)
 
-```bash
-npm run build
-# or
-yarn build
-```
+Render blog content with a grid layout and individual post display.
 
-This process will create static pages for your new content, making it available on the website.
+### ProjectList (`ProjectList.tsx`) & ProjectDetail (`ProjectDetail.tsx`)
 
-## 🔧 Customization
+Display project information in a grid and detailed view respectively.
 
-- Modify `app/styles/globals.css` for global styles and CSS variables
-- Update components in `app/components/` for reusable UI elements
-- Adjust SEO settings in `app/lib/next-seo.config.ts`
+### MainContent (`MainContent.tsx`)
 
-## 🌐 Deployment
+Manages main content area and page transitions.
 
-The site is set up for continuous deployment with Netlify. Push to the `main` branch to trigger a new deployment. Ensure you run `npm run build` locally and commit the changes before pushing to ensure all new content is included in the deployment.
+### AboutPageContent (`AboutPageContent.tsx`)
+
+Renders the About page with profile information.
+
+### ResumePageContent (`ResumePageContent.tsx`)
+
+Displays resume information from Markdown content.
+
+## 🚀 Deployment
+
+The site is configured for deployment on Netlify:
+
+1. Connect your GitHub repository to Netlify.
+2. Set the build command to `npm run build` or `yarn build`.
+3. Set the publish directory to `out`.
+4. Configure environment variables as needed.
+
+Netlify will automatically deploy the site on push to the main branch.
+
+## 🧙‍♀️ Join The Coven
+
+Contributions, issues, and feature requests are welcome! Check out the [issues page](https://github.com/hyperb1iss/hyperbliss.tech/issues) to join the quest.
+
+## 📜 License
+
+This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+You are free to:
+
+- **Share** — Copy and redistribute the material in any medium or format
+- **Adapt** — Remix, transform, and build upon the material
+
+Under the following terms:
+
+- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+- **NonCommercial** — You may not use the material for commercial purposes.
+- **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+For the full text of this license, see the [complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+
+---
+
+<p align="center">
+  <img src="https://hyperbliss.tech/images/logo.png" alt="hyperbliss.tech logo" width="200">
+  <br>
+  <em>Woven with 💜 and ✨ by Stefanie Jane</em>
+</p>
