@@ -36,7 +36,7 @@ export const initializeCanvas = (
     { start: 270, end: 330 }, // Neon Purple to Bright Magenta
   ];
 
-  // Define a constant array of cyberpunk colors
+  // Define a constant array of cyberpunk colors (including darker blues and violets)
   const CYBERPUNK_COLORS = [
     "#00fff0", // Cyan
     "#ff00ff", // Magenta
@@ -44,7 +44,11 @@ export const initializeCanvas = (
     "#ff75d8", // Pink
     "#00ffff", // Electric Blue
     "#ff3131", // Neon Red
-    "#39ff14", // Neon Green
+    "#ffff00", // Yellow
+    "#0000ff", // Dark Blue
+    "#4b0082", // Indigo
+    "#8a2be2", // Blue Violet
+    "#483d8b", // Dark Slate Blue
   ];
 
   // Define a constant color for particle connections
@@ -292,6 +296,11 @@ export const initializeCanvas = (
     colorTransitionSpeed: number;
     maxSpeed: number;
     minSpeed: number;
+    lifespan: number;
+    age: number;
+    fadeOutDuration: number;
+    isFadingOut: boolean;
+    opacity: number;
 
     constructor(
       shapeType: "cube" | "pyramid" | "star",
@@ -414,6 +423,15 @@ export const initializeCanvas = (
       this.color = this.getRandomCyberpunkColor();
       this.targetColor = this.getRandomCyberpunkColor();
       this.colorTransitionSpeed = 0.01;
+
+      // Initialize lifecycle properties
+      this.lifespan = Math.random() * 15000 + 10000; // Random lifespan between 10-25 seconds
+      this.age = 0;
+      this.fadeOutDuration = 3000; // 3 seconds fade out
+      this.isFadingOut = false;
+      this.opacity = 0; // Start fully transparent
+
+      this.reset(existingPositions);
     }
 
     /**
@@ -520,6 +538,28 @@ export const initializeCanvas = (
           }
         }
       }
+
+      // Update lifecycle
+      this.age += 16; // Assuming 60 FPS, each frame is about 16ms
+
+      if (this.age >= this.lifespan && !this.isFadingOut) {
+        this.isFadingOut = true;
+      }
+
+      if (this.isFadingOut) {
+        this.opacity = Math.max(
+          0,
+          1 - (this.age - this.lifespan) / this.fadeOutDuration
+        );
+      } else {
+        // Fade in effect
+        this.opacity = Math.min(1, this.age / 1000); // Fade in over 1 second
+      }
+
+      // If the shape has completely faded out, reset it
+      if (this.opacity <= 0 && this.isFadingOut) {
+        this.reset();
+      }
     }
 
     private hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -578,49 +618,95 @@ export const initializeCanvas = (
      * @param ctx - Canvas rendering context.
      */
     draw(ctx: CanvasRenderingContext2D) {
-      const drawShape = () => {
-        ctx.beginPath();
-        this.edges.forEach(([start, end]) => {
-          const v1 = this.vertices[start];
-          const v2 = this.vertices[end];
+      // Only draw if the shape has some opacity
+      if (this.opacity > 0) {
+        const rgbColor = this.hexToRgb(this.color);
+        if (rgbColor) {
+          const { r, g, b } = rgbColor;
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+          ctx.lineWidth = 2; // Increased line width for better visibility
 
-          // Apply rotation to vertices
-          const rotatedV1 = this.rotateVertex(v1, this.rotation);
-          const rotatedV2 = this.rotateVertex(v2, this.rotation);
+          // Apply dynamic glow based on opacity
+          const glowIntensity = this.opacity * 10; // Reduced glow intensity
+          ctx.shadowBlur = glowIntensity;
+          ctx.shadowColor = this.color;
 
-          // Apply position offset and projection
-          const projectedV1 = project(
-            rotatedV1.x + this.position.x,
-            rotatedV1.y + this.position.y,
-            rotatedV1.z + this.position.z
-          );
-          const projectedV2 = project(
-            rotatedV2.x + this.position.x,
-            rotatedV2.y + this.position.y,
-            rotatedV2.z + this.position.z
-          );
+          // Draw the shape
+          ctx.beginPath();
+          this.edges.forEach(([start, end]) => {
+            const v1 = this.rotateVertex(this.vertices[start], this.rotation);
+            const v2 = this.rotateVertex(this.vertices[end], this.rotation);
+            const projectedV1 = project(
+              v1.x + this.position.x,
+              v1.y + this.position.y,
+              v1.z + this.position.z
+            );
+            const projectedV2 = project(
+              v2.x + this.position.x,
+              v2.y + this.position.y,
+              v2.z + this.position.z
+            );
+            ctx.moveTo(projectedV1.x, projectedV1.y);
+            ctx.lineTo(projectedV2.x, projectedV2.y);
+          });
+          ctx.stroke();
 
-          ctx.moveTo(projectedV1.x, projectedV1.y);
-          ctx.lineTo(projectedV2.x, projectedV2.y);
-        });
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = 1;
+          // Reset shadow properties
+          ctx.shadowBlur = 0;
+          ctx.shadowColor = "transparent";
+        }
+      }
+    }
 
-        // Calculate dynamic shadow based on rotation speed
-        const rotationSpeedMagnitude =
-          Math.abs(this.rotationSpeed.x) +
-          Math.abs(this.rotationSpeed.y) +
-          Math.abs(this.rotationSpeed.z);
-        const dynamicShadowBlur = 10 + rotationSpeedMagnitude * 100;
-        ctx.shadowBlur = dynamicShadowBlur;
-        ctx.shadowColor = this.color; // Ensure glow matches object color
+    reset(existingPositions?: Set<string>) {
+      // Reset position
+      do {
+        this.position = {
+          x: Math.random() * width - width / 2,
+          y: Math.random() * height - height / 2,
+          z: Math.random() * 600 - 300,
+        };
+      } while (
+        existingPositions &&
+        existingPositions.has(this.getPositionKey())
+      );
 
-        ctx.stroke();
-        ctx.shadowBlur = 0;
+      // Reset lifecycle
+      this.age = 0;
+      this.lifespan = Math.random() * 15000 + 10000; // Random lifespan between 10-25 seconds
+      this.isFadingOut = false;
+      this.opacity = 0; // Start fully transparent
+
+      // Reset color
+      this.color = this.getRandomCyberpunkColor();
+      this.targetColor = this.getRandomCyberpunkColor();
+
+      // Reset velocity
+      const angleXY = Math.random() * Math.PI * 2;
+      const angleZ = Math.random() * Math.PI * 2;
+      const speedXY =
+        Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+      const speedZ =
+        Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+      this.velocity = {
+        x: Math.cos(angleXY) * speedXY,
+        y: Math.sin(angleXY) * speedXY,
+        z: Math.cos(angleZ) * speedZ,
       };
 
-      // Draw original shape
-      drawShape();
+      // Reset rotation
+      this.rotation = { x: 0, y: 0, z: 0 };
+      this.rotationSpeed = {
+        x: (Math.random() - 0.5) * 0.01,
+        y: (Math.random() - 0.5) * 0.01,
+        z: (Math.random() - 0.5) * 0.01,
+      };
+    }
+
+    getPositionKey(): string {
+      return `${this.position.x.toFixed(2)},${this.position.y.toFixed(
+        2
+      )},${this.position.z.toFixed(2)}`;
     }
   }
 
@@ -650,7 +736,7 @@ export const initializeCanvas = (
       numberOfParticles = Math.floor(numberOfParticles * 1.2); // Reduced from 1.5
     }
 
-    numberOfShapes = isMobile ? 4 : 8;
+    numberOfShapes = isMobile ? 4 : 8; // Updated shape count for mobile and desktop
 
     const existingPositions = new Set<string>();
 
@@ -727,8 +813,11 @@ export const initializeCanvas = (
    * The main animation loop that updates and draws particles and shapes.
    */
   const animate = () => {
+    // Clear the entire canvas
+    ctx.clearRect(0, 0, width, height);
+
     // Draw a semi-transparent rectangle to create trails
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; // Adjust alpha for trail length
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, width, height);
 
     // Update global hue
@@ -741,9 +830,22 @@ export const initializeCanvas = (
     });
 
     // Update and draw shapes
+    const existingPositions = new Set<string>();
     shapesArray.forEach((shape) => {
       shape.update();
-      shape.draw(ctx);
+
+      if (shape.opacity > 0) {
+        existingPositions.add(shape.getPositionKey());
+        shape.draw(ctx);
+      }
+
+      // If a shape has reset, ensure it doesn't overlap with existing shapes
+      if (shape.age === 0) {
+        while (existingPositions.has(shape.getPositionKey())) {
+          shape.reset(existingPositions);
+        }
+        existingPositions.add(shape.getPositionKey());
+      }
     });
 
     // Connect particles with lines

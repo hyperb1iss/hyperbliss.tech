@@ -196,12 +196,11 @@ const MobileMenuIcon = styled.div<{ open: boolean }>`
   cursor: pointer;
   z-index: 1100;
   transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
-  transform: ${(props) => (props.open ? "rotate(180deg)" : "rotate(0deg)")};
+  transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(0deg)'};
 
   &:hover {
     color: var(--color-secondary);
-    text-shadow: 0 0 10px var(--color-secondary),
-      0 0 20px var(--color-secondary);
+    text-shadow: 0 0 10px var(--color-secondary), 0 0 20px var(--color-secondary);
   }
 
   @media (max-width: 768px) {
