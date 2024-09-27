@@ -259,13 +259,7 @@ export class ParticleAtCollision extends Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  update(
-    isCursorOverCyberScape: boolean,
-    mouseX: number,
-    mouseY: number,
-    width: number,
-    height: number
-  ) {
+  update() {
     // Update position
     this.x += this.velocityX;
     this.y += this.velocityY;
