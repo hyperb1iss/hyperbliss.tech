@@ -9,6 +9,7 @@ import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { NAV_ITEMS } from "../lib/navigation";
 import { initializeCanvas } from "../lib/headerEffects";
+import { motion } from "framer-motion";
 
 // Define the keyframes for the gradient animation
 const animateGradient = keyframes`
@@ -189,23 +190,25 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
 // `;
 
 // Update the MobileMenuIcon styled component
-const MobileMenuIcon = styled.div<{ open: boolean }>`
+const MobileMenuIcon = styled(motion.div)`
   display: none;
-  font-size: 2.4rem;
-  color: var(--color-accent);
+  width: 24px; // Reduced from 30px
+  height: 24px; // Reduced from 30px
   cursor: pointer;
   z-index: 1100;
-  transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease;
-  transform: ${props => props.open ? 'rotate(180deg)' : 'rotate(0deg)'};
-
-  &:hover {
-    color: var(--color-secondary);
-    text-shadow: 0 0 10px var(--color-secondary), 0 0 20px var(--color-secondary);
-  }
 
   @media (max-width: 768px) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
   }
+`;
+
+const MenuLine = styled(motion.span)`
+  width: 100%;
+  height: 2px; // Reduced from 3px for a slightly thinner line
+  background-color: var(--color-accent);
+  border-radius: 4px; // Slightly reduced from 5px
 `;
 
 // Update the MobileNavLinks styled component
@@ -307,6 +310,21 @@ const Header: React.FC = () => {
     };
   }, [handleClickOutside]);
 
+  const topLineVariants = {
+    closed: { rotate: 0, translateY: 0 },
+    open: { rotate: 45, translateY: 10 }
+  };
+
+  const middleLineVariants = {
+    closed: { opacity: 1 },
+    open: { opacity: 0 }
+  };
+
+  const bottomLineVariants = {
+    closed: { rotate: 0, translateY: 0 },
+    open: { rotate: -45, translateY: -10 }
+  };
+
   return (
     <Nav ref={navRef}>
       <Canvas ref={canvasRef} />
@@ -329,11 +347,24 @@ const Header: React.FC = () => {
           ))}
         </NavLinks>
         <MobileMenuIcon 
-          open={menuOpen} 
           onClick={() => setMenuOpen(!menuOpen)}
           className="mobile-menu-icon"
         >
-          ☰
+          <MenuLine
+            variants={topLineVariants}
+            animate={menuOpen ? "open" : "closed"}
+            transition={{ duration: 0.3 }}
+          />
+          <MenuLine
+            variants={middleLineVariants}
+            animate={menuOpen ? "open" : "closed"}
+            transition={{ duration: 0.3 }}
+          />
+          <MenuLine
+            variants={bottomLineVariants}
+            animate={menuOpen ? "open" : "closed"}
+            transition={{ duration: 0.3 }}
+          />
         </MobileMenuIcon>
       </NavContent>
       <MobileNavLinks open={menuOpen} ref={mobileMenuRef}>
