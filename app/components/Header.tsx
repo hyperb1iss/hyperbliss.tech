@@ -180,10 +180,33 @@ const LogoText = styled.span`
   }
 `;
 
+// Add these new keyframes for the sparkle and shimmer effect
+const sparkle = keyframes`
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(0.95); }
+`;
+
+const shimmer = keyframes`
+  0% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
+  25% { text-shadow: 1px -1px 2px rgba(255,255,255,0.3), -1px 1px 2px rgba(255,255,255,0.3); }
+  50% { text-shadow: 1px 1px 2px rgba(255,255,255,0.3), -1px -1px 2px rgba(255,255,255,0.3); }
+  75% { text-shadow: -1px 1px 2px rgba(255,255,255,0.3), 1px -1px 2px rgba(255,255,255,0.3); }
+  100% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
+`;
+
+// Update the LogoEmojis styled component
 const LogoEmojis = styled.span`
   font-size: 2.4rem;
   margin: 0 0.5rem;
   flex-shrink: 0;
+  animation: ${sparkle} 3s ease-in-out infinite, ${shimmer} 5s linear infinite;
+  display: inline-block;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    animation: ${shimmer} 2s linear infinite;
+  }
 
   @media (max-width: 768px) {
     font-size: 2.4rem;
