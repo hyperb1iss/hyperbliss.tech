@@ -529,4 +529,12 @@ export class ParticleAtCollision extends Particle {
   public setFadeOutDuration(duration: number): void {
     this.fadeOutDuration = duration;
   }
+
+  /**
+   * Overrides the interactWithShapes method to prevent explosion particles
+   * from interacting with shapes or other particles, ensuring they explode outward.
+   */
+  protected interactWithShapes(_shapes: VectorShape[]) { // eslint-disable-line @typescript-eslint/no-unused-vars
+    // No interaction to keep explosion particles moving outward independently
+  }
 }

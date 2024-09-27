@@ -214,6 +214,10 @@ export const initializeCyberScape = (
 
   adjustShapeCounts();
 
+  /**
+   * Connects particles by drawing lines between those that are within a certain distance.
+   * Explosion particles (`ParticleAtCollision`) are excluded to prevent blob formations.
+   */
   const connectParticles = (
     particles: Particle[],
     ctx: CanvasRenderingContext2D
@@ -222,6 +226,14 @@ export const initializeCyberScape = (
 
     for (let a = 0; a < particles.length; a++) {
       for (let b = a + 1; b < particles.length; b++) {
+        // Skip connection if either particle is a ParticleAtCollision to avoid blob formation
+        if (
+          particles[a] instanceof ParticleAtCollision ||
+          particles[b] instanceof ParticleAtCollision
+        ) {
+          continue;
+        }
+
         const dx = particles[a].x - particles[b].x;
         const dy = particles[a].y - particles[b].y;
         const dz = particles[a].z - particles[b].z;
@@ -619,10 +631,7 @@ export const initializeCyberScape = (
     ctx.restore();
   };
 
-  const emitDatastreamParticles = (
-    centerX: number,
-    centerY: number,
-  ) => {
+  const emitDatastreamParticles = (centerX: number, centerY: number) => {
     if (animationProgress < 0.1) {
       const particlesToEmit = Math.min(
         10,
