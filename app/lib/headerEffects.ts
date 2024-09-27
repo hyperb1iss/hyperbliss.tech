@@ -13,6 +13,10 @@ import {
 
 /**
  * Initializes the canvas and sets up the header animation effects.
+ * This function is responsible for creating and managing the entire animation
+ * system, including particle and shape generation, user interaction handling,
+ * and applying visual effects.
+ *
  * @param canvas - The HTML canvas element to draw on.
  * @param logoElement - The logo element for potential interactions.
  * @param navElement - The navigation element for mouse interaction detection.
@@ -31,6 +35,7 @@ export const initializeCanvas = (
   canvas.width = width;
   canvas.height = height;
 
+  // Animation frame ID for cancellation
   let animationFrameId: number;
 
   // Variables for cursor interaction
@@ -43,6 +48,7 @@ export const initializeCanvas = (
 
   /**
    * Updates global hue to cycle through cyberpunk colors smoothly.
+   * This function ensures that the color scheme remains within the defined cyberpunk ranges.
    */
   const updateHue = () => {
     hue = (hue + 0.2) % 360; // Slower hue shift for reduced breathing effect
@@ -57,7 +63,11 @@ export const initializeCanvas = (
     }
   };
 
-  // Handle window resize to keep canvas dimensions updated
+  /**
+   * Handles window resize events to keep canvas dimensions updated.
+   * This function ensures that the canvas size matches the container and
+   * adjusts the number of particles and shapes accordingly.
+   */
   const handleResize = () => {
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
@@ -69,12 +79,18 @@ export const initializeCanvas = (
   };
   window.addEventListener("resize", handleResize);
 
-  // Pointer enter handler to detect when cursor enters the header
+  /**
+   * Handles pointer enter events for the header.
+   * Sets a flag to indicate that the cursor is over the header area.
+   */
   const handlePointerEnter = () => {
     isCursorOverHeader = true;
   };
 
-  // Pointer leave handler to detect when cursor exits the header
+  /**
+   * Handles pointer leave events for the header.
+   * Resets the flag to indicate that the cursor has left the header area.
+   */
   const handlePointerLeave = () => {
     isCursorOverHeader = false;
   };
@@ -83,7 +99,31 @@ export const initializeCanvas = (
   navElement.addEventListener("pointerenter", handlePointerEnter);
   navElement.addEventListener("pointerleave", handlePointerLeave);
 
-  // Mouse move handler to track cursor position when over the header
+  /**
+   * Throttles a function to limit how often it can be called.
+   * This is useful for performance optimization, especially for frequently triggered events.
+   *
+   * @param func - The function to throttle.
+   * @param limit - The time limit (in milliseconds) between function calls.
+   * @returns A throttled version of the input function.
+   */
+  const throttle = (func: Function, limit: number) => {
+    let inThrottle: boolean;
+    return (...args: any[]) => {
+      if (!inThrottle) {
+        func(...args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
+  };
+
+  /**
+   * Handles mouse move events to track cursor position when over the header.
+   * This function updates the mouseX and mouseY variables used for particle interactions.
+   *
+   * @param event - The MouseEvent object containing cursor position information.
+   */
   const handleMouseMove = (event: MouseEvent) => {
     if (!isCursorOverHeader) return;
     const rect = canvas.getBoundingClientRect();
@@ -91,7 +131,8 @@ export const initializeCanvas = (
     mouseX = event.clientX - rect.left - width / 2;
     mouseY = event.clientY - rect.top - height / 2;
   };
-  window.addEventListener("mousemove", handleMouseMove);
+  const throttledHandleMouseMove = throttle(handleMouseMove, 16); // Throttle to about 60fps
+  window.addEventListener("mousemove", throttledHandleMouseMove);
 
   // Initialize particles and shapes
   const particlesArray: Particle[] = [];
@@ -101,20 +142,19 @@ export const initializeCanvas = (
 
   /**
    * Adjusts the number of particles and shapes based on the current screen size.
-   * Reduces the number on smaller screens to prevent clutter.
+   * This function ensures optimal performance by scaling the number of elements
+   * according to the canvas dimensions and device capabilities.
    */
   const adjustShapeCounts = () => {
-    const isMobile = width <= 768; // Define mobile threshold
-    const baseParticleCount = 70; // Reduced from 100
+    const isMobile = width <= 768;
+    const baseParticleCount = 70;
     const particlesPerPixel = 1 / 2000;
 
-    // Calculate the number of particles based on screen size
     numberOfParticles = Math.max(
       baseParticleCount,
       Math.floor(width * height * particlesPerPixel)
     );
 
-    // Slightly increase the number of particles for mobile devices
     if (isMobile) {
       numberOfParticles = Math.floor(numberOfParticles * 1.2);
     }
@@ -124,32 +164,47 @@ export const initializeCanvas = (
     const existingPositions = new Set<string>();
 
     // Adjust particles
-    if (particlesArray.length < numberOfParticles) {
-      const additionalParticles = numberOfParticles - particlesArray.length;
-      for (let i = 0; i < additionalParticles; i++) {
-        particlesArray.push(new Particle(existingPositions, width, height));
-      }
-    } else if (particlesArray.length > numberOfParticles) {
-      particlesArray.splice(numberOfParticles);
+    while (particlesArray.length < numberOfParticles) {
+      particlesArray.push(new Particle(existingPositions, width, height));
     }
+    particlesArray.length = numberOfParticles;
 
     // Adjust shapes
-    if (shapesArray.length < numberOfShapes) {
-      const shapeTypes: ("cube" | "pyramid" | "star")[] = [
-        "cube",
-        "pyramid",
-        "star",
-      ];
-      const additionalShapes = numberOfShapes - shapesArray.length;
-      for (let i = 0; i < additionalShapes; i++) {
-        const shapeType = shapeTypes[i % shapeTypes.length];
-        shapesArray.push(
-          new VectorShape(shapeType, existingPositions, width, height)
-        );
-      }
-    } else if (shapesArray.length > numberOfShapes) {
-      shapesArray.splice(numberOfShapes);
+    while (shapesArray.length < numberOfShapes) {
+      const shapeType = ["cube", "pyramid", "star"][shapesArray.length % 3] as
+        | "cube"
+        | "pyramid"
+        | "star";
+      shapesArray.push(
+        new VectorShape(shapeType, existingPositions, width, height)
+      );
     }
+    shapesArray.length = numberOfShapes;
+  };
+
+  // Object pools for efficient particle and shape management
+  const particlePool: Particle[] = [];
+  const shapePool: VectorShape[] = [];
+
+  /**
+   * Retrieves a Particle object from the pool or creates a new one if the pool is empty.
+   * This function helps in reducing garbage collection and improving performance.
+   *
+   * @returns A Particle object ready for use.
+   */
+  const getParticleFromPool = () => {
+    return particlePool.pop() || new Particle(new Set(), width, height);
+  };
+
+  /**
+   * Retrieves a VectorShape object from the pool or creates a new one if the pool is empty.
+   * This function helps in reducing garbage collection and improving performance.
+   *
+   * @param type - The type of shape to retrieve or create.
+   * @returns A VectorShape object ready for use.
+   */
+  const getShapeFromPool = (type: "cube" | "pyramid" | "star") => {
+    return shapePool.pop() || new VectorShape(type, new Set(), width, height);
   };
 
   // Initial adjustment based on current size
@@ -157,6 +212,9 @@ export const initializeCanvas = (
 
   /**
    * Connects nearby particles with lines to create a network effect.
+   * This function is responsible for drawing the interconnecting lines between particles,
+   * creating a dynamic, web-like visual effect.
+   *
    * @param particles - Array of particles to connect.
    * @param ctx - Canvas rendering context.
    */
@@ -206,7 +264,12 @@ export const initializeCanvas = (
     }
   };
 
-  // Add a new function to update particle connections
+  /**
+   * Updates particle connections by slightly changing their velocities.
+   * This function adds a subtle, organic movement to the particle system.
+   *
+   * @param particles - Array of particles to update.
+   */
   const updateParticleConnections = (particles: Particle[]) => {
     particles.forEach((particle) => {
       // Randomly change particle velocity slightly
@@ -229,53 +292,42 @@ export const initializeCanvas = (
     });
   };
 
-  // Initialize glitch effect variables outside the animation loop
+  // Initialize glitch effect variables
   let isGlitching = false;
   let lastGlitchTime = 0;
   let glitchIntensity = 0;
-  let glitchInterval = 5000; // Increased to 5 seconds between glitch effects
-  let glitchDuration = 200; // Kept at 0.2 seconds duration for each glitch effect
+  let glitchInterval = 5000; // 5 seconds between glitch effects
+  let glitchDuration = 200; // 0.2 seconds duration for each glitch effect
 
   /**
    * The main animation loop that updates and draws particles and shapes.
+   * This function is called recursively to create a smooth animation.
    */
   const animate = () => {
-    // Clear the entire canvas
     ctx.clearRect(0, 0, width, height);
-
-    // Draw a semi-transparent rectangle to create trails
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, width, height);
 
-    // Update global hue
     updateHue();
-
-    // Update particle connections
     updateParticleConnections(particlesArray);
 
-    // Update and draw particles
-    particlesArray.forEach((particle) => {
+    for (let particle of particlesArray) {
       particle.update(isCursorOverHeader, mouseX, mouseY, width, height);
       particle.draw(ctx, mouseX, mouseY, width, height);
-    });
+    }
 
-    // Update and draw shapes
     const existingPositions = new Set<string>();
-    shapesArray.forEach((shape) => {
+    for (let shape of shapesArray) {
       shape.update(isCursorOverHeader, mouseX, mouseY, width, height);
-
       if (shape.opacity > 0) {
         existingPositions.add(shape.getPositionKey());
         shape.draw(ctx, width, height);
       }
-
-      // If a shape has completely faded out, reset it
       if (shape.opacity <= 0 && shape.isFadingOut) {
         shape.reset(existingPositions, width, height);
       }
-    });
+    }
 
-    // Connect particles with lines
     connectParticles(particlesArray, ctx);
 
     // Apply glitch effects
@@ -312,12 +364,13 @@ export const initializeCanvas = (
 
   /**
    * Cleanup function to remove event listeners and cancel animations.
+   * This function should be called when the component unmounts or the effect needs to be cleaned up.
    */
   const cleanup = () => {
     window.removeEventListener("resize", handleResize);
     navElement.removeEventListener("pointerenter", handlePointerEnter);
     navElement.removeEventListener("pointerleave", handlePointerLeave);
-    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mousemove", throttledHandleMouseMove);
     cancelAnimationFrame(animationFrameId);
   };
 

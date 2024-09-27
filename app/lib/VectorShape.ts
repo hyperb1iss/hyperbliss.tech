@@ -29,6 +29,16 @@ export class VectorShape {
   opacity: number;
   glowIntensity: number;
 
+  // Reusable objects for calculations
+  private tempVector: { x: number; y: number; z: number };
+
+  /**
+   * Creates a new VectorShape instance.
+   * @param shapeType - The type of shape to create ("cube", "pyramid", or "star").
+   * @param existingPositions - Set of existing position keys to avoid overlap.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
   constructor(
     shapeType: "cube" | "pyramid" | "star",
     existingPositions: Set<string>,
@@ -89,14 +99,18 @@ export class VectorShape {
         const outerRadius = size;
         const innerRadius = size / 2;
         for (let i = 0; i < 5; i++) {
-          const outerX = Math.cos(angle + (i * 2 * Math.PI) / 5) * outerRadius;
-          const outerY = Math.sin(angle + (i * 2 * Math.PI) / 5) * outerRadius;
-          this.vertices.push({ x: outerX, y: outerY, z: 0 });
-          const innerX =
-            Math.cos(angle + ((i * 2 + 1) * Math.PI) / 5) * innerRadius;
-          const innerY =
-            Math.sin(angle + ((i * 2 + 1) * Math.PI) / 5) * innerRadius;
-          this.vertices.push({ x: innerX, y: innerY, z: 0 });
+          const outerAngle = angle + (i * 2 * Math.PI) / 5;
+          const innerAngle = angle + ((i * 2 + 1) * Math.PI) / 5;
+          this.vertices.push({
+            x: Math.cos(outerAngle) * outerRadius,
+            y: Math.sin(outerAngle) * outerRadius,
+            z: 0,
+          });
+          this.vertices.push({
+            x: Math.cos(innerAngle) * innerRadius,
+            y: Math.sin(innerAngle) * innerRadius,
+            z: 0,
+          });
         }
         this.edges = [];
         for (let i = 0; i < 10; i++) {
@@ -114,12 +128,10 @@ export class VectorShape {
         x: Math.random() * width - width / 2,
         y:
           (Math.random() * height - height / 2) *
-          (Math.random() < 0.5 ? 1 : -1), // Ensure non-mirrored randomness
+          (Math.random() < 0.5 ? 1 : -1),
         z: Math.random() * 600 - 300,
       };
-      positionKey = `${this.position.x.toFixed(2)},${this.position.y.toFixed(
-        2
-      )},${this.position.z.toFixed(2)}`;
+      positionKey = this.getPositionKey();
     } while (existingPositions.has(positionKey));
     existingPositions.add(positionKey);
 
@@ -161,7 +173,8 @@ export class VectorShape {
     // Initialize glow intensity
     this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
 
-    this.reset(existingPositions, width, height);
+    // Initialize reusable objects
+    this.tempVector = { x: 0, y: 0, z: 0 };
   }
 
   /**
@@ -177,6 +190,11 @@ export class VectorShape {
   /**
    * Updates the shape's position, rotation, and color based on current state and interactions.
    * This method is called every frame to animate the shape.
+   * @param isCursorOverHeader - Boolean indicating if the cursor is over the header area.
+   * @param mouseX - X coordinate of the mouse cursor.
+   * @param mouseY - Y coordinate of the mouse cursor.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
    */
   update(
     isCursorOverHeader: boolean,
@@ -186,14 +204,14 @@ export class VectorShape {
     height: number
   ) {
     if (isCursorOverHeader) {
-      const dx = mouseX - this.position.x;
-      const dy = mouseY - this.position.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+      this.tempVector.x = mouseX - this.position.x;
+      this.tempVector.y = mouseY - this.position.y;
+      const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
 
       if (distance > 0 && distance < 300) {
         const force = ((300 - distance) / 300) * 0.01;
-        this.velocity.x += (dx / distance) * force;
-        this.velocity.y += (dy / distance) * force;
+        this.velocity.x += (this.tempVector.x / distance) * force;
+        this.velocity.y += (this.tempVector.y / distance) * force;
       }
     }
 
@@ -221,9 +239,7 @@ export class VectorShape {
     this.position.z = ((this.position.z + 300) % 600) - 300;
 
     // Ensure minimum speed
-    const speed = Math.sqrt(
-      this.velocity.x ** 2 + this.velocity.y ** 2 + this.velocity.z ** 2
-    );
+    const speed = Math.hypot(this.velocity.x, this.velocity.y, this.velocity.z);
     if (speed < this.minSpeed) {
       const scale = this.minSpeed / speed;
       this.velocity.x *= scale;
@@ -291,16 +307,13 @@ export class VectorShape {
       // Fade in effect
       this.opacity = Math.min(1, this.age / 1000); // Fade in over 1 second
     }
-
-    // If the shape has completely faded out, reset it
-    if (this.opacity <= 0 && this.isFadingOut) {
-      this.reset();
-    }
   }
 
   /**
-   * Draws the vector shape on the canvas with dynamic glow effect and symmetry.
+   * Draws the vector shape on the canvas with dynamic glow effect.
    * @param ctx - Canvas rendering context.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
    */
   draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
     // Only draw if the shape has some opacity
@@ -347,12 +360,13 @@ export class VectorShape {
     }
   }
 
-  reset(existingPositions?: Set<string>, width?: number, height?: number) {
-    if (!width || !height) {
-      console.error("Width or height not provided for VectorShape reset");
-      return;
-    }
-
+  /**
+   * Resets the shape's properties for reuse.
+   * @param existingPositions - Set of existing position keys to avoid overlap.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
+  reset(existingPositions: Set<string>, width: number, height: number) {
     // Reset position
     do {
       this.position = {
@@ -360,7 +374,7 @@ export class VectorShape {
         y: Math.random() * height - height / 2,
         z: Math.random() * 600 - 300,
       };
-    } while (existingPositions && existingPositions.has(this.getPositionKey()));
+    } while (existingPositions.has(this.getPositionKey()));
 
     // Reset lifecycle
     this.age = 0;
@@ -397,9 +411,43 @@ export class VectorShape {
     this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
   }
 
+  /**
+   * Generates a unique position key for the shape.
+   * @returns A string representing the shape's position.
+   */
   getPositionKey(): string {
     return `${this.position.x.toFixed(2)},${this.position.y.toFixed(
       2
     )},${this.position.z.toFixed(2)}`;
+  }
+
+  /**
+   * Calculates the distance between this shape and a point.
+   * @param x - X coordinate of the point.
+   * @param y - Y coordinate of the point.
+   * @returns The distance between the shape and the point.
+   */
+  distanceTo(x: number, y: number): number {
+    return Math.hypot(this.position.x - x, this.position.y - y);
+  }
+
+  /**
+   * Applies a force to the shape, changing its velocity.
+   * @param forceX - X component of the force.
+   * @param forceY - Y component of the force.
+   * @param forceZ - Z component of the force.
+   */
+  applyForce(forceX: number, forceY: number, forceZ: number): void {
+    this.velocity.x += forceX;
+    this.velocity.y += forceY;
+    this.velocity.z += forceZ;
+  }
+
+  /**
+   * Checks if the shape is completely faded out.
+   * @returns True if the shape is faded out, false otherwise.
+   */
+  isFadedOut(): boolean {
+    return this.isFadingOut && this.opacity <= 0;
   }
 }
