@@ -260,10 +260,12 @@ export class Particle {
 
 /**
  * ParticleAtCollision class representing particles emitted upon collisions.
- * Extends the base Particle class with specific initialization.
+ * Extends the base Particle class with specific initialization and behavior for explosion effects.
  */
 export class ParticleAtCollision extends Particle {
   private onExpire: () => void;
+  private fadeOutDuration: number;
+  private sparkleIntensity: number;
 
   /**
    * Creates a new ParticleAtCollision instance.
@@ -275,6 +277,8 @@ export class ParticleAtCollision extends Particle {
   constructor(x: number, y: number, z: number, onExpire: () => void) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
     this.onExpire = onExpire;
+    this.fadeOutDuration = 2000; // 2 seconds fade out
+    this.sparkleIntensity = Math.random();
     this.init(x, y, z, onExpire);
   }
 
@@ -289,20 +293,22 @@ export class ParticleAtCollision extends Particle {
     this.x = x;
     this.y = y;
     this.z = z;
+    // Increase initial velocity for wider spread
     this.velocityX = (Math.random() - 0.5) * 4;
     this.velocityY = (Math.random() - 0.5) * 4;
     this.velocityZ = (Math.random() - 0.5) * 4;
-    this.size = Math.random() * 3 + 2;
+    this.size = Math.random() * 2 + 1;
     this.color = "#FF00FF";
-    this.lifespan = 1500;
+    this.lifespan = 3000; // 3 seconds total lifespan
     this.age = 0;
     this.opacity = 1;
     this.onExpire = onExpire;
+    this.sparkleIntensity = Math.random();
   }
 
   /**
-   * Overrides the update method to handle particle-specific behavior.
-   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the header area.
+   * Updates the particle's state, including position, velocity, and visual properties.
+   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the CyberScape area.
    * @param mouseX - X coordinate of the mouse cursor.
    * @param mouseY - Y coordinate of the mouse cursor.
    * @param width - Width of the canvas.
@@ -316,14 +322,31 @@ export class ParticleAtCollision extends Particle {
     height: number
   ) {
     super.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+
+    // Slow down the particle over time
+    this.velocityX *= 0.98;
+    this.velocityY *= 0.98;
+    this.velocityZ *= 0.98;
+
+    // Update opacity for smooth fade out
+    if (this.age > this.lifespan - this.fadeOutDuration) {
+      this.opacity = Math.max(
+        0,
+        (this.lifespan - this.age) / this.fadeOutDuration
+      );
+    }
+
+    // Update sparkle intensity
+    this.sparkleIntensity = Math.max(0, this.sparkleIntensity - 0.02);
+
     if (this.opacity <= 0) {
-      this.onExpire(); // Invoke the callback when particle expires
+      this.onExpire();
     }
   }
 
   /**
-   * Draws the collision particle on the canvas.
-   * @param ctx - Canvas rendering context.
+   * Draws the particle on the canvas with fade-out and sparkle effects.
+   * @param ctx - The 2D rendering context of the canvas.
    * @param mouseX - X coordinate of the mouse cursor.
    * @param mouseY - Y coordinate of the mouse cursor.
    * @param width - Width of the canvas.
@@ -340,7 +363,7 @@ export class ParticleAtCollision extends Particle {
 
     const pos = project(this.x, this.y, this.z, width, height);
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, this.size, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, this.size * pos.scale, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 0, 255, ${this.opacity})`; // Neon Magenta with fading opacity
     ctx.fill();
 
@@ -350,5 +373,103 @@ export class ParticleAtCollision extends Particle {
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
+
+    // Add sparkle effect
+    if (Math.random() < this.sparkleIntensity) {
+      ctx.fillStyle = `rgba(255, 255, 255, ${
+        this.opacity * this.sparkleIntensity
+      })`;
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, this.size * pos.scale * 1.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /**
+   * Draws connections between explosion particles with sparkle effects.
+   * @param ctx - The 2D rendering context of the canvas.
+   * @param particles - Array of ParticleAtCollision instances to connect.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
+  static drawConnections(
+    ctx: CanvasRenderingContext2D,
+    particles: ParticleAtCollision[],
+    width: number,
+    height: number
+  ) {
+    const MAX_DISTANCE = 50;
+    const MAX_CONNECTIONS_PER_PARTICLE = 3;
+    const MAX_TOTAL_CONNECTIONS = 50;
+
+    let totalConnections = 0;
+
+    for (
+      let i = 0;
+      i < particles.length && totalConnections < MAX_TOTAL_CONNECTIONS;
+      i++
+    ) {
+      let connectionsForParticle = 0;
+      const particleA = particles[i];
+      const posA = project(
+        particleA.x,
+        particleA.y,
+        particleA.z,
+        width,
+        height
+      );
+
+      for (
+        let j = i + 1;
+        j < particles.length &&
+        connectionsForParticle < MAX_CONNECTIONS_PER_PARTICLE;
+        j++
+      ) {
+        const particleB = particles[j];
+
+        const dx = particleA.x - particleB.x;
+        const dy = particleA.y - particleB.y;
+        const dz = particleA.z - particleB.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance < MAX_DISTANCE) {
+          const posB = project(
+            particleB.x,
+            particleB.y,
+            particleB.z,
+            width,
+            height
+          );
+
+          const opacity =
+            (1 - distance / MAX_DISTANCE) *
+            Math.min(particleA.opacity, particleB.opacity);
+          ctx.strokeStyle = `rgba(255, 0, 255, ${opacity * 0.5})`;
+          ctx.lineWidth = 1;
+
+          ctx.beginPath();
+          ctx.moveTo(posA.x, posA.y);
+          ctx.lineTo(posB.x, posB.y);
+          ctx.stroke();
+
+          // Add sparkle effect to connections (reduced probability)
+          if (Math.random() < 0.05) {
+            const sparklePos = {
+              x: posA.x + (posB.x - posA.x) * Math.random(),
+              y: posA.y + (posB.y - posA.y) * Math.random(),
+            };
+            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+            ctx.beginPath();
+            ctx.arc(sparklePos.x, sparklePos.y, 1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          connectionsForParticle++;
+          totalConnections++;
+
+          if (totalConnections >= MAX_TOTAL_CONNECTIONS) break;
+        }
+      }
+    }
   }
 }

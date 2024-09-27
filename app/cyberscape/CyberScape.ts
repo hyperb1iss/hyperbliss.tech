@@ -44,7 +44,11 @@ for (let i = 0; i < PARTICLE_POOL_SIZE; i++) {
  * @param isCollision - Whether the particle is for a collision effect.
  * @returns A Particle or ParticleAtCollision instance.
  */
-function getParticleFromPool(width: number, height: number, isCollision: boolean = false): Particle | ParticleAtCollision {
+function getParticleFromPool(
+  width: number,
+  height: number,
+  isCollision: boolean = false
+): Particle | ParticleAtCollision {
   if (particlePool.length > 0) {
     const particle = particlePool.pop()!;
     if (isCollision) {
@@ -53,7 +57,9 @@ function getParticleFromPool(width: number, height: number, isCollision: boolean
     particle.reset(new Set<string>(), width, height);
     return particle;
   }
-  return isCollision ? new ParticleAtCollision(0, 0, 0, () => {}) : new Particle(new Set<string>(), width, height);
+  return isCollision
+    ? new ParticleAtCollision(0, 0, 0, () => {})
+    : new Particle(new Set<string>(), width, height);
 }
 
 /**
@@ -274,8 +280,35 @@ export const initializeCyberScape = (
   let glitchInterval = 5000;
   let glitchDuration = 200;
 
+  /**
+   * Maximum number of explosion particles allowed at any given time.
+   */
   const MAX_EXPLOSION_PARTICLES = 200;
+
+  /**
+   * Current count of active explosion particles.
+   */
   let explosionParticlesCount = 0;
+
+  /**
+   * Maximum number of simultaneous explosions allowed.
+   */
+  const MAX_SIMULTANEOUS_EXPLOSIONS = 3;
+
+  /**
+   * Cooldown period (in milliseconds) between explosions.
+   */
+  const EXPLOSION_COOLDOWN = 2000;
+
+  /**
+   * Timestamp of the last explosion.
+   */
+  let lastExplosionTime = 0;
+
+  /**
+   * Current count of active explosions.
+   */
+  let currentExplosions = 0;
 
   /**
    * Handles shape collisions and creates explosion particles.
@@ -283,24 +316,39 @@ export const initializeCyberScape = (
    * @param shapeB - The second shape involved in the collision.
    */
   const handleShapeCollision = (shapeA: VectorShape, shapeB: VectorShape) => {
+    const now = Date.now();
+    if (
+      currentExplosions >= MAX_SIMULTANEOUS_EXPLOSIONS ||
+      now - lastExplosionTime < EXPLOSION_COOLDOWN
+    ) {
+      return; // Skip explosion if too many are active or if in cooldown
+    }
+
     const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
     const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
     const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
 
-    const particlesToEmit = 20;
+    const particlesToEmit = 10;
 
     if (
       particlesArray.length + particlesToEmit <= PARTICLE_POOL_SIZE &&
       explosionParticlesCount + particlesToEmit <= MAX_EXPLOSION_PARTICLES
     ) {
       for (let i = 0; i < particlesToEmit; i++) {
-        const particle = getParticleFromPool(width, height, true) as ParticleAtCollision;
+        const particle = getParticleFromPool(
+          width,
+          height,
+          true
+        ) as ParticleAtCollision;
         particle.init(collisionX, collisionY, collisionZ, () => {
           explosionParticlesCount--;
+          currentExplosions = Math.max(0, currentExplosions - 1);
         });
         particlesArray.push(particle);
         explosionParticlesCount++;
       }
+      currentExplosions++;
+      lastExplosionTime = now;
     }
 
     shapeA.explodeAndRespawn();
@@ -419,6 +467,7 @@ export const initializeCyberScape = (
       } else {
         const intensity = Math.sin(animationProgress * Math.PI);
 
+        // Draw expanding circles
         ctx.save();
         ctx.globalAlpha = intensity * 0.5;
         ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
@@ -432,6 +481,7 @@ export const initializeCyberScape = (
         }
         ctx.restore();
 
+        // Draw noise effect
         ctx.save();
         ctx.globalAlpha = intensity * 0.2;
         const noiseSize = 4;
@@ -445,10 +495,18 @@ export const initializeCyberScape = (
         }
         ctx.restore();
 
+        // Emit particles
         if (animationProgress < 0.1) {
-          const particlesToEmit = Math.min(30, MAX_EXPLOSION_PARTICLES - explosionParticlesCount);
+          const particlesToEmit = Math.min(
+            30,
+            MAX_EXPLOSION_PARTICLES - explosionParticlesCount
+          );
           for (let i = 0; i < particlesToEmit; i++) {
-            const particle = getParticleFromPool(width, height, true) as ParticleAtCollision;
+            const particle = getParticleFromPool(
+              width,
+              height,
+              true
+            ) as ParticleAtCollision;
             particle.init(animationCenterX, animationCenterY, 0, () => {
               explosionParticlesCount--;
             });
@@ -457,6 +515,7 @@ export const initializeCyberScape = (
           }
         }
 
+        // Affect nearby shapes
         shapesArray.forEach((shape) => {
           shape.rotationSpeed = {
             x: intensity * 0.1,
@@ -471,11 +530,13 @@ export const initializeCyberScape = (
           shape.velocity.y += dy * force * 0.01;
         });
 
+        // Apply glitch effects
         if (Math.random() < intensity * 0.4) {
           applyGlitchEffect(ctx, width, height, intensity * 0.7);
           applyChromaticAberration(ctx, width, height, intensity * 15);
         }
 
+        // Draw energy lines
         ctx.save();
         ctx.globalAlpha = intensity * 0.7;
         ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
@@ -494,6 +555,19 @@ export const initializeCyberScape = (
         }
         ctx.restore();
       }
+    }
+
+    // Draw explosion particle connections
+    const explosionParticles = particlesArray.filter(
+      (p) => p instanceof ParticleAtCollision
+    ) as ParticleAtCollision[];
+    if (explosionParticles.length > 0) {
+      ParticleAtCollision.drawConnections(
+        ctx,
+        explosionParticles,
+        width,
+        height
+      );
     }
 
     animationFrameId = requestAnimationFrame(animateCyberScape);
