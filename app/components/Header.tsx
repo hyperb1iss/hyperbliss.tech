@@ -161,7 +161,7 @@ const shiftingGlow = keyframes`
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 2.6rem;
+  font-size: 2.8rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
@@ -227,11 +227,13 @@ const GlowingEmoji = styled(LogoEmojis)<{
   $clockwise: boolean;
 }>`
   --rotation-angle: ${(props) => (props.$clockwise ? "90deg" : "-90deg")};
-  animation: ${rotateOnce} 20s ease-in-out infinite;
-  animation-delay: ${(props) => props.$animationDelay}s;
+  animation: ${rotateOnce} 20s ease-in-out infinite,
+    ${sparkle} 3s ease-in-out infinite, ${shimmer} 5s linear infinite;
+  animation-delay: ${(props) => props.$animationDelay}s, 0s, 0s;
   transition: text-shadow 0.3s ease;
   text-shadow: 0 0 1px #fff, 0 0 2px #a259ff;
   display: inline-block;
+  transform-origin: center;
 
   &:hover {
     text-shadow: 0 0 1px #fff, 0 0 2px #00fff0, 0 0 3px #00fff0;
@@ -254,7 +256,7 @@ const NavItem = styled.li`
 
 const StyledNavLink = styled.a<{ $active: boolean }>`
   font-family: var(--font-body);
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700; // Increased from 500 to 700 for better visibility
   color: ${(props) =>
     props.$active
