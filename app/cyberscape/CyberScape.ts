@@ -11,6 +11,14 @@ import {
   applyCRTEffect,
 } from "./glitchEffects";
 
+let triggerAnimation: ((x: number, y: number) => void) | null = null;
+
+export const triggerCyberScapeAnimation = (x: number, y: number) => {
+  if (triggerAnimation) {
+    triggerAnimation(x, y);
+  }
+};
+
 /**
  * Initializes the CyberScape animation on the canvas.
  * @param canvas - The HTML canvas element to draw on.
@@ -297,6 +305,20 @@ export const initializeCyberScape = (
     shapeB.explodeAndRespawn();
   };
 
+  let isAnimationTriggered = false;
+  let animationProgress = 0;
+  let animationCenterX = 0;
+  let animationCenterY = 0;
+
+  const triggerSpecialAnimation = (x: number, y: number) => {
+    isAnimationTriggered = true;
+    animationProgress = 0;
+    animationCenterX = x;
+    animationCenterY = y;
+  };
+
+  triggerAnimation = triggerSpecialAnimation;
+
   /**
    * The main animation loop for CyberScape.
    */
@@ -377,6 +399,93 @@ export const initializeCyberScape = (
         applyGlitchEffect(ctx, width, height, fadeIntensity);
         applyChromaticAberration(ctx, width, height, fadeIntensity * 15);
         applyCRTEffect(ctx, width, height, fadeIntensity * 0.5);
+      }
+    }
+
+    if (isAnimationTriggered) {
+      animationProgress += 0.02;
+      if (animationProgress >= 1) {
+        isAnimationTriggered = false;
+        animationProgress = 0;
+      } else {
+        const intensity = Math.sin(animationProgress * Math.PI);
+
+        // Cyber-styled pulse effect
+        ctx.save();
+        ctx.globalAlpha = intensity * 0.5;
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.lineWidth = 2;
+        const maxRadius = Math.max(width, height) * 0.4;
+        for (let i = 0; i < 5; i++) {
+          const radius = intensity * maxRadius * (1 - i * 0.2);
+          ctx.beginPath();
+          ctx.arc(animationCenterX, animationCenterY, radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        // Digital noise effect
+        ctx.save();
+        ctx.globalAlpha = intensity * 0.2;
+        const noiseSize = 4;
+        for (let x = 0; x < width; x += noiseSize) {
+          for (let y = 0; y < height; y += noiseSize) {
+            if (Math.random() < 0.5) {
+              ctx.fillStyle = `hsl(${hue}, 100%, ${Math.random() * 50 + 50}%)`;
+              ctx.fillRect(x, y, noiseSize, noiseSize);
+            }
+          }
+        }
+        ctx.restore();
+
+        // Particle burst
+        if (animationProgress < 0.1) {
+          for (let i = 0; i < 30; i++) {
+            particlesArray.push(
+              new ParticleAtCollision(animationCenterX, animationCenterY, 0)
+            );
+          }
+        }
+
+        // Shape rotation and attraction
+        shapesArray.forEach((shape) => {
+          shape.rotationSpeed = {
+            x: intensity * 0.2,
+            y: intensity * 0.2,
+            z: intensity * 0.2,
+          };
+          const dx = animationCenterX - shape.position.x;
+          const dy = animationCenterY - shape.position.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const force = (intensity * 5) / (distance + 1);
+          shape.velocity.x += dx * force * 0.01;
+          shape.velocity.y += dy * force * 0.01;
+        });
+
+        // Glitch effect
+        if (Math.random() < intensity * 0.4) {
+          applyGlitchEffect(ctx, width, height, intensity * 0.7);
+          applyChromaticAberration(ctx, width, height, intensity * 15);
+        }
+
+        // Data stream effect
+        ctx.save();
+        ctx.globalAlpha = intensity * 0.7;
+        ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 20; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const length = Math.random() * maxRadius * 0.8;
+          const startX = animationCenterX + Math.cos(angle) * length * 0.2;
+          const startY = animationCenterY + Math.sin(angle) * length * 0.2;
+          const endX = animationCenterX + Math.cos(angle) * length;
+          const endY = animationCenterY + Math.sin(angle) * length;
+          ctx.beginPath();
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(endX, endY);
+          ctx.stroke();
+        }
+        ctx.restore();
       }
     }
 

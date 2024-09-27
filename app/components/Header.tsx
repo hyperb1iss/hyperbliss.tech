@@ -7,7 +7,10 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { styled, keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
-import { initializeCyberScape } from "../cyberscape/CyberScape";
+import {
+  initializeCyberScape,
+  triggerCyberScapeAnimation,
+} from "../cyberscape/CyberScape";
 import { NAV_ITEMS } from "../lib/navigation";
 
 // Define the keyframes for the gradient animation
@@ -474,8 +477,14 @@ const Header: React.FC = () => {
   }, []);
 
   // Handler for navigation
-  const handleNavigation = (href: string) => {
+  const handleNavigation = (href: string, event: React.MouseEvent) => {
     setMenuOpen(false);
+    const rect = canvasRef.current?.getBoundingClientRect();
+    if (rect) {
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      triggerCyberScapeAnimation(x, y);
+    }
     animateAndNavigate(href);
   };
 
@@ -529,7 +538,14 @@ const Header: React.FC = () => {
       <Canvas ref={canvasRef} />
       <NavContent>
         {/* Logo */}
-        <Logo href="/" onClick={() => handleNavigation("/")} ref={logoRef}>
+        <Logo
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavigation("/", e);
+          }}
+          ref={logoRef}
+        >
           <LogoEmojis>🌠</LogoEmojis>
           <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
           <LogoEmojis>✨</LogoEmojis>
@@ -543,7 +559,7 @@ const Header: React.FC = () => {
           {NAV_ITEMS.map((item) => (
             <NavItem key={item}>
               <StyledNavLink
-                onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
+                onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
                 $active={pathname === `/${item.toLowerCase()}`}
               >
                 {item}
@@ -578,7 +594,7 @@ const Header: React.FC = () => {
         {NAV_ITEMS.map((item, index) => (
           <MobileNavItem key={item} index={index} open={menuOpen}>
             <StyledNavLink
-              onClick={() => handleNavigation(`/${item.toLowerCase()}`)}
+              onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
               $active={pathname === `/${item.toLowerCase()}`}
             >
               {item}
