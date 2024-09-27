@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { NAV_ITEMS } from "../lib/navigation";
@@ -268,6 +268,7 @@ const Header: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
   const navRef = useRef<HTMLElement>(null); // Ref for the nav element
+  const mobileMenuRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
@@ -287,6 +288,24 @@ const Header: React.FC = () => {
     setMenuOpen(false);
     animateAndNavigate(href);
   };
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      menuOpen &&
+      mobileMenuRef.current &&
+      !mobileMenuRef.current.contains(event.target as Node) &&
+      !(event.target as Element).closest('.mobile-menu-icon')
+    ) {
+      setMenuOpen(false);
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   return (
     <Nav ref={navRef}>
@@ -309,11 +328,15 @@ const Header: React.FC = () => {
             </NavItem>
           ))}
         </NavLinks>
-        <MobileMenuIcon open={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
+        <MobileMenuIcon 
+          open={menuOpen} 
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="mobile-menu-icon"
+        >
           ☰
         </MobileMenuIcon>
       </NavContent>
-      <MobileNavLinks open={menuOpen}>
+      <MobileNavLinks open={menuOpen} ref={mobileMenuRef}>
         {NAV_ITEMS.map((item, index) => (
           <MobileNavItem key={item} index={index} open={menuOpen}>
             <StyledNavLink
