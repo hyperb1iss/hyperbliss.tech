@@ -73,11 +73,17 @@ export class Particle {
     this.isVisible = false;
   }
 
+  /**
+   * Sets a delayed appearance for the particle.
+   */
   setDelayedAppearance() {
     this.appearanceDelay = Math.random() * 5000; // Random delay up to 5 seconds
     this.isVisible = false;
   }
 
+  /**
+   * Updates the delay for the particle's appearance.
+   */
   updateDelay() {
     if (!this.isVisible) {
       this.appearanceDelay -= 16; // Assuming 60 FPS
@@ -87,6 +93,10 @@ export class Particle {
     }
   }
 
+  /**
+   * Checks if the particle is ready to be displayed.
+   * @returns True if the particle is visible, false otherwise.
+   */
   isReady() {
     return this.isVisible;
   }
@@ -253,26 +263,41 @@ export class Particle {
  * Extends the base Particle class with specific initialization.
  */
 export class ParticleAtCollision extends Particle {
+  private onExpire: () => void;
+
   /**
-   * Creates a new ParticleAtCollision instance at the specified collision point.
+   * Creates a new ParticleAtCollision instance.
    * @param x - X coordinate of the collision point.
    * @param y - Y coordinate of the collision point.
    * @param z - Z coordinate of the collision point.
+   * @param onExpire - Callback function to be called when the particle expires.
    */
-  constructor(x: number, y: number, z: number) {
+  constructor(x: number, y: number, z: number, onExpire: () => void) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
+    this.onExpire = onExpire;
+    this.init(x, y, z, onExpire);
+  }
+
+  /**
+   * Initializes the particle with specific properties for collision effects.
+   * @param x - X coordinate of the collision point.
+   * @param y - Y coordinate of the collision point.
+   * @param z - Z coordinate of the collision point.
+   * @param onExpire - Callback function to be called when the particle expires.
+   */
+  init(x: number, y: number, z: number, onExpire: () => void) {
     this.x = x;
     this.y = y;
     this.z = z;
-    // Increase velocity range for broader spread
-    this.velocityX = (Math.random() - 0.5) * 4; // Increased from 2 to 4
-    this.velocityY = (Math.random() - 0.5) * 4; // Increased from 2 to 4
-    this.velocityZ = (Math.random() - 0.5) * 4; // Increased from 2 to 4
+    this.velocityX = (Math.random() - 0.5) * 4;
+    this.velocityY = (Math.random() - 0.5) * 4;
+    this.velocityZ = (Math.random() - 0.5) * 4;
     this.size = Math.random() * 3 + 2;
-    this.color = "#FF00FF"; // Neon Magenta for collision particles
-    this.lifespan = 1500; // Increased lifespan to 1.5 seconds for smoother fade-out
+    this.color = "#FF00FF";
+    this.lifespan = 1500;
     this.age = 0;
     this.opacity = 1;
+    this.onExpire = onExpire;
   }
 
   /**
@@ -283,18 +308,17 @@ export class ParticleAtCollision extends Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  update() {
-    // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-    this.z += this.velocityZ;
-
-    // Apply gravity or friction if desired
-    this.velocityY += 0.01; // Gravity effect
-
-    // Update opacity based on age using an easing function for smoother fade-out
-    this.age += 16; // Assuming 60 FPS
-    this.opacity = Math.max(0, 1 - this.age / this.lifespan);
+  update(
+    isCursorOverCyberScape: boolean,
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number
+  ) {
+    super.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+    if (this.opacity <= 0) {
+      this.onExpire(); // Invoke the callback when particle expires
+    }
   }
 
   /**

@@ -13,11 +13,58 @@ import {
 
 let triggerAnimation: ((x: number, y: number) => void) | null = null;
 
+/**
+ * Triggers the CyberScape animation at the specified coordinates.
+ * @param x - The x-coordinate of the animation trigger point.
+ * @param y - The y-coordinate of the animation trigger point.
+ */
 export const triggerCyberScapeAnimation = (x: number, y: number) => {
   if (triggerAnimation) {
     triggerAnimation(x, y);
   }
 };
+
+// Frame rate control
+const TARGET_FPS = 60;
+const FRAME_TIME = 1000 / TARGET_FPS;
+
+// Particle pool configuration
+const PARTICLE_POOL_SIZE = 1000;
+const particlePool: Particle[] = [];
+
+// Initialize particle pool
+for (let i = 0; i < PARTICLE_POOL_SIZE; i++) {
+  particlePool.push(new Particle(new Set<string>(), 0, 0));
+}
+
+/**
+ * Retrieves a particle from the pool or creates a new one if the pool is empty.
+ * @param width - The width of the canvas.
+ * @param height - The height of the canvas.
+ * @param isCollision - Whether the particle is for a collision effect.
+ * @returns A Particle or ParticleAtCollision instance.
+ */
+function getParticleFromPool(width: number, height: number, isCollision: boolean = false): Particle | ParticleAtCollision {
+  if (particlePool.length > 0) {
+    const particle = particlePool.pop()!;
+    if (isCollision) {
+      return new ParticleAtCollision(0, 0, 0, () => {});
+    }
+    particle.reset(new Set<string>(), width, height);
+    return particle;
+  }
+  return isCollision ? new ParticleAtCollision(0, 0, 0, () => {}) : new Particle(new Set<string>(), width, height);
+}
+
+/**
+ * Returns a particle to the pool if there's space.
+ * @param particle - The particle to return to the pool.
+ */
+function returnParticleToPool(particle: Particle) {
+  if (particlePool.length < PARTICLE_POOL_SIZE) {
+    particlePool.push(particle);
+  }
+}
 
 /**
  * Initializes the CyberScape animation on the canvas.
@@ -51,70 +98,46 @@ export const initializeCyberScape = (
   canvas.width = width;
   canvas.height = height;
 
-  // Animation frame ID for cancellation
   let animationFrameId: number;
+  let lastFrameTime = 0;
 
-  // Variables for cursor interaction
   let isCursorOverCyberScape = false;
   let mouseX = 0;
   let mouseY = 0;
 
-  // Initialize a global hue value within cyberpunk range
-  let hue = 210; // Starting with Neon Blue
+  let hue = 210;
 
-  /**
-   * Updates global hue to cycle through cyberpunk colors smoothly.
-   */
   const updateHue = () => {
-    hue = (hue + 0.2) % 360; // Slower hue shift for reduced breathing effect
-    // Ensure hue stays within cyberpunk ranges
+    hue = (hue + 0.2) % 360;
     if (
       !CYBERPUNK_HUE_RANGES.some(
         (range) => hue >= range.start && hue <= range.end
       )
     ) {
-      // Reset to a random cyberpunk hue if outside ranges
       hue = getRandomCyberpunkHue();
     }
   };
 
-  /**
-   * Handles window resize events to keep canvas dimensions updated.
-   */
   const handleResize = () => {
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
     canvas.width = width;
     canvas.height = height;
-
-    // Adjust the number of particles and shapes based on new size
     adjustShapeCounts();
   };
   window.addEventListener("resize", handleResize);
 
-  /**
-   * Handles pointer enter events for the CyberScape.
-   */
   const handlePointerEnter = () => {
     isCursorOverCyberScape = true;
   };
 
-  /**
-   * Handles pointer leave events for the CyberScape.
-   */
   const handlePointerLeave = () => {
     isCursorOverCyberScape = false;
   };
 
-  // Attach pointerenter and pointerleave events to the nav element
   navElement.addEventListener("pointerenter", handlePointerEnter);
   navElement.addEventListener("pointerleave", handlePointerLeave);
 
-  /**
-   * Throttles a function to limit how often it can be called.
-   * @param func - The function to throttle.
-   * @param limit - The time limit (in milliseconds) between function calls.
-   */
   const throttle = <T extends unknown[]>(
     func: (...args: T) => void,
     limit: number
@@ -129,32 +152,22 @@ export const initializeCyberScape = (
     };
   };
 
-  /**
-   * Handles mouse move events to track cursor position when over the CyberScape.
-   * @param event - The MouseEvent object containing cursor position information.
-   */
   const handleMouseMove = (event: MouseEvent) => {
     if (!isCursorOverCyberScape) return;
     const rect = canvas.getBoundingClientRect();
-    // Convert mouse position to canvas coordinate system centered at (0,0)
     mouseX = event.clientX - rect.left - width / 2;
     mouseY = event.clientY - rect.top - height / 2;
   };
-  const throttledHandleMouseMove = throttle(handleMouseMove, 16); // Throttle to about 60fps
+  const throttledHandleMouseMove = throttle(handleMouseMove, 16);
   window.addEventListener("mousemove", throttledHandleMouseMove);
 
-  // Initialize particles and shapes
   const particlesArray: Particle[] = [];
   const shapesArray: VectorShape[] = [];
-  let numberOfParticles = Math.floor((width * height) / 2500); // Adjusted particle count for density
-  let numberOfShapes = 6; // Balanced number of shapes
+  let numberOfParticles = Math.floor((width * height) / 2500);
+  let numberOfShapes = 6;
 
-  // New variable to track the number of active particles
   let activeParticles = 0;
 
-  /**
-   * Adjusts the number of particles and shapes based on the current screen size.
-   */
   const adjustShapeCounts = () => {
     const isMobile = width <= 768;
     const baseParticleCount = 70;
@@ -169,14 +182,10 @@ export const initializeCyberScape = (
       numberOfParticles = Math.floor(numberOfParticles * 1.2);
     }
 
-    // Remove the particle creation loop from here
-    // We'll gradually add particles in the animation loop
-
     numberOfShapes = isMobile ? 4 : 8;
 
     const existingPositions = new Set<string>();
 
-    // Adjust shapes
     while (shapesArray.length < numberOfShapes) {
       const shapeType = [
         "cube",
@@ -197,14 +206,8 @@ export const initializeCyberScape = (
     shapesArray.length = numberOfShapes;
   };
 
-  // Initial adjustment based on current size
   adjustShapeCounts();
 
-  /**
-   * Connects nearby particles with lines to create a network effect.
-   * @param particles - Array of particles to connect.
-   * @param ctx - Canvas rendering context.
-   */
   const connectParticles = (
     particles: Particle[],
     ctx: CanvasRenderingContext2D
@@ -246,10 +249,6 @@ export const initializeCyberScape = (
     }
   };
 
-  /**
-   * Updates particle connections by slightly changing their velocities.
-   * @param particles - Array of particles to update.
-   */
   const updateParticleConnections = (particles: Particle[]) => {
     particles.forEach((particle) => {
       if (Math.random() < 0.05) {
@@ -269,38 +268,41 @@ export const initializeCyberScape = (
     });
   };
 
-  // Initialize glitch effect variables
   let isGlitching = false;
   let lastGlitchTime = 0;
   let glitchIntensity = 0;
-  let glitchInterval = 5000; // 5 seconds between glitch effects
-  let glitchDuration = 200; // 0.2 seconds duration for each glitch effect
+  let glitchInterval = 5000;
+  let glitchDuration = 200;
+
+  const MAX_EXPLOSION_PARTICLES = 200;
+  let explosionParticlesCount = 0;
 
   /**
-   * Callback function to handle additional effects upon shape collisions.
+   * Handles shape collisions and creates explosion particles.
    * @param shapeA - The first shape involved in the collision.
    * @param shapeB - The second shape involved in the collision.
    */
   const handleShapeCollision = (shapeA: VectorShape, shapeB: VectorShape) => {
-    // Emit particles at the collision point
     const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
     const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
     const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
 
-    // Number of particles to emit
-    const particlesToEmit = 20; // Increased from 10 to 20 for more spread
+    const particlesToEmit = 20;
 
-    // Limit the number of particles to prevent excessive emissions
-    const MAX_PARTICLES = 1000; // Adjust based on performance testing
-    if (particlesArray.length + particlesToEmit <= MAX_PARTICLES) {
+    if (
+      particlesArray.length + particlesToEmit <= PARTICLE_POOL_SIZE &&
+      explosionParticlesCount + particlesToEmit <= MAX_EXPLOSION_PARTICLES
+    ) {
       for (let i = 0; i < particlesToEmit; i++) {
-        particlesArray.push(
-          new ParticleAtCollision(collisionX, collisionY, collisionZ)
-        );
+        const particle = getParticleFromPool(width, height, true) as ParticleAtCollision;
+        particle.init(collisionX, collisionY, collisionZ, () => {
+          explosionParticlesCount--;
+        });
+        particlesArray.push(particle);
+        explosionParticlesCount++;
       }
     }
 
-    // Handle shape respawning with random delay
     shapeA.explodeAndRespawn();
     shapeB.explodeAndRespawn();
   };
@@ -310,6 +312,11 @@ export const initializeCyberScape = (
   let animationCenterX = 0;
   let animationCenterY = 0;
 
+  /**
+   * Triggers a special animation effect at the specified coordinates.
+   * @param x - The x-coordinate of the animation center.
+   * @param y - The y-coordinate of the animation center.
+   */
   const triggerSpecialAnimation = (x: number, y: number) => {
     isAnimationTriggered = true;
     animationProgress = 0;
@@ -321,8 +328,16 @@ export const initializeCyberScape = (
 
   /**
    * The main animation loop for CyberScape.
+   * @param timestamp - The current timestamp of the animation frame.
    */
-  const animateCyberScape = () => {
+  const animateCyberScape = (timestamp: number) => {
+    const deltaTime = timestamp - lastFrameTime;
+    if (deltaTime < FRAME_TIME) {
+      animationFrameId = requestAnimationFrame(animateCyberScape);
+      return;
+    }
+    lastFrameTime = timestamp;
+
     updateCanvasSize();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
@@ -331,9 +346,8 @@ export const initializeCyberScape = (
     updateHue();
     updateParticleConnections(particlesArray);
 
-    // Gradually introduce new particles
     if (activeParticles < numberOfParticles && Math.random() < 0.1) {
-      const newParticle = new Particle(new Set<string>(), width, height);
+      const newParticle = getParticleFromPool(width, height);
       newParticle.setDelayedAppearance();
       particlesArray.push(newParticle);
       activeParticles++;
@@ -352,7 +366,6 @@ export const initializeCyberScape = (
     for (const shape of shapesArray) {
       shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
       if (shape.opacity > 0 && !shape.isExploded) {
-        // Only render if not exploded
         existingPositions.add(shape.getPositionKey());
         shape.draw(ctx, width, height);
       }
@@ -361,36 +374,32 @@ export const initializeCyberScape = (
       }
     }
 
-    // Handle interactions with enhanced collision handling
     VectorShape.handleCollisions(shapesArray, handleShapeCollision);
     VectorShape.handleColorBlending(shapesArray);
     VectorShape.handleAttractionRepulsion(shapesArray);
 
-    // Draw connections between shapes
     VectorShape.drawConnections(ctx, shapesArray, width, height);
 
     connectParticles(particlesArray, ctx);
 
-    // Cleanup expired particles to prevent CPU overload
-    // Iterate backwards to safely remove items while iterating
     for (let i = particlesArray.length - 1; i >= 0; i--) {
       if (particlesArray[i].opacity <= 0) {
+        returnParticleToPool(particlesArray[i]);
         particlesArray.splice(i, 1);
       }
     }
 
-    // Apply glitch effects
-    const currentTime = Date.now();
-    if (!isGlitching && currentTime - lastGlitchTime > glitchInterval) {
+    const now = Date.now();
+    if (!isGlitching && now - lastGlitchTime > glitchInterval) {
       isGlitching = true;
       glitchIntensity = Math.random() * 0.7 + 0.3;
       glitchDuration = Math.random() * 300 + 100;
-      lastGlitchTime = currentTime;
+      lastGlitchTime = now;
       glitchInterval = Math.random() * 5000 + 5000;
     }
 
     if (isGlitching) {
-      const glitchProgress = (currentTime - lastGlitchTime) / glitchDuration;
+      const glitchProgress = (now - lastGlitchTime) / glitchDuration;
       if (glitchProgress >= 1) {
         isGlitching = false;
       } else {
@@ -410,7 +419,6 @@ export const initializeCyberScape = (
       } else {
         const intensity = Math.sin(animationProgress * Math.PI);
 
-        // Cyber-styled pulse effect
         ctx.save();
         ctx.globalAlpha = intensity * 0.5;
         ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
@@ -424,7 +432,6 @@ export const initializeCyberScape = (
         }
         ctx.restore();
 
-        // Digital noise effect
         ctx.save();
         ctx.globalAlpha = intensity * 0.2;
         const noiseSize = 4;
@@ -438,21 +445,23 @@ export const initializeCyberScape = (
         }
         ctx.restore();
 
-        // Particle burst
         if (animationProgress < 0.1) {
-          for (let i = 0; i < 30; i++) {
-            particlesArray.push(
-              new ParticleAtCollision(animationCenterX, animationCenterY, 0)
-            );
+          const particlesToEmit = Math.min(30, MAX_EXPLOSION_PARTICLES - explosionParticlesCount);
+          for (let i = 0; i < particlesToEmit; i++) {
+            const particle = getParticleFromPool(width, height, true) as ParticleAtCollision;
+            particle.init(animationCenterX, animationCenterY, 0, () => {
+              explosionParticlesCount--;
+            });
+            particlesArray.push(particle);
+            explosionParticlesCount++;
           }
         }
 
-        // Shape rotation and attraction
         shapesArray.forEach((shape) => {
           shape.rotationSpeed = {
-            x: intensity * 0.2,
-            y: intensity * 0.2,
-            z: intensity * 0.2,
+            x: intensity * 0.1,
+            y: intensity * 0.1,
+            z: intensity * 0.1,
           };
           const dx = animationCenterX - shape.position.x;
           const dy = animationCenterY - shape.position.y;
@@ -462,13 +471,11 @@ export const initializeCyberScape = (
           shape.velocity.y += dy * force * 0.01;
         });
 
-        // Glitch effect
         if (Math.random() < intensity * 0.4) {
           applyGlitchEffect(ctx, width, height, intensity * 0.7);
           applyChromaticAberration(ctx, width, height, intensity * 15);
         }
 
-        // Data stream effect
         ctx.save();
         ctx.globalAlpha = intensity * 0.7;
         ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
@@ -489,12 +496,10 @@ export const initializeCyberScape = (
       }
     }
 
-    // Continue the animation loop
     animationFrameId = requestAnimationFrame(animateCyberScape);
   };
 
-  // Start the animation
-  animateCyberScape();
+  animateCyberScape(0);
 
   /**
    * Cleanup function to remove event listeners and cancel animations.
