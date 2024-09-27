@@ -19,6 +19,8 @@ export class Particle {
   lifespan: number;
   age: number;
   opacity: number;
+  private appearanceDelay: number;
+  private isVisible: boolean;
 
   // Optimization: Reuse vector for calculations
   private tempVector: { x: number; y: number; z: number };
@@ -67,6 +69,26 @@ export class Particle {
 
     // Initialize tempVector for reuse in calculations
     this.tempVector = { x: 0, y: 0, z: 0 };
+    this.appearanceDelay = 0;
+    this.isVisible = false;
+  }
+
+  setDelayedAppearance() {
+    this.appearanceDelay = Math.random() * 5000; // Random delay up to 5 seconds
+    this.isVisible = false;
+  }
+
+  updateDelay() {
+    if (!this.isVisible) {
+      this.appearanceDelay -= 16; // Assuming 60 FPS
+      if (this.appearanceDelay <= 0) {
+        this.isVisible = true;
+      }
+    }
+  }
+
+  isReady() {
+    return this.isVisible;
   }
 
   /**
@@ -85,6 +107,7 @@ export class Particle {
     width: number,
     height: number
   ) {
+    if (!this.isVisible) return;
     if (isCursorOverCyberScape) {
       this.tempVector.x = mouseX - this.x;
       this.tempVector.y = mouseY - this.y;
@@ -164,6 +187,7 @@ export class Particle {
     width: number,
     height: number
   ) {
+    if (!this.isVisible) return;
     const pos = project(this.x, this.y, this.z, width, height);
 
     // Calculate dynamic shadow blur based on position and proximity to cursor

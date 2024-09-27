@@ -141,6 +141,9 @@ export const initializeCyberScape = (
   let numberOfParticles = Math.floor((width * height) / 2500); // Adjusted particle count for density
   let numberOfShapes = 6; // Balanced number of shapes
 
+  // New variable to track the number of active particles
+  let activeParticles = 0;
+
   /**
    * Adjusts the number of particles and shapes based on the current screen size.
    */
@@ -158,15 +161,12 @@ export const initializeCyberScape = (
       numberOfParticles = Math.floor(numberOfParticles * 1.2);
     }
 
+    // Remove the particle creation loop from here
+    // We'll gradually add particles in the animation loop
+
     numberOfShapes = isMobile ? 4 : 8;
 
     const existingPositions = new Set<string>();
-
-    // Adjust particles
-    while (particlesArray.length < numberOfParticles) {
-      particlesArray.push(new Particle(existingPositions, width, height));
-    }
-    particlesArray.length = numberOfParticles;
 
     // Adjust shapes
     while (shapesArray.length < numberOfShapes) {
@@ -309,9 +309,21 @@ export const initializeCyberScape = (
     updateHue();
     updateParticleConnections(particlesArray);
 
+    // Gradually introduce new particles
+    if (activeParticles < numberOfParticles && Math.random() < 0.1) {
+      const newParticle = new Particle(new Set<string>(), width, height);
+      newParticle.setDelayedAppearance();
+      particlesArray.push(newParticle);
+      activeParticles++;
+    }
+
     for (const particle of particlesArray) {
-      particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
-      particle.draw(ctx, mouseX, mouseY, width, height);
+      if (particle.isReady()) {
+        particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+        particle.draw(ctx, mouseX, mouseY, width, height);
+      } else {
+        particle.updateDelay();
+      }
     }
 
     const existingPositions = new Set<string>();
