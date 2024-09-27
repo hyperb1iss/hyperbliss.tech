@@ -1,14 +1,14 @@
 // app/components/Header.tsx
 "use client";
 
+import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
-import { NAV_ITEMS } from "../lib/navigation";
 import { initializeCanvas } from "../lib/headerEffects";
-import { motion } from "framer-motion";
+import { NAV_ITEMS } from "../lib/navigation";
 
 // Define the keyframes for the gradient animation
 const animateGradient = keyframes`
@@ -92,6 +92,94 @@ const Logo = styled(Link)`
   overflow: hidden;
 `;
 
+// Modify the flicker keyframe animation
+const flicker = keyframes`
+  0%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%, 45%, 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95%, 100% {
+    opacity: 1;
+    text-shadow: 
+      0 0 1px #fff,
+      0 0 2px #fff,
+      0 0 3px #a259ff,
+      0 0 4px #a259ff,
+      0 0 5px #a259ff,
+      0 0 6px #a259ff,
+      0 0 7px #a259ff;
+  }
+  1%, 7%, 33%, 47%, 78%, 93% {
+    opacity: 0.8;
+    text-shadow: 
+      0 0 1px #000,
+      0 0 2px #000,
+      0 0 3px #a259ff,
+      0 0 4px #a259ff,
+      0 0 5px #a259ff;
+  }
+  2%, 8%, 34%, 48%, 79%, 94% {
+    opacity: 0.9;
+    text-shadow: 
+      1px 0 1px #00fff0,
+      -1px 0 1px #ff00ff,
+      0 0 3px #a259ff,
+      0 0 5px #a259ff,
+      0 0 7px #a259ff;
+  }
+`;
+
+// Add a new keyframe for chromatic aberration
+const chromaticAberration = keyframes`
+  0%, 95%, 100% {
+    text-shadow: 
+      0 0 1px #fff,
+      0 0 2px #fff,
+      0 0 3px #a259ff,
+      0 0 4px #a259ff,
+      0 0 5px #a259ff;
+  }
+  50% {
+    text-shadow: 
+      -1px 0 1px #00fff0,
+      1px 0 1px #ff00ff,
+      0 0 3px #a259ff,
+      0 0 5px #a259ff;
+  }
+`;
+
+// Add this new keyframe for the color-shifting glow effect
+const shiftingGlow = keyframes`
+  0%, 100% {
+    text-shadow: 
+      1px 0 1px #00fff0,
+      -1px 0 1px #ff00ff,
+      0 0 3px #00fff0,
+      0 0 5px #00fff0,
+      0 0 7px #00fff0;
+  }
+  25% {
+    text-shadow: 
+      1px 0 1px #ff00ff,
+      -1px 0 1px #00fff0,
+      0 0 3px #ff00ff,
+      0 0 5px #ff00ff,
+      0 0 7px #ff00ff;
+  }
+  50% {
+    text-shadow: 
+      1px 0 1px #a259ff,
+      -1px 0 1px #00fff0,
+      0 0 3px #a259ff,
+      0 0 5px #a259ff,
+      0 0 7px #a259ff;
+  }
+  75% {
+    text-shadow: 
+      1px 0 1px #00fff0,
+      -1px 0 1px #a259ff,
+      0 0 3px #00fff0,
+      0 0 5px #00fff0,
+      0 0 7px #00fff0;
+  }
+`;
+
 const LogoText = styled.span`
   font-family: var(--font-logo);
   font-size: 2.6rem;
@@ -100,17 +188,32 @@ const LogoText = styled.span`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: ${animateGradient} 10s ease infinite;
-  text-shadow: 0 0 10px var(--color-primary);
-  transition: text-shadow 0.3s ease;
+  animation: ${animateGradient} 10s ease infinite,
+    ${flicker} 8s step-end infinite,
+    ${chromaticAberration} 3s ease-in-out infinite;
+  transition: text-shadow 0.1s ease;
 
   &:hover {
-    text-shadow: 0 0 15px var(--color-accent);
+    animation: ${animateGradient} 10s ease infinite,
+      ${shiftingGlow} 4s linear infinite;
   }
 
   @media (max-width: 768px) {
     font-size: 2.4rem;
   }
+`;
+
+// Add these new keyframes if you want different effects for emojis
+const emojiFlicker = keyframes`
+  // ... (customize this for emojis)
+`;
+
+const emojiChromaticAberration = keyframes`
+  // ... (customize this for emojis)
+`;
+
+const emojiShiftingGlow = keyframes`
+  // ... (customize this for emojis)
 `;
 
 const LogoEmojis = styled.span`
@@ -120,6 +223,15 @@ const LogoEmojis = styled.span`
 
   @media (max-width: 768px) {
     font-size: 2.4rem;
+  }
+`;
+
+const GlowingLogoEmojis = styled(LogoEmojis)`
+  transition: text-shadow 0.3s ease;
+  text-shadow: 0 0 1px #fff, 0 0 2px #a259ff;
+
+  &:hover {
+    text-shadow: 0 0 1px #fff, 0 0 2px #00fff0, 0 0 3px #00fff0;
   }
 `;
 
@@ -140,33 +252,42 @@ const NavItem = styled.li`
 const StyledNavLink = styled.a<{ $active: boolean }>`
   font-family: var(--font-body);
   font-size: 2rem;
-  font-weight: 500;
-  color: ${(props) => (props.$active ? "#00ffff" : "#f0f0f0")};
+  font-weight: 700; // Increased from 500 to 700 for better visibility
+  color: ${(props) =>
+    props.$active
+      ? "#00ffff"
+      : "#ffffff"}; // Changed from #f0f0f0 to #ffffff for inactive links
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
   position: relative;
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
+  text-shadow: 0 0 1px #000, 0 0 2px #000,
+    0 0 3px ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: #00ffff;
-    text-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+    text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #00ffff, 0 0 5px #00ffff,
+      0 0 7px #00ffff;
   }
 
   &::after {
     content: "";
     position: absolute;
-    bottom: -5px;
+    bottom: -2px;
     left: 0;
     width: 100%;
     height: 2px;
     background-color: #00ffff;
     transform: scaleX(0);
     transition: transform 0.3s ease;
+    box-shadow: 0 0 5px #00ffff;
   }
 
-  &:hover::after {
+  &:hover::after,
+  &:focus::after {
     transform: scaleX(1);
   }
 
@@ -176,7 +297,7 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
     display: block;
     width: 100%;
     text-align: center;
-    color: ${(props) => (props.$active ? "#00ffff" : "#f0f0f0")};
+    color: ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
 
     &::after {
       bottom: 0;
@@ -350,7 +471,11 @@ const Header: React.FC = () => {
         <Logo href="/" onClick={() => handleNavigation("/")} ref={logoRef}>
           <LogoEmojis>🌠</LogoEmojis>
           <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
-          <LogoEmojis>✨ ⎊ ⨳ ✵ ⊹</LogoEmojis>
+          <LogoEmojis>✨</LogoEmojis>
+          <GlowingLogoEmojis>⎊</GlowingLogoEmojis>
+          <GlowingLogoEmojis>⨳</GlowingLogoEmojis>
+          <GlowingLogoEmojis>✵</GlowingLogoEmojis>
+          <GlowingLogoEmojis>⊹</GlowingLogoEmojis>
         </Logo>
         {/* Desktop Navigation */}
         <NavLinks>
