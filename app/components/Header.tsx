@@ -183,7 +183,7 @@ const LogoText = styled.span`
   }
 
   @media (max-width: 768px) {
-    font-size: 2.8rem;
+    font-size: 2.6rem;
   }
 `;
 
@@ -216,7 +216,7 @@ const LogoEmojis = styled.span`
   }
 
   @media (max-width: 768px) {
-    font-size: 2.4rem;
+    font-size: 1.8rem;
     position: relative;
     z-index: 1;
   }
