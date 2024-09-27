@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import styled, { keyframes, css } from "styled-components";
+import { styled, keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { initializeCanvas } from "../lib/headerEffects";
 import { NAV_ITEMS } from "../lib/navigation";
@@ -22,29 +22,6 @@ const animateGradient = keyframes`
     background-position: 0% 50%;
   }
 `;
-
-// Define keyframes for mobile menu slide-in
-// const slideDown = keyframes`
-//   from {
-//     opacity: 0;
-//     transform: translateY(-20px) scale(0.95);
-//   }
-//   to {
-//     opacity: 1;
-//     transform: translateY(0) scale(1);
-//   }
-// `;
-
-// const slideUp = keyframes`
-//   from {
-//     opacity: 1;
-//     transform: translateY(0) scale(1);
-//   }
-//   to {
-//     opacity: 0;
-//     transform: translateY(-20px) scale(0.95);
-//   }
-// `;
 
 // Define the slideIn animation
 const slideIn = keyframes`
@@ -201,19 +178,6 @@ const LogoText = styled.span`
   @media (max-width: 768px) {
     font-size: 2.4rem;
   }
-`;
-
-// Add these new keyframes if you want different effects for emojis
-const emojiFlicker = keyframes`
-  // ... (customize this for emojis)
-`;
-
-const emojiChromaticAberration = keyframes`
-  // ... (customize this for emojis)
-`;
-
-const emojiShiftingGlow = keyframes`
-  // ... (customize this for emojis)
 `;
 
 const LogoEmojis = styled.span`
