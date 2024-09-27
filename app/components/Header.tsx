@@ -8,8 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
-import { initializeCanvas } from "../lib/headerEffects";
 import { NAV_ITEMS } from "../lib/navigation";
+import { initializeCanvas } from "../lib/headerEffects";
 
 // Define the keyframes for the gradient animation
 const animateGradient = keyframes`
@@ -170,11 +170,16 @@ const Header: React.FC = () => {
   const animateAndNavigate = useAnimatedNavigation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
+  const navRef = useRef<HTMLElement>(null); // Ref for the nav element
 
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
-    if (canvasRef.current && logoRef.current) {
-      cleanupCanvas = initializeCanvas(canvasRef.current, logoRef.current);
+    if (canvasRef.current && logoRef.current && navRef.current) {
+      cleanupCanvas = initializeCanvas(
+        canvasRef.current,
+        logoRef.current,
+        navRef.current
+      );
     }
     return () => {
       if (cleanupCanvas) cleanupCanvas();
@@ -187,7 +192,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <Nav>
+    <Nav ref={navRef}>
       <Canvas ref={canvasRef} />
       <NavContent>
         <Logo href="/" onClick={() => handleNavigation("/")} ref={logoRef}>
