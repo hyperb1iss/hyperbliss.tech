@@ -161,7 +161,7 @@ const shiftingGlow = keyframes`
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 2.8rem;
+  font-size: 3.0rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
