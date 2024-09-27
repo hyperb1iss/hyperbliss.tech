@@ -51,9 +51,6 @@ export const initializeCanvas = (
     "#483d8b", // Dark Slate Blue
   ];
 
-  // Define a constant color for particle connections
-  const PARTICLE_CONNECTION_COLOR = "rgba(160, 32, 240, 0.1)"; // Semi-transparent purple
-
   /**
    * Generates a random hue within the defined cyberpunk ranges.
    * @returns A hue value between 180-220 or 270-330 degrees.
@@ -168,7 +165,7 @@ export const initializeCanvas = (
       } while (existingPositions.has(positionKey));
       existingPositions.add(positionKey);
 
-      this.size = Math.random() * 1.5 + 0.5;
+      this.size = Math.random() * 2 + 1.5; // Particles now range from 1.5 to 3.5 in size
 
       this.maxSpeed = 0.5;
       this.minSpeed = 0.1;
@@ -301,6 +298,7 @@ export const initializeCanvas = (
     fadeOutDuration: number;
     isFadingOut: boolean;
     opacity: number;
+    glowIntensity: number;
 
     constructor(
       shapeType: "cube" | "pyramid" | "star",
@@ -430,6 +428,9 @@ export const initializeCanvas = (
       this.fadeOutDuration = 3000; // 3 seconds fade out
       this.isFadingOut = false;
       this.opacity = 0; // Start fully transparent
+
+      // Initialize glow intensity
+      this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
 
       this.reset(existingPositions);
     }
@@ -596,19 +597,21 @@ export const initializeCanvas = (
       rotation: { x: number; y: number; z: number }
     ) {
       // Rotation around X axis
-      let x = vertex.x;
-      let y = vertex.y * Math.cos(rotation.x) - vertex.z * Math.sin(rotation.x);
-      let z = vertex.y * Math.sin(rotation.x) + vertex.z * Math.cos(rotation.x);
+      const x = vertex.x;
+      const y =
+        vertex.y * Math.cos(rotation.x) - vertex.z * Math.sin(rotation.x);
+      const z =
+        vertex.y * Math.sin(rotation.x) + vertex.z * Math.cos(rotation.x);
 
       // Rotation around Y axis
-      let x1 = x * Math.cos(rotation.y) + z * Math.sin(rotation.y);
-      let y1 = y;
-      let z1 = -x * Math.sin(rotation.y) + z * Math.cos(rotation.y);
+      const x1 = x * Math.cos(rotation.y) + z * Math.sin(rotation.y);
+      const y1 = y;
+      const z1 = -x * Math.sin(rotation.y) + z * Math.cos(rotation.y);
 
       // Rotation around Z axis
-      let x2 = x1 * Math.cos(rotation.z) - y1 * Math.sin(rotation.z);
-      let y2 = x1 * Math.sin(rotation.z) + y1 * Math.cos(rotation.z);
-      let z2 = z1;
+      const x2 = x1 * Math.cos(rotation.z) - y1 * Math.sin(rotation.z);
+      const y2 = x1 * Math.sin(rotation.z) + y1 * Math.cos(rotation.z);
+      const z2 = z1;
 
       return { x: x2, y: y2, z: z2 };
     }
@@ -626,9 +629,9 @@ export const initializeCanvas = (
           ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
           ctx.lineWidth = 2; // Increased line width for better visibility
 
-          // Apply dynamic glow based on opacity
-          const glowIntensity = this.opacity * 10; // Reduced glow intensity
-          ctx.shadowBlur = glowIntensity;
+          // Apply dynamic glow based on opacity and glow intensity
+          const glowEffect = this.opacity * this.glowIntensity * 1.5; // Increased glow effect
+          ctx.shadowBlur = glowEffect;
           ctx.shadowColor = this.color;
 
           // Draw the shape
@@ -701,6 +704,9 @@ export const initializeCanvas = (
         y: (Math.random() - 0.5) * 0.01,
         z: (Math.random() - 0.5) * 0.01,
       };
+
+      // Reset glow intensity
+      this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
     }
 
     getPositionKey(): string {
@@ -779,7 +785,6 @@ export const initializeCanvas = (
     particles: Particle[],
     ctx: CanvasRenderingContext2D
   ) => {
-    ctx.strokeStyle = PARTICLE_CONNECTION_COLOR;
     ctx.lineWidth = 1;
 
     for (let a = 0; a < particles.length; a++) {
@@ -789,11 +794,12 @@ export const initializeCanvas = (
         const dz = particles[a].z - particles[b].z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        // Reduce the distance threshold from 150 to 100
-        if (distance < 100) {
-          // Adjust the alpha calculation to maintain visibility
-          const alpha = 1 - distance / 100;
-          ctx.strokeStyle = `rgba(160, 32, 240, ${alpha * 0.2})`; // Reduced alpha from 0.3 to 0.2
+        // Increase the distance threshold to 150
+        if (distance < 150) {
+          // Adjust the alpha calculation for more visibility
+          const alpha = (1 - distance / 150) * 0.7; // Increased max alpha to 0.7
+          // Use a brighter color for connections
+          ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`; // Brighter purple color
 
           // Project positions
           const posA = project(particles[a].x, particles[a].y, particles[a].z);
@@ -809,6 +815,29 @@ export const initializeCanvas = (
     }
   };
 
+  // Add a new function to update particle connections
+  const updateParticleConnections = (particles: Particle[]) => {
+    particles.forEach((particle) => {
+      // Randomly change particle velocity slightly
+      if (Math.random() < 0.05) {
+        // 5% chance to change direction each frame
+        particle.velocityX += (Math.random() - 0.5) * 0.2;
+        particle.velocityY += (Math.random() - 0.5) * 0.2;
+        particle.velocityZ += (Math.random() - 0.5) * 0.2;
+
+        // Normalize velocity to maintain consistent speed
+        const speed = Math.sqrt(
+          particle.velocityX ** 2 +
+            particle.velocityY ** 2 +
+            particle.velocityZ ** 2
+        );
+        particle.velocityX /= speed;
+        particle.velocityY /= speed;
+        particle.velocityZ /= speed;
+      }
+    });
+  };
+
   /**
    * The main animation loop that updates and draws particles and shapes.
    */
@@ -822,6 +851,9 @@ export const initializeCanvas = (
 
     // Update global hue
     updateHue();
+
+    // Update particle connections
+    updateParticleConnections(particlesArray);
 
     // Update and draw particles
     particlesArray.forEach((particle) => {

@@ -24,27 +24,27 @@ const animateGradient = keyframes`
 `;
 
 // Define keyframes for mobile menu slide-in
-const slideDown = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-`;
+// const slideDown = keyframes`
+//   from {
+//     opacity: 0;
+//     transform: translateY(-20px) scale(0.95);
+//   }
+//   to {
+//     opacity: 1;
+//     transform: translateY(0) scale(1);
+//   }
+// `;
 
-const slideUp = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-`;
+// const slideUp = keyframes`
+//   from {
+//     opacity: 1;
+//     transform: translateY(0) scale(1);
+//   }
+//   to {
+//     opacity: 0;
+//     transform: translateY(-20px) scale(0.95);
+//   }
+// `;
 
 // Define the slideIn animation
 const slideIn = keyframes`
@@ -179,14 +179,14 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
 `;
 
 // Add a new keyframe for the menu icon animation
-const rotateMenu = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
-`;
+// const rotateMenu = keyframes`
+//   0% {
+//     transform: rotate(0deg);
+//   }
+//   100% {
+//     transform: rotate(180deg);
+//   }
+// `;
 
 // Update the MobileMenuIcon styled component
 const MobileMenuIcon = styled.div<{ open: boolean }>`
