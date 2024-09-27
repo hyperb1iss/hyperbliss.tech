@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { initializeCanvas } from "../lib/headerEffects";
 import { NAV_ITEMS } from "../lib/navigation";
@@ -226,9 +226,23 @@ const LogoEmojis = styled.span`
   }
 `;
 
-const GlowingLogoEmojis = styled(LogoEmojis)`
+// Update these keyframes for emoji animations
+const rotateOnce = keyframes`
+  0%, 70% { transform: rotate(0deg); }
+  80%, 100% { transform: rotate(var(--rotation-angle)); }
+`;
+
+// Update the GlowingEmoji styled component
+const GlowingEmoji = styled(LogoEmojis)<{
+  $animationDelay: number;
+  $clockwise: boolean;
+}>`
+  --rotation-angle: ${(props) => (props.$clockwise ? "90deg" : "-90deg")};
+  animation: ${rotateOnce} 20s ease-in-out infinite;
+  animation-delay: ${(props) => props.$animationDelay}s;
   transition: text-shadow 0.3s ease;
   text-shadow: 0 0 1px #fff, 0 0 2px #a259ff;
+  display: inline-block;
 
   &:hover {
     text-shadow: 0 0 1px #fff, 0 0 2px #00fff0, 0 0 3px #00fff0;
@@ -463,6 +477,12 @@ const Header: React.FC = () => {
     open: { rotate: -45, translateY: -10 },
   };
 
+  // Update this function to generate random values for emoji props
+  const getRandomEmojiProps = () => ({
+    $animationDelay: Math.random() * -20, // Random negative delay up to 20 seconds
+    $clockwise: Math.random() < 0.5,
+  });
+
   return (
     <Nav ref={navRef}>
       <Canvas ref={canvasRef} />
@@ -472,10 +492,10 @@ const Header: React.FC = () => {
           <LogoEmojis>🌠</LogoEmojis>
           <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
           <LogoEmojis>✨</LogoEmojis>
-          <GlowingLogoEmojis>⎊</GlowingLogoEmojis>
-          <GlowingLogoEmojis>⨳</GlowingLogoEmojis>
-          <GlowingLogoEmojis>✵</GlowingLogoEmojis>
-          <GlowingLogoEmojis>⊹</GlowingLogoEmojis>
+          <GlowingEmoji {...getRandomEmojiProps()}>⎊</GlowingEmoji>
+          <GlowingEmoji {...getRandomEmojiProps()}>⨳</GlowingEmoji>
+          <GlowingEmoji {...getRandomEmojiProps()}>✵</GlowingEmoji>
+          <GlowingEmoji {...getRandomEmojiProps()}>⊹</GlowingEmoji>
         </Logo>
         {/* Desktop Navigation */}
         <NavLinks>
