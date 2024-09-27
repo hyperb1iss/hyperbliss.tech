@@ -178,7 +178,7 @@ const LogoText = styled.span`
   }
 
   @media (max-width: 768px) {
-    font-size: 2.4rem;
+    font-size: 2.8rem;
   }
 `;
 
