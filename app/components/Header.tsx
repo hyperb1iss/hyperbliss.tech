@@ -90,7 +90,7 @@ const Logo = styled(Link)`
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
@@ -105,16 +105,15 @@ const LogoText = styled.span`
   }
 
   @media (max-width: 768px) {
-    font-size: 2rem;
+    font-size: 2.4rem;
   }
 `;
 
 const LogoEmojis = styled.span`
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   margin: 0 0.5rem;
 
   @media (max-width: 768px) {
-    font-size: 2rem;
   }
 `;
 
