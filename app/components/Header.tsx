@@ -56,6 +56,7 @@ const NavContent = styled.div`
   width: 100%;
   max-width: 1200px;
   height: 100%;
+  overflow: hidden; // Add this to clip the logo when necessary
 `;
 
 const Logo = styled(Link)`
@@ -65,10 +66,14 @@ const Logo = styled(Link)`
   cursor: pointer;
   position: relative;
   max-width: 60%;
-  overflow: hidden;
   white-space: nowrap;
   height: 100%;
-  overflow: hidden;
+  overflow: hidden; // Change back to hidden
+
+  @media (max-width: 768px) {
+    max-width: calc(100% - 80px); // Adjust this value as needed
+    overflow: hidden;
+  }
 `;
 
 // Modify the flicker keyframe animation
@@ -161,7 +166,7 @@ const shiftingGlow = keyframes`
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 3.0rem;
+  font-size: 3rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
@@ -212,6 +217,8 @@ const LogoEmojis = styled.span`
 
   @media (max-width: 768px) {
     font-size: 2.4rem;
+    position: relative;
+    z-index: 1;
   }
 `;
 
@@ -244,6 +251,7 @@ const NavLinks = styled.ul`
   list-style: none;
   display: flex;
   gap: 2rem;
+  flex-shrink: 0; // Prevent nav links from shrinking
 
   @media (max-width: 768px) {
     display: none;
@@ -257,11 +265,8 @@ const NavItem = styled.li`
 const StyledNavLink = styled.a<{ $active: boolean }>`
   font-family: var(--font-body);
   font-size: 2.2rem;
-  font-weight: 700; // Increased from 500 to 700 for better visibility
-  color: ${(props) =>
-    props.$active
-      ? "#00ffff"
-      : "#ffffff"}; // Changed from #f0f0f0 to #ffffff for inactive links
+  font-weight: 700;
+  color: ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
   position: relative;
@@ -294,6 +299,31 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
   &:hover::after,
   &:focus::after {
     transform: scaleX(1);
+  }
+
+  @media (max-width: 1600px) {
+    font-size: 2.4rem;
+    padding: 0.5rem 0.9rem;
+  }
+
+  @media (max-width: 1400px) {
+    font-size: 2.6rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  @media (max-width: 1200px) {
+    font-size: 2.4rem;
+    padding: 0.5rem 0.7rem;
+  }
+
+  @media (max-width: 1000px) {
+    font-size: 2.2rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  @media (max-width: 900px) {
+    font-size: 2rem;
+    padding: 0.5rem 0.5rem;
   }
 
   @media (max-width: 768px) {
