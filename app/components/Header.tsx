@@ -219,6 +219,7 @@ const LogoEmojis = styled.span`
     font-size: 1.8rem;
     position: relative;
     z-index: 1;
+    padding-top: 5px;
   }
 `;
 
