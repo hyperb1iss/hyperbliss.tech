@@ -2,7 +2,7 @@
 
 **Engineering Leader | Android Sorceress | Music Producer | Maker | Founder** 🏳️‍🌈
 
-📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 🔗 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
+📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
 
 ## 🌠 Summary
 
