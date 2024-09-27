@@ -6,7 +6,7 @@
 /**
  * Applies a glitch effect to the canvas.
  * This effect includes RGB shift, random pixel displacement, and color inversion.
- * 
+ *
  * @param ctx - The 2D rendering context of the canvas.
  * @param width - The width of the canvas.
  * @param height - The height of the canvas.
@@ -135,7 +135,7 @@ export const applyGlitchEffect = (
 /**
  * Applies a chromatic aberration effect to the canvas.
  * This effect separates the color channels, creating a 'glitchy' look.
- * 
+ *
  * @param ctx - The 2D rendering context of the canvas.
  * @param width - The width of the canvas.
  * @param height - The height of the canvas.
@@ -156,8 +156,14 @@ export const applyChromaticAberration = (
     const yOffset = y * width;
     for (let x = 0; x < width; x++) {
       const i = (yOffset + x) << 2;
-      const redX = Math.max(0, Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5)));
-      const blueX = Math.max(0, Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5)));
+      const redX = Math.max(
+        0,
+        Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5))
+      );
+      const blueX = Math.max(
+        0,
+        Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5))
+      );
       const redI = (yOffset + redX) << 2;
       const blueI = (yOffset + blueX) << 2;
 
@@ -174,7 +180,7 @@ export const applyChromaticAberration = (
 /**
  * Applies a CRT screen effect to the canvas.
  * This effect simulates the appearance of an old CRT monitor, including screen curvature and scanlines.
- * 
+ *
  * @param ctx - The 2D rendering context of the canvas.
  * @param width - The width of the canvas.
  * @param height - The height of the canvas.
@@ -192,7 +198,9 @@ export const applyCRTEffect = (
   const halfHeight = height / 2;
 
   // Precalculate values for efficiency
-  const maxDistance = Math.sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
+  const maxDistance = Math.sqrt(
+    halfWidth * halfWidth + halfHeight * halfHeight
+  );
   const bendFactor = 0.1 * intensity;
 
   // Add CRT screen curvature
@@ -223,9 +231,9 @@ export const applyCRTEffect = (
     const yOffset = y * width;
     for (let x = 0; x < width; x++) {
       const index = (yOffset + x) << 2;
-      data[index] = data[index] * 0.8 | 0;
-      data[index + 1] = data[index + 1] * 0.8 | 0;
-      data[index + 2] = data[index + 2] * 0.8 | 0;
+      data[index] = (data[index] * 0.8) | 0;
+      data[index + 1] = (data[index + 1] * 0.8) | 0;
+      data[index + 2] = (data[index + 2] * 0.8) | 0;
     }
   }
 
@@ -233,8 +241,12 @@ export const applyCRTEffect = (
 
   // Add vignette effect
   const gradient = ctx.createRadialGradient(
-    halfWidth, halfHeight, 0,
-    halfWidth, halfHeight, Math.max(width, height) / 2
+    halfWidth,
+    halfHeight,
+    0,
+    halfWidth,
+    halfHeight,
+    Math.max(width, height) / 2
   );
   gradient.addColorStop(0, "rgba(0,0,0,0)");
   gradient.addColorStop(1, `rgba(0,0,0,${0.7 * intensity})`);

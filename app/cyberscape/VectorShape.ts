@@ -4,7 +4,7 @@ import {
   rgbToHex,
   project,
   rotateVertex,
-} from "./headerEffectsUtils";
+} from "./CyberScapeUtils";
 
 /**
  * VectorShape class representing a 3D shape (cube, pyramid, or star) in the background.

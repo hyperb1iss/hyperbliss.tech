@@ -4,7 +4,7 @@ import {
   CYBERPUNK_HUE_RANGES,
   getRandomCyberpunkHue,
   project,
-} from "./headerEffectsUtils";
+} from "./CyberScapeUtils";
 import {
   applyGlitchEffect,
   applyChromaticAberration,
@@ -12,17 +12,13 @@ import {
 } from "./glitchEffects";
 
 /**
- * Initializes the canvas and sets up the header animation effects.
- * This function is responsible for creating and managing the entire animation
- * system, including particle and shape generation, user interaction handling,
- * and applying visual effects.
- *
+ * Initializes the CyberScape animation on the canvas.
  * @param canvas - The HTML canvas element to draw on.
  * @param logoElement - The logo element for potential interactions.
  * @param navElement - The navigation element for mouse interaction detection.
  * @returns A cleanup function to remove event listeners and cancel animations.
  */
-export const initializeCanvas = (
+export const initializeCyberScape = (
   canvas: HTMLCanvasElement,
   logoElement: HTMLAnchorElement,
   navElement: HTMLElement
@@ -39,7 +35,7 @@ export const initializeCanvas = (
   let animationFrameId: number;
 
   // Variables for cursor interaction
-  let isCursorOverHeader = false;
+  let isCursorOverCyberScape = false;
   let mouseX = 0;
   let mouseY = 0;
 
@@ -48,7 +44,6 @@ export const initializeCanvas = (
 
   /**
    * Updates global hue to cycle through cyberpunk colors smoothly.
-   * This function ensures that the color scheme remains within the defined cyberpunk ranges.
    */
   const updateHue = () => {
     hue = (hue + 0.2) % 360; // Slower hue shift for reduced breathing effect
@@ -65,8 +60,6 @@ export const initializeCanvas = (
 
   /**
    * Handles window resize events to keep canvas dimensions updated.
-   * This function ensures that the canvas size matches the container and
-   * adjusts the number of particles and shapes accordingly.
    */
   const handleResize = () => {
     width = canvas.offsetWidth;
@@ -80,19 +73,17 @@ export const initializeCanvas = (
   window.addEventListener("resize", handleResize);
 
   /**
-   * Handles pointer enter events for the header.
-   * Sets a flag to indicate that the cursor is over the header area.
+   * Handles pointer enter events for the CyberScape.
    */
   const handlePointerEnter = () => {
-    isCursorOverHeader = true;
+    isCursorOverCyberScape = true;
   };
 
   /**
-   * Handles pointer leave events for the header.
-   * Resets the flag to indicate that the cursor has left the header area.
+   * Handles pointer leave events for the CyberScape.
    */
   const handlePointerLeave = () => {
-    isCursorOverHeader = false;
+    isCursorOverCyberScape = false;
   };
 
   // Attach pointerenter and pointerleave events to the nav element
@@ -101,15 +92,15 @@ export const initializeCanvas = (
 
   /**
    * Throttles a function to limit how often it can be called.
-   * This is useful for performance optimization, especially for frequently triggered events.
-   *
    * @param func - The function to throttle.
    * @param limit - The time limit (in milliseconds) between function calls.
-   * @returns A throttled version of the input function.
    */
-  const throttle = (func: Function, limit: number) => {
+  const throttle = <T extends unknown[]>(
+    func: (...args: T) => void,
+    limit: number
+  ) => {
     let inThrottle: boolean;
-    return (...args: any[]) => {
+    return (...args: T) => {
       if (!inThrottle) {
         func(...args);
         inThrottle = true;
@@ -119,13 +110,11 @@ export const initializeCanvas = (
   };
 
   /**
-   * Handles mouse move events to track cursor position when over the header.
-   * This function updates the mouseX and mouseY variables used for particle interactions.
-   *
+   * Handles mouse move events to track cursor position when over the CyberScape.
    * @param event - The MouseEvent object containing cursor position information.
    */
   const handleMouseMove = (event: MouseEvent) => {
-    if (!isCursorOverHeader) return;
+    if (!isCursorOverCyberScape) return;
     const rect = canvas.getBoundingClientRect();
     // Convert mouse position to canvas coordinate system centered at (0,0)
     mouseX = event.clientX - rect.left - width / 2;
@@ -142,8 +131,6 @@ export const initializeCanvas = (
 
   /**
    * Adjusts the number of particles and shapes based on the current screen size.
-   * This function ensures optimal performance by scaling the number of elements
-   * according to the canvas dimensions and device capabilities.
    */
   const adjustShapeCounts = () => {
     const isMobile = width <= 768;
@@ -182,39 +169,11 @@ export const initializeCanvas = (
     shapesArray.length = numberOfShapes;
   };
 
-  // Object pools for efficient particle and shape management
-  const particlePool: Particle[] = [];
-  const shapePool: VectorShape[] = [];
-
-  /**
-   * Retrieves a Particle object from the pool or creates a new one if the pool is empty.
-   * This function helps in reducing garbage collection and improving performance.
-   *
-   * @returns A Particle object ready for use.
-   */
-  const getParticleFromPool = () => {
-    return particlePool.pop() || new Particle(new Set(), width, height);
-  };
-
-  /**
-   * Retrieves a VectorShape object from the pool or creates a new one if the pool is empty.
-   * This function helps in reducing garbage collection and improving performance.
-   *
-   * @param type - The type of shape to retrieve or create.
-   * @returns A VectorShape object ready for use.
-   */
-  const getShapeFromPool = (type: "cube" | "pyramid" | "star") => {
-    return shapePool.pop() || new VectorShape(type, new Set(), width, height);
-  };
-
   // Initial adjustment based on current size
   adjustShapeCounts();
 
   /**
    * Connects nearby particles with lines to create a network effect.
-   * This function is responsible for drawing the interconnecting lines between particles,
-   * creating a dynamic, web-like visual effect.
-   *
    * @param particles - Array of particles to connect.
    * @param ctx - Canvas rendering context.
    */
@@ -231,14 +190,10 @@ export const initializeCanvas = (
         const dz = particles[a].z - particles[b].z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        // Increase the distance threshold to 150
         if (distance < 150) {
-          // Adjust the alpha calculation for more visibility
           const alpha = (1 - distance / 150) * 0.7;
-          // Use a brighter color for connections
           ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
 
-          // Project positions
           const posA = project(
             particles[a].x,
             particles[a].y,
@@ -254,7 +209,6 @@ export const initializeCanvas = (
             height
           );
 
-          // Draw the line
           ctx.beginPath();
           ctx.moveTo(posA.x, posA.y);
           ctx.lineTo(posB.x, posB.y);
@@ -266,20 +220,15 @@ export const initializeCanvas = (
 
   /**
    * Updates particle connections by slightly changing their velocities.
-   * This function adds a subtle, organic movement to the particle system.
-   *
    * @param particles - Array of particles to update.
    */
   const updateParticleConnections = (particles: Particle[]) => {
     particles.forEach((particle) => {
-      // Randomly change particle velocity slightly
       if (Math.random() < 0.05) {
-        // 5% chance to change direction each frame
         particle.velocityX += (Math.random() - 0.5) * 0.2;
         particle.velocityY += (Math.random() - 0.5) * 0.2;
         particle.velocityZ += (Math.random() - 0.5) * 0.2;
 
-        // Normalize velocity to maintain consistent speed
         const speed = Math.sqrt(
           particle.velocityX ** 2 +
             particle.velocityY ** 2 +
@@ -300,10 +249,9 @@ export const initializeCanvas = (
   let glitchDuration = 200; // 0.2 seconds duration for each glitch effect
 
   /**
-   * The main animation loop that updates and draws particles and shapes.
-   * This function is called recursively to create a smooth animation.
+   * The main animation loop for CyberScape.
    */
-  const animate = () => {
+  const animateCyberScape = () => {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
     ctx.fillRect(0, 0, width, height);
@@ -311,14 +259,14 @@ export const initializeCanvas = (
     updateHue();
     updateParticleConnections(particlesArray);
 
-    for (let particle of particlesArray) {
-      particle.update(isCursorOverHeader, mouseX, mouseY, width, height);
+    for (const particle of particlesArray) {
+      particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
       particle.draw(ctx, mouseX, mouseY, width, height);
     }
 
     const existingPositions = new Set<string>();
-    for (let shape of shapesArray) {
-      shape.update(isCursorOverHeader, mouseX, mouseY, width, height);
+    for (const shape of shapesArray) {
+      shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
       if (shape.opacity > 0) {
         existingPositions.add(shape.getPositionKey());
         shape.draw(ctx, width, height);
@@ -334,12 +282,10 @@ export const initializeCanvas = (
     const currentTime = Date.now();
     if (!isGlitching && currentTime - lastGlitchTime > glitchInterval) {
       isGlitching = true;
-      glitchIntensity = Math.random() * 0.7 + 0.3; // Random intensity between 0.3 and 1
-      glitchDuration = Math.random() * 300 + 100; // Random duration between 100ms and 400ms
+      glitchIntensity = Math.random() * 0.7 + 0.3;
+      glitchDuration = Math.random() * 300 + 100;
       lastGlitchTime = currentTime;
-
-      // Randomly adjust the next glitch interval
-      glitchInterval = Math.random() * 5000 + 5000; // Random interval between 5s and 10s
+      glitchInterval = Math.random() * 5000 + 5000;
     }
 
     if (isGlitching) {
@@ -356,15 +302,14 @@ export const initializeCanvas = (
     }
 
     // Continue the animation loop
-    animationFrameId = requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animateCyberScape);
   };
 
   // Start the animation
-  animate();
+  animateCyberScape();
 
   /**
    * Cleanup function to remove event listeners and cancel animations.
-   * This function should be called when the component unmounts or the effect needs to be cleaned up.
    */
   const cleanup = () => {
     window.removeEventListener("resize", handleResize);

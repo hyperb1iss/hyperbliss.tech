@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { styled, keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
-import { initializeCanvas } from "../lib/headerEffects";
+import { initializeCyberScape  } from "../cyberscape/CyberScape";
 import { NAV_ITEMS } from "../lib/navigation";
 
 // Define the keyframes for the gradient animation
@@ -408,7 +408,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
     if (canvasRef.current && logoRef.current && navRef.current) {
-      cleanupCanvas = initializeCanvas(
+      cleanupCanvas = initializeCyberScape(
         canvasRef.current,
         logoRef.current,
         navRef.current

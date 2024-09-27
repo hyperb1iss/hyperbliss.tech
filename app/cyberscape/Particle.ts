@@ -1,4 +1,4 @@
-import { project, getRandomCyberpunkHue } from "./headerEffectsUtils";
+import { project, getRandomCyberpunkHue } from "./CyberScapeUtils";
 
 /**
  * Particle class representing a single interactive star in the background.
