@@ -43,9 +43,6 @@ export const initializeCanvas = (
     "#a259ff", // Purple
     "#ff75d8", // Pink
     "#00ffff", // Electric Blue
-    "#ff3131", // Neon Red
-    "#ffff00", // Yellow
-    "#0000ff", // Dark Blue
     "#4b0082", // Indigo
     "#8a2be2", // Blue Violet
     "#483d8b", // Dark Slate Blue
@@ -739,10 +736,10 @@ export const initializeCanvas = (
 
     // Slightly increase the number of particles for mobile devices
     if (isMobile) {
-      numberOfParticles = Math.floor(numberOfParticles * 1.2); // Reduced from 1.5
+      numberOfParticles = Math.floor(numberOfParticles * 1.2);
     }
 
-    numberOfShapes = isMobile ? 4 : 8; // Updated shape count for mobile and desktop
+    numberOfShapes = isMobile ? 3 : 6;
 
     const existingPositions = new Set<string>();
 
@@ -797,9 +794,9 @@ export const initializeCanvas = (
         // Increase the distance threshold to 150
         if (distance < 150) {
           // Adjust the alpha calculation for more visibility
-          const alpha = (1 - distance / 150) * 0.7; // Increased max alpha to 0.7
+          const alpha = (1 - distance / 150) * 0.7;
           // Use a brighter color for connections
-          ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`; // Brighter purple color
+          ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
 
           // Project positions
           const posA = project(particles[a].x, particles[a].y, particles[a].z);

@@ -63,7 +63,7 @@ const Nav = styled.nav`
   top: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   z-index: 1000;
   overflow: hidden;
   display: flex;
@@ -84,12 +84,17 @@ const Logo = styled(Link)`
   align-items: center;
   text-decoration: none;
   cursor: pointer;
-  position: relative; /* For accurate bounding rect calculations */
+  position: relative;
+  max-width: 60%;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 100%;
+  overflow: hidden;
 `;
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
@@ -109,10 +114,12 @@ const LogoText = styled.span`
 `;
 
 const LogoEmojis = styled.span`
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   margin: 0 0.5rem;
+  flex-shrink: 0;
 
   @media (max-width: 768px) {
+    font-size: 2.4rem;
   }
 `;
 
