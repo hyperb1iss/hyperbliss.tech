@@ -1,3 +1,5 @@
+// VectorShape.ts
+
 import {
   CYBERPUNK_COLORS,
   hexToRgb,
@@ -7,8 +9,8 @@ import {
 } from "./CyberScapeUtils";
 
 /**
- * VectorShape class representing a 3D shape (cube, pyramid, or star) in the background.
- * Each shape moves independently, reacts to user interaction, and maintains constant motion.
+ * VectorShape class representing a 3D shape (cube, pyramid, tetrahedron, octahedron, or dodecahedron) in the background.
+ * Each shape moves independently, interacts with other shapes, reacts to user interaction, and maintains constant motion.
  */
 export class VectorShape {
   vertices: { x: number; y: number; z: number }[];
@@ -28,24 +30,27 @@ export class VectorShape {
   isFadingOut: boolean;
   opacity: number;
   glowIntensity: number;
+  radius: number; // Represents the size of the shape for interactions
 
   // Reusable objects for calculations
   private tempVector: { x: number; y: number; z: number };
 
   /**
    * Creates a new VectorShape instance.
-   * @param shapeType - The type of shape to create ("cube", "pyramid", or "star").
+   * @param shapeType - The type of shape to create ("cube", "pyramid", "tetrahedron", "octahedron", or "dodecahedron").
    * @param existingPositions - Set of existing position keys to avoid overlap.
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
   constructor(
-    shapeType: "cube" | "pyramid" | "star",
+    shapeType: "cube" | "pyramid" | "tetrahedron" | "octahedron" | "dodecahedron",
     existingPositions: Set<string>,
     width: number,
     height: number
   ) {
     const size = 30; // Reduced size for shapes
+    this.radius = size; // Initialize radius based on size
+
     switch (shapeType) {
       case "cube":
         this.vertices = [
@@ -92,30 +97,104 @@ export class VectorShape {
           [4, 1],
         ];
         break;
-      case "star":
-        // Define a 5-pointed star
-        this.vertices = [];
-        const angle = Math.PI / 2;
-        const outerRadius = size;
-        const innerRadius = size / 2;
-        for (let i = 0; i < 5; i++) {
-          const outerAngle = angle + (i * 2 * Math.PI) / 5;
-          const innerAngle = angle + ((i * 2 + 1) * Math.PI) / 5;
-          this.vertices.push({
-            x: Math.cos(outerAngle) * outerRadius,
-            y: Math.sin(outerAngle) * outerRadius,
-            z: 0,
-          });
-          this.vertices.push({
-            x: Math.cos(innerAngle) * innerRadius,
-            y: Math.sin(innerAngle) * innerRadius,
-            z: 0,
-          });
-        }
-        this.edges = [];
-        for (let i = 0; i < 10; i++) {
-          this.edges.push([i, (i + 2) % 10]);
-        }
+      case "tetrahedron":
+        this.vertices = [
+          { x: size, y: size, z: size },
+          { x: -size, y: -size, z: size },
+          { x: -size, y: size, z: -size },
+          { x: size, y: -size, z: -size },
+        ];
+        this.edges = [
+          [0, 1],
+          [0, 2],
+          [0, 3],
+          [1, 2],
+          [1, 3],
+          [2, 3],
+        ];
+        break;
+      case "octahedron":
+        this.vertices = [
+          { x: 0, y: size, z: 0 },
+          { x: size, y: 0, z: 0 },
+          { x: 0, y: 0, z: size },
+          { x: -size, y: 0, z: 0 },
+          { x: 0, y: 0, z: -size },
+          { x: 0, y: -size, z: 0 },
+        ];
+        this.edges = [
+          [0, 1],
+          [0, 2],
+          [0, 3],
+          [0, 4],
+          [5, 1],
+          [5, 2],
+          [5, 3],
+          [5, 4],
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4, 1],
+        ];
+        break;
+      case "dodecahedron":
+        const phi = (1 + Math.sqrt(5)) / 2; // Golden ratio
+        const a = size / 2;
+        const b = size / (2 * phi);
+        this.vertices = [
+          { x: a, y: a, z: a },
+          { x: a, y: a, z: -a },
+          { x: a, y: -a, z: a },
+          { x: a, y: -a, z: -a },
+          { x: -a, y: a, z: a },
+          { x: -a, y: a, z: -a },
+          { x: -a, y: -a, z: a },
+          { x: -a, y: -a, z: -a },
+          { x: 0, y: b, z: phi * a },
+          { x: 0, y: b, z: -phi * a },
+          { x: 0, y: -b, z: phi * a },
+          { x: 0, y: -b, z: -phi * a },
+          { x: b, y: phi * a, z: 0 },
+          { x: b, y: -phi * a, z: 0 },
+          { x: -b, y: phi * a, z: 0 },
+          { x: -b, y: -phi * a, z: 0 },
+          { x: phi * a, y: 0, z: b },
+          { x: phi * a, y: 0, z: -b },
+          { x: -phi * a, y: 0, z: b },
+          { x: -phi * a, y: 0, z: -b },
+        ];
+        this.edges = [
+          [0, 8],
+          [0, 12],
+          [0, 16],
+          [1, 9],
+          [1, 12],
+          [1, 17],
+          [2, 10],
+          [2, 13],
+          [2, 16],
+          [3, 11],
+          [3, 13],
+          [3, 17],
+          [4, 8],
+          [4, 14],
+          [4, 18],
+          [5, 9],
+          [5, 14],
+          [5, 19],
+          [6, 10],
+          [6, 15],
+          [6, 18],
+          [7, 11],
+          [7, 15],
+          [7, 19],
+          [8, 10],
+          [9, 11],
+          [12, 14],
+          [13, 15],
+          [16, 17],
+          [18, 19],
+        ];
         break;
       default:
         throw new Error(`Unknown shape type: ${shapeType}`);
@@ -182,9 +261,7 @@ export class VectorShape {
    * @returns A string representing a color from the cyberpunk palette.
    */
   private getRandomCyberpunkColor(): string {
-    return CYBERPUNK_COLORS[
-      Math.floor(Math.random() * CYBERPUNK_COLORS.length)
-    ];
+    return CYBERPUNK_COLORS[Math.floor(Math.random() * CYBERPUNK_COLORS.length)];
   }
 
   /**
@@ -273,13 +350,13 @@ export class VectorShape {
 
       if (currentColor && targetColor) {
         const newR = Math.round(
-          currentColor.r + (targetColor.r - currentColor.r) * 0.05
+          currentColor.r + (targetColor.r - currentColor.r) * this.colorTransitionSpeed
         );
         const newG = Math.round(
-          currentColor.g + (targetColor.g - currentColor.g) * 0.05
+          currentColor.g + (targetColor.g - currentColor.g) * this.colorTransitionSpeed
         );
         const newB = Math.round(
-          currentColor.b + (targetColor.b - currentColor.b) * 0.05
+          currentColor.b + (targetColor.b - currentColor.b) * this.colorTransitionSpeed
         );
 
         this.color = rgbToHex(newR, newG, newB);
@@ -375,6 +452,7 @@ export class VectorShape {
         z: Math.random() * 600 - 300,
       };
     } while (existingPositions.has(this.getPositionKey()));
+    existingPositions.add(this.getPositionKey());
 
     // Reset lifecycle
     this.age = 0;
@@ -449,5 +527,242 @@ export class VectorShape {
    */
   isFadedOut(): boolean {
     return this.isFadingOut && this.opacity <= 0;
+  }
+
+  /**
+   * Handles collision detection and response between shapes.
+   * This method should be called externally with the array of shapes.
+   * @param shapes - Array of VectorShape instances to check collisions with.
+   */
+  static handleCollisions(shapes: VectorShape[]): void {
+    for (let i = 0; i < shapes.length; i++) {
+      for (let j = i + 1; j < shapes.length; j++) {
+        const shapeA = shapes[i];
+        const shapeB = shapes[j];
+
+        const dx = shapeB.position.x - shapeA.position.x;
+        const dy = shapeB.position.y - shapeA.position.y;
+        const dz = shapeB.position.z - shapeA.position.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        // Check for collision based on radii
+        if (distance < shapeA.radius + shapeB.radius) {
+          // Normalize the collision vector
+          const nx = dx / distance;
+          const ny = dy / distance;
+          const nz = dz / distance;
+
+          // Calculate relative velocity
+          const dvx = shapeA.velocity.x - shapeB.velocity.x;
+          const dvy = shapeA.velocity.y - shapeB.velocity.y;
+          const dvz = shapeA.velocity.z - shapeB.velocity.z;
+
+          // Calculate velocity along the normal
+          const vn = dvx * nx + dvy * ny + dvz * nz;
+
+          // If shapes are moving away from each other, skip
+          if (vn > 0) continue;
+
+          // Calculate impulse scalar (assuming equal mass and perfect elasticity)
+          const impulse = -2 * vn / 2; // mass cancels out
+
+          // Apply impulse to the shapes' velocities
+          shapeA.velocity.x += impulse * nx;
+          shapeA.velocity.y += impulse * ny;
+          shapeA.velocity.z += impulse * nz;
+
+          shapeB.velocity.x -= impulse * nx;
+          shapeB.velocity.y -= impulse * ny;
+          shapeB.velocity.z -= impulse * nz;
+
+          // Adjust positions to prevent overlap
+          const overlap = shapeA.radius + shapeB.radius - distance;
+          shapeA.position.x -= (overlap / 2) * nx;
+          shapeA.position.y -= (overlap / 2) * ny;
+          shapeA.position.z -= (overlap / 2) * nz;
+
+          shapeB.position.x += (overlap / 2) * nx;
+          shapeB.position.y += (overlap / 2) * ny;
+          shapeB.position.z += (overlap / 2) * nz;
+
+          // Change colors upon collision
+          shapeA.color = shapeA.getRandomCyberpunkColor();
+          shapeB.color = shapeB.getRandomCyberpunkColor();
+        }
+      }
+    }
+  }
+
+  /**
+   * Handles proximity-based color blending between shapes.
+   * This method should be called externally with the array of shapes.
+   * @param shapes - Array of VectorShape instances to blend colors with.
+   */
+  static handleColorBlending(shapes: VectorShape[]): void {
+    const INFLUENCE_RADIUS = 150; // Adjust as needed
+
+    for (let i = 0; i < shapes.length; i++) {
+      let rTotal = 0,
+        gTotal = 0,
+        bTotal = 0,
+        count = 0;
+
+      for (let j = 0; j < shapes.length; j++) {
+        if (i === j) continue;
+
+        const shapeA = shapes[i];
+        const shapeB = shapes[j];
+
+        const dx = shapeA.position.x - shapeB.position.x;
+        const dy = shapeA.position.y - shapeB.position.y;
+        const dz = shapeA.position.z - shapeB.position.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance < INFLUENCE_RADIUS) {
+          const rgb = hexToRgb(shapeB.color);
+          if (rgb) {
+            rTotal += rgb.r;
+            gTotal += rgb.g;
+            bTotal += rgb.b;
+            count++;
+          }
+        }
+      }
+
+      if (count > 0) {
+        const avgR = Math.round(rTotal / count);
+        const avgG = Math.round(gTotal / count);
+        const avgB = Math.round(bTotal / count);
+
+        // Blend the current shape's color towards the average color
+        const currentColor = hexToRgb(shapes[i].color);
+        if (currentColor) {
+          const blendedR = Math.round(
+            currentColor.r + (avgR - currentColor.r) * 0.05
+          );
+          const blendedG = Math.round(
+            currentColor.g + (avgG - currentColor.g) * 0.05
+          );
+          const blendedB = Math.round(
+            currentColor.b + (avgB - currentColor.b) * 0.05
+          );
+
+          shapes[i].color = rgbToHex(blendedR, blendedG, blendedB);
+        }
+      }
+    }
+  }
+
+  /**
+   * Handles attraction and repulsion forces between shapes.
+   * This method should be called externally with the array of shapes.
+   * @param shapes - Array of VectorShape instances to apply forces to.
+   */
+  static handleAttractionRepulsion(shapes: VectorShape[]): void {
+    const ATTRACTION_RADIUS = 200;
+    const REPULSION_RADIUS = 80;
+    const ATTRACTION_FORCE = 0.0005; // Adjust as needed
+    const REPULSION_FORCE = 0.001; // Adjust as needed
+
+    for (let i = 0; i < shapes.length; i++) {
+      for (let j = i + 1; j < shapes.length; j++) {
+        const shapeA = shapes[i];
+        const shapeB = shapes[j];
+
+        const dx = shapeB.position.x - shapeA.position.x;
+        const dy = shapeB.position.y - shapeA.position.y;
+        const dz = shapeB.position.z - shapeA.position.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance < ATTRACTION_RADIUS && distance > REPULSION_RADIUS) {
+          // Attraction
+          const forceMagnitude = ATTRACTION_FORCE;
+          shapeA.velocity.x += (dx / distance) * forceMagnitude;
+          shapeA.velocity.y += (dy / distance) * forceMagnitude;
+          shapeA.velocity.z += (dz / distance) * forceMagnitude;
+
+          shapeB.velocity.x -= (dx / distance) * forceMagnitude;
+          shapeB.velocity.y -= (dy / distance) * forceMagnitude;
+          shapeB.velocity.z -= (dz / distance) * forceMagnitude;
+        } else if (distance <= REPULSION_RADIUS) {
+          // Repulsion
+          const forceMagnitude = REPULSION_FORCE;
+          shapeA.velocity.x -= (dx / distance) * forceMagnitude;
+          shapeA.velocity.y -= (dy / distance) * forceMagnitude;
+          shapeA.velocity.z -= (dz / distance) * forceMagnitude;
+
+          shapeB.velocity.x += (dx / distance) * forceMagnitude;
+          shapeB.velocity.y += (dy / distance) * forceMagnitude;
+          shapeB.velocity.z += (dz / distance) * forceMagnitude;
+        }
+      }
+    }
+  }
+
+  /**
+   * Draws connecting lines between shapes that are within a certain distance of each other.
+   * @param ctx - Canvas rendering context.
+   * @param shapes - Array of VectorShape instances to connect.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
+  static drawConnections(
+    ctx: CanvasRenderingContext2D,
+    shapes: VectorShape[],
+    width: number,
+    height: number
+  ): void {
+    const CONNECTION_DISTANCE = 120; // Adjust as needed
+
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Light lines
+    ctx.lineWidth = 1;
+
+    for (let i = 0; i < shapes.length; i++) {
+      for (let j = i + 1; j < shapes.length; j++) {
+        const shapeA = shapes[i];
+        const shapeB = shapes[j];
+
+        const dx = shapeA.position.x - shapeB.position.x;
+        const dy = shapeA.position.y - shapeB.position.y;
+        const dz = shapeA.position.z - shapeB.position.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance < CONNECTION_DISTANCE) {
+          const projectedA = project(
+            shapeA.position.x,
+            shapeA.position.y,
+            shapeA.position.z,
+            width,
+            height
+          );
+          const projectedB = project(
+            shapeB.position.x,
+            shapeB.position.y,
+            shapeB.position.z,
+            width,
+            height
+          );
+
+          ctx.beginPath();
+          ctx.moveTo(projectedA.x, projectedA.y);
+          ctx.lineTo(projectedB.x, projectedB.y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  /**
+   * Determines if this shape is within a certain distance of another shape.
+   * @param other - The other VectorShape instance to check against.
+   * @param distanceThreshold - The distance threshold for proximity.
+   * @returns True if within the distance, false otherwise.
+   */
+  isWithinDistance(other: VectorShape, distanceThreshold: number): boolean {
+    const dx = this.position.x - other.position.x;
+    const dy = this.position.y - other.position.y;
+    const dz = this.position.z - other.position.z;
+    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    return distance < distanceThreshold;
   }
 }

@@ -158,7 +158,7 @@ export const initializeCyberScape = (
       numberOfParticles = Math.floor(numberOfParticles * 1.2);
     }
 
-    numberOfShapes = isMobile ? 3 : 6;
+    numberOfShapes = isMobile ? 4 : 8;
 
     const existingPositions = new Set<string>();
 
@@ -170,10 +170,18 @@ export const initializeCyberScape = (
 
     // Adjust shapes
     while (shapesArray.length < numberOfShapes) {
-      const shapeType = ["cube", "pyramid", "star"][shapesArray.length % 3] as
+      const shapeType = [
+        "cube",
+        "pyramid",
+        "tetrahedron",
+        "octahedron",
+        "dodecahedron",
+      ][shapesArray.length % 5] as
         | "cube"
         | "pyramid"
-        | "star";
+        | "tetrahedron"
+        | "octahedron"
+        | "dodecahedron";
       shapesArray.push(
         new VectorShape(shapeType, existingPositions, width, height)
       );
