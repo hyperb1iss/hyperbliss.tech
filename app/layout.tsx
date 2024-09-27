@@ -40,6 +40,7 @@ export default function RootLayout({
               display: "flex",
               flexDirection: "column",
               minHeight: "100vh",
+              paddingTop: "50px",
             }}
           >
             <main style={{ flex: 1 }}>

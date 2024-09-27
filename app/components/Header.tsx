@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { styled, keyframes } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
-import { initializeCyberScape  } from "../cyberscape/CyberScape";
+import { initializeCyberScape } from "../cyberscape/CyberScape";
 import { NAV_ITEMS } from "../lib/navigation";
 
 // Define the keyframes for the gradient animation
@@ -40,7 +40,8 @@ const Nav = styled.nav`
   top: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  padding: 0.5rem 1rem;
+  padding: 1rem 1rem;
+  height: 100px;
   z-index: 1000;
   overflow: hidden;
   display: flex;
@@ -54,6 +55,7 @@ const NavContent = styled.div`
   align-items: center;
   width: 100%;
   max-width: 1200px;
+  height: 100%;
 `;
 
 const Logo = styled(Link)`
@@ -342,17 +344,17 @@ const MenuLine = styled(motion.span)`
 const MobileNavLinks = styled.ul<{ open: boolean }>`
   list-style: none;
   position: fixed;
-  top: 80px; // Adjust based on your header height
-  right: 20px; // Position from the right side
-  background-color: rgba(10, 10, 20, 0.95); // Darker background
-  width: 200px; // Fixed width
+  top: 100px;
+  right: 20px;
+  background-color: rgba(10, 10, 20, 0.95);
+  width: 200px;
   flex-direction: column;
   display: flex;
   z-index: 1001;
   padding: 1rem;
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3); // Glowing effect
-  border: 1px solid rgba(162, 89, 255, 0.2); // Subtle border
+  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
+  border: 1px solid rgba(162, 89, 255, 0.2);
   opacity: ${(props) => (props.open ? 1 : 0)};
   transform: ${(props) =>
     props.open ? "translateY(0) scale(1)" : "translateY(-20px) scale(0.95)"};
@@ -385,9 +387,9 @@ const Canvas = styled.canvas`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100px;
   pointer-events: none;
-  z-index: -1; /* Place the canvas behind the nav content */
+  z-index: -1;
 `;
 
 /**
@@ -401,13 +403,31 @@ const Header: React.FC = () => {
   const animateAndNavigate = useAnimatedNavigation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
-  const navRef = useRef<HTMLElement>(null); // Ref for the nav element
+  const navRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLUListElement>(null);
+
+  // Move resizeCanvas function outside of useEffect
+  const resizeCanvas = () => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const { width, height } = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+      }
+    }
+  };
 
   // Effect for initializing canvas
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
     if (canvasRef.current && logoRef.current && navRef.current) {
+      resizeCanvas(); // Initial resize
+      window.addEventListener("resize", resizeCanvas);
+
       cleanupCanvas = initializeCyberScape(
         canvasRef.current,
         logoRef.current,
@@ -416,6 +436,7 @@ const Header: React.FC = () => {
     }
     return () => {
       if (cleanupCanvas) cleanupCanvas();
+      window.removeEventListener("resize", resizeCanvas);
     };
   }, []);
 
@@ -466,7 +487,7 @@ const Header: React.FC = () => {
 
   // Update this function to generate random values for emoji props
   const getRandomEmojiProps = () => ({
-    $animationDelay: Math.random() * -20, // Random negative delay up to 20 seconds
+    $animationDelay: Math.random() * -20,
     $clockwise: Math.random() < 0.5,
   });
 

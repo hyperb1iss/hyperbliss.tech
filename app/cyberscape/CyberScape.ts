@@ -26,6 +26,18 @@ export const initializeCyberScape = (
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => {};
 
+  const updateCanvasSize = () => {
+    const { width, height } = canvas.getBoundingClientRect();
+    if (canvas.width !== width || canvas.height !== height) {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+    }
+  };
+
+  updateCanvasSize();
+
   let width = canvas.offsetWidth;
   let height = canvas.offsetHeight;
   canvas.width = width;
@@ -252,9 +264,10 @@ export const initializeCyberScape = (
    * The main animation loop for CyberScape.
    */
   const animateCyberScape = () => {
-    ctx.clearRect(0, 0, width, height);
+    updateCanvasSize();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     updateHue();
     updateParticleConnections(particlesArray);
