@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import PageTitle from "./PageTitle";
 import PageLayout from "./PageLayout";
 
+// Styled components for project details
 const ProjectLinks = styled.div`
   text-align: center;
   margin-top: 1rem;
@@ -88,12 +89,19 @@ const ProjectContent = styled.article`
   }
 `;
 
+// Interface for ProjectDetail component props
 interface ProjectDetailProps {
   title: string;
   github: string;
   content: string;
 }
 
+/**
+ * ProjectDetail component
+ * Renders detailed information about a single project.
+ * @param {ProjectDetailProps} props - The component props
+ * @returns {JSX.Element} Rendered project detail page
+ */
 export default function ProjectDetail({
   title,
   github,

@@ -1,5 +1,4 @@
 // app/components/Header.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -262,7 +261,11 @@ const Canvas = styled.canvas`
   z-index: -1; /* Place the canvas behind the nav content */
 `;
 
-// Header Component
+/**
+ * Header component
+ * Renders the main navigation header with animated effects.
+ * @returns {JSX.Element} Rendered header
+ */
 const Header: React.FC = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -272,6 +275,7 @@ const Header: React.FC = () => {
   const navRef = useRef<HTMLElement>(null); // Ref for the nav element
   const mobileMenuRef = useRef<HTMLUListElement>(null);
 
+  // Effect for initializing canvas
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
     if (canvasRef.current && logoRef.current && navRef.current) {
@@ -286,53 +290,62 @@ const Header: React.FC = () => {
     };
   }, []);
 
+  // Handler for navigation
   const handleNavigation = (href: string) => {
     setMenuOpen(false);
     animateAndNavigate(href);
   };
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      menuOpen &&
-      mobileMenuRef.current &&
-      !mobileMenuRef.current.contains(event.target as Node) &&
-      !(event.target as Element).closest('.mobile-menu-icon')
-    ) {
-      setMenuOpen(false);
-    }
-  }, [menuOpen]);
+  // Handler for clicking outside mobile menu
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      if (
+        menuOpen &&
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest(".mobile-menu-icon")
+      ) {
+        setMenuOpen(false);
+      }
+    },
+    [menuOpen]
+  );
 
+  // Effect for adding/removing click outside listener
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [handleClickOutside]);
 
+  // Animation variants for menu icon
   const topLineVariants = {
     closed: { rotate: 0, translateY: 0 },
-    open: { rotate: 45, translateY: 10 }
+    open: { rotate: 45, translateY: 10 },
   };
 
   const middleLineVariants = {
     closed: { opacity: 1 },
-    open: { opacity: 0 }
+    open: { opacity: 0 },
   };
 
   const bottomLineVariants = {
     closed: { rotate: 0, translateY: 0 },
-    open: { rotate: -45, translateY: -10 }
+    open: { rotate: -45, translateY: -10 },
   };
 
   return (
     <Nav ref={navRef}>
       <Canvas ref={canvasRef} />
       <NavContent>
+        {/* Logo */}
         <Logo href="/" onClick={() => handleNavigation("/")} ref={logoRef}>
           <LogoEmojis>🌠</LogoEmojis>
           <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
           <LogoEmojis>✨ ⎊ ⨳ ✵ ⊹</LogoEmojis>
         </Logo>
+        {/* Desktop Navigation */}
         <NavLinks>
           {NAV_ITEMS.map((item) => (
             <NavItem key={item}>
@@ -345,7 +358,8 @@ const Header: React.FC = () => {
             </NavItem>
           ))}
         </NavLinks>
-        <MobileMenuIcon 
+        {/* Mobile Menu Icon */}
+        <MobileMenuIcon
           onClick={() => setMenuOpen(!menuOpen)}
           className="mobile-menu-icon"
         >
@@ -366,6 +380,7 @@ const Header: React.FC = () => {
           />
         </MobileMenuIcon>
       </NavContent>
+      {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} ref={mobileMenuRef}>
         {NAV_ITEMS.map((item, index) => (
           <MobileNavItem key={item} index={index} open={menuOpen}>

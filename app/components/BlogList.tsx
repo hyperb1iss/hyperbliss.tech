@@ -7,6 +7,7 @@ import styled from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 
+// Styled components for the blog list
 const PostList = styled(motion.div)`
   display: grid;
   grid-template-columns: 1fr;
@@ -54,6 +55,7 @@ const PostExcerpt = styled.p`
   color: var(--color-text);
 `;
 
+// Interface for blog post data
 interface Post {
   slug: string;
   frontmatter: {
@@ -63,10 +65,17 @@ interface Post {
   };
 }
 
+// Props interface for BlogList component
 interface BlogListProps {
   posts: Post[];
 }
 
+/**
+ * BlogList component
+ * Renders a list of blog posts with animations.
+ * @param {BlogListProps} props - The component props
+ * @returns {JSX.Element} Rendered blog list
+ */
 export default function BlogList({ posts }: BlogListProps) {
   return (
     <PageLayout>

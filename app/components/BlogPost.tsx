@@ -6,6 +6,7 @@ import styled from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 
+// Styled components for the blog post
 const PostDate = styled.p`
   font-size: 1.6rem;
   color: var(--color-muted);
@@ -89,12 +90,19 @@ const PostContent = styled.article`
   }
 `;
 
+// Interface for BlogPost component props
 interface BlogPostProps {
   title: string;
   date: string;
   content: string;
 }
 
+/**
+ * BlogPost component
+ * Renders a single blog post with title, date, and markdown content.
+ * @param {BlogPostProps} props - The component props
+ * @returns {JSX.Element} Rendered blog post
+ */
 export default function BlogPost({ title, date, content }: BlogPostProps) {
   return (
     <PageLayout>

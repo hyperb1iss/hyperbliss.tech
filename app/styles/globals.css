@@ -1,18 +1,26 @@
 /* app/styles/globals.css */
 
+/**
+ * Global styles and CSS variables for the application
+ */
+
 :root {
+  /* Font family variables */
   --font-heading: "Orbitron", sans-serif;
   --font-body: "Rajdhani", sans-serif;
   --font-mono: "Share Tech Mono", monospace;
   --font-logo: "Noto Sans", sans-serif;
+
+  /* Color scheme variables */
   --color-background: #0a0a14;
   --color-text: #e0e0e0;
-  --color-primary: #a259ff; /* Adjusted to a more prominent purple */
-  --color-secondary: #ff75d8; /* Adjusted secondary color */
+  --color-primary: #a259ff; /* Prominent purple */
+  --color-secondary: #ff75d8; /* Secondary color */
   --color-accent: #00fff0;
   --color-muted: #a0a0a0;
 }
 
+/* Reset and base styles */
 *,
 *::before,
 *::after {
@@ -28,13 +36,13 @@ body {
 }
 
 html {
-  font-size: 62.5%; /* 1rem = 10px */
+  font-size: 62.5%; /* Sets 1rem to 10px */
 }
 
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure the body takes up the full viewport height */
+  min-height: 100vh;
   font-family: var(--font-body);
   font-size: 1.6rem;
   color: var(--color-text);
@@ -43,10 +51,11 @@ body {
   background-size: cover;
   background-attachment: fixed;
   overflow-x: hidden;
-  position: relative; /* Ensure the overlay stays relative to the body */
-  z-index: 0; /* Ensure body has a stacking context */
+  position: relative;
+  z-index: 0;
 }
 
+/* Dark overlay for background image */
 body::before {
   content: "";
   position: fixed;
@@ -54,10 +63,11 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8); /* Adjust opacity to control darkness */
-  z-index: -1; /* Ensure the overlay is behind the content */
+  background: rgba(0, 0, 0, 0.8);
+  z-index: -1;
 }
 
+/* Typography styles */
 h1,
 h2,
 h3,
@@ -74,11 +84,9 @@ h6 {
 h1 {
   font-size: 4.8rem;
 }
-
 h2 {
   font-size: 3.6rem;
 }
-
 h3 {
   font-size: 2.4rem;
 }
@@ -98,7 +106,7 @@ p {
   margin-bottom: 1.5rem;
 }
 
-/* Glowing Text */
+/* Utility classes */
 .glow {
   color: var(--color-primary);
   text-shadow: 0 0 5px var(--color-primary), 0 0 10px var(--color-primary);
@@ -136,15 +144,12 @@ p {
   h1 {
     font-size: 3.6rem;
   }
-
   h2 {
     font-size: 2.8rem;
   }
-
   h3 {
     font-size: 2rem;
   }
-
   body {
     font-size: 1.4rem;
   }

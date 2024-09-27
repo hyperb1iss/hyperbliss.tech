@@ -25,6 +25,12 @@ interface MainContentProps {
   children: ReactNode;
 }
 
+/**
+ * MainContent component
+ * Wraps the main content of each page with animation effects.
+ * @param {MainContentProps} props - The component props
+ * @returns {JSX.Element} Animated main content wrapper
+ */
 const MainContent: React.FC<MainContentProps> = ({ children }) => {
   return (
     <MainContentWrapper

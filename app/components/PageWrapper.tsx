@@ -5,6 +5,13 @@ import { ReactNode, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * PageWrapper component
+ * Wraps page content with animation transitions.
+ * @param {Object} props - The component props
+ * @param {ReactNode} props.children - The child components to be wrapped
+ * @returns {JSX.Element} Animated page wrapper
+ */
 export default function PageWrapper({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [isExiting, setIsExiting] = useState(false);

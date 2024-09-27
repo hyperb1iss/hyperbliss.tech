@@ -5,6 +5,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
+// Styled components for project list
 const ProjectsContainer = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
@@ -59,6 +60,7 @@ const ProjectLink = styled(Link)`
   }
 `;
 
+// Interface for project data
 interface Project {
   slug: string;
   frontmatter: {
@@ -68,10 +70,17 @@ interface Project {
   };
 }
 
+// Interface for ProjectList component props
 interface ProjectListProps {
   projects: Project[];
 }
 
+/**
+ * ProjectList component
+ * Renders a grid of project cards with animations.
+ * @param {ProjectListProps} props - The component props
+ * @returns {JSX.Element} Rendered project list
+ */
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
   return (
     <ProjectsContainer

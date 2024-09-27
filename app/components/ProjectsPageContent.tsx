@@ -5,6 +5,7 @@ import ProjectList from "./ProjectList";
 import PageTitle from "./PageTitle";
 import PageLayout from "./PageLayout";
 
+// Interface for project data
 interface Project {
   slug: string;
   frontmatter: {
@@ -14,10 +15,17 @@ interface Project {
   };
 }
 
+// Interface for ProjectsPageContent component props
 interface ProjectsPageContentProps {
   projects: Project[];
 }
 
+/**
+ * ProjectsPageContent component
+ * Renders the projects page with a title and list of projects.
+ * @param {ProjectsPageContentProps} props - The component props
+ * @returns {JSX.Element} Rendered projects page
+ */
 const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({
   projects,
 }) => {

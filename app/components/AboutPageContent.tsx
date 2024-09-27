@@ -5,6 +5,7 @@ import styled from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 
+// Styled components for the About page
 const ContentWrapper = styled(motion.div)`
   display: flex;
   justify-content: center;
@@ -66,6 +67,10 @@ const Highlight = styled.span`
   font-weight: bold;
 `;
 
+/**
+ * AboutPageContent component
+ * Renders the content for the About page, including a profile image and text.
+ */
 const AboutPageContent: React.FC = () => {
   return (
     <PageLayout>
@@ -93,23 +98,25 @@ const AboutPageContent: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
         >
           <p>
-            Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you might
-            know me as <Highlight>@hyperb1iss</Highlight> in the tech world. I&apos;m
-            a full-stack developer and designer with a passion for creating
-            innovative software solutions that make a difference.
+            Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
+            might know me as <Highlight>@hyperb1iss</Highlight> in the tech
+            world. I&apos;m a full-stack developer and designer with a passion
+            for creating innovative software solutions that make a difference.
           </p>
           <p>
-            I believe in the power of technology to transform lives, and I&apos;m
-            always exploring new ways to push the boundaries of what&apos;s possible.
-            Whether it&apos;s developing sleek user interfaces, crafting intuitive
-            user experiences, or diving into the latest tech trends, I&apos;m all
-            about blending technology with creativity.
+            I believe in the power of technology to transform lives, and
+            I&apos;m always exploring new ways to push the boundaries of
+            what&apos;s possible. Whether it&apos;s developing sleek user
+            interfaces, crafting intuitive user experiences, or diving into the
+            latest tech trends, I&apos;m all about blending technology with
+            creativity.
           </p>
           <p>
-            When I&apos;m not coding or designing, you can find me sharing insights
-            on my blog, contributing to open-source projects, or connecting with
-            the tech community. I&apos;m an avid learner, constantly seeking new
-            knowledge and skills to stay ahead in this ever-evolving field.
+            When I&apos;m not coding or designing, you can find me sharing
+            insights on my blog, contributing to open-source projects, or
+            connecting with the tech community. I&apos;m an avid learner,
+            constantly seeking new knowledge and skills to stay ahead in this
+            ever-evolving field.
           </p>
         </TextContent>
       </ContentWrapper>

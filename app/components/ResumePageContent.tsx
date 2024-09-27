@@ -8,6 +8,7 @@ import styled from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 
+// Styled components for resume content
 const ResumeContainer = styled(motion.div)`
   max-width: 800px;
   margin: 0 auto;
@@ -100,10 +101,17 @@ const ResumeContent = styled(ReactMarkdown)`
   }
 `;
 
+// Interface for ResumePageContent component props
 interface ResumePageContentProps {
   content: string;
 }
 
+/**
+ * ResumePageContent component
+ * Renders the resume content with styling and animations.
+ * @param {ResumePageContentProps} props - The component props
+ * @returns {JSX.Element} Rendered resume page
+ */
 const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
   return (
     <PageLayout>

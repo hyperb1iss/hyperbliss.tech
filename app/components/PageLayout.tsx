@@ -17,6 +17,12 @@ interface PageLayoutProps {
   children: React.ReactNode;
 }
 
+/**
+ * PageLayout component
+ * Provides a consistent layout wrapper for page content with animations.
+ * @param {PageLayoutProps} props - The component props
+ * @returns {JSX.Element} Rendered page layout
+ */
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
     <MainContentWrapper

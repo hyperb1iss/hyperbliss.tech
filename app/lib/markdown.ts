@@ -3,7 +3,9 @@ import fs from "fs/promises";
 import matter from "gray-matter";
 import path from "path";
 
-// Define the interface for markdown files with a flexible frontmatter type
+/**
+ * Interface for markdown files with a flexible frontmatter type
+ */
 export interface MarkdownFile {
   slug: string;
   frontmatter: Record<string, string>;
@@ -12,7 +14,9 @@ export interface MarkdownFile {
 
 /**
  * Reads the markdown content from the specified directory and filename.
- * This version uses a flexible frontmatter type to accommodate various structures.
+ * @param directory - The directory containing the markdown files.
+ * @param slug - The slug (filename without extension) of the markdown file.
+ * @returns A Promise resolving to a MarkdownFile object.
  */
 export async function getMarkdownContent(
   directory: string,
@@ -31,6 +35,8 @@ export async function getMarkdownContent(
 
 /**
  * Retrieves all markdown files in a directory and generates their slugs.
+ * @param directory - The directory containing the markdown files.
+ * @returns A Promise resolving to an array of slugs.
  */
 export async function getAllMarkdownSlugs(
   directory: string

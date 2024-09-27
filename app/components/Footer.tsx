@@ -28,6 +28,11 @@ const FooterText = styled.p`
   font-size: 1.5rem;
 `;
 
+/**
+ * Footer component
+ * Renders the footer section of the website with social links and copyright information.
+ * @returns {JSX.Element} Rendered footer
+ */
 const Footer: React.FC = () => {
   return (
     <FooterContainer>
