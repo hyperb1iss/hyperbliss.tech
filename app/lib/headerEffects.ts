@@ -1,5 +1,15 @@
 // app/lib/headerEffects.ts
 
+import {
+  CYBERPUNK_COLORS,
+  CYBERPUNK_HUE_RANGES,
+  getRandomCyberpunkHue,
+  project,
+  hexToRgb,
+  rgbToHex,
+  rotateVertex,
+} from "./headerEffectsUtils";
+
 /**
  * Initializes the canvas and sets up the header animation effects.
  * @param canvas - The HTML canvas element to draw on.
@@ -29,36 +39,6 @@ export const initializeCanvas = (
 
   // Initialize a global hue value within cyberpunk range
   let hue = 210; // Starting with Neon Blue
-
-  // Define cyberpunk hue ranges
-  const CYBERPUNK_HUE_RANGES = [
-    { start: 180, end: 220 }, // Electric Cyan to Neon Blue
-    { start: 270, end: 330 }, // Neon Purple to Bright Magenta
-  ];
-
-  // Define a constant array of cyberpunk colors (including darker blues and violets)
-  const CYBERPUNK_COLORS = [
-    "#00fff0", // Cyan
-    "#ff00ff", // Magenta
-    "#a259ff", // Purple
-    "#ff75d8", // Pink
-    "#00ffff", // Electric Blue
-    "#4b0082", // Indigo
-    "#8a2be2", // Blue Violet
-    "#483d8b", // Dark Slate Blue
-  ];
-
-  /**
-   * Generates a random hue within the defined cyberpunk ranges.
-   * @returns A hue value between 180-220 or 270-330 degrees.
-   */
-  const getRandomCyberpunkHue = (): number => {
-    const range =
-      CYBERPUNK_HUE_RANGES[
-        Math.floor(Math.random() * CYBERPUNK_HUE_RANGES.length)
-      ];
-    return Math.random() * (range.end - range.start) + range.start;
-  };
 
   /**
    * Updates global hue to cycle through cyberpunk colors smoothly.
@@ -111,26 +91,6 @@ export const initializeCanvas = (
     mouseY = event.clientY - rect.top - height / 2;
   };
   window.addEventListener("mousemove", handleMouseMove);
-
-  /**
-   * Projects 3D coordinates into 2D canvas space with clamped scaling to prevent stretching.
-   * @param x - X-coordinate in 3D space.
-   * @param y - Y-coordinate in 3D space.
-   * @param z - Z-coordinate in 3D space.
-   * @returns An object containing the 2D projected coordinates and scale factor.
-   */
-  const project = (x: number, y: number, z: number) => {
-    const fov = 500; // Field of view
-    const minScale = 0.5; // Minimum scale to prevent shapes from becoming too small
-    const maxScale = 1.5; // Maximum scale to prevent shapes from becoming too large
-    const scale = fov / (fov + z);
-    const clampedScale = Math.min(Math.max(scale, minScale), maxScale);
-    return {
-      x: x * clampedScale + width / 2,
-      y: y * clampedScale + height / 2,
-      scale: clampedScale,
-    };
-  };
 
   /**
    * Particle class representing a single interactive star in the background.
@@ -251,7 +211,7 @@ export const initializeCanvas = (
      * @param ctx - The 2D rendering context of the canvas.
      */
     draw(ctx: CanvasRenderingContext2D) {
-      const pos = project(this.x, this.y, this.z);
+      const pos = project(this.x, this.y, this.z, width, height);
 
       // Calculate dynamic shadow blur based on position and proximity to cursor
       const distanceToCursor = Math.sqrt(mouseX ** 2 + mouseY ** 2);
@@ -514,8 +474,8 @@ export const initializeCanvas = (
       // Update color
       if (this.color !== this.targetColor) {
         // Smoothly transition to the target color
-        const currentColor = this.hexToRgb(this.color);
-        const targetColor = this.hexToRgb(this.targetColor);
+        const currentColor = hexToRgb(this.color);
+        const targetColor = hexToRgb(this.targetColor);
 
         if (currentColor && targetColor) {
           const newR = Math.round(
@@ -528,7 +488,7 @@ export const initializeCanvas = (
             currentColor.b + (targetColor.b - currentColor.b) * 0.05
           );
 
-          this.color = this.rgbToHex(newR, newG, newB);
+          this.color = rgbToHex(newR, newG, newB);
 
           if (this.color === this.targetColor) {
             // When we reach the target color, set a new target
@@ -560,59 +520,6 @@ export const initializeCanvas = (
       }
     }
 
-    private hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result
-        ? {
-            r: parseInt(result[1], 16),
-            g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16),
-          }
-        : null;
-    }
-
-    private rgbToHex(r: number, g: number, b: number): string {
-      return (
-        "#" +
-        [r, g, b]
-          .map((x) => {
-            const hex = x.toString(16);
-            return hex.length === 1 ? "0" + hex : hex;
-          })
-          .join("")
-      );
-    }
-
-    /**
-     * Rotates a vertex based on the current rotation angles.
-     * @param vertex - The vertex to rotate.
-     * @param rotation - The current rotation angles.
-     * @returns The rotated vertex coordinates.
-     */
-    rotateVertex(
-      vertex: { x: number; y: number; z: number },
-      rotation: { x: number; y: number; z: number }
-    ) {
-      // Rotation around X axis
-      const x = vertex.x;
-      const y =
-        vertex.y * Math.cos(rotation.x) - vertex.z * Math.sin(rotation.x);
-      const z =
-        vertex.y * Math.sin(rotation.x) + vertex.z * Math.cos(rotation.x);
-
-      // Rotation around Y axis
-      const x1 = x * Math.cos(rotation.y) + z * Math.sin(rotation.y);
-      const y1 = y;
-      const z1 = -x * Math.sin(rotation.y) + z * Math.cos(rotation.y);
-
-      // Rotation around Z axis
-      const x2 = x1 * Math.cos(rotation.z) - y1 * Math.sin(rotation.z);
-      const y2 = x1 * Math.sin(rotation.z) + y1 * Math.cos(rotation.z);
-      const z2 = z1;
-
-      return { x: x2, y: y2, z: z2 };
-    }
-
     /**
      * Draws the vector shape on the canvas with dynamic glow effect and symmetry.
      * @param ctx - Canvas rendering context.
@@ -620,7 +527,7 @@ export const initializeCanvas = (
     draw(ctx: CanvasRenderingContext2D) {
       // Only draw if the shape has some opacity
       if (this.opacity > 0) {
-        const rgbColor = this.hexToRgb(this.color);
+        const rgbColor = hexToRgb(this.color);
         if (rgbColor) {
           const { r, g, b } = rgbColor;
           ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
@@ -634,17 +541,21 @@ export const initializeCanvas = (
           // Draw the shape
           ctx.beginPath();
           this.edges.forEach(([start, end]) => {
-            const v1 = this.rotateVertex(this.vertices[start], this.rotation);
-            const v2 = this.rotateVertex(this.vertices[end], this.rotation);
+            const v1 = rotateVertex(this.vertices[start], this.rotation);
+            const v2 = rotateVertex(this.vertices[end], this.rotation);
             const projectedV1 = project(
               v1.x + this.position.x,
               v1.y + this.position.y,
-              v1.z + this.position.z
+              v1.z + this.position.z,
+              width,
+              height
             );
             const projectedV2 = project(
               v2.x + this.position.x,
               v2.y + this.position.y,
-              v2.z + this.position.z
+              v2.z + this.position.z,
+              width,
+              height
             );
             ctx.moveTo(projectedV1.x, projectedV1.y);
             ctx.lineTo(projectedV2.x, projectedV2.y);
@@ -799,8 +710,20 @@ export const initializeCanvas = (
           ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
 
           // Project positions
-          const posA = project(particles[a].x, particles[a].y, particles[a].z);
-          const posB = project(particles[b].x, particles[b].y, particles[b].z);
+          const posA = project(
+            particles[a].x,
+            particles[a].y,
+            particles[a].z,
+            width,
+            height
+          );
+          const posB = project(
+            particles[b].x,
+            particles[b].y,
+            particles[b].z,
+            width,
+            height
+          );
 
           // Draw the line
           ctx.beginPath();
