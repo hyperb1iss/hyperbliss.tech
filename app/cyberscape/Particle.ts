@@ -1,4 +1,5 @@
 import { project, getRandomCyberpunkHue } from "./CyberScapeUtils";
+import { VectorShape } from "./VectorShape";
 
 /**
  * Particle class representing a single interactive star in the background.
@@ -21,6 +22,7 @@ export class Particle {
   opacity: number;
   private appearanceDelay: number;
   private isVisible: boolean;
+  hue: number;
 
   // Optimization: Reuse vector for calculations
   private tempVector: { x: number; y: number; z: number };
@@ -71,6 +73,7 @@ export class Particle {
     this.tempVector = { x: 0, y: 0, z: 0 };
     this.appearanceDelay = 0;
     this.isVisible = false;
+    this.hue = getRandomCyberpunkHue();
   }
 
   /**
@@ -109,13 +112,15 @@ export class Particle {
    * @param mouseY - Y coordinate of the mouse cursor
    * @param width - Width of the canvas
    * @param height - Height of the canvas
+   * @param shapes - Array of VectorShape instances for interaction
    */
   update(
     isCursorOverCyberScape: boolean,
     mouseX: number,
     mouseY: number,
     width: number,
-    height: number
+    height: number,
+    shapes: VectorShape[]
   ) {
     if (!this.isVisible) return;
     if (isCursorOverCyberScape) {
@@ -180,6 +185,31 @@ export class Particle {
       this.age += 16; // Assuming 60 FPS
       this.opacity = Math.max(0, 1 - this.age / this.lifespan);
     }
+
+    // Interact with nearby shapes
+    this.interactWithShapes(shapes);
+  }
+
+  protected interactWithShapes(shapes: VectorShape[]) {
+    const INTERACTION_RADIUS = 100;
+    shapes.forEach((shape) => {
+      const dx = shape.position.x - this.x;
+      const dy = shape.position.y - this.y;
+      const dz = shape.position.z - this.z;
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      if (distance < INTERACTION_RADIUS) {
+        const force = 0.01 * (1 - distance / INTERACTION_RADIUS);
+        this.velocityX += dx * force;
+        this.velocityY += dy * force;
+        this.velocityZ += dz * force;
+
+        // Influence shape's rotation
+        shape.rotationSpeed.x += (Math.random() - 0.5) * 0.001;
+        shape.rotationSpeed.y += (Math.random() - 0.5) * 0.001;
+        shape.rotationSpeed.z += (Math.random() - 0.5) * 0.001;
+      }
+    });
   }
 
   /**
@@ -266,37 +296,34 @@ export class ParticleAtCollision extends Particle {
   private onExpire: () => void;
   private fadeOutDuration: number;
   private sparkleIntensity: number;
+  private initialSpeed: number;
+  private direction: { x: number; y: number; z: number };
 
-  /**
-   * Creates a new ParticleAtCollision instance.
-   * @param x - X coordinate of the collision point.
-   * @param y - Y coordinate of the collision point.
-   * @param z - Z coordinate of the collision point.
-   * @param onExpire - Callback function to be called when the particle expires.
-   */
   constructor(x: number, y: number, z: number, onExpire: () => void) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
     this.onExpire = onExpire;
     this.fadeOutDuration = 2000; // 2 seconds fade out
     this.sparkleIntensity = Math.random();
+    this.initialSpeed = Math.random() * 2 + 1; // Random speed between 1 and 3
+    this.direction = { x: 0, y: 0, z: 0 };
     this.init(x, y, z, onExpire);
   }
 
-  /**
-   * Initializes the particle with specific properties for collision effects.
-   * @param x - X coordinate of the collision point.
-   * @param y - Y coordinate of the collision point.
-   * @param z - Z coordinate of the collision point.
-   * @param onExpire - Callback function to be called when the particle expires.
-   */
   init(x: number, y: number, z: number, onExpire: () => void) {
     this.x = x;
     this.y = y;
     this.z = z;
-    // Increase initial velocity for wider spread
-    this.velocityX = (Math.random() - 0.5) * 4;
-    this.velocityY = (Math.random() - 0.5) * 4;
-    this.velocityZ = (Math.random() - 0.5) * 4;
+    // Set initial direction (normalized vector)
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    this.direction = {
+      x: Math.sin(phi) * Math.cos(theta),
+      y: Math.sin(phi) * Math.sin(theta),
+      z: Math.cos(phi),
+    };
+    this.velocityX = this.direction.x * this.initialSpeed;
+    this.velocityY = this.direction.y * this.initialSpeed;
+    this.velocityZ = this.direction.z * this.initialSpeed;
     this.size = Math.random() * 2 + 1;
     this.color = "#FF00FF";
     this.lifespan = 3000; // 3 seconds total lifespan
@@ -306,29 +333,27 @@ export class ParticleAtCollision extends Particle {
     this.sparkleIntensity = Math.random();
   }
 
-  /**
-   * Updates the particle's state, including position, velocity, and visual properties.
-   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the CyberScape area.
-   * @param mouseX - X coordinate of the mouse cursor.
-   * @param mouseY - Y coordinate of the mouse cursor.
-   * @param width - Width of the canvas.
-   * @param height - Height of the canvas.
-   */
   update(
     isCursorOverCyberScape: boolean,
     mouseX: number,
     mouseY: number,
     width: number,
-    height: number
+    height: number,
+    shapes: VectorShape[]
   ) {
-    super.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+    // Update position based on velocity
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.z += this.velocityZ;
 
     // Slow down the particle over time
-    this.velocityX *= 0.98;
-    this.velocityY *= 0.98;
-    this.velocityZ *= 0.98;
+    const slowdownFactor = 0.98;
+    this.velocityX *= slowdownFactor;
+    this.velocityY *= slowdownFactor;
+    this.velocityZ *= slowdownFactor;
 
-    // Update opacity for smooth fade out
+    // Update age and opacity
+    this.age += 16; // Assuming 60 FPS
     if (this.age > this.lifespan - this.fadeOutDuration) {
       this.opacity = Math.max(
         0,
@@ -342,16 +367,11 @@ export class ParticleAtCollision extends Particle {
     if (this.opacity <= 0) {
       this.onExpire();
     }
+
+    // Interact with shapes (optional)
+    this.interactWithShapes(shapes);
   }
 
-  /**
-   * Draws the particle on the canvas with fade-out and sparkle effects.
-   * @param ctx - The 2D rendering context of the canvas.
-   * @param mouseX - X coordinate of the mouse cursor.
-   * @param mouseY - Y coordinate of the mouse cursor.
-   * @param width - Width of the canvas.
-   * @param height - Height of the canvas.
-   */
   draw(
     ctx: CanvasRenderingContext2D,
     mouseX: number,
@@ -385,18 +405,12 @@ export class ParticleAtCollision extends Particle {
     }
   }
 
-  /**
-   * Draws connections between explosion particles with sparkle effects.
-   * @param ctx - The 2D rendering context of the canvas.
-   * @param particles - Array of ParticleAtCollision instances to connect.
-   * @param width - Width of the canvas.
-   * @param height - Height of the canvas.
-   */
   static drawConnections(
     ctx: CanvasRenderingContext2D,
     particles: ParticleAtCollision[],
     width: number,
-    height: number
+    height: number,
+    shapes: VectorShape[]
   ) {
     const MAX_DISTANCE = 50;
     const MAX_CONNECTIONS_PER_PARTICLE = 3;
@@ -427,9 +441,9 @@ export class ParticleAtCollision extends Particle {
       ) {
         const particleB = particles[j];
 
-        const dx = particleA.x - particleB.x;
-        const dy = particleA.y - particleB.y;
-        const dz = particleA.z - particleB.z;
+        const dx = particleB.x - particleA.x;
+        const dy = particleB.y - particleA.y;
+        const dz = particleB.z - particleA.z;
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (distance < MAX_DISTANCE) {
@@ -441,26 +455,41 @@ export class ParticleAtCollision extends Particle {
             height
           );
 
-          const opacity =
+          const baseOpacity =
             (1 - distance / MAX_DISTANCE) *
             Math.min(particleA.opacity, particleB.opacity);
-          ctx.strokeStyle = `rgba(255, 0, 255, ${opacity * 0.5})`;
-          ctx.lineWidth = 1;
+          const opacity =
+            baseOpacity *
+            (1 - Math.max(particleA.age, particleB.age) / particleA.lifespan);
 
+          // Generate a dynamic color for the connection
+          const hue =
+            (particleA.hue + particleB.hue) / 2 + Math.random() * 30 - 15;
+          const saturation = 80 + Math.random() * 20;
+          const lightness = 50 + Math.random() * 10;
+
+          // Draw the main connection line
+          ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${
+            opacity * 0.5
+          })`;
+          ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(posA.x, posA.y);
           ctx.lineTo(posB.x, posB.y);
           ctx.stroke();
 
-          // Add sparkle effect to connections (reduced probability)
-          if (Math.random() < 0.05) {
+          // Add sparkle effect to connections
+          if (Math.random() < 0.3 * opacity) {
             const sparklePos = {
               x: posA.x + (posB.x - posA.x) * Math.random(),
               y: posA.y + (posB.y - posA.y) * Math.random(),
             };
-            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+            const sparkleSize = Math.random() * 1.5 + 0.5;
+            const sparkleOpacity = Math.random() * opacity;
+            const sparkleHue = hue + Math.random() * 60 - 30;
+            ctx.fillStyle = `hsla(${sparkleHue}, 100%, 75%, ${sparkleOpacity})`;
             ctx.beginPath();
-            ctx.arc(sparklePos.x, sparklePos.y, 1, 0, Math.PI * 2);
+            ctx.arc(sparklePos.x, sparklePos.y, sparkleSize, 0, Math.PI * 2);
             ctx.fill();
           }
 
@@ -471,6 +500,26 @@ export class ParticleAtCollision extends Particle {
         }
       }
     }
+
+    // Create temporary distortions in nearby shapes
+    shapes.forEach((shape) => {
+      particles.forEach((particle) => {
+        const dx = shape.position.x - particle.x;
+        const dy = shape.position.y - particle.y;
+        const dz = shape.position.z - particle.z;
+        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (distance < 100) {
+          const distortionFactor =
+            0.1 * (1 - distance / 100) * particle.opacity;
+          shape.temporaryDistortion = {
+            x: (Math.random() - 0.5) * distortionFactor,
+            y: (Math.random() - 0.5) * distortionFactor,
+            z: (Math.random() - 0.5) * distortionFactor,
+          };
+        }
+      });
+    });
   }
 
   /**

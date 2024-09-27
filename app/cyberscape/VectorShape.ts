@@ -7,6 +7,7 @@ import {
   project,
   rotateVertex,
 } from "./CyberScapeUtils";
+import { Particle } from "./Particle";
 
 /**
  * VectorShape class representing a 3D shape (cube, pyramid, tetrahedron, octahedron, or dodecahedron) in the background.
@@ -41,6 +42,7 @@ export class VectorShape {
 
   // Reusable objects for calculations
   private tempVector: { x: number; y: number; z: number };
+  temporaryDistortion: { x: number; y: number; z: number };
 
   /**
    * Creates a new VectorShape instance.
@@ -60,23 +62,23 @@ export class VectorShape {
     width: number,
     height: number
   ) {
-    const size = 30; // Reduced size for shapes
-    this.radius = size; // Initialize radius based on size
-    this.scale = 1; // Default scale
-    this.scaleTarget = 1; // Default target scale
-    this.scaleSpeed = 0.02; // Default scale speed
+    const size = 30;
+    this.radius = size * 0.9;
+    this.scale = 1;
+    this.scaleTarget = 1;
+    this.scaleSpeed = 0.02;
 
     switch (shapeType) {
       case "cube":
         this.vertices = [
-          { x: -size, y: -size, z: -size },
-          { x: size, y: -size, z: -size },
-          { x: size, y: size, z: -size },
-          { x: -size, y: size, z: -size },
-          { x: -size, y: -size, z: size },
-          { x: size, y: -size, z: size },
-          { x: size, y: size, z: size },
-          { x: -size, y: size, z: size },
+          { x: -size * 0.5, y: -size * 0.5, z: -size * 0.5 },
+          { x: size * 0.5, y: -size * 0.5, z: -size * 0.5 },
+          { x: size * 0.5, y: size * 0.5, z: -size * 0.5 },
+          { x: -size * 0.5, y: size * 0.5, z: -size * 0.5 },
+          { x: -size * 0.5, y: -size * 0.5, z: size * 0.5 },
+          { x: size * 0.5, y: -size * 0.5, z: size * 0.5 },
+          { x: size * 0.5, y: size * 0.5, z: size * 0.5 },
+          { x: -size * 0.5, y: size * 0.5, z: size * 0.5 },
         ];
         this.edges = [
           [0, 1],
@@ -95,11 +97,11 @@ export class VectorShape {
         break;
       case "pyramid":
         this.vertices = [
-          { x: 0, y: -size * 1.5, z: 0 },
-          { x: -size, y: size, z: -size },
-          { x: size, y: size, z: -size },
-          { x: size, y: size, z: size },
-          { x: -size, y: size, z: size },
+          { x: 0, y: -size, z: 0 },
+          { x: -size * 0.7, y: size * 0.7, z: -size * 0.7 },
+          { x: size * 0.7, y: size * 0.7, z: -size * 0.7 },
+          { x: size * 0.7, y: size * 0.7, z: size * 0.7 },
+          { x: -size * 0.7, y: size * 0.7, z: size * 0.7 },
         ];
         this.edges = [
           [0, 1],
@@ -114,10 +116,10 @@ export class VectorShape {
         break;
       case "tetrahedron":
         this.vertices = [
-          { x: size, y: size, z: size },
-          { x: -size, y: -size, z: size },
-          { x: -size, y: size, z: -size },
-          { x: size, y: -size, z: -size },
+          { x: size * 0.7, y: size * 0.7, z: size * 0.7 },
+          { x: -size * 0.7, y: -size * 0.7, z: size * 0.7 },
+          { x: -size * 0.7, y: size * 0.7, z: -size * 0.7 },
+          { x: size * 0.7, y: -size * 0.7, z: -size * 0.7 },
         ];
         this.edges = [
           [0, 1],
@@ -130,12 +132,12 @@ export class VectorShape {
         break;
       case "octahedron":
         this.vertices = [
-          { x: 0, y: size, z: 0 },
-          { x: size, y: 0, z: 0 },
-          { x: 0, y: 0, z: size },
-          { x: -size, y: 0, z: 0 },
-          { x: 0, y: 0, z: -size },
-          { x: 0, y: -size, z: 0 },
+          { x: 0, y: size * 0.7, z: 0 },
+          { x: size * 0.7, y: 0, z: 0 },
+          { x: 0, y: 0, z: size * 0.7 },
+          { x: -size * 0.7, y: 0, z: 0 },
+          { x: 0, y: 0, z: -size * 0.7 },
+          { x: 0, y: -size * 0.7, z: 0 },
         ];
         this.edges = [
           [0, 1],
@@ -153,9 +155,9 @@ export class VectorShape {
         ];
         break;
       case "dodecahedron":
-        const phi = (1 + Math.sqrt(5)) / 2; // Golden ratio
-        const a = size / 2;
-        const b = size / (2 * phi);
+        const phi = (1 + Math.sqrt(5)) / 2;
+        const a = size * 0.35;
+        const b = (size * 0.35) / phi;
         this.vertices = [
           { x: a, y: a, z: a },
           { x: a, y: a, z: -a },
@@ -276,6 +278,7 @@ export class VectorShape {
 
     // Initialize reusable objects
     this.tempVector = { x: 0, y: 0, z: 0 };
+    this.temporaryDistortion = { x: 0, y: 0, z: 0 };
   }
 
   /**
@@ -302,7 +305,8 @@ export class VectorShape {
     mouseX: number,
     mouseY: number,
     width: number,
-    height: number
+    height: number,
+    particles: Particle[]
   ) {
     if (this.isExploded) return; // Do not update if exploded
 
@@ -332,16 +336,15 @@ export class VectorShape {
 
     // Wrap around edges smoothly
     const buffer = 200; // Ensure objects are fully offscreen before wrapping
-    if (this.position.x < -width / 2 - buffer) {
-      this.position.x += width + buffer * 2;
-    } else if (this.position.x > width / 2 + buffer) {
-      this.position.x -= width + buffer * 2;
-    }
-    if (this.position.y < -height / 2 - buffer) {
-      this.position.y += height + buffer * 2;
-    } else if (this.position.y > height / 2 + buffer) {
-      this.position.y -= height + buffer * 2;
-    }
+    const wrapWidth = width + buffer * 2;
+    const wrapHeight = height + buffer * 2;
+
+    this.position.x =
+      ((this.position.x + width / 2 + buffer) % wrapWidth) - width / 2 - buffer;
+    this.position.y =
+      ((this.position.y + height / 2 + buffer) % wrapHeight) -
+      height / 2 -
+      buffer;
     this.position.z = ((this.position.z + 300) % 600) - 300;
 
     // Ensure minimum speed
@@ -373,11 +376,9 @@ export class VectorShape {
 
     // Update scale towards target scale for morphing effect
     if (this.scale < this.scaleTarget) {
-      this.scale += this.scaleSpeed;
-      if (this.scale > this.scaleTarget) this.scale = this.scaleTarget;
+      this.scale = Math.min(this.scale + this.scaleSpeed, this.scaleTarget);
     } else if (this.scale > this.scaleTarget) {
-      this.scale -= this.scaleSpeed;
-      if (this.scale < this.scaleTarget) this.scale = this.scaleTarget;
+      this.scale = Math.max(this.scale - this.scaleSpeed, this.scaleTarget);
     }
 
     // Update color
@@ -432,6 +433,56 @@ export class VectorShape {
     if (this.scale === this.scaleTarget && this.scale !== 1) {
       this.scaleTarget = 1; // Reset scale target to normal
     }
+
+    // Interact with nearby particles
+    this.interactWithParticles(particles);
+
+    // Apply temporary distortion
+    this.position.x += this.temporaryDistortion.x;
+    this.position.y += this.temporaryDistortion.y;
+    this.position.z += this.temporaryDistortion.z;
+
+    // Reset temporary distortion
+    this.temporaryDistortion = { x: 0, y: 0, z: 0 };
+  }
+
+  private interactWithParticles(particles: Particle[]) {
+    const INTERACTION_RADIUS = 100;
+    particles.forEach((particle) => {
+      const dx = particle.x - this.position.x;
+      const dy = particle.y - this.position.y;
+      const dz = particle.z - this.position.z;
+      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+      if (distance < INTERACTION_RADIUS) {
+        const force = 0.005 * (1 - distance / INTERACTION_RADIUS);
+        this.velocity.x += dx * force;
+        this.velocity.y += dy * force;
+        this.velocity.z += dz * force;
+
+        // Emit small particles
+        if (Math.random() < 0.05) {
+          this.emitSmallParticle();
+        }
+      }
+    });
+  }
+
+  public emitSmallParticle() {
+    // This method should be called from the main animation loop
+    // to actually create and add the particle to the particle array
+    const particle = new Particle(
+      new Set<string>(),
+      window.innerWidth,
+      window.innerHeight
+    );
+    particle.x = this.position.x;
+    particle.y = this.position.y;
+    particle.z = this.position.z;
+    particle.size = Math.random() * 1 + 0.5;
+    particle.color = this.color;
+    particle.lifespan = 1000; // 1 second lifespan for emitted particles
+    return particle;
   }
 
   /**
@@ -737,6 +788,33 @@ export class VectorShape {
     // Apply visual enhancements
     shapeA.triggerCollisionVisuals();
     shapeB.triggerCollisionVisuals();
+
+    // Limit the maximum velocity change to prevent abrupt movements
+    const maxVelocityChange = 2;
+    shapeA.velocity.x = Math.max(
+      Math.min(shapeA.velocity.x, maxVelocityChange),
+      -maxVelocityChange
+    );
+    shapeA.velocity.y = Math.max(
+      Math.min(shapeA.velocity.y, maxVelocityChange),
+      -maxVelocityChange
+    );
+    shapeA.velocity.z = Math.max(
+      Math.min(shapeA.velocity.z, maxVelocityChange),
+      -maxVelocityChange
+    );
+    shapeB.velocity.x = Math.max(
+      Math.min(shapeB.velocity.x, maxVelocityChange),
+      -maxVelocityChange
+    );
+    shapeB.velocity.y = Math.max(
+      Math.min(shapeB.velocity.y, maxVelocityChange),
+      -maxVelocityChange
+    );
+    shapeB.velocity.z = Math.max(
+      Math.min(shapeB.velocity.z, maxVelocityChange),
+      -maxVelocityChange
+    );
   }
 
   /**

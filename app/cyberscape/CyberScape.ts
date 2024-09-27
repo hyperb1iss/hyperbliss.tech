@@ -408,24 +408,45 @@ export const initializeCyberScape = (
       activeParticles++;
     }
 
+    // Update particles
     for (const particle of particlesArray) {
       if (particle.isReady()) {
-        particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+        particle.update(
+          isCursorOverCyberScape,
+          mouseX,
+          mouseY,
+          width,
+          height,
+          shapesArray
+        );
         particle.draw(ctx, mouseX, mouseY, width, height);
       } else {
         particle.updateDelay();
       }
     }
 
+    // Update shapes
     const existingPositions = new Set<string>();
     for (const shape of shapesArray) {
-      shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
+      shape.update(
+        isCursorOverCyberScape,
+        mouseX,
+        mouseY,
+        width,
+        height,
+        particlesArray
+      );
       if (shape.opacity > 0 && !shape.isExploded) {
         existingPositions.add(shape.getPositionKey());
         shape.draw(ctx, width, height);
       }
       if (shape.isFadedOut()) {
         shape.reset(existingPositions, width, height);
+      }
+      // Emit small particles from shapes
+      if (Math.random() < 0.01) {
+        const emittedParticle = shape.emitSmallParticle();
+        particlesArray.push(emittedParticle);
       }
     }
 
@@ -494,7 +515,8 @@ export const initializeCyberScape = (
         ctx,
         explosionParticles,
         width,
-        height
+        height,
+        shapesArray
       );
     }
 
@@ -527,7 +549,7 @@ export const initializeCyberScape = (
     drawNoiseEffect(ctx, centerX, centerY, intensity, hue, width, height);
 
     // Emit particles
-    emitDatastreamParticles(centerX, centerY, intensity);
+    emitDatastreamParticles(centerX, centerY /*, intensity*/);
 
     // Affect nearby shapes
     affectNearbyShapes(centerX, centerY, intensity);
@@ -600,7 +622,6 @@ export const initializeCyberScape = (
   const emitDatastreamParticles = (
     centerX: number,
     centerY: number,
-    intensity: number
   ) => {
     if (animationProgress < 0.1) {
       const particlesToEmit = Math.min(
