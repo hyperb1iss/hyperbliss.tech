@@ -31,6 +31,13 @@ export class VectorShape {
   opacity: number;
   glowIntensity: number;
   radius: number; // Represents the size of the shape for interactions
+  scale: number; // Current scale of the shape
+  scaleTarget: number; // Target scale for morphing
+  scaleSpeed: number; // Speed at which the shape scales
+
+  // New Properties for Explosion and Respawning
+  isExploded: boolean; // Flag to indicate if the shape has exploded
+  respawnTimer: number | null; // Timer ID for respawning
 
   // Reusable objects for calculations
   private tempVector: { x: number; y: number; z: number };
@@ -43,13 +50,21 @@ export class VectorShape {
    * @param height - Height of the canvas.
    */
   constructor(
-    shapeType: "cube" | "pyramid" | "tetrahedron" | "octahedron" | "dodecahedron",
+    shapeType:
+      | "cube"
+      | "pyramid"
+      | "tetrahedron"
+      | "octahedron"
+      | "dodecahedron",
     existingPositions: Set<string>,
     width: number,
     height: number
   ) {
     const size = 30; // Reduced size for shapes
     this.radius = size; // Initialize radius based on size
+    this.scale = 1; // Default scale
+    this.scaleTarget = 1; // Default target scale
+    this.scaleSpeed = 0.02; // Default scale speed
 
     switch (shapeType) {
       case "cube":
@@ -205,9 +220,7 @@ export class VectorShape {
     do {
       this.position = {
         x: Math.random() * width - width / 2,
-        y:
-          (Math.random() * height - height / 2) *
-          (Math.random() < 0.5 ? 1 : -1),
+        y: Math.random() * height - height / 2,
         z: Math.random() * 600 - 300,
       };
       positionKey = this.getPositionKey();
@@ -252,6 +265,15 @@ export class VectorShape {
     // Initialize glow intensity
     this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
 
+    // Initialize scaling properties for morphing effect
+    this.scale = 1;
+    this.scaleTarget = 1;
+    this.scaleSpeed = 0.02;
+
+    // Initialize new properties for explosion and respawning
+    this.isExploded = false;
+    this.respawnTimer = null;
+
     // Initialize reusable objects
     this.tempVector = { x: 0, y: 0, z: 0 };
   }
@@ -261,7 +283,9 @@ export class VectorShape {
    * @returns A string representing a color from the cyberpunk palette.
    */
   private getRandomCyberpunkColor(): string {
-    return CYBERPUNK_COLORS[Math.floor(Math.random() * CYBERPUNK_COLORS.length)];
+    return CYBERPUNK_COLORS[
+      Math.floor(Math.random() * CYBERPUNK_COLORS.length)
+    ];
   }
 
   /**
@@ -280,6 +304,8 @@ export class VectorShape {
     width: number,
     height: number
   ) {
+    if (this.isExploded) return; // Do not update if exploded
+
     if (isCursorOverHeader) {
       this.tempVector.x = mouseX - this.position.x;
       this.tempVector.y = mouseY - this.position.y;
@@ -295,6 +321,9 @@ export class VectorShape {
     // Apply very slight attraction to center to keep shapes from straying too far
     this.velocity.x += (-this.position.x / (width * 10)) * 0.005;
     this.velocity.y += (-this.position.y / (height * 10)) * 0.005;
+
+    // Introduce Z-Drift Over Time
+    this.velocity.z += (Math.random() - 0.5) * 0.005; // Small random drift
 
     // Update position
     this.position.x += this.velocity.x;
@@ -342,6 +371,15 @@ export class VectorShape {
     this.rotation.y += this.rotationSpeed.y;
     this.rotation.z += this.rotationSpeed.z;
 
+    // Update scale towards target scale for morphing effect
+    if (this.scale < this.scaleTarget) {
+      this.scale += this.scaleSpeed;
+      if (this.scale > this.scaleTarget) this.scale = this.scaleTarget;
+    } else if (this.scale > this.scaleTarget) {
+      this.scale -= this.scaleSpeed;
+      if (this.scale < this.scaleTarget) this.scale = this.scaleTarget;
+    }
+
     // Update color
     if (this.color !== this.targetColor) {
       // Smoothly transition to the target color
@@ -350,13 +388,16 @@ export class VectorShape {
 
       if (currentColor && targetColor) {
         const newR = Math.round(
-          currentColor.r + (targetColor.r - currentColor.r) * this.colorTransitionSpeed
+          currentColor.r +
+            (targetColor.r - currentColor.r) * this.colorTransitionSpeed
         );
         const newG = Math.round(
-          currentColor.g + (targetColor.g - currentColor.g) * this.colorTransitionSpeed
+          currentColor.g +
+            (targetColor.g - currentColor.g) * this.colorTransitionSpeed
         );
         const newB = Math.round(
-          currentColor.b + (targetColor.b - currentColor.b) * this.colorTransitionSpeed
+          currentColor.b +
+            (targetColor.b - currentColor.b) * this.colorTransitionSpeed
         );
 
         this.color = rgbToHex(newR, newG, newB);
@@ -373,6 +414,8 @@ export class VectorShape {
 
     if (this.age >= this.lifespan && !this.isFadingOut) {
       this.isFadingOut = true;
+      // Initiate morphing effect upon fading out
+      this.scaleTarget = 0.8; // Scale down slightly
     }
 
     if (this.isFadingOut) {
@@ -384,6 +427,11 @@ export class VectorShape {
       // Fade in effect
       this.opacity = Math.min(1, this.age / 1000); // Fade in over 1 second
     }
+
+    // Handle scaling reset after morphing
+    if (this.scale === this.scaleTarget && this.scale !== 1) {
+      this.scaleTarget = 1; // Reset scale target to normal
+    }
   }
 
   /**
@@ -393,8 +441,8 @@ export class VectorShape {
    * @param height - Height of the canvas.
    */
   draw(ctx: CanvasRenderingContext2D, width: number, height: number) {
-    // Only draw if the shape has some opacity
-    if (this.opacity > 0) {
+    // Only draw if the shape has some opacity and is not exploded
+    if (this.opacity > 0 && !this.isExploded) {
       const rgbColor = hexToRgb(this.color);
       if (rgbColor) {
         const { r, g, b } = rgbColor;
@@ -412,16 +460,16 @@ export class VectorShape {
           const v1 = rotateVertex(this.vertices[start], this.rotation);
           const v2 = rotateVertex(this.vertices[end], this.rotation);
           const projectedV1 = project(
-            v1.x + this.position.x,
-            v1.y + this.position.y,
-            v1.z + this.position.z,
+            v1.x * this.scale + this.position.x,
+            v1.y * this.scale + this.position.y,
+            v1.z * this.scale + this.position.z,
             width,
             height
           );
           const projectedV2 = project(
-            v2.x + this.position.x,
-            v2.y + this.position.y,
-            v2.z + this.position.z,
+            v2.x * this.scale + this.position.x,
+            v2.y * this.scale + this.position.y,
+            v2.z * this.scale + this.position.z,
             width,
             height
           );
@@ -487,6 +535,15 @@ export class VectorShape {
 
     // Reset glow intensity
     this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
+
+    // Reset scaling properties
+    this.scale = 1;
+    this.scaleTarget = 1;
+    this.scaleSpeed = 0.02;
+
+    // Reset explosion and respawn properties
+    this.isExploded = false;
+    this.respawnTimer = null;
   }
 
   /**
@@ -510,15 +567,44 @@ export class VectorShape {
   }
 
   /**
-   * Applies a force to the shape, changing its velocity.
-   * @param forceX - X component of the force.
-   * @param forceY - Y component of the force.
-   * @param forceZ - Z component of the force.
+   * Triggers visual enhancements upon collision, such as color flashes, temporary glow pulses, and morphing effects.
    */
-  applyForce(forceX: number, forceY: number, forceZ: number): void {
-    this.velocity.x += forceX;
-    this.velocity.y += forceY;
-    this.velocity.z += forceZ;
+  triggerCollisionVisuals(): void {
+    // Temporarily increase glow intensity for a pulse effect
+    const originalGlow = this.glowIntensity;
+    this.glowIntensity += 10; // Increase glow
+    setTimeout(() => {
+      this.glowIntensity = originalGlow; // Reset glow after pulse duration
+    }, 200); // Pulse duration in milliseconds
+
+    // Temporarily change color to a collision-specific color
+    const collisionColor = "#FF00FF"; // Neon Magenta for collision
+    const originalColor = this.color;
+    this.color = collisionColor;
+    setTimeout(() => {
+      this.color = originalColor;
+    }, 200); // Color flash duration
+
+    // Trigger morphing effect by scaling up
+    this.scaleTarget = 1.2; // Scale up to 120%
+    // The update method will handle returning the scale back to normal
+  }
+
+  /**
+   * Initiates the explosion and schedules respawning after a random delay.
+   */
+  explodeAndRespawn(): void {
+    if (this.isExploded) return; // Prevent multiple explosions
+
+    this.isExploded = true;
+    this.opacity = 0; // Hide the shape immediately
+    this.triggerCollisionVisuals(); // Trigger visual effects
+
+    // Schedule respawn after a random delay (up to 10 seconds)
+    const delay = Math.random() * 10000; // 0 to 10,000 milliseconds
+    this.respawnTimer = window.setTimeout(() => {
+      this.reset(new Set<string>(), window.innerWidth, window.innerHeight);
+    }, delay);
   }
 
   /**
@@ -526,19 +612,26 @@ export class VectorShape {
    * @returns True if the shape is faded out, false otherwise.
    */
   isFadedOut(): boolean {
-    return this.isFadingOut && this.opacity <= 0;
+    return this.isFadingOut && this.opacity <= 0 && !this.isExploded;
   }
 
   /**
    * Handles collision detection and response between shapes.
-   * This method should be called externally with the array of shapes.
+   * Applies realistic physics-based collision response and triggers visual enhancements.
    * @param shapes - Array of VectorShape instances to check collisions with.
+   * @param collisionCallback - Optional callback to trigger additional effects upon collision.
    */
-  static handleCollisions(shapes: VectorShape[]): void {
+  static handleCollisions(
+    shapes: VectorShape[],
+    collisionCallback?: CollisionCallback
+  ): void {
     for (let i = 0; i < shapes.length; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
         const shapeA = shapes[i];
         const shapeB = shapes[j];
+
+        // Skip if either shape is exploded
+        if (shapeA.isExploded || shapeB.isExploded) continue;
 
         const dx = shapeB.position.x - shapeA.position.x;
         const dy = shapeB.position.y - shapeA.position.y;
@@ -564,7 +657,7 @@ export class VectorShape {
           if (vn > 0) continue;
 
           // Calculate impulse scalar (assuming equal mass and perfect elasticity)
-          const impulse = -2 * vn / 2; // mass cancels out
+          const impulse = (-2 * vn) / 2; // mass cancels out
 
           // Apply impulse to the shapes' velocities
           shapeA.velocity.x += impulse * nx;
@@ -588,6 +681,15 @@ export class VectorShape {
           // Change colors upon collision
           shapeA.color = shapeA.getRandomCyberpunkColor();
           shapeB.color = shapeB.getRandomCyberpunkColor();
+
+          // Trigger collision callback if provided
+          if (collisionCallback) {
+            collisionCallback(shapeA, shapeB);
+          }
+
+          // Apply visual enhancements
+          shapeA.triggerCollisionVisuals();
+          shapeB.triggerCollisionVisuals();
         }
       }
     }
@@ -595,7 +697,6 @@ export class VectorShape {
 
   /**
    * Handles proximity-based color blending between shapes.
-   * This method should be called externally with the array of shapes.
    * @param shapes - Array of VectorShape instances to blend colors with.
    */
   static handleColorBlending(shapes: VectorShape[]): void {
@@ -655,7 +756,6 @@ export class VectorShape {
 
   /**
    * Handles attraction and repulsion forces between shapes.
-   * This method should be called externally with the array of shapes.
    * @param shapes - Array of VectorShape instances to apply forces to.
    */
   static handleAttractionRepulsion(shapes: VectorShape[]): void {
@@ -714,7 +814,7 @@ export class VectorShape {
   ): void {
     const CONNECTION_DISTANCE = 120; // Adjust as needed
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Light lines
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)"; // Light lines
     ctx.lineWidth = 1;
 
     for (let i = 0; i < shapes.length; i++) {
@@ -766,3 +866,8 @@ export class VectorShape {
     return distance < distanceThreshold;
   }
 }
+
+/**
+ * CollisionCallback type defining the signature for collision callback functions.
+ */
+type CollisionCallback = (shapeA: VectorShape, shapeB: VectorShape) => void;

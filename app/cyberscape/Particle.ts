@@ -16,6 +16,9 @@ export class Particle {
   color: string;
   maxSpeed: number;
   minSpeed: number;
+  lifespan: number;
+  age: number;
+  opacity: number;
 
   // Optimization: Reuse vector for calculations
   private tempVector: { x: number; y: number; z: number };
@@ -57,6 +60,11 @@ export class Particle {
 
     this.color = `hsl(${getRandomCyberpunkHue()}, 100%, 50%)`;
 
+    // Initialize lifecycle properties
+    this.lifespan = Infinity; // Default lifespan for regular particles
+    this.age = 0;
+    this.opacity = 1;
+
     // Initialize tempVector for reuse in calculations
     this.tempVector = { x: 0, y: 0, z: 0 };
   }
@@ -64,20 +72,20 @@ export class Particle {
   /**
    * Updates the particle's position and velocity based on current state and interactions.
    * This method is called every frame to animate the particle.
-   * @param isCursorOverHeader - Boolean indicating if the cursor is over the header area
+   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the header area
    * @param mouseX - X coordinate of the mouse cursor
    * @param mouseY - Y coordinate of the mouse cursor
    * @param width - Width of the canvas
    * @param height - Height of the canvas
    */
   update(
-    isCursorOverHeader: boolean,
+    isCursorOverCyberScape: boolean,
     mouseX: number,
     mouseY: number,
     width: number,
     height: number
   ) {
-    if (isCursorOverHeader) {
+    if (isCursorOverCyberScape) {
       this.tempVector.x = mouseX - this.x;
       this.tempVector.y = mouseY - this.y;
       const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
@@ -133,6 +141,12 @@ export class Particle {
     this.velocityX += (Math.random() - 0.5) * 0.01;
     this.velocityY += (Math.random() - 0.5) * 0.01;
     this.velocityZ += (Math.random() - 0.5) * 0.01;
+
+    // Update lifecycle if lifespan is finite
+    if (this.lifespan !== Infinity) {
+      this.age += 16; // Assuming 60 FPS
+      this.opacity = Math.max(0, 1 - this.age / this.lifespan);
+    }
   }
 
   /**
@@ -202,5 +216,97 @@ export class Particle {
 
     // Optionally reset color for variety
     this.color = `hsl(${getRandomCyberpunkHue()}, 100%, 50%)`;
+
+    // Reset lifecycle properties
+    this.lifespan = Infinity; // Regular particles have infinite lifespan
+    this.age = 0;
+    this.opacity = 1;
+  }
+}
+
+/**
+ * ParticleAtCollision class representing particles emitted upon collisions.
+ * Extends the base Particle class with specific initialization.
+ */
+export class ParticleAtCollision extends Particle {
+  /**
+   * Creates a new ParticleAtCollision instance at the specified collision point.
+   * @param x - X coordinate of the collision point.
+   * @param y - Y coordinate of the collision point.
+   * @param z - Z coordinate of the collision point.
+   */
+  constructor(x: number, y: number, z: number) {
+    super(new Set<string>(), window.innerWidth, window.innerHeight);
+    this.x = x;
+    this.y = y;
+    this.z = z;
+    // Increase velocity range for broader spread
+    this.velocityX = (Math.random() - 0.5) * 4; // Increased from 2 to 4
+    this.velocityY = (Math.random() - 0.5) * 4; // Increased from 2 to 4
+    this.velocityZ = (Math.random() - 0.5) * 4; // Increased from 2 to 4
+    this.size = Math.random() * 3 + 2;
+    this.color = "#FF00FF"; // Neon Magenta for collision particles
+    this.lifespan = 1500; // Increased lifespan to 1.5 seconds for smoother fade-out
+    this.age = 0;
+    this.opacity = 1;
+  }
+
+  /**
+   * Overrides the update method to handle particle-specific behavior.
+   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the header area.
+   * @param mouseX - X coordinate of the mouse cursor.
+   * @param mouseY - Y coordinate of the mouse cursor.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
+  update(
+    isCursorOverCyberScape: boolean,
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number
+  ) {
+    // Update position
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+    this.z += this.velocityZ;
+
+    // Apply gravity or friction if desired
+    this.velocityY += 0.01; // Gravity effect
+
+    // Update opacity based on age using an easing function for smoother fade-out
+    this.age += 16; // Assuming 60 FPS
+    this.opacity = Math.max(0, 1 - this.age / this.lifespan);
+  }
+
+  /**
+   * Draws the collision particle on the canvas.
+   * @param ctx - Canvas rendering context.
+   * @param mouseX - X coordinate of the mouse cursor.
+   * @param mouseY - Y coordinate of the mouse cursor.
+   * @param width - Width of the canvas.
+   * @param height - Height of the canvas.
+   */
+  draw(
+    ctx: CanvasRenderingContext2D,
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number
+  ) {
+    if (this.opacity <= 0) return;
+
+    const pos = project(this.x, this.y, this.z, width, height);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 0, 255, ${this.opacity})`; // Neon Magenta with fading opacity
+    ctx.fill();
+
+    // Add a subtle motion blur effect for smoother fade-out
+    ctx.shadowBlur = 5 * this.opacity;
+    ctx.shadowColor = `rgba(255, 0, 255, ${this.opacity})`;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = "transparent";
   }
 }

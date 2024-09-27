@@ -1,5 +1,5 @@
 import { VectorShape } from "./VectorShape";
-import { Particle } from "./Particle";
+import { Particle, ParticleAtCollision } from "./Particle";
 import {
   CYBERPUNK_HUE_RANGES,
   getRandomCyberpunkHue,
@@ -269,6 +269,35 @@ export const initializeCyberScape = (
   let glitchDuration = 200; // 0.2 seconds duration for each glitch effect
 
   /**
+   * Callback function to handle additional effects upon shape collisions.
+   * @param shapeA - The first shape involved in the collision.
+   * @param shapeB - The second shape involved in the collision.
+   */
+  const handleShapeCollision = (shapeA: VectorShape, shapeB: VectorShape) => {
+    // Emit particles at the collision point
+    const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
+    const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
+    const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
+
+    // Number of particles to emit
+    const particlesToEmit = 20; // Increased from 10 to 20 for more spread
+
+    // Limit the number of particles to prevent excessive emissions
+    const MAX_PARTICLES = 1000; // Adjust based on performance testing
+    if (particlesArray.length + particlesToEmit <= MAX_PARTICLES) {
+      for (let i = 0; i < particlesToEmit; i++) {
+        particlesArray.push(
+          new ParticleAtCollision(collisionX, collisionY, collisionZ)
+        );
+      }
+    }
+
+    // Handle shape respawning with random delay
+    shapeA.explodeAndRespawn();
+    shapeB.explodeAndRespawn();
+  };
+
+  /**
    * The main animation loop for CyberScape.
    */
   const animateCyberScape = () => {
@@ -288,16 +317,33 @@ export const initializeCyberScape = (
     const existingPositions = new Set<string>();
     for (const shape of shapesArray) {
       shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height);
-      if (shape.opacity > 0) {
+      if (shape.opacity > 0 && !shape.isExploded) {
+        // Only render if not exploded
         existingPositions.add(shape.getPositionKey());
         shape.draw(ctx, width, height);
       }
-      if (shape.opacity <= 0 && shape.isFadingOut) {
+      if (shape.isFadedOut()) {
         shape.reset(existingPositions, width, height);
       }
     }
 
+    // Handle interactions with enhanced collision handling
+    VectorShape.handleCollisions(shapesArray, handleShapeCollision);
+    VectorShape.handleColorBlending(shapesArray);
+    VectorShape.handleAttractionRepulsion(shapesArray);
+
+    // Draw connections between shapes
+    VectorShape.drawConnections(ctx, shapesArray, width, height);
+
     connectParticles(particlesArray, ctx);
+
+    // Cleanup expired particles to prevent CPU overload
+    // Iterate backwards to safely remove items while iterating
+    for (let i = particlesArray.length - 1; i >= 0; i--) {
+      if (particlesArray[i].opacity <= 0) {
+        particlesArray.splice(i, 1);
+      }
+    }
 
     // Apply glitch effects
     const currentTime = Date.now();
