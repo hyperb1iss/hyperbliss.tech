@@ -67,6 +67,28 @@ const Highlight = styled.span`
   font-weight: bold;
 `;
 
+// Variants for staggered animations
+const contentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
+
 /**
  * AboutPageContent component
  * Renders the content for the About page, including a profile image and text.
@@ -76,48 +98,45 @@ const AboutPageContent: React.FC = () => {
     <PageLayout>
       <PageTitle>About Me</PageTitle>
       <ContentWrapper
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+        variants={contentVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <ProfileImage
-          src="/images/profile-image.jpg"
-          alt="Profile image of Stefanie Jane"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: 0.6,
-            ease: [0.25, 0.46, 0.45, 0.94],
-            delay: 0.3,
-          }}
-          whileHover={{ scale: 1.05 }}
-        />
-        <TextContent
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-        >
-          <p>
-            Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
-            might know me as <Highlight>@hyperb1iss</Highlight> in the tech
-            world. I&apos;m a full-stack developer and designer with a passion
-            for creating innovative software solutions that make a difference.
-          </p>
-          <p>
-            I believe in the power of technology to transform lives, and
-            I&apos;m always exploring new ways to push the boundaries of
-            what&apos;s possible. Whether it&apos;s developing sleek user
-            interfaces, crafting intuitive user experiences, or diving into the
-            latest tech trends, I&apos;m all about blending technology with
-            creativity.
-          </p>
-          <p>
-            When I&apos;m not coding or designing, you can find me sharing
-            insights on my blog, contributing to open-source projects, or
-            connecting with the tech community. I&apos;m an avid learner,
-            constantly seeking new knowledge and skills to stay ahead in this
-            ever-evolving field.
-          </p>
+        <motion.div variants={itemVariants}>
+          <ProfileImage
+            src="/images/profile-image.jpg"
+            alt="Profile image of Stefanie Jane"
+            whileHover={{ scale: 1.05 }}
+          />
+        </motion.div>
+        <TextContent>
+          <motion.div variants={itemVariants}>
+            <p>
+              Hey there! I&apos;m <Highlight>Stefanie Jane</Highlight>, but you
+              might know me as <Highlight>@hyperb1iss</Highlight> in the tech
+              world. I&apos;m a full-stack developer and designer with a passion
+              for creating innovative software solutions that make a difference.
+            </p>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <p>
+              I believe in the power of technology to transform lives, and
+              I&apos;m always exploring new ways to push the boundaries of
+              what&apos;s possible. Whether it&apos;s developing sleek user
+              interfaces, crafting intuitive user experiences, or diving into
+              the latest tech trends, I&apos;m all about blending technology
+              with creativity.
+            </p>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <p>
+              When I&apos;m not coding or designing, you can find me sharing
+              insights on my blog, contributing to open-source projects, or
+              connecting with the tech community. I&apos;m an avid learner,
+              constantly seeking new knowledge and skills to stay ahead in this
+              ever-evolving field.
+            </p>
+          </motion.div>
         </TextContent>
       </ContentWrapper>
     </PageLayout>

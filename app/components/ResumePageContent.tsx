@@ -73,16 +73,16 @@ const ResumeContent = styled(ReactMarkdown)`
   }
 
   a {
-    color: var(--color-link); /* Updated to a distinct link color */
+    color: var(--color-link);
     font-weight: 600;
     text-decoration: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3); /* Subtle underline */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
     padding-bottom: 1px;
 
     &:hover {
       color: var(--color-secondary);
-      border-bottom: 2px solid var(--color-secondary); /* Bolder on hover */
+      border-bottom: 2px solid var(--color-secondary);
       text-shadow: 0px 0px 8px var(--color-secondary);
       text-decoration: none;
     }

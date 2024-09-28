@@ -18,10 +18,16 @@ interface PageTitleProps {
   children: React.ReactNode;
 }
 
+/**
+ * PageTitle component
+ * Renders a page title with animation effects.
+ * @param {PageTitleProps} props - The component props
+ * @returns {JSX.Element} Animated page title
+ */
 const PageTitle: React.FC<PageTitleProps> = ({ children }) => {
   return (
     <TitleWrapper
-      initial={{ opacity: 0, y: -140 }}
+      initial={{ opacity: 0, y: -40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >

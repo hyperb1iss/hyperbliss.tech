@@ -1,9 +1,9 @@
 // app/components/ProjectList.tsx
 "use client";
 
-import Link from "next/link";
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { ProjectCard } from "./ProjectCard";
 
 // Styled components for project list
 const ProjectsContainer = styled(motion.div)`
@@ -16,48 +16,6 @@ const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-`;
-
-const ProjectCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px; // Increased border radius
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.3s ease;
-  height: 100%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); // Enhanced shadow
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-10px) scale(1.05); // Slightly increased scale
-    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3); // Enhanced hover shadow
-  }
-`;
-
-const ProjectTitle = styled.h2`
-  font-size: 2.4rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
-`;
-
-const ProjectDescription = styled.p`
-  font-size: 1.6rem;
-  color: var(--color-text);
-  margin-bottom: 2rem;
-`;
-
-const ProjectLink = styled(Link)`
-  font-size: 1.6rem;
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: var(--color-secondary);
-    text-decoration: underline;
-  }
 `;
 
 // Interface for project data
@@ -105,29 +63,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
         {projects.map(({ slug, frontmatter }) => (
           <ProjectCard
             key={slug}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          >
-            <div>
-              <ProjectTitle>{frontmatter.title}</ProjectTitle>
-              <ProjectDescription>{frontmatter.description}</ProjectDescription>
-            </div>
-            <div>
-              <ProjectLink href={`/projects/${slug}`}>Learn More</ProjectLink>
-              {" | "}
-              <ProjectLink
-                href={frontmatter.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                GitHub
-              </ProjectLink>
-            </div>
-          </ProjectCard>
+            slug={slug}
+            title={frontmatter.title}
+            description={frontmatter.description}
+            github={frontmatter.github}
+          />
         ))}
       </ProjectsGrid>
     </ProjectsContainer>
