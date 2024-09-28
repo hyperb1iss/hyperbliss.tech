@@ -5,12 +5,12 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { styled, keyframes } from "styled-components";
-import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
+import { keyframes, styled } from "styled-components";
 import {
   initializeCyberScape,
   triggerCyberScapeAnimation,
 } from "../cyberscape/CyberScape";
+import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 import { NAV_ITEMS } from "../lib/navigation";
 
 // Define the keyframes for the gradient animation
@@ -344,23 +344,15 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
   }
 `;
 
-// Add a new keyframe for the menu icon animation
-// const rotateMenu = keyframes`
-//   0% {
-//     transform: rotate(0deg);
-//   }
-//   100% {
-//     transform: rotate(180deg);
-//   }
-// `;
-
 // Update the MobileMenuIcon styled component
 const MobileMenuIcon = styled(motion.div)`
   display: none;
-  width: 24px; // Reduced from 30px
-  height: 24px; // Reduced from 30px
+  width: 30px;
+  height: 30px;
   cursor: pointer;
+  margin-right: 1rem;
   z-index: 1100;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.7)); // Add glow effect
 
   @media (max-width: 768px) {
     display: flex;
@@ -371,9 +363,10 @@ const MobileMenuIcon = styled(motion.div)`
 
 const MenuLine = styled(motion.span)`
   width: 100%;
-  height: 2px; // Reduced from 3px for a slightly thinner line
+  height: 3px;
   background-color: var(--color-accent);
-  border-radius: 4px; // Slightly reduced from 5px
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.7); // Add glow effect
 `;
 
 // Update the MobileNavLinks styled component
@@ -381,35 +374,35 @@ const MobileNavLinks = styled.ul<{ open: boolean }>`
   list-style: none;
   position: fixed;
   top: 100px;
-  right: 20px;
+  right: 0;
   background-color: rgba(10, 10, 20, 0.95);
-  width: 200px;
+  width: 250px;
   flex-direction: column;
   display: flex;
   z-index: 1001;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
-  border: 1px solid rgba(162, 89, 255, 0.2);
+  padding: 1rem 1rem;
+  border-radius: 10px 0 0 10px; // Rounded corners only on the left side
+  box-shadow: -5px 0 20px rgba(162, 89, 255, 0.5); // Increased glow and moved to the left side
+  border-left: 1px solid rgba(162, 89, 255, 0.4); // Added left border
   opacity: ${(props) => (props.open ? 1 : 0)};
-  transform: ${(props) =>
-    props.open ? "translateY(0) scale(1)" : "translateY(-20px) scale(0.95)"};
+  transform: ${(props) => (props.open ? "translateX(0)" : "translateX(100%)")};
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: ${(props) => (props.open ? "all" : "none")};
 
   li {
     padding: 1rem;
     text-align: center;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 
     &:hover {
       background-color: rgba(162, 89, 255, 0.2);
+      transform: scale(1.05);
     }
   }
 `;
 
 // Update the MobileNavItem styled component
-const MobileNavItem = styled(NavItem)<{ index: number; open: boolean }>`
+const MobileNavItem = styled(motion.li)<{ index: number; open: boolean }>`
   @media (max-width: 768px) {
     opacity: 0;
     transform: translateX(20px);
@@ -533,6 +526,22 @@ const Header: React.FC = () => {
     $clockwise: Math.random() < 0.5,
   });
 
+  // Add this new function to trigger CyberScape animation when menu is opened
+  const triggerMenuAnimation = useCallback(() => {
+    if (canvasRef.current) {
+      const rect = canvasRef.current.getBoundingClientRect();
+      const x = rect.right - 20; // 20px from the right edge
+      const y = rect.top + 50; // Middle of the header height
+      triggerCyberScapeAnimation(x, y);
+    }
+  }, []);
+
+  // Update the menu open/close handler
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((prev) => !prev);
+    triggerMenuAnimation();
+  }, [triggerMenuAnimation]);
+
   return (
     <Nav ref={navRef}>
       <Canvas ref={canvasRef} />
@@ -569,8 +578,10 @@ const Header: React.FC = () => {
         </NavLinks>
         {/* Mobile Menu Icon */}
         <MobileMenuIcon
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={toggleMenu}
           className="mobile-menu-icon"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <MenuLine
             variants={topLineVariants}
@@ -592,7 +603,13 @@ const Header: React.FC = () => {
       {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} ref={mobileMenuRef}>
         {NAV_ITEMS.map((item, index) => (
-          <MobileNavItem key={item} index={index} open={menuOpen}>
+          <MobileNavItem
+            key={item}
+            index={index}
+            open={menuOpen}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             <StyledNavLink
               onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
               $active={pathname === `/${item.toLowerCase()}`}
