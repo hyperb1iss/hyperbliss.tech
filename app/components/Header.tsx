@@ -13,6 +13,7 @@ import Logo from "./Logo";
 import MobileMenuIcon from "./MobileMenuIcon";
 import MobileNavLinks from "./MobileNavLinks";
 import NavLinks from "./NavLinks";
+import { debounce } from "lodash"; // Add this import
 
 /**
  * Styled components for the header
@@ -125,26 +126,39 @@ const Header: React.FC = () => {
     };
   }, []);
 
-  // Handler for triggering CyberScape animation on header interaction (click)
-  const handleHeaderClick = useCallback((event: MouseEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
-    if (rect) {
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      triggerCyberScapeAnimation(x, y); // Trigger the CyberScape animation
-    }
-  }, []);
+  // Optimized handler for triggering CyberScape animation
+  const handleHeaderClick = useCallback(() => {
+    const debouncedTrigger = debounce((event: MouseEvent) => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        triggerCyberScapeAnimation(x, y);
+      }
+    }, 100);
+
+    const clickHandler = (event: MouseEvent) => {
+      debouncedTrigger(event);
+    };
+
+    // Attach the cancel method to the clickHandler
+    clickHandler.cancel = debouncedTrigger.cancel;
+
+    return clickHandler;
+  }, [canvasRef]);
 
   // Attach the click event listener to the header for CyberScape
   useEffect(() => {
     const navElement = navRef.current;
+    const clickHandler = handleHeaderClick();
     if (navElement) {
-      navElement.addEventListener("click", handleHeaderClick);
+      navElement.addEventListener("click", clickHandler);
     }
     return () => {
       if (navElement) {
-        navElement.removeEventListener("click", handleHeaderClick);
+        navElement.removeEventListener("click", clickHandler);
       }
+      clickHandler.cancel(); // Now this will work
     };
   }, [handleHeaderClick]);
 
