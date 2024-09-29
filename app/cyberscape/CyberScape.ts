@@ -180,7 +180,7 @@ export const initializeCyberScape = (
 
   const adjustShapeCounts = () => {
     const isMobile = width <= 768;
-    const baseParticleCount = 70;
+    const baseParticleCount = 250;
     const particlesPerPixel = 1 / 2000;
 
     numberOfParticles = Math.max(
@@ -189,10 +189,10 @@ export const initializeCyberScape = (
     );
 
     if (isMobile) {
-      numberOfParticles = Math.floor(numberOfParticles * 1.2);
+      numberOfParticles = Math.floor(numberOfParticles * 0.6);
     }
 
-    numberOfShapes = isMobile ? 4 : 8;
+    numberOfShapes = isMobile ? 4 : 10;
 
     const existingPositions = new Set<string>();
 
