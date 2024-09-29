@@ -4,7 +4,8 @@ import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import Footer from "./components/Footer";
-import Header, { HeaderProvider } from "./components/Header";
+import Header from "./components/Header";
+import { HeaderProvider } from "./components/HeaderContext";
 import MainContentWrapper from "./components/MainContentWrapper";
 import siteMetadata from "./lib/metadata";
 import StyledComponentsRegistry from "./lib/registry";
@@ -23,6 +24,11 @@ const SeoWrapper = dynamic(() => import("./components/SeoWrapper"), {
   ssr: false,
 });
 
+/**
+ * Root layout component for the app
+ * @param {React.ReactNode} children - The content to be rendered within the layout.
+ * @returns {JSX.Element} Rendered layout component
+ */
 export default function RootLayout({
   children,
 }: {
@@ -31,10 +37,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {/* StyledComponentsRegistry for server-side rendering of styled-components */}
         <StyledComponentsRegistry>
           <HeaderProvider>
+            {/* SEO wrapper to manage meta tags dynamically */}
             <SeoWrapper />
+            {/* Main site header */}
             <Header />
+            {/* Google Analytics tracking */}
             <Analytics />
             <div
               style={{
@@ -43,15 +53,18 @@ export default function RootLayout({
                 minHeight: "100vh",
               }}
             >
+              {/* Wraps the content with layout and animation handling */}
               <MainContentWrapper>
                 <main>
                   <AnimatePresence mode="wait">{children}</AnimatePresence>
                 </main>
               </MainContentWrapper>
+              {/* Main site footer */}
               <Footer />
             </div>
           </HeaderProvider>
         </StyledComponentsRegistry>
+        {/* Custom script to add console tagline */}
         <Script id="tagline" strategy="afterInteractive">
           {`
             console.log(

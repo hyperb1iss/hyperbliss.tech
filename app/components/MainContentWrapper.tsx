@@ -1,10 +1,10 @@
 // app/components/MainContentWrapper.tsx
 "use client";
 
+import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import { useHeaderContext } from "./Header";
+import { useHeaderContext } from "./HeaderContext";
 
 const StyledWrapper = styled(motion.div)`
   flex: 1;
@@ -12,11 +12,13 @@ const StyledWrapper = styled(motion.div)`
   flex-direction: column;
 `;
 
-interface MainContentWrapperProps {
-  children: React.ReactNode;
-}
-
-const MainContentWrapper: React.FC<MainContentWrapperProps> = ({
+/**
+ * MainContentWrapper component
+ * Adjusts padding based on header expansion state.
+ * @param {React.ReactNode} children - Child components
+ * @returns {JSX.Element} Rendered content wrapper
+ */
+const MainContentWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { isExpanded } = useHeaderContext();
