@@ -106,6 +106,14 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
       bottom: 0;
     }
   }
+
+  ${(props) =>
+    props.$active &&
+    `
+    &.active {
+      color: #00ffff;
+    }
+  `}
 `;
 
 /**
@@ -124,17 +132,22 @@ const NavLinks: React.FC = () => {
 
   return (
     <NavLinksContainer>
-      {NAV_ITEMS.map((item) => (
-        <NavItem key={item}>
-          <StyledNavLink
-            href={`/${item.toLowerCase()}`}
-            onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
-            $active={pathname === `/${item.toLowerCase()}`}
-          >
-            {item}
-          </StyledNavLink>
-        </NavItem>
-      ))}
+      {NAV_ITEMS.map((item) => {
+        const href = `/${item.toLowerCase()}`;
+        const isActive = pathname === href;
+        return (
+          <NavItem key={item}>
+            <StyledNavLink
+              href={href}
+              onClick={(e) => handleNavigation(href, e)}
+              $active={isActive}
+              className={isActive ? "active" : ""}
+            >
+              {item}
+            </StyledNavLink>
+          </NavItem>
+        );
+      })}
     </NavLinksContainer>
   );
 };
