@@ -6,6 +6,15 @@
       "dom.iterable",
       "esnext"
     ],
+    "types": [
+      "jest",
+      "@testing-library/jest-dom"
+    ],
+    "paths": {
+      "@/*": [
+        "app/*"
+      ]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

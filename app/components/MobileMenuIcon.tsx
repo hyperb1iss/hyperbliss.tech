@@ -73,6 +73,8 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({
       className="mobile-menu-icon"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
+      aria-label="Toggle menu"
+      role="button"
     >
       <MenuLine
         variants={topLineVariants}
