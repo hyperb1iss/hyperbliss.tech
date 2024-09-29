@@ -13,9 +13,10 @@ const ResumeContainer = styled(motion.div)`
   max-width: 800px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;
   padding: 3rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 `;
 
 const ResumeContent = styled(ReactMarkdown)`
@@ -28,6 +29,7 @@ const ResumeContent = styled(ReactMarkdown)`
     color: var(--color-primary);
     margin-bottom: 1rem;
     text-align: center;
+    text-shadow: 0 0 10px var(--color-primary);
   }
 
   h2 {
@@ -37,6 +39,7 @@ const ResumeContent = styled(ReactMarkdown)`
     margin-bottom: 1.5rem;
     border-bottom: 2px solid var(--color-accent);
     padding-bottom: 0.5rem;
+    text-shadow: 0 0 5px var(--color-secondary);
   }
 
   h3 {
@@ -44,6 +47,7 @@ const ResumeContent = styled(ReactMarkdown)`
     color: var(--color-accent);
     margin-top: 2rem;
     margin-bottom: 1rem;
+    text-shadow: 0 0 5px var(--color-accent);
   }
 
   h4 {

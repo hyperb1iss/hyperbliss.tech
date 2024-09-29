@@ -3,53 +3,97 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
+// Styled components for the project card
 const Card = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 0, 255, 0.2);
+  border-radius: 15px;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   transition: all 0.3s ease;
-  height: 100%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-10px) scale(1.05);
-    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.3);
+    transform: translateY(-10px);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 0, 255, 0.2),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
 const ProjectTitle = styled.h2`
   font-size: 2.4rem;
-  color: var(--color-primary);
+  color: #00ffff;
   margin-bottom: 1rem;
+  text-shadow: 0 0 5px #00ffff;
 `;
 
 const ProjectDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-text);
   margin-bottom: 2rem;
+  line-height: 1.6;
+`;
+
+const ProjectLinks = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
 
 const ProjectLink = styled(Link)`
   font-size: 1.6rem;
-  color: var(--color-accent);
+  color: #ff00ff;
   text-decoration: none;
   transition: all 0.3s ease;
+  position: relative;
 
   &:hover {
-    color: var(--color-secondary);
-    text-decoration: underline;
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #00ffff;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `;
 
+// Props interface for ProjectCard component
 interface ProjectCardProps {
   slug: string;
   title: string;
   description: string;
   github: string;
+  index: number;
 }
 
 /**
@@ -63,6 +107,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   title,
   description,
   github,
+  index,
 }) => {
   return (
     <Card
@@ -70,20 +115,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
       }}
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
     >
       <div>
         <ProjectTitle>{title}</ProjectTitle>
         <ProjectDescription>{description}</ProjectDescription>
       </div>
-      <div>
+      <ProjectLinks>
         <ProjectLink href={`/projects/${slug}`}>Learn More</ProjectLink>
-        {" | "}
         <ProjectLink href={github} target="_blank" rel="noopener noreferrer">
           GitHub
         </ProjectLink>
-      </div>
+      </ProjectLinks>
     </Card>
   );
 };

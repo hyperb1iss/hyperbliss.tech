@@ -3,33 +3,51 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import styled from "styled-components";
 
-const Card = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
+// Styled components for the post card
+const Card = styled(motion.a)`
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+    transform: translateY(-10px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at center,
+      rgba(0, 255, 255, 0.2),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 `;
 
 const Title = styled.h2`
   font-size: 2.4rem;
+  color: #ff00ff;
   margin-bottom: 1rem;
-`;
-
-const StyledLink = styled(Link)`
-  color: var(--color-accent);
-  &:hover {
-    text-decoration: underline;
-  }
+  text-shadow: 0 0 5px #ff00ff;
 `;
 
 const Meta = styled.div`
@@ -44,16 +62,19 @@ const Excerpt = styled.p`
   color: var(--color-text);
 `;
 
+// Props interface for PostCard component
 interface PostCardProps {
   slug: string;
   title: string;
   date: string;
   excerpt: string;
+  index: number;
 }
 
 /**
  * PostCard component
  * Renders a single blog post card with title, date, and excerpt.
+ * The entire card is now clickable.
  * @param {PostCardProps} props - The component props
  * @returns {JSX.Element} Rendered post card
  */
@@ -62,21 +83,21 @@ export const PostCard: React.FC<PostCardProps> = ({
   title,
   date,
   excerpt,
+  index,
 }) => {
   return (
-    <Card
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0 },
-      }}
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
-      <Title>
-        <StyledLink href={`/blog/${slug}`}>{title}</StyledLink>
-      </Title>
-      <Meta>{new Date(date).toLocaleDateString()}</Meta>
-      <Excerpt>{excerpt}</Excerpt>
-    </Card>
+    <Link href={`/blog/${slug}`} passHref>
+      <Card
+        variants={{
+          hidden: { opacity: 0, y: 20 },
+          visible: { opacity: 1, y: 0 },
+        }}
+        transition={{ duration: 0.4, ease: "easeOut", delay: index * 0.1 }}
+      >
+        <Title>{title}</Title>
+        <Meta>{new Date(date).toLocaleDateString()}</Meta>
+        <Excerpt>{excerpt}</Excerpt>
+      </Card>
+    </Link>
   );
 };

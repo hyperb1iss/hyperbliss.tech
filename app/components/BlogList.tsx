@@ -10,7 +10,7 @@ import { PostCard } from "./PostCard";
 // Styled components for the blog list
 const PostList = styled(motion.div)`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 3rem;
 `;
 
@@ -53,13 +53,14 @@ export default function BlogList({ posts }: BlogListProps) {
           hidden: { opacity: 0 },
         }}
       >
-        {posts.map(({ slug, frontmatter }) => (
+        {posts.map(({ slug, frontmatter }, index) => (
           <PostCard
             key={slug}
             slug={slug}
             title={frontmatter.title}
             date={frontmatter.date}
             excerpt={frontmatter.excerpt}
+            index={index}
           />
         ))}
       </PostList>

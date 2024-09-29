@@ -14,7 +14,7 @@ const ProjectsContainer = styled(motion.div)`
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 `;
 
@@ -60,13 +60,14 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
           hidden: { opacity: 0 },
         }}
       >
-        {projects.map(({ slug, frontmatter }) => (
+        {projects.map(({ slug, frontmatter }, index) => (
           <ProjectCard
             key={slug}
             slug={slug}
             title={frontmatter.title}
             description={frontmatter.description}
             github={frontmatter.github}
+            index={index}
           />
         ))}
       </ProjectsGrid>

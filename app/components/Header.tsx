@@ -148,12 +148,6 @@ const Header: React.FC = () => {
     };
   }, [handleHeaderClick]);
 
-  // Handler for toggling menu
-  const toggleMenu = useCallback(() => {
-    setMenuOpen((prev) => !prev);
-    triggerMenuAnimation();
-  }, []);
-
   // Function to trigger CyberScape animation when menu is opened
   const triggerMenuAnimation = useCallback(() => {
     if (canvasRef.current) {
@@ -163,6 +157,12 @@ const Header: React.FC = () => {
       triggerCyberScapeAnimation(x, y);
     }
   }, []);
+
+  // Handler for toggling menu
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((prev) => !prev);
+    triggerMenuAnimation();
+  }, [triggerMenuAnimation]);
 
   // Handler for toggling header expansion
   const toggleExpansion = () => {
