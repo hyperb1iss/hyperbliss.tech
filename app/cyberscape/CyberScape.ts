@@ -88,7 +88,7 @@ export const initializeCyberScape = (
   if (!ctx) return () => {};
 
   const updateCanvasSize = () => {
-    const { width, height } = canvas.getBoundingClientRect();
+    const { width, height } = navElement.getBoundingClientRect();
     if (canvas.width !== width || canvas.height !== height) {
       const dpr = window.devicePixelRatio || 1;
       canvas.width = width * dpr;
@@ -125,13 +125,17 @@ export const initializeCyberScape = (
   };
 
   const handleResize = () => {
+    updateCanvasSize();
     width = canvas.offsetWidth;
     height = canvas.offsetHeight;
-    canvas.width = width;
-    canvas.height = height;
     adjustShapeCounts();
   };
+
   window.addEventListener("resize", handleResize);
+
+  // Add ResizeObserver to handle nav element size changes
+  const resizeObserver = new ResizeObserver(handleResize);
+  resizeObserver.observe(navElement);
 
   const handlePointerEnter = () => {
     isCursorOverCyberScape = true;
@@ -561,7 +565,7 @@ export const initializeCyberScape = (
     drawNoiseEffect(ctx, centerX, centerY, intensity, hue, width, height);
 
     // Emit particles
-    emitDatastreamParticles(centerX, centerY /*, intensity*/);
+    emitDatastreamParticles(centerX, centerY);
 
     // Affect nearby shapes
     affectNearbyShapes(centerX, centerY, intensity);
@@ -722,6 +726,7 @@ export const initializeCyberScape = (
    */
   const cleanup = () => {
     window.removeEventListener("resize", handleResize);
+    resizeObserver.disconnect();
     navElement.removeEventListener("pointerenter", handlePointerEnter);
     navElement.removeEventListener("pointerleave", handlePointerLeave);
     window.removeEventListener("mousemove", throttledHandleMouseMove);

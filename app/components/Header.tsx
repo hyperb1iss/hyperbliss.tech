@@ -4,7 +4,14 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { keyframes, styled } from "styled-components";
 import {
   initializeCyberScape,
@@ -38,13 +45,42 @@ const slideIn = keyframes`
   }
 `;
 
-const Nav = styled.nav`
+interface HeaderContextType {
+  isExpanded: boolean;
+  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
+
+export const useHeaderContext = () => {
+  const context = useContext(HeaderContext);
+  if (context === undefined) {
+    throw new Error("useHeaderContext must be used within a HeaderProvider");
+  }
+  return context;
+};
+
+export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  return (
+    <HeaderContext.Provider value={{ isExpanded, setIsExpanded }}>
+      {children}
+    </HeaderContext.Provider>
+  );
+};
+
+// Nav component now accepts an $isExpanded prop to control its height
+const Nav = styled.nav<{ $isExpanded: boolean }>`
   position: fixed;
   top: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
   padding: 1rem 1rem;
-  height: 100px;
+  height: ${(props) => (props.$isExpanded ? "200px" : "100px")};
+  transition: height 0.3s ease;
   z-index: 1000;
   overflow: hidden;
   display: flex;
@@ -416,14 +452,35 @@ const Canvas = styled.canvas`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100px;
+  height: 100%;
   pointer-events: none;
   z-index: -1;
 `;
 
+const ChevronIcon = styled(motion.div)`
+  position: absolute;
+  bottom: 5px;
+  left: 20px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: var(--color-accent);
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 /**
  * Header component
- * Renders the main navigation header with animated effects.
+ * Renders the main navigation header with animated effects and expandable CyberScape area.
  * @returns {JSX.Element} Rendered header
  */
 const Header: React.FC = () => {
@@ -434,6 +491,12 @@ const Header: React.FC = () => {
   const logoRef = useRef<HTMLAnchorElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const mobileMenuRef = useRef<HTMLUListElement>(null);
+  const { isExpanded, setIsExpanded } = useHeaderContext();
+
+  const chevronVariants = {
+    collapsed: { rotate: 0 },
+    expanded: { rotate: 180 },
+  };
 
   // Move resizeCanvas function outside of useEffect
   const resizeCanvas = () => {
@@ -543,7 +606,7 @@ const Header: React.FC = () => {
   }, [triggerMenuAnimation]);
 
   return (
-    <Nav ref={navRef}>
+    <Nav ref={navRef} $isExpanded={isExpanded}>
       <Canvas ref={canvasRef} />
       <NavContent>
         {/* Logo */}
@@ -619,6 +682,25 @@ const Header: React.FC = () => {
           </MobileNavItem>
         ))}
       </MobileNavLinks>
+      <ChevronIcon
+        onClick={() => setIsExpanded(!isExpanded)}
+        initial="collapsed"
+        animate={isExpanded ? "expanded" : "collapsed"}
+        variants={chevronVariants}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </ChevronIcon>
     </Nav>
   );
 };
