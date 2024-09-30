@@ -6,6 +6,7 @@
  */
 
 import { VectorShape } from "../shapes/VectorShape";
+import { ColorManager } from "../utils/ColorManager";
 
 export type CollisionCallback = (
   shapeA: VectorShape,
@@ -137,8 +138,8 @@ export class CollisionHandler {
     shapeB.position.z += (overlap / 2) * nz;
 
     // Change colors upon collision
-    shapeA.color = shapeA.getRandomCyberpunkColor();
-    shapeB.color = shapeB.getRandomCyberpunkColor();
+    shapeA.color = ColorManager.getRandomCyberpunkColor();
+    shapeB.color = ColorManager.getRandomCyberpunkColor();
 
     // Apply visual enhancements
     shapeA.triggerCollisionVisuals();

@@ -5,7 +5,7 @@
  * It smoothly transitions colors of nearby shapes for a dynamic visual effect.
  */
 
-import { hexToRgb, rgbToHex } from "../CyberScapeUtils";
+import { ColorManager } from "../utils/ColorManager";
 import { VectorShape } from "../shapes/VectorShape";
 
 export class ColorBlender {
@@ -34,7 +34,7 @@ export class ColorBlender {
         const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
         if (distance < INFLUENCE_RADIUS) {
-          const rgb = hexToRgb(shapeB.color);
+          const rgb = ColorManager.hexToRgb(shapeB.color);
           if (rgb) {
             rTotal += rgb.r;
             gTotal += rgb.g;
@@ -50,7 +50,7 @@ export class ColorBlender {
         const avgB = Math.round(bTotal / count);
 
         // Blend the current shape's color towards the average color
-        const currentColor = hexToRgb(shapes[i].color);
+        const currentColor = ColorManager.hexToRgb(shapes[i].color);
         if (currentColor) {
           const blendedR = Math.round(
             currentColor.r + (avgR - currentColor.r) * 0.05
@@ -62,7 +62,7 @@ export class ColorBlender {
             currentColor.b + (avgB - currentColor.b) * 0.05
           );
 
-          shapes[i].color = rgbToHex(blendedR, blendedG, blendedB);
+          shapes[i].color = ColorManager.rgbToHex(blendedR, blendedG, blendedB);
         }
       }
     }
