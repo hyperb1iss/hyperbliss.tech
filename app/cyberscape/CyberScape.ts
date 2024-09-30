@@ -1,15 +1,26 @@
-import { VectorShape } from "./VectorShape";
-import { Particle, ParticleAtCollision } from "./Particle";
+// app/cyberscape/CyberScape.ts
+
 import {
   CYBERPUNK_HUE_RANGES,
   getRandomCyberpunkHue,
   project,
 } from "./CyberScapeUtils";
 import {
-  applyGlitchEffect,
   applyChromaticAberration,
   applyCRTEffect,
+  applyGlitchEffect,
 } from "./glitchEffects";
+import { CollisionHandler } from "./handlers/CollisionHandler";
+import { ColorBlender } from "./handlers/ColorBlender";
+import { ForceHandler } from "./handlers/ForceHandler";
+import { Particle } from "./particles/Particle";
+import { ParticleAtCollision } from "./particles/ParticleAtCollision";
+import { CubeShape } from "./shapes/CubeShape";
+import { DodecahedronShape } from "./shapes/DodecahedronShape";
+import { OctahedronShape } from "./shapes/OctahedronShape";
+import { PyramidShape } from "./shapes/PyramidShape";
+import { TetrahedronShape } from "./shapes/TetrahedronShape";
+import { VectorShape } from "./shapes/VectorShape";
 
 let triggerAnimation: ((x: number, y: number) => void) | null = null;
 
@@ -189,29 +200,22 @@ export const initializeCyberScape = (
     );
 
     if (isMobile) {
-      numberOfParticles = Math.floor(numberOfParticles * 0.6);
+      numberOfParticles = Math.floor(numberOfParticles * 0.8);
     }
 
-    numberOfShapes = isMobile ? 4 : 10;
+    numberOfShapes = isMobile ? 5 : 10;
 
     const existingPositions = new Set<string>();
 
     while (shapesArray.length < numberOfShapes) {
       const shapeType = [
-        "cube",
-        "pyramid",
-        "tetrahedron",
-        "octahedron",
-        "dodecahedron",
-      ][shapesArray.length % 5] as
-        | "cube"
-        | "pyramid"
-        | "tetrahedron"
-        | "octahedron"
-        | "dodecahedron";
-      shapesArray.push(
-        new VectorShape(shapeType, existingPositions, width, height)
-      );
+        CubeShape,
+        PyramidShape,
+        TetrahedronShape,
+        OctahedronShape,
+        DodecahedronShape,
+      ][shapesArray.length % 5];
+      shapesArray.push(new shapeType(existingPositions, width, height));
     }
     shapesArray.length = numberOfShapes;
   };
@@ -461,16 +465,55 @@ export const initializeCyberScape = (
       }
       // Emit small particles from shapes
       if (Math.random() < 0.01) {
-        const emittedParticle = shape.emitSmallParticle();
+        const emittedParticle = getParticleFromPool(width, height);
+        emittedParticle.x = shape.position.x;
+        emittedParticle.y = shape.position.y;
+        emittedParticle.z = shape.position.z;
+        emittedParticle.size = Math.random() * 1 + 0.5;
+        emittedParticle.color = shape.color;
+        emittedParticle.lifespan = 1000; // 1 second lifespan for emitted particles
         particlesArray.push(emittedParticle);
       }
     }
 
-    VectorShape.handleCollisions(shapesArray, handleShapeCollision);
-    VectorShape.handleColorBlending(shapesArray);
-    VectorShape.handleAttractionRepulsion(shapesArray);
+    CollisionHandler.handleCollisions(shapesArray, handleShapeCollision);
+    ColorBlender.blendColors(shapesArray);
+    ForceHandler.applyForces(shapesArray);
 
-    VectorShape.drawConnections(ctx, shapesArray, width, height);
+    // Draw connections between shapes
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.lineWidth = 1;
+    for (let i = 0; i < shapesArray.length; i++) {
+      for (let j = i + 1; j < shapesArray.length; j++) {
+        const shapeA = shapesArray[i];
+        const shapeB = shapesArray[j];
+        const distance = Math.hypot(
+          shapeA.position.x - shapeB.position.x,
+          shapeA.position.y - shapeB.position.y,
+          shapeA.position.z - shapeB.position.z
+        );
+        if (distance < 120) {
+          const projectedA = project(
+            shapeA.position.x,
+            shapeA.position.y,
+            shapeA.position.z,
+            width,
+            height
+          );
+          const projectedB = project(
+            shapeB.position.x,
+            shapeB.position.y,
+            shapeB.position.z,
+            width,
+            height
+          );
+          ctx.beginPath();
+          ctx.moveTo(projectedA.x, projectedA.y);
+          ctx.lineTo(projectedB.x, projectedB.y);
+          ctx.stroke();
+        }
+      }
+    }
 
     connectParticles(particlesArray, ctx);
 

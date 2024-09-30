@@ -1,3 +1,5 @@
+// app/cyberscape/CyberScapeUtils.ts
+
 // Constants
 export const CYBERPUNK_HUE_RANGES = [
   { start: 180, end: 220 }, // Electric Cyan to Neon Blue
