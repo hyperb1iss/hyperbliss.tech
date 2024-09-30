@@ -1,19 +1,15 @@
 // app/cyberscape/shapes/VectorShape.ts
 
+import { CyberScapeConfig } from "../CyberScapeConfig";
+import { ColorManager } from "../utils/ColorManager";
+import { VectorMath } from "../utils/VectorMath";
+import { Particle } from "../particles/Particle";
+
 /**
  * The `VectorShape` abstract class represents a 3D shape in the CyberScape animation.
  * It provides common properties and methods shared among different shapes like cubes,
  * pyramids, tetrahedrons, etc.
  */
-
-import {
-  CYBERPUNK_COLORS,
-  hexToRgb,
-  project,
-  rgbToHex,
-  rotateVertex,
-} from "../CyberScapeUtils";
-import { Particle } from "../particles/Particle";
 export abstract class VectorShape {
   vertices: { x: number; y: number; z: number }[] = [];
   edges: [number, number][] = [];
@@ -44,10 +40,14 @@ export abstract class VectorShape {
   private tempVector: { x: number; y: number; z: number };
   temporaryDistortion: { x: number; y: number; z: number };
 
+  private config: CyberScapeConfig;
+
   constructor() {
+    this.config = CyberScapeConfig.getInstance();
+
     // Initialize shared properties
-    this.maxSpeed = 0.3;
-    this.minSpeed = 0.05;
+    this.maxSpeed = this.config.shapeMaxSpeed;
+    this.minSpeed = this.config.shapeMinSpeed;
 
     this.rotation = { x: 0, y: 0, z: 0 };
     this.rotationSpeed = {
@@ -56,17 +56,24 @@ export abstract class VectorShape {
       z: (Math.random() - 0.5) * 0.01,
     };
 
-    this.color = this.getRandomCyberpunkColor();
-    this.targetColor = this.getRandomCyberpunkColor();
+    this.color = ColorManager.getRandomCyberpunkColor();
+    this.targetColor = ColorManager.getRandomCyberpunkColor();
     this.colorTransitionSpeed = 0.01;
 
-    this.lifespan = Math.random() * 15000 + 10000; // Random lifespan between 10-25 seconds
+    this.lifespan =
+      Math.random() *
+        (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
+      this.config.shapeLifespanMin;
     this.age = 0;
-    this.fadeOutDuration = 3000; // 3 seconds fade out
+    this.fadeOutDuration = this.config.shapeFadeOutDuration;
     this.isFadingOut = false;
     this.opacity = 0; // Start fully transparent
 
-    this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
+    this.glowIntensity =
+      Math.random() *
+        (this.config.shapeGlowIntensityMax -
+          this.config.shapeGlowIntensityMin) +
+      this.config.shapeGlowIntensityMin;
 
     this.scale = 1;
     this.scaleTarget = 1;
@@ -86,16 +93,6 @@ export abstract class VectorShape {
    * Must be implemented by derived classes.
    */
   protected abstract initializeShape(): void;
-
-  /**
-   * Gets a random color from the CYBERPUNK_COLORS array.
-   * @returns A string representing a color from the cyberpunk palette.
-   */
-  public getRandomCyberpunkColor(): string {
-    return CYBERPUNK_COLORS[
-      Math.floor(Math.random() * CYBERPUNK_COLORS.length)
-    ];
-  }
 
   /**
    * Initializes or resets the shape's position and other properties.
@@ -122,13 +119,16 @@ export abstract class VectorShape {
 
     // Reset lifecycle
     this.age = 0;
-    this.lifespan = Math.random() * 15000 + 10000; // Random lifespan between 10-25 seconds
+    this.lifespan =
+      Math.random() *
+        (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
+      this.config.shapeLifespanMin;
     this.isFadingOut = false;
     this.opacity = 0; // Start fully transparent
 
     // Reset color
-    this.color = this.getRandomCyberpunkColor();
-    this.targetColor = this.getRandomCyberpunkColor();
+    this.color = ColorManager.getRandomCyberpunkColor();
+    this.targetColor = ColorManager.getRandomCyberpunkColor();
 
     // Reset velocity
     const angleXY = Math.random() * Math.PI * 2;
@@ -152,7 +152,11 @@ export abstract class VectorShape {
     };
 
     // Reset glow intensity
-    this.glowIntensity = Math.random() * 10 + 15; // Random intensity between 15 and 25
+    this.glowIntensity =
+      Math.random() *
+        (this.config.shapeGlowIntensityMax -
+          this.config.shapeGlowIntensityMin) +
+      this.config.shapeGlowIntensityMin;
 
     // Reset scaling properties
     this.scale = 1;
@@ -199,16 +203,21 @@ export abstract class VectorShape {
       this.tempVector.y = mouseY - this.position.y;
       const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
 
-      if (distance > 0 && distance < 300) {
-        const force = ((300 - distance) / 300) * 0.01;
+      if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
+        const force =
+          ((this.config.cursorInfluenceRadius - distance) /
+            this.config.cursorInfluenceRadius) *
+          this.config.cursorForce;
         this.velocity.x += (this.tempVector.x / distance) * force;
         this.velocity.y += (this.tempVector.y / distance) * force;
       }
     }
 
     // Apply slight attraction to center
-    this.velocity.x += (-this.position.x / (width * 10)) * 0.005;
-    this.velocity.y += (-this.position.y / (height * 10)) * 0.005;
+    this.velocity.x +=
+      (-this.position.x / (width * 10)) * this.config.centerAttractionForce;
+    this.velocity.y +=
+      (-this.position.y / (height * 10)) * this.config.centerAttractionForce;
 
     // Introduce Z-Drift Over Time
     this.velocity.z += (Math.random() - 0.5) * 0.005; // Small random drift
@@ -306,30 +315,15 @@ export abstract class VectorShape {
    */
   private updateColor(): void {
     if (this.color !== this.targetColor) {
-      // Smoothly transition to the target color
-      const currentColor = hexToRgb(this.color);
-      const targetColor = hexToRgb(this.targetColor);
+      this.color = ColorManager.blendColors(
+        this.color,
+        this.targetColor,
+        this.colorTransitionSpeed
+      );
 
-      if (currentColor && targetColor) {
-        const newR = Math.round(
-          currentColor.r +
-            (targetColor.r - currentColor.r) * this.colorTransitionSpeed
-        );
-        const newG = Math.round(
-          currentColor.g +
-            (targetColor.g - currentColor.g) * this.colorTransitionSpeed
-        );
-        const newB = Math.round(
-          currentColor.b +
-            (targetColor.b - currentColor.b) * this.colorTransitionSpeed
-        );
-
-        this.color = rgbToHex(newR, newG, newB);
-
-        if (this.color === this.targetColor) {
-          // When we reach the target color, set a new target
-          this.targetColor = this.getRandomCyberpunkColor();
-        }
+      if (this.color === this.targetColor) {
+        // When we reach the target color, set a new target
+        this.targetColor = ColorManager.getRandomCyberpunkColor();
       }
     }
   }
@@ -372,7 +366,7 @@ export abstract class VectorShape {
     height: number
   ): void {
     if (this.opacity > 0 && !this.isExploded) {
-      const rgbColor = hexToRgb(this.color);
+      const rgbColor = ColorManager.hexToRgb(this.color);
       if (rgbColor) {
         const { r, g, b } = rgbColor;
         ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
@@ -386,16 +380,19 @@ export abstract class VectorShape {
         // Draw the shape
         ctx.beginPath();
         this.edges.forEach(([start, end]) => {
-          const v1 = rotateVertex(this.vertices[start], this.rotation);
-          const v2 = rotateVertex(this.vertices[end], this.rotation);
-          const projectedV1 = project(
+          const v1 = VectorMath.rotateVertex(
+            this.vertices[start],
+            this.rotation
+          );
+          const v2 = VectorMath.rotateVertex(this.vertices[end], this.rotation);
+          const projectedV1 = VectorMath.project(
             v1.x * this.scale + this.position.x,
             v1.y * this.scale + this.position.y,
             v1.z * this.scale + this.position.z,
             width,
             height
           );
-          const projectedV2 = project(
+          const projectedV2 = VectorMath.project(
             v2.x * this.scale + this.position.x,
             v2.y * this.scale + this.position.y,
             v2.z * this.scale + this.position.z,
@@ -461,5 +458,78 @@ export abstract class VectorShape {
    */
   public isFadedOut(): boolean {
     return this.isFadingOut && this.opacity <= 0 && !this.isExploded;
+  }
+
+  /**
+   * Applies a force to the shape, affecting its velocity.
+   * @param force - The force vector to apply.
+   */
+  public applyForce(force: { x: number; y: number; z: number }): void {
+    this.velocity.x += force.x;
+    this.velocity.y += force.y;
+    this.velocity.z += force.z;
+  }
+
+  /**
+   * Calculates the distance to another shape.
+   * @param other - The other shape to calculate distance to.
+   * @returns The distance between this shape and the other shape.
+   */
+  public distanceTo(other: VectorShape): number {
+    return VectorMath.distance(this.position, other.position);
+  }
+
+  /**
+   * Updates the shape's color based on nearby shapes.
+   * @param nearbyShapes - Array of nearby shapes to blend colors with.
+   */
+  public updateColorBasedOnNearby(nearbyShapes: VectorShape[]): void {
+    if (nearbyShapes.length > 0) {
+      const averageColor = ColorManager.averageColors(
+        nearbyShapes.map((s) => s.color)
+      );
+      this.color = ColorManager.blendColors(this.color, averageColor, 0.1);
+    }
+  }
+
+  /**
+   * Applies attraction or repulsion force between this shape and another.
+   * @param other - The other shape to interact with.
+   * @param attractionRadius - The radius within which attraction occurs.
+   * @param repulsionRadius - The radius within which repulsion occurs.
+   * @param attractionForce - The strength of the attraction force.
+   * @param repulsionForce - The strength of the repulsion force.
+   */
+  public applyInteractionForce(
+    other: VectorShape,
+    attractionRadius: number,
+    repulsionRadius: number,
+    attractionForce: number,
+    repulsionForce: number
+  ): void {
+    const distance = this.distanceTo(other);
+    if (distance < attractionRadius && distance > repulsionRadius) {
+      // Attraction
+      const force = attractionForce * (1 - distance / attractionRadius);
+      const dx = other.position.x - this.position.x;
+      const dy = other.position.y - this.position.y;
+      const dz = other.position.z - this.position.z;
+      this.applyForce({
+        x: (dx * force) / distance,
+        y: (dy * force) / distance,
+        z: (dz * force) / distance,
+      });
+    } else if (distance <= repulsionRadius) {
+      // Repulsion
+      const force = repulsionForce * (1 - distance / repulsionRadius);
+      const dx = this.position.x - other.position.x;
+      const dy = this.position.y - other.position.y;
+      const dz = this.position.z - other.position.z;
+      this.applyForce({
+        x: (dx * force) / distance,
+        y: (dy * force) / distance,
+        z: (dz * force) / distance,
+      });
+    }
   }
 }

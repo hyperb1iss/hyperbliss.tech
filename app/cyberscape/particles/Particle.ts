@@ -1,13 +1,14 @@
 // app/cyberscape/particles/Particle.ts
 
+import { CyberScapeConfig } from "../CyberScapeConfig";
+import { VectorShape } from "../shapes/VectorShape";
+import { ColorManager } from "../utils/ColorManager";
+import { VectorMath } from "../utils/VectorMath";
+
 /**
  * The `Particle` class represents a single interactive star in the background.
  * Each particle moves independently, reacts to user interaction, and maintains constant motion across the canvas.
  */
-
-import { getRandomCyberpunkHue, project } from "../CyberScapeUtils";
-import { VectorShape } from "../shapes/VectorShape";
-
 export class Particle {
   x: number;
   y: number;
@@ -29,6 +30,8 @@ export class Particle {
   // Optimization: Reuse vector for calculations
   private tempVector: { x: number; y: number; z: number };
 
+  protected config: CyberScapeConfig;
+
   /**
    * Creates a new Particle instance.
    * @param existingPositions - Set of existing position keys to avoid overlap.
@@ -36,6 +39,8 @@ export class Particle {
    * @param height - Height of the canvas.
    */
   constructor(existingPositions: Set<string>, width: number, height: number) {
+    this.config = CyberScapeConfig.getInstance();
+
     // Ensure unique positions by checking existingPositions
     let positionKey: string;
     do {
@@ -48,10 +53,13 @@ export class Particle {
     } while (existingPositions.has(positionKey));
     existingPositions.add(positionKey);
 
-    this.size = Math.random() * 2 + 1.5; // Particles now range from 1.5 to 3.5 in size
+    this.size =
+      Math.random() *
+        (this.config.particleSizeMax - this.config.particleSizeMin) +
+      this.config.particleSizeMin;
 
-    this.maxSpeed = 0.5;
-    this.minSpeed = 0.1;
+    this.maxSpeed = this.config.particleMaxSpeed;
+    this.minSpeed = this.config.particleMinSpeed;
 
     // Initialize with a random velocity within speed limits
     const angleXY = Math.random() * Math.PI * 2;
@@ -64,10 +72,11 @@ export class Particle {
     this.velocityY = Math.sin(angleXY) * speedXY;
     this.velocityZ = Math.cos(angleZ) * speedZ;
 
-    this.color = `hsl(${getRandomCyberpunkHue()}, 100%, 50%)`;
+    this.hue = ColorManager.getRandomCyberpunkHue();
+    this.color = `hsl(${this.hue}, 100%, 50%)`;
 
     // Initialize lifecycle properties
-    this.lifespan = Infinity; // Default lifespan for regular particles
+    this.lifespan = this.config.particleLifespan;
     this.age = 0;
     this.opacity = 1;
 
@@ -75,7 +84,6 @@ export class Particle {
     this.tempVector = { x: 0, y: 0, z: 0 };
     this.appearanceDelay = 0;
     this.isVisible = false;
-    this.hue = getRandomCyberpunkHue();
   }
 
   /**
@@ -130,16 +138,21 @@ export class Particle {
       this.tempVector.y = mouseY - this.y;
       const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
 
-      if (distance > 0 && distance < 200) {
-        const force = ((200 - distance) / 200) * 0.02;
+      if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
+        const force =
+          ((this.config.cursorInfluenceRadius - distance) /
+            this.config.cursorInfluenceRadius) *
+          this.config.cursorForce;
         this.velocityX += (this.tempVector.x / distance) * force;
         this.velocityY += (this.tempVector.y / distance) * force;
       }
     }
 
     // Apply slight attraction to center
-    this.velocityX += (-this.x / (width * 10)) * 0.01;
-    this.velocityY += (-this.y / (height * 10)) * 0.01;
+    this.velocityX +=
+      (-this.x / (width * 10)) * this.config.centerAttractionForce;
+    this.velocityY +=
+      (-this.y / (height * 10)) * this.config.centerAttractionForce;
 
     // Update position
     this.x += this.velocityX;
@@ -231,7 +244,7 @@ export class Particle {
     height: number
   ): void {
     if (!this.isVisible) return;
-    const pos = project(this.x, this.y, this.z, width, height);
+    const pos = VectorMath.project(this.x, this.y, this.z, width, height);
 
     // Calculate dynamic shadow blur based on position and proximity to cursor
     const distanceToCursor = Math.hypot(mouseX - this.x, mouseY - this.y);
@@ -286,10 +299,11 @@ export class Particle {
     this.velocityZ = Math.cos(angleZ) * speedZ;
 
     // Optionally reset color for variety
-    this.color = `hsl(${getRandomCyberpunkHue()}, 100%, 50%)`;
+    this.hue = ColorManager.getRandomCyberpunkHue();
+    this.color = `hsl(${this.hue}, 100%, 50%)`;
 
     // Reset lifecycle properties
-    this.lifespan = Infinity; // Regular particles have infinite lifespan
+    this.lifespan = this.config.particleLifespan;
     this.age = 0;
     this.opacity = 1;
   }

@@ -1,14 +1,15 @@
 // app/cyberscape/particles/ParticleAtCollision.ts
 
+import { CyberScapeConfig } from "../CyberScapeConfig";
+import { VectorShape } from "../shapes/VectorShape";
+import { ColorManager } from "../utils/ColorManager";
+import { VectorMath } from "../utils/VectorMath";
+import { Particle } from "./Particle";
+
 /**
  * The `ParticleAtCollision` class represents particles emitted upon collisions.
  * Extends the base `Particle` class with specific initialization and behavior for explosion effects.
  */
-
-import { project } from "../CyberScapeUtils";
-import { VectorShape } from "../shapes/VectorShape";
-import { Particle } from "./Particle";
-
 export class ParticleAtCollision extends Particle {
   private onExpire: () => void;
   private fadeOutDuration: number;
@@ -16,12 +17,19 @@ export class ParticleAtCollision extends Particle {
   private initialSpeed: number;
   private direction: { x: number; y: number; z: number };
 
+  protected config: CyberScapeConfig;
+
   constructor(x: number, y: number, z: number, onExpire: () => void) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
+    this.config = CyberScapeConfig.getInstance();
     this.onExpire = onExpire;
-    this.fadeOutDuration = 2000; // 2 seconds fade out
+    this.fadeOutDuration = this.config.particleAtCollisionFadeOutDuration;
     this.sparkleIntensity = Math.random();
-    this.initialSpeed = Math.random() * 2 + 1; // Random speed between 1 and 3
+    this.initialSpeed =
+      Math.random() *
+        (this.config.particleAtCollisionMaxSpeed -
+          this.config.particleAtCollisionMinSpeed) +
+      this.config.particleAtCollisionMinSpeed;
     this.direction = { x: 0, y: 0, z: 0 };
     this.init(x, y, z, onExpire);
   }
@@ -48,9 +56,13 @@ export class ParticleAtCollision extends Particle {
     this.velocityX = this.direction.x * this.initialSpeed;
     this.velocityY = this.direction.y * this.initialSpeed;
     this.velocityZ = this.direction.z * this.initialSpeed;
-    this.size = Math.random() * 2 + 1;
-    this.color = "#FF00FF";
-    this.lifespan = 3000; // 3 seconds total lifespan
+    this.size =
+      Math.random() *
+        (this.config.particleAtCollisionSizeMax -
+          this.config.particleAtCollisionSizeMin) +
+      this.config.particleAtCollisionSizeMin;
+    this.color = this.config.particleAtCollisionColor;
+    this.lifespan = this.config.particleAtCollisionLifespan;
     this.age = 0;
     this.opacity = 1;
     this.onExpire = onExpire;
@@ -59,12 +71,6 @@ export class ParticleAtCollision extends Particle {
 
   /**
    * Updates the particle's position and fades it out over time.
-   * @param isCursorOverCyberScape - Boolean indicating if the cursor is over the header area.
-   * @param mouseX - X coordinate of the mouse cursor.
-   * @param mouseY - Y coordinate of the mouse cursor.
-   * @param width - Width of the canvas.
-   * @param height - Height of the canvas.
-   * @param shapes - Array of VectorShape instances.
    */
   public update(): void {
     // Update position based on velocity
@@ -73,7 +79,7 @@ export class ParticleAtCollision extends Particle {
     this.z += this.velocityZ;
 
     // Slow down the particle over time
-    const slowdownFactor = 0.98;
+    const slowdownFactor = this.config.particleAtCollisionSlowdownFactor;
     this.velocityX *= slowdownFactor;
     this.velocityY *= slowdownFactor;
     this.velocityZ *= slowdownFactor;
@@ -88,14 +94,14 @@ export class ParticleAtCollision extends Particle {
     }
 
     // Update sparkle intensity
-    this.sparkleIntensity = Math.max(0, this.sparkleIntensity - 0.02);
+    this.sparkleIntensity = Math.max(
+      0,
+      this.sparkleIntensity - this.config.particleAtCollisionSparkleDecay
+    );
 
     if (this.opacity <= 0) {
       this.onExpire();
     }
-
-    // Interact with shapes (optional)
-    // No interaction to keep explosion particles moving outward independently
   }
 
   /**
@@ -115,24 +121,25 @@ export class ParticleAtCollision extends Particle {
   ): void {
     if (this.opacity <= 0) return;
 
-    const pos = project(this.x, this.y, this.z, width, height);
+    const pos = VectorMath.project(this.x, this.y, this.z, width, height);
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, this.size * pos.scale, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 0, 255, ${this.opacity})`; // Neon Magenta with fading opacity
+    ctx.fillStyle = ColorManager.adjustColorOpacity(this.color, this.opacity);
     ctx.fill();
 
     // Add a subtle motion blur effect for smoother fade-out
     ctx.shadowBlur = 5 * this.opacity;
-    ctx.shadowColor = `rgba(255, 0, 255, ${this.opacity})`;
+    ctx.shadowColor = ColorManager.adjustColorOpacity(this.color, this.opacity);
     ctx.fill();
     ctx.shadowBlur = 0;
     ctx.shadowColor = "transparent";
 
     // Add sparkle effect
     if (Math.random() < this.sparkleIntensity) {
-      ctx.fillStyle = `rgba(255, 255, 255, ${
+      ctx.fillStyle = ColorManager.adjustColorOpacity(
+        "#FFFFFF",
         this.opacity * this.sparkleIntensity
-      })`;
+      );
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, this.size * pos.scale * 1.5, 0, Math.PI * 2);
       ctx.fill();
@@ -154,9 +161,11 @@ export class ParticleAtCollision extends Particle {
     height: number,
     shapes: VectorShape[]
   ): void {
-    const MAX_DISTANCE = 50;
-    const MAX_CONNECTIONS_PER_PARTICLE = 3;
-    const MAX_TOTAL_CONNECTIONS = 50;
+    const config = CyberScapeConfig.getInstance();
+    const MAX_DISTANCE = config.particleAtCollisionConnectionDistance;
+    const MAX_CONNECTIONS_PER_PARTICLE =
+      config.particleAtCollisionMaxConnectionsPerParticle;
+    const MAX_TOTAL_CONNECTIONS = config.particleAtCollisionMaxTotalConnections;
 
     let totalConnections = 0;
 
@@ -167,7 +176,7 @@ export class ParticleAtCollision extends Particle {
     ) {
       let connectionsForParticle = 0;
       const particleA = particles[i];
-      const posA = project(
+      const posA = VectorMath.project(
         particleA.x,
         particleA.y,
         particleA.z,
@@ -183,13 +192,13 @@ export class ParticleAtCollision extends Particle {
       ) {
         const particleB = particles[j];
 
-        const dx = particleB.x - particleA.x;
-        const dy = particleB.y - particleA.y;
-        const dz = particleB.z - particleA.z;
-        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const distance = VectorMath.distance(
+          { x: particleA.x, y: particleA.y, z: particleA.z },
+          { x: particleB.x, y: particleB.y, z: particleB.z }
+        );
 
         if (distance < MAX_DISTANCE) {
-          const posB = project(
+          const posB = VectorMath.project(
             particleB.x,
             particleB.y,
             particleB.z,
@@ -246,14 +255,17 @@ export class ParticleAtCollision extends Particle {
     // Create temporary distortions in nearby shapes
     shapes.forEach((shape) => {
       particles.forEach((particle) => {
-        const dx = shape.position.x - particle.x;
-        const dy = shape.position.y - particle.y;
-        const dz = shape.position.z - particle.z;
-        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const distance = VectorMath.distance(shape.position, {
+          x: particle.x,
+          y: particle.y,
+          z: particle.z,
+        });
 
-        if (distance < 100) {
+        if (distance < config.particleAtCollisionShapeDistortionRadius) {
           const distortionFactor =
-            0.1 * (1 - distance / 100) * particle.opacity;
+            config.particleAtCollisionShapeDistortionFactor *
+            (1 - distance / config.particleAtCollisionShapeDistortionRadius) *
+            particle.opacity;
           shape.temporaryDistortion = {
             x: (Math.random() - 0.5) * distortionFactor,
             y: (Math.random() - 0.5) * distortionFactor,
