@@ -1,10 +1,12 @@
 // app/components/ProjectDetail.tsx
 "use client";
 
-import styled from "styled-components";
 import ReactMarkdown from "react-markdown";
-import PageTitle from "./PageTitle";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm"; // For tables, footnotes, etc.
+import styled from "styled-components";
 import PageLayout from "./PageLayout";
+import PageTitle from "./PageTitle";
 
 /**
  * Styled components for project details
@@ -52,8 +54,23 @@ const ProjectLink = styled.a`
   }
 `;
 
-// Content of the project detail
-const ProjectContent = styled(ReactMarkdown)`
+// Meta information (author, tags)
+const ProjectMeta = styled.div`
+  font-size: 1.6rem;
+  color: var(--color-muted);
+  text-align: center;
+  margin-bottom: 2rem;
+
+  span {
+    margin: 0 0.5rem;
+  }
+`;
+
+// Content of the project detail with syntax highlighting and GFM support
+const ProjectContent = styled(ReactMarkdown).attrs({
+  remarkPlugins: [remarkGfm],
+  rehypePlugins: [rehypeHighlight],
+})`
   font-size: 1.8rem;
   line-height: 1.8;
   color: var(--color-text);
@@ -92,17 +109,21 @@ const ProjectContent = styled(ReactMarkdown)`
 
   code {
     font-family: var(--font-mono);
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
+    font-size: 1.4rem;
+    color: #00ff00; /* Cyberpunk green */
   }
 
   pre {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(10, 10, 20, 0.9);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
     margin-bottom: 1.5rem;
+    font-size: 1.4rem; /* Decreased font size */
+    line-height: 1.4; /* Decreased line height */
 
     code {
       background-color: transparent;
@@ -110,6 +131,31 @@ const ProjectContent = styled(ReactMarkdown)`
     }
   }
 
+  /* Custom styles for syntax highlighting */
+  pre code {
+    color: #00ff00; /* Cyberpunk green */
+  }
+
+  /* Style for tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--color-border);
+    padding: 0.8rem;
+    text-align: left;
+  }
+
+  th {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-accent);
+  }
+
+  /* Style for blockquotes */
   blockquote {
     border-left: 4px solid var(--color-accent);
     padding-left: 1rem;
@@ -128,6 +174,18 @@ const ProjectContent = styled(ReactMarkdown)`
   li {
     margin-bottom: 0.5rem;
   }
+
+  /* Style for footnotes */
+  sup {
+    font-size: 0.8em;
+  }
+
+  .footnotes {
+    margin-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.9em;
+    color: var(--color-muted);
+  }
 `;
 
 // Interface for ProjectDetail component props
@@ -135,11 +193,14 @@ interface ProjectDetailProps {
   title: string;
   github: string;
   content: string;
+  author?: string;
+  tags?: string[];
 }
 
 /**
  * ProjectDetail component
  * Renders detailed information about a single project with enhanced styling.
+ * Supports syntax highlighting, tables, footnotes, and anchors.
  * @param {ProjectDetailProps} props - The component props
  * @returns {JSX.Element} Rendered project detail page
  */
@@ -147,6 +208,8 @@ export default function ProjectDetail({
   title,
   github,
   content,
+  author,
+  tags,
 }: ProjectDetailProps) {
   return (
     <ProjectDetailWrapper>
@@ -156,6 +219,12 @@ export default function ProjectDetail({
           View on GitHub
         </ProjectLink>
       </ProjectLinks>
+      {(author || (tags && tags.length > 0)) && (
+        <ProjectMeta>
+          {author && <span>Author: {author}</span>}
+          {tags && tags.length > 0 && <span>Tags: {tags.join(", ")}</span>}
+        </ProjectMeta>
+      )}
       <ProjectContent>{content}</ProjectContent>
     </ProjectDetailWrapper>
   );

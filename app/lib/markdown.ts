@@ -6,9 +6,9 @@ import path from "path";
 /**
  * Interface for markdown files with a flexible frontmatter type
  */
-export interface MarkdownFile {
+export interface MarkdownFile<T = Record<string, unknown>> {
   slug: string;
-  frontmatter: Record<string, string>;
+  frontmatter: T;
   content: string;
 }
 
@@ -18,17 +18,17 @@ export interface MarkdownFile {
  * @param slug - The slug (filename without extension) of the markdown file.
  * @returns A Promise resolving to a MarkdownFile object.
  */
-export async function getMarkdownContent(
+export async function getMarkdownContent<T = Record<string, unknown>>(
   directory: string,
   slug: string
-): Promise<MarkdownFile> {
+): Promise<MarkdownFile<T>> {
   const filePath = path.join(process.cwd(), directory, `${slug}.md`);
   const fileContents = await fs.readFile(filePath, "utf-8");
   const { data: frontmatter, content } = matter(fileContents);
 
   return {
     slug,
-    frontmatter,
+    frontmatter: frontmatter as T,
     content,
   };
 }

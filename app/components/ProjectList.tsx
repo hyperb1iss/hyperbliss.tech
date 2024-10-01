@@ -1,8 +1,8 @@
 // app/components/ProjectList.tsx
 "use client";
 
-import styled from "styled-components";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 import { ProjectCard } from "./ProjectCard";
 
 // Styled components for project list
@@ -25,10 +25,12 @@ interface Project {
     title: string;
     description: string;
     github: string;
+    author?: string;
+    tags?: string[];
   };
 }
 
-// Interface for ProjectList component props
+// Props interface for ProjectList component
 interface ProjectListProps {
   projects: Project[];
 }
@@ -67,6 +69,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
             title={frontmatter.title}
             description={frontmatter.description}
             github={frontmatter.github}
+            author={frontmatter.author}
+            tags={frontmatter.tags}
             index={index}
           />
         ))}

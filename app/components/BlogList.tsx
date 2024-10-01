@@ -21,6 +21,8 @@ interface Post {
     title: string;
     date: string;
     excerpt: string;
+    author?: string;
+    tags?: string[];
   };
 }
 
@@ -60,6 +62,8 @@ export default function BlogList({ posts }: BlogListProps) {
             title={frontmatter.title}
             date={frontmatter.date}
             excerpt={frontmatter.excerpt}
+            author={frontmatter.author}
+            tags={frontmatter.tags}
             index={index}
           />
         ))}

@@ -1,6 +1,17 @@
 // app/(transition)/projects/[slug]/page.tsx
 import ProjectDetail from "../../../components/ProjectDetail";
-import { getAllMarkdownSlugs, getMarkdownContent } from "../../../lib/markdown";
+import {
+  getAllMarkdownSlugs,
+  getMarkdownContent,
+} from "../../../lib/markdown";
+
+interface ProjectFrontmatter {
+  title: string;
+  description: string;
+  github: string;
+  author?: string;
+  tags?: string[];
+}
 
 export async function generateStaticParams() {
   const slugs = await getAllMarkdownSlugs("src/projects");
@@ -13,7 +24,7 @@ export default async function ProjectPage({
   params: { slug: string };
 }) {
   const { slug } = params;
-  const { frontmatter, content } = await getMarkdownContent(
+  const { frontmatter, content } = await getMarkdownContent<ProjectFrontmatter>(
     "src/projects",
     slug
   );
@@ -23,6 +34,8 @@ export default async function ProjectPage({
       title={frontmatter.title}
       github={frontmatter.github}
       content={content}
+      author={frontmatter.author}
+      tags={frontmatter.tags}
     />
   );
 }
@@ -33,7 +46,10 @@ export async function generateMetadata({
   params: { slug: string };
 }) {
   const { slug } = params;
-  const { frontmatter } = await getMarkdownContent("src/projects", slug);
+  const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>(
+    "src/projects",
+    slug
+  );
   return {
     title: `Hyperbliss | ${frontmatter.title}`,
     description: frontmatter.description,

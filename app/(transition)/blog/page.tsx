@@ -13,6 +13,8 @@ export default async function Blog() {
           title: frontmatter.title as string,
           date: frontmatter.date as string,
           excerpt: frontmatter.excerpt as string,
+          author: frontmatter.author as string,
+          tags: frontmatter.tags as string[],
         },
       };
     })
