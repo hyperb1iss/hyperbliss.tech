@@ -1,4 +1,4 @@
-// app/cyberscape/config/CyberScapeConfig.ts
+// app/cyberscape/CyberScapeConfig.ts
 
 /**
  * CyberScapeConfig class
@@ -60,6 +60,13 @@ export class CyberScapeConfig {
   public maxDatastreamParticles: number = 100;
   public datastreamParticleLifespan: number = 2000;
   public datastreamFadeOutDuration: number = 500;
+  public datastreamEnergyLineCount: number = 20;
+  public datastreamMaxRadiusFactor: number = 0.4;
+  public datastreamNoiseSize: number = 4;
+  public datastreamNoiseRadiusFactor: number = 0.2;
+  public datastreamShapeRotationSpeed: number = 0.1;
+  public datastreamShapeForceMultiplier: number = 0.01;
+  public datastreamIntensityMultiplier: number = 5;
 
   // Interaction settings
   public cursorInfluenceRadius: number = 300;

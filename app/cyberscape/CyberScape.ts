@@ -1,7 +1,11 @@
 // app/cyberscape/CyberScape.ts
 
 import { CyberScapeConfig } from "./CyberScapeConfig";
+import { DatastreamEffect } from "./effects/DatastreamEffect";
 import { GlitchManager } from "./effects/GlitchManager";
+import { CollisionHandler } from "./handlers/CollisionHandler";
+import { ColorBlender } from "./handlers/ColorBlender";
+import { ForceHandler } from "./handlers/ForceHandler";
 import { Particle } from "./particles/Particle";
 import { ParticleAtCollision } from "./particles/ParticleAtCollision";
 import { ShapeFactory } from "./shapes/ShapeFactory";
@@ -70,6 +74,11 @@ export const initializeCyberScape = (
   let animationCenterY = 0;
 
   const glitchManager = new GlitchManager();
+  const datastreamEffect = new DatastreamEffect(
+    particlePool,
+    particlesArray,
+    shapesArray
+  );
 
   /**
    * Updates the canvas size based on the navigation element's dimensions.
@@ -229,51 +238,6 @@ export const initializeCyberScape = (
   };
 
   /**
-   * Handles shape collisions and creates explosion particles.
-   */
-  const handleShapeCollision = (shapeA: VectorShape, shapeB: VectorShape) => {
-    const now = Date.now();
-    if (
-      currentExplosions >= config.maxSimultaneousExplosions ||
-      now - lastExplosionTime < config.explosionCooldown
-    ) {
-      return;
-    }
-
-    const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
-    const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
-    const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
-
-    if (
-      particlesArray.length + config.explosionParticlesToEmit <=
-        config.particlePoolSize &&
-      explosionParticlesCount + config.explosionParticlesToEmit <=
-        config.maxExplosionParticles
-    ) {
-      for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-        const particle = particlePool.getParticle(
-          width,
-          height,
-          true
-        ) as ParticleAtCollision;
-        particle.init(collisionX, collisionY, collisionZ, () => {
-          explosionParticlesCount--;
-          currentExplosions = Math.max(0, currentExplosions - 1);
-        });
-        particle.lifespan = 2000;
-        particle.setFadeOutDuration(2000);
-        particlesArray.push(particle);
-        explosionParticlesCount++;
-      }
-      currentExplosions++;
-      lastExplosionTime = now;
-    }
-
-    shapeA.explodeAndRespawn();
-    shapeB.explodeAndRespawn();
-  };
-
-  /**
    * Triggers a special animation effect at the specified coordinates.
    */
   const triggerSpecialAnimation = (x: number, y: number) => {
@@ -359,10 +323,53 @@ export const initializeCyberScape = (
       }
     }
 
-    // Handle collisions, color blending, and forces
-    handleCollisions();
-    blendColors();
-    applyForces();
+    // Handle collisions, color blending, and forces using handler classes
+    CollisionHandler.handleCollisions(shapesArray, (shapeA, shapeB) => {
+      const now = Date.now();
+      if (
+        currentExplosions >= config.maxSimultaneousExplosions ||
+        now - lastExplosionTime < config.explosionCooldown
+      ) {
+        return;
+      }
+
+      const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
+      const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
+      const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
+
+      if (
+        particlesArray.length + config.explosionParticlesToEmit <=
+          config.particlePoolSize &&
+        explosionParticlesCount + config.explosionParticlesToEmit <=
+          config.maxExplosionParticles
+      ) {
+        for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+          const particle = particlePool.getParticle(
+            width,
+            height,
+            true
+          ) as ParticleAtCollision;
+          particle.init(collisionX, collisionY, collisionZ, () => {
+            explosionParticlesCount--;
+            currentExplosions = Math.max(0, currentExplosions - 1);
+          });
+          particle.lifespan = config.particleAtCollisionLifespan;
+          particle.setFadeOutDuration(
+            config.particleAtCollisionFadeOutDuration
+          );
+          particlesArray.push(particle);
+          explosionParticlesCount++;
+        }
+        currentExplosions++;
+        lastExplosionTime = now;
+      }
+
+      shapeA.explodeAndRespawn();
+      shapeB.explodeAndRespawn();
+    });
+
+    ColorBlender.blendColors(shapesArray);
+    ForceHandler.applyForces(shapesArray);
 
     // Draw connections
     drawShapeConnections(ctx);
@@ -387,12 +394,15 @@ export const initializeCyberScape = (
         animationProgress = 0;
       } else {
         const intensity = Math.sin(animationProgress * Math.PI);
-        drawDatastreamEffect(
+        datastreamEffect.draw(
           ctx,
+          width,
+          height,
           animationCenterX,
           animationCenterY,
           intensity,
-          hue
+          hue,
+          animationProgress
         );
       }
     }
@@ -412,74 +422,6 @@ export const initializeCyberScape = (
     }
 
     animationFrameId = requestAnimationFrame(animateCyberScape);
-  };
-
-  /**
-   * Handles collisions between shapes.
-   */
-  const handleCollisions = () => {
-    for (let i = 0; i < shapesArray.length; i++) {
-      for (let j = i + 1; j < shapesArray.length; j++) {
-        const shapeA = shapesArray[i];
-        const shapeB = shapesArray[j];
-        const distance = VectorMath.distance(shapeA.position, shapeB.position);
-
-        if (distance < shapeA.radius + shapeB.radius) {
-          handleShapeCollision(shapeA, shapeB);
-        }
-      }
-    }
-  };
-
-  /**
-   * Blends colors between nearby shapes.
-   */
-  const blendColors = () => {
-    shapesArray.forEach((shape) => {
-      const nearbyShapes = shapesArray.filter(
-        (otherShape) =>
-          VectorMath.distance(shape.position, otherShape.position) <
-          config.shapeConnectionDistance
-      );
-      if (nearbyShapes.length > 0) {
-        const averageColor = ColorManager.averageColors(
-          nearbyShapes.map((s) => s.color)
-        );
-        shape.color = ColorManager.blendColors(shape.color, averageColor, 0.1);
-      }
-    });
-  };
-
-  /**
-   * Applies attraction and repulsion forces between shapes.
-   */
-  const applyForces = () => {
-    for (let i = 0; i < shapesArray.length; i++) {
-      for (let j = i + 1; j < shapesArray.length; j++) {
-        const shapeA = shapesArray[i];
-        const shapeB = shapesArray[j];
-        const distance = VectorMath.distance(shapeA.position, shapeB.position);
-
-        if (distance < config.shapeConnectionDistance) {
-          const force =
-            (config.shapeConnectionDistance - distance) /
-            config.shapeConnectionDistance;
-          const forceX =
-            (shapeB.position.x - shapeA.position.x) * force * 0.00001;
-          const forceY =
-            (shapeB.position.y - shapeA.position.y) * force * 0.00001;
-          const forceZ =
-            (shapeB.position.z - shapeA.position.z) * force * 0.00001;
-
-          shapeA.velocity.x += forceX;
-          shapeA.velocity.y += forceY;
-          shapeA.velocity.z += forceZ;
-          shapeB.velocity.x -= forceX;
-          shapeB.velocity.y -= forceY;
-          shapeB.velocity.z -= forceZ;
-        }
-      }
-    }
   };
 
   /**
@@ -518,117 +460,6 @@ export const initializeCyberScape = (
         }
       }
     }
-  };
-
-  /**
-   * Draws the datastream effect.
-   */
-  const drawDatastreamEffect = (
-    ctx: CanvasRenderingContext2D,
-    centerX: number,
-    centerY: number,
-    intensity: number,
-    hue: number
-  ) => {
-    // Draw expanding circles
-    ctx.save();
-    ctx.globalAlpha = intensity * 0.5;
-    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-    ctx.lineWidth = 2;
-    const maxRadius = Math.max(width, height) * 0.4;
-    ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      const radius = intensity * maxRadius * (1 - i * 0.2);
-      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    }
-    ctx.stroke();
-    ctx.restore();
-
-    // Draw noise effect
-    ctx.save();
-    ctx.globalAlpha = intensity * 0.2;
-    const noiseSize = 4;
-    const noiseRadius = Math.max(width, height) * 0.2;
-    for (
-      let x = centerX - noiseRadius;
-      x < centerX + noiseRadius;
-      x += noiseSize
-    ) {
-      for (
-        let y = centerY - noiseRadius;
-        y < centerY + noiseRadius;
-        y += noiseSize
-      ) {
-        if (
-          Math.random() < 0.5 &&
-          VectorMath.distance(
-            { x, y, z: 0 },
-            { x: centerX, y: centerY, z: 0 }
-          ) <= noiseRadius
-        ) {
-          ctx.fillStyle = `hsl(${hue}, 100%, ${Math.random() * 50 + 50}%)`;
-          ctx.fillRect(x, y, noiseSize, noiseSize);
-        }
-      }
-    }
-    ctx.restore();
-
-    // Emit datastream particles
-    if (animationProgress < 0.1) {
-      const particlesToEmit = Math.min(
-        10,
-        config.maxDatastreamParticles - explosionParticlesCount
-      );
-      for (let i = 0; i < particlesToEmit; i++) {
-        const particle = particlePool.getParticle(
-          width,
-          height,
-          true
-        ) as ParticleAtCollision;
-        particle.init(centerX, centerY, 0, () => {
-          explosionParticlesCount--;
-        });
-        particle.lifespan = config.datastreamParticleLifespan;
-        particle.setFadeOutDuration(config.datastreamFadeOutDuration);
-        particlesArray.push(particle);
-        explosionParticlesCount++;
-      }
-    }
-
-    // Affect nearby shapes
-    shapesArray.forEach((shape) => {
-      shape.rotationSpeed = {
-        x: intensity * 0.1,
-        y: intensity * 0.1,
-        z: intensity * 0.1,
-      };
-      const dx = centerX - shape.position.x;
-      const dy = centerY - shape.position.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const force = (intensity * 5) / (distance + 1);
-      shape.velocity.x += dx * force * 0.01;
-      shape.velocity.y += dy * force * 0.01;
-    });
-
-    // Draw energy lines
-    ctx.save();
-    ctx.globalAlpha = intensity * 0.7;
-    ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
-    ctx.lineWidth = 1;
-    const energyLineCount = 20;
-    ctx.beginPath();
-    for (let i = 0; i < energyLineCount; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const length = Math.random() * maxRadius * 0.8;
-      const startX = centerX + Math.cos(angle) * length * 0.2;
-      const startY = centerY + Math.sin(angle) * length * 0.2;
-      const endX = centerX + Math.cos(angle) * length;
-      const endY = centerY + Math.sin(angle) * length;
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-    }
-    ctx.stroke();
-    ctx.restore();
   };
 
   animateCyberScape(0);
