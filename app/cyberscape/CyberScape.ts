@@ -1,18 +1,14 @@
 // app/cyberscape/CyberScape.ts
 
 import { CyberScapeConfig } from "./CyberScapeConfig";
-import { ParticlePool } from "./utils/ParticlePool";
-import { ColorManager } from "./utils/ColorManager";
-import { VectorMath } from "./utils/VectorMath";
-import { ShapeFactory } from "./shapes/ShapeFactory";
+import { GlitchManager } from "./effects/GlitchManager";
 import { Particle } from "./particles/Particle";
 import { ParticleAtCollision } from "./particles/ParticleAtCollision";
+import { ShapeFactory } from "./shapes/ShapeFactory";
 import { VectorShape } from "./shapes/VectorShape";
-import {
-  applyChromaticAberration,
-  applyCRTEffect,
-  applyGlitchEffect,
-} from "./glitchEffects";
+import { ColorManager } from "./utils/ColorManager";
+import { ParticlePool } from "./utils/ParticlePool";
+import { VectorMath } from "./utils/VectorMath";
 
 /**
  * Function to trigger the CyberScape animation at specific coordinates.
@@ -64,12 +60,6 @@ export const initializeCyberScape = (
   let numberOfShapes = config.getShapeCount(width);
 
   let activeParticles = 0;
-  let isGlitching = false;
-  let lastGlitchTime = 0;
-  let glitchIntensity = 0;
-  let glitchInterval = config.glitchIntervalMin;
-  let glitchDuration = config.glitchDurationMin;
-
   let explosionParticlesCount = 0;
   let lastExplosionTime = 0;
   let currentExplosions = 0;
@@ -78,6 +68,8 @@ export const initializeCyberScape = (
   let animationProgress = 0;
   let animationCenterX = 0;
   let animationCenterY = 0;
+
+  const glitchManager = new GlitchManager();
 
   /**
    * Updates the canvas size based on the navigation element's dimensions.
@@ -385,7 +377,7 @@ export const initializeCyberScape = (
     }
 
     // Apply glitch effects
-    handleGlitchEffects(ctx);
+    glitchManager.handleGlitchEffects(ctx, width, height, timestamp);
 
     // Handle triggered animations
     if (isAnimationTriggered) {
@@ -524,40 +516,6 @@ export const initializeCyberScape = (
           ctx.lineTo(projectedB.x, projectedB.y);
           ctx.stroke();
         }
-      }
-    }
-  };
-
-  /**
-   * Handles glitch effects.
-   */
-  const handleGlitchEffects = (ctx: CanvasRenderingContext2D) => {
-    const now = Date.now();
-    if (!isGlitching && now - lastGlitchTime > glitchInterval) {
-      isGlitching = true;
-      glitchIntensity =
-        Math.random() *
-          (config.glitchIntensityMax - config.glitchIntensityMin) +
-        config.glitchIntensityMin;
-      glitchDuration =
-        Math.random() * (config.glitchDurationMax - config.glitchDurationMin) +
-        config.glitchDurationMin;
-      lastGlitchTime = now;
-      glitchInterval =
-        Math.random() * (config.glitchIntervalMax - config.glitchIntervalMin) +
-        config.glitchIntervalMin;
-    }
-
-    if (isGlitching) {
-      const glitchProgress = (now - lastGlitchTime) / glitchDuration;
-      if (glitchProgress >= 1) {
-        isGlitching = false;
-      } else {
-        const fadeIntensity =
-          Math.sin(glitchProgress * Math.PI) * glitchIntensity;
-        applyGlitchEffect(ctx, width, height, fadeIntensity);
-        applyChromaticAberration(ctx, width, height, fadeIntensity * 15);
-        applyCRTEffect(ctx, width, height, fadeIntensity * 0.5);
       }
     }
   };

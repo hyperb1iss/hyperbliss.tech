@@ -74,6 +74,14 @@ export class CyberScapeConfig {
   public glitchIntensityMin: number = 0.3;
   public glitchIntensityMax: number = 1;
 
+  // Glitch effect detail settings
+  public glitchEffectMaxAmount: number = 15;
+  public glitchEffectDisplacementThresholdFactor: number = 0.2;
+  public glitchEffectMaxNumLines: number = 30;
+  public glitchEffectMaxNumSlices: number = 8;
+  public glitchEffectMaxNumBlocks: number = 5;
+  public glitchEffectNoiseIntensityFactor: number = 0.2;
+
   // Connection settings
   public particleConnectionDistance: number = 150;
   public shapeConnectionDistance: number = 120;
