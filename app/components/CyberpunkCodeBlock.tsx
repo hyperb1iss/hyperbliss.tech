@@ -1,8 +1,10 @@
 // app/components/CyberpunkCodeBlock.tsx
 import type { CSSProperties } from "react";
-import React from "react";
+import React, { useState } from "react";
+import { FiCheck, FiCopy } from "react-icons/fi";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vs } from "react-syntax-highlighter/dist/esm/styles/prism";
+import styled from "styled-components";
 
 // Define the shape of the props
 interface CyberpunkCodeBlockProps {
@@ -14,6 +16,38 @@ interface CyberpunkCodeBlockProps {
 type CyberpunkTheme = {
   [key: string]: CSSProperties | { [key: string]: CSSProperties };
 };
+
+// Styled components for the copy button
+const CopyButton = styled.button`
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem;
+  color: #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+  }
+`;
+
+const CodeBlockWrapper = styled.div`
+  position: relative;
+
+  &:hover ${CopyButton} {
+    opacity: 1;
+  }
+`;
 
 /**
  * CyberpunkCodeBlock Component
@@ -78,8 +112,20 @@ const CyberpunkCodeBlock: React.FC<CyberpunkCodeBlockProps> = ({
   code,
   language,
 }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
   return (
-    <div className="font-mono text-sm leading-tight">
+    <CodeBlockWrapper className="font-mono text-sm leading-tight">
       <SyntaxHighlighter
         language={language}
         style={cyberpunkTheme}
@@ -94,7 +140,10 @@ const CyberpunkCodeBlock: React.FC<CyberpunkCodeBlockProps> = ({
       >
         {code}
       </SyntaxHighlighter>
-    </div>
+      <CopyButton onClick={copyToClipboard}>
+        {isCopied ? <FiCheck /> : <FiCopy />}
+      </CopyButton>
+    </CodeBlockWrapper>
   );
 };
 
