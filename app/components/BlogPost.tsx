@@ -1,10 +1,10 @@
 // app/components/BlogPost.tsx
 "use client";
 
+import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
 import MarkdownRenderer from "./MarkdownRenderer";
-import { motion } from "framer-motion";
 
 interface BlogPostProps {
   title: string;
@@ -98,26 +98,6 @@ const Tag = styled.span`
   cursor: pointer; /* Show hover cursor */
 `;
 
-/**
- * Centered GitHub Link with animation
- * Stylized the GitHub link for better visibility.
- */
-const GitHubLink = styled(motion.a)`
-  display: block;
-  margin: 2rem auto 0;
-  width: fit-content;
-  font-size: 1.6rem;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color 0.3s ease;
-  text-align: center;
-
-  &:hover {
-    color: var(--color-secondary);
-    text-shadow: 0 0 5px var(--color-secondary);
-  }
-`;
-
 const Content = styled(motion.div)``;
 
 /**
@@ -169,16 +149,6 @@ const BlogPost: React.FC<BlogPostProps> = ({
       >
         <MarkdownRenderer content={content} />
       </Content>
-      <GitHubLink
-        href={author ? `/projects/${author}` : "#"} /* Adjusted link based on author */
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-      >
-        View on GitHub
-      </GitHubLink>
     </Container>
   );
 };
