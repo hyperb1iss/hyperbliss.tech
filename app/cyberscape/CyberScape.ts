@@ -180,7 +180,7 @@ export const initializeCyberScape = (
   const MAX_CONNECTIONS_PER_PARTICLE = 5; // You can adjust this value as needed
 
   // New: Maximum connection distance relative to canvas size (e.g., 10% of canvas diagonal)
-  const MAX_CONNECTION_DISTANCE = Math.hypot(width, height) * 0.1; // 10% of diagonal
+  const MAX_CONNECTION_DISTANCE = config.particleConnectionDistance;
 
   /**
    * Connects particles by drawing lines between those that are within a certain distance.

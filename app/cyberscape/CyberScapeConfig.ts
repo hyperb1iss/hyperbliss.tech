@@ -105,6 +105,11 @@ export class CyberScapeConfig {
   public mobileWidthThreshold: number = 768;
   public mobileParticleReductionFactor: number = 0.8;
 
+  // New properties
+  public collisionGridSize: number = 100;
+  public minConnectionDelay: number = 100;
+  public maxConnectionDelay: number = 500;
+
   private constructor() {}
 
   /**

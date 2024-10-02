@@ -340,10 +340,10 @@ export class Particle {
   }
 
   public canCreateNewConnection(currentTime: number): boolean {
+    const config = CyberScapeConfig.getInstance();
     if (this.lastConnectionTime === 0) {
-      // First connection attempt, allow immediately
       this.lastConnectionTime = currentTime;
-      this.connectionDelay = Math.random() * 500 + 100; // Random delay between 100-600ms
+      this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
       return true;
     }
 
@@ -351,7 +351,7 @@ export class Particle {
       return false;
     }
     this.lastConnectionTime = currentTime;
-    this.connectionDelay = Math.random() * 500 + 100; // Random delay between 100-600ms
+    this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
     return true;
   }
 
