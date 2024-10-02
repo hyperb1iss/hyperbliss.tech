@@ -14,6 +14,7 @@ import { VectorShape } from "./shapes/VectorShape";
 import { ColorManager } from "./utils/ColorManager";
 import { ParticlePool } from "./utils/ParticlePool";
 import { VectorMath } from "./utils/VectorMath";
+import { Connection } from "./utils/Connection"; // Import Connection interface
 
 /**
  * Function to trigger the CyberScape animation at specific coordinates.
@@ -170,43 +171,134 @@ export const initializeCyberScape = (
   };
 
   /**
+   * The list of active connections between particles.
+   */
+  const connections: Connection[] = [];
+  const CONNECTION_ANIMATION_DURATION = 1000; // Increased duration from 500 to 1000 ms
+
+  // New: Maximum number of connections per particle
+  const MAX_CONNECTIONS_PER_PARTICLE = 5; // You can adjust this value as needed
+
+  // New: Maximum connection distance relative to canvas size (e.g., 10% of canvas diagonal)
+  const MAX_CONNECTION_DISTANCE = Math.hypot(width, height) * 0.1; // 10% of diagonal
+
+  /**
    * Connects particles by drawing lines between those that are within a certain distance.
+   * Animates the connection lines smoothly.
    */
   const connectParticles = (
     particles: Particle[],
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D,
+    timestamp: number
   ) => {
-    ctx.lineWidth = 1;
+    const newConnections: Connection[] = [];
 
-    for (let a = 0; a < particles.length; a++) {
-      for (let b = a + 1; b < particles.length; b++) {
-        if (
-          particles[a] instanceof ParticleAtCollision ||
-          particles[b] instanceof ParticleAtCollision
-        ) {
+    // Filter particles to only those visible
+    const visibleParticles = particles.filter(p => p.isVisible);
+
+    for (let a = 0; a < visibleParticles.length; a++) {
+      const particleA = visibleParticles[a];
+      if (particleA instanceof ParticleAtCollision) continue;
+
+      for (let b = a + 1; b < visibleParticles.length; b++) {
+        const particleB = visibleParticles[b];
+        if (particleB instanceof ParticleAtCollision) continue;
+
+        const posA = VectorMath.project(particleA.position, width, height);
+        const posB = VectorMath.project(particleB.position, width, height);
+
+        const dx = posA.x - posB.x;
+        const dy = posA.y - posB.y;
+        const distance = Math.hypot(dx, dy);
+
+        if (distance > MAX_CONNECTION_DISTANCE || distance >= config.particleConnectionDistance) {
           continue;
         }
 
-        const distance = vec3.distance(
-          particles[a].position,
-          particles[b].position
+        // Check if this connection already exists
+        const existingConnection = connections.find(
+          (conn) =>
+            (conn.particleA === particleA && conn.particleB === particleB) ||
+            (conn.particleA === particleB && conn.particleB === particleA)
         );
 
-        if (distance < config.particleConnectionDistance) {
-          const alpha =
-            (1 - distance / config.particleConnectionDistance) * 0.7;
-          ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
-
-          const posA = VectorMath.project(particles[a].position, width, height);
-          const posB = VectorMath.project(particles[b].position, width, height);
-
-          ctx.beginPath();
-          ctx.moveTo(posA.x, posA.y);
-          ctx.lineTo(posB.x, posB.y);
-          ctx.stroke();
+        if (existingConnection) {
+          // Update existing connection
+          const elapsed = timestamp - existingConnection.createdAt;
+          existingConnection.opacity = Math.min(elapsed / existingConnection.duration, 1);
+          newConnections.push(existingConnection);
+        } else if (particleA.canCreateNewConnection(timestamp) && particleB.canCreateNewConnection(timestamp)) {
+          // Create a new connection only if both particles are ready
+          newConnections.push({
+            particleA: particleA,
+            particleB: particleB,
+            createdAt: timestamp,
+            duration: CONNECTION_ANIMATION_DURATION,
+            opacity: 0, // Start fully transparent
+          });
+          particleA.incrementConnectionCount();
+          particleB.incrementConnectionCount();
         }
       }
     }
+
+    // Handle fade-out for obsolete connections
+    const obsoleteConnections = connections.filter((conn) => {
+      const stillExists = newConnections.some(
+        (newConn) =>
+          (newConn.particleA === conn.particleA && newConn.particleB === conn.particleB) ||
+          (newConn.particleA === conn.particleB && newConn.particleB === conn.particleA)
+      );
+      return !stillExists;
+    });
+
+    obsoleteConnections.forEach((conn: Connection) => {
+      if (conn.opacity > 0) {
+        // Start fade-out
+        conn.opacity = Math.max(conn.opacity - 0.01, 0);
+        if (conn.opacity > 0) {
+          newConnections.push(conn);
+        } else {
+          // Connection is fully faded out, decrement connection counts
+          conn.particleA.decrementConnectionCount();
+          conn.particleB.decrementConnectionCount();
+        }
+      }
+    });
+
+    // Replace the old connections with the new ones
+    connections.length = 0;
+    connections.push(...newConnections);
+
+    // Draw connections
+    connections.forEach((conn: Connection) => {
+      const { particleA, particleB, opacity } = conn;
+
+      // Only draw if opacity is greater than 0
+      if (opacity > 0) {
+        const posA = VectorMath.project(particleA.position, width, height);
+        const posB = VectorMath.project(particleB.position, width, height);
+
+        const rgbA = ColorManager.hexToRgb(particleA.color);
+        const rgbB = ColorManager.hexToRgb(particleB.color);
+        let connectionColor = `rgba(200, 100, 255, ${opacity * 0.7})`;
+
+        if (rgbA && rgbB) {
+          const blendedR = Math.floor((rgbA.r + rgbB.r) / 2);
+          const blendedG = Math.floor((rgbA.g + rgbB.g) / 2);
+          const blendedB = Math.floor((rgbA.b + rgbB.b) / 2);
+          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${opacity * 0.7})`;
+        }
+
+        ctx.strokeStyle = connectionColor;
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+        ctx.moveTo(posA.x, posA.y);
+        ctx.lineTo(posB.x, posB.y);
+        ctx.stroke();
+      }
+    });
   };
 
   /**
@@ -332,7 +424,7 @@ export const initializeCyberScape = (
     // Handle collisions, color blending, and forces using handler classes
     CollisionHandler.handleCollisions(
       shapesArray, // First argument: VectorShape[]
-      (shapeA, shapeB) => {
+      (shapeA: VectorShape, shapeB: VectorShape) => {
         const now = Date.now();
         if (
           currentExplosions >= config.maxSimultaneousExplosions ||
@@ -383,8 +475,8 @@ export const initializeCyberScape = (
     // Draw connections between shapes
     drawShapeConnections(ctx);
 
-    // Connect regular particles
-    connectParticles(particlesArray, ctx);
+    // Connect regular particles with animation
+    connectParticles(particlesArray, ctx, timestamp);
 
     // Remove expired regular particles
     for (let i = particlesArray.length - 1; i >= 0; i--) {
@@ -474,6 +566,9 @@ export const initializeCyberScape = (
 
 /**
  * Helper function for throttling function calls.
+ * @param func - The function to throttle.
+ * @param limit - The time limit in milliseconds.
+ * @returns A throttled version of the input function.
  */
 function throttle<T extends unknown[]>(
   func: (...args: T) => void,

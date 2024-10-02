@@ -75,15 +75,15 @@ export class CyberScapeConfig {
   public particleInteractionRadius: number = 100;
   public particleInteractionForce: number = 0.1;
   public shapeParticleInteractionRadius: number = 100;
-  public shapeParticleInteractionForce: number = 0.005;
+  public shapeParticleInteractionForce: number = 0.01;
   public shapeAttractionRadius: number = 200;
   public shapeRepulsionRadius: number = 80;
   public shapeAttractionForce: number = 0.0005;
   public shapeRepulsionForce: number = 0.001;
 
   // Glitch effect settings
-  public glitchIntervalMin: number = 5000;
-  public glitchIntervalMax: number = 10000;
+  public glitchIntervalMin: number = 10000;
+  public glitchIntervalMax: number = 20000;
   public glitchDurationMin: number = 100;
   public glitchDurationMax: number = 400;
   public glitchIntensityMin: number = 0.3;
@@ -98,7 +98,7 @@ export class CyberScapeConfig {
   public glitchEffectNoiseIntensityFactor: number = 0.2;
 
   // Connection settings
-  public particleConnectionDistance: number = 150;
+  public particleConnectionDistance: number = 100;
   public shapeConnectionDistance: number = 120;
 
   // Mobile specific settings

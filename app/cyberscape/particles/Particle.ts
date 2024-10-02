@@ -21,13 +21,18 @@ export class Particle {
   age: number;
   opacity: number;
   private appearanceDelay: number;
-  private isVisible: boolean;
+  public isVisible: boolean;
   hue: number;
 
   // Optimization: Reuse vector for calculations
   private tempVector: vec3;
 
   protected config: CyberScapeConfig;
+
+  // Add these new properties
+  public connectionCount: number = 0;
+  public lastConnectionTime: number = 0;
+  public connectionDelay: number = 0;
 
   /**
    * Creates a new Particle instance.
@@ -212,6 +217,10 @@ export class Particle {
 
     // Interact with nearby shapes
     this.interactWithShapes(shapes);
+
+    // Update visibility
+    const pos = VectorMath.project(this.position, width, height);
+    this.isVisible = pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height;
   }
 
   /**
@@ -328,5 +337,29 @@ export class Particle {
     this.lifespan = this.config.particleLifespan;
     this.age = 0;
     this.opacity = 1;
+  }
+
+  public canCreateNewConnection(currentTime: number): boolean {
+    if (this.lastConnectionTime === 0) {
+      // First connection attempt, allow immediately
+      this.lastConnectionTime = currentTime;
+      this.connectionDelay = Math.random() * 500 + 100; // Random delay between 100-600ms
+      return true;
+    }
+
+    if (currentTime - this.lastConnectionTime < this.connectionDelay) {
+      return false;
+    }
+    this.lastConnectionTime = currentTime;
+    this.connectionDelay = Math.random() * 500 + 100; // Random delay between 100-600ms
+    return true;
+  }
+
+  public incrementConnectionCount(): void {
+    this.connectionCount++;
+  }
+
+  public decrementConnectionCount(): void {
+    this.connectionCount = Math.max(0, this.connectionCount - 1);
   }
 }
