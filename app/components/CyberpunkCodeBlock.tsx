@@ -20,8 +20,8 @@ const cyberpunkTheme = {
   'code[class*="language-"]': {
     color: "#f0f0f0",
     background: "#1a1a2e",
-    fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
-    fontSize: "0.75em",
+    fontFamily: '"Space Mono", monospace',
+    fontSize: "0.7em",
     lineHeight: "1.4",
     whiteSpace: "pre-wrap",
     wordSpacing: "normal",

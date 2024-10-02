@@ -4,7 +4,10 @@ import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
 
-// Define the styled motion.a component with desired styles
+/**
+ * StyledAnchor component
+ * Enhances the link with a cyberpunk-themed glow effect and subtle scaling on hover.
+ */
 const StyledAnchor = styled(motion.a)`
   display: block;
   text-decoration: none;
@@ -17,14 +20,13 @@ const StyledAnchor = styled(motion.a)`
   border: 1px solid rgba(0, 255, 255, 0.3);
   border-radius: 15px;
   padding: 2rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), 0 0 50px rgba(0, 255, 255, 0.3);
   }
 
   &::before {
@@ -48,17 +50,25 @@ const StyledAnchor = styled(motion.a)`
   }
 `;
 
-// Define the props for StyledLink by extending motion.a's props
+/**
+ * StyledLinkProps interface
+ * Extends the default anchor props with a required href and children.
+ */
 type StyledLinkProps = React.ComponentPropsWithoutRef<typeof StyledAnchor> & {
   href: string;
   children: React.ReactNode;
 };
 
-// Create a forwarding component to pass refs correctly
+/**
+ * StyledLink component
+ * Wraps the Next.js Link component with enhanced styling and animations.
+ * @param {StyledLinkProps} props - The component props
+ * @returns {JSX.Element} Rendered styled link
+ */
 const StyledLink = React.forwardRef<HTMLAnchorElement, StyledLinkProps>(
   ({ href, children, ...props }, ref) => {
     return (
-      <Link href={href} legacyBehavior>
+      <Link href={href} legacyBehavior passHref>
         <StyledAnchor ref={ref} {...props}>
           {children}
         </StyledAnchor>

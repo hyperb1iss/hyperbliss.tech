@@ -98,7 +98,7 @@ export const StyledInlineCode = styled.code`
   color: #36f9f6;
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
-  font-family: "Consolas", Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-family: var(--font-mono);
 `;
 
 // Image

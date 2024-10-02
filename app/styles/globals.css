@@ -4,11 +4,11 @@
  * Global styles and CSS variables for the application
  */
 
-:root {
+ :root {
   /* Font family variables */
   --font-heading: "Orbitron", sans-serif;
   --font-body: "Rajdhani", sans-serif;
-  --font-mono: "Share Tech Mono", monospace;
+  --font-mono: "Space Mono", monospace;
   --font-logo: "Noto Sans", sans-serif;
 
   /* Color scheme variables */

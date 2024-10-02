@@ -3,23 +3,31 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import StyledLink from "./StyledLink"; // Import the StyledLink component
 
+/**
+ * ProjectTitle component
+ * Styles the project title with a prominent color and shadow.
+ */
 const ProjectTitle = styled.h2`
   font-size: 2.4rem;
   color: #00ffff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #00ffff;
 `;
 
-const Meta = styled.div`
-  font-size: 1.4rem;
+/**
+ * Author component
+ * Styles the author information.
+ */
+const Author = styled.div`
+  font-size: 1.2rem;
   color: var(--color-muted);
-  margin-bottom: 1rem;
-
-  span {
-    margin: 0 0.5rem;
-  }
+  margin-bottom: 0.5rem;
 `;
 
+/**
+ * ProjectDescription component
+ * Styles the project description text.
+ */
 const ProjectDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-text);
@@ -27,40 +35,67 @@ const ProjectDescription = styled.p`
   line-height: 1.6;
 `;
 
+/**
+ * ProjectLinks component
+ * Styles the container holding the project links.
+ */
 const ProjectLinks = styled.div`
   display: flex;
   gap: 1rem;
 `;
 
+/**
+ * ProjectLink component
+ * Styles individual project links with interactivity.
+ */
 const ProjectLink = styled.a`
   font-size: 1.6rem;
   color: #ff00ff;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   position: relative;
 
   &:hover {
     color: #00ffff;
     text-shadow: 0 0 5px #00ffff;
   }
+`;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background-color: #00ffff;
-    transition: width 0.3s ease;
-  }
+/**
+ * TagsContainer component
+ * Styles the container holding the tags.
+ */
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
 
-  &:hover::after {
-    width: 100%;
+/**
+ * Tag component
+ * Styles individual tags with interactivity.
+ */
+const Tag = styled.span`
+  background-color: rgba(0, 255, 255, 0.2);
+  color: var(--color-accent);
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px var(--color-accent);
+  cursor: pointer; /* Show hover cursor */
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(0, 255, 255, 0.4);
+    color: #ffffff;
   }
 `;
 
-// Props interface for ProjectCard component
+/**
+ * ProjectCardProps interface
+ * Defines the properties expected by the ProjectCard component.
+ */
 interface ProjectCardProps {
   slug: string;
   title: string;
@@ -74,7 +109,7 @@ interface ProjectCardProps {
 /**
  * ProjectCard component
  * Renders a single project card with title, description, author, tags, and links.
- * Enhanced animations and aesthetics to fix flickering and fit the theme.
+ * Includes a glow effect and subtle scaling on hover.
  * @param {ProjectCardProps} props - The component props
  * @returns {JSX.Element} Rendered project card
  */
@@ -93,20 +128,23 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
         initial="hidden"
         animate="visible"
         whileHover={{
-          scale: 1.05,
-          rotate: index % 2 === 0 ? 2 : -2, // Slight rotation based on index
+          scale: 1.02,
           transition: {
-            delay: index * 0.05, // 50ms delay per index
+            delay: index * 0.05,
             type: "spring",
             stiffness: 300,
           },
         }}
       >
         <ProjectTitle>{title}</ProjectTitle>
-        <Meta>
-          {author && <span>Author: {author}</span>}
-          {tags && tags.length > 0 && <span>Tags: {tags.join(", ")}</span>}
-        </Meta>
+        {author && <Author>Author: {author}</Author>}
+        {tags && tags.length > 0 && (
+          <TagsContainer>
+            {tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </TagsContainer>
+        )}
         <ProjectDescription>{description}</ProjectDescription>
         <ProjectLinks>
           <ProjectLink href={`/projects/${slug}`}>Learn More</ProjectLink>

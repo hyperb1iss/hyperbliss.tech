@@ -36,31 +36,30 @@ interface MarkdownRendererProps {
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <ReactMarkdown
-      children={content}
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[rehypeRaw]}
       components={{
         // Headings
-        h1: ({ node, ...props }) => <StyledH1 {...props} />,
-        h2: ({ node, ...props }) => <StyledH2 {...props} />,
-        h3: ({ node, ...props }) => <StyledH3 {...props} />,
+        h1: (props) => <StyledH1 {...props} />,
+        h2: (props) => <StyledH2 {...props} />,
+        h3: (props) => <StyledH3 {...props} />,
 
         // Paragraph
-        p: ({ node, ...props }) => <StyledParagraph {...props} />,
+        p: (props) => <StyledParagraph {...props} />,
 
         // Links
-        a: ({ node, ...props }) => <MarkdownLink {...props} />,
+        a: (props) => <MarkdownLink {...props} />,
 
         // Lists
-        ul: ({ node, ...props }) => <StyledUl {...props} />,
-        ol: ({ node, ...props }) => <StyledOl {...props} />,
-        li: ({ node, ...props }) => <StyledLi {...props} />,
+        ul: (props) => <StyledUl {...props} />,
+        ol: (props) => <StyledOl {...props} />,
+        li: (props) => <StyledLi {...props} />,
 
         // Blockquote
-        blockquote: ({ node, ...props }) => <StyledBlockquote {...props} />,
+        blockquote: (props) => <StyledBlockquote {...props} />,
 
         // Horizontal Rule
-        hr: ({ node, ...props }) => <StyledHr {...props} />,
+        hr: (props) => <StyledHr {...props} />,
 
         // Inline Code and Code Blocks
         code: ({ inline, className, children, ...props }: CodeProps) => {
@@ -83,9 +82,11 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         },
 
         // Images
-        img: ({ node, ...props }) => <StyledImage {...props} />,
+        img: (props) => <StyledImage {...props} />,
       }}
-    />
+    >
+      {content}
+    </ReactMarkdown>
   );
 };
 
