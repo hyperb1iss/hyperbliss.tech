@@ -12,9 +12,9 @@ import { ParticleAtCollision } from "./particles/ParticleAtCollision";
 import { ShapeFactory } from "./shapes/ShapeFactory";
 import { VectorShape } from "./shapes/VectorShape";
 import { ColorManager } from "./utils/ColorManager";
+import { Connection } from "./utils/Connection"; // Import Connection interface
 import { ParticlePool } from "./utils/ParticlePool";
 import { VectorMath } from "./utils/VectorMath";
-import { Connection } from "./utils/Connection"; // Import Connection interface
 
 /**
  * Function to trigger the CyberScape animation at specific coordinates.
@@ -176,8 +176,8 @@ export const initializeCyberScape = (
   const connections: Connection[] = [];
   const CONNECTION_ANIMATION_DURATION = 1000; // Increased duration from 500 to 1000 ms
 
-  // New: Maximum number of connections per particle
-  const MAX_CONNECTIONS_PER_PARTICLE = 5; // You can adjust this value as needed
+  // Remove or comment out the unused constant
+  // const MAX_CONNECTIONS_PER_PARTICLE = 5; // You can adjust this value as needed
 
   // New: Maximum connection distance relative to canvas size (e.g., 10% of canvas diagonal)
   const MAX_CONNECTION_DISTANCE = config.particleConnectionDistance;
@@ -194,7 +194,7 @@ export const initializeCyberScape = (
     const newConnections: Connection[] = [];
 
     // Filter particles to only those visible
-    const visibleParticles = particles.filter(p => p.isVisible);
+    const visibleParticles = particles.filter((p) => p.isVisible);
 
     for (let a = 0; a < visibleParticles.length; a++) {
       const particleA = visibleParticles[a];
@@ -211,7 +211,10 @@ export const initializeCyberScape = (
         const dy = posA.y - posB.y;
         const distance = Math.hypot(dx, dy);
 
-        if (distance > MAX_CONNECTION_DISTANCE || distance >= config.particleConnectionDistance) {
+        if (
+          distance > MAX_CONNECTION_DISTANCE ||
+          distance >= config.particleConnectionDistance
+        ) {
           continue;
         }
 
@@ -225,9 +228,15 @@ export const initializeCyberScape = (
         if (existingConnection) {
           // Update existing connection
           const elapsed = timestamp - existingConnection.createdAt;
-          existingConnection.opacity = Math.min(elapsed / existingConnection.duration, 1);
+          existingConnection.opacity = Math.min(
+            elapsed / existingConnection.duration,
+            1
+          );
           newConnections.push(existingConnection);
-        } else if (particleA.canCreateNewConnection(timestamp) && particleB.canCreateNewConnection(timestamp)) {
+        } else if (
+          particleA.canCreateNewConnection(timestamp) &&
+          particleB.canCreateNewConnection(timestamp)
+        ) {
           // Create a new connection only if both particles are ready
           newConnections.push({
             particleA: particleA,
@@ -246,8 +255,10 @@ export const initializeCyberScape = (
     const obsoleteConnections = connections.filter((conn) => {
       const stillExists = newConnections.some(
         (newConn) =>
-          (newConn.particleA === conn.particleA && newConn.particleB === conn.particleB) ||
-          (newConn.particleA === conn.particleB && newConn.particleB === conn.particleA)
+          (newConn.particleA === conn.particleA &&
+            newConn.particleB === conn.particleB) ||
+          (newConn.particleA === conn.particleB &&
+            newConn.particleB === conn.particleA)
       );
       return !stillExists;
     });
@@ -287,7 +298,9 @@ export const initializeCyberScape = (
           const blendedR = Math.floor((rgbA.r + rgbB.r) / 2);
           const blendedG = Math.floor((rgbA.g + rgbB.g) / 2);
           const blendedB = Math.floor((rgbA.b + rgbB.b) / 2);
-          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${opacity * 0.7})`;
+          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${
+            opacity * 0.7
+          })`;
         }
 
         ctx.strokeStyle = connectionColor;

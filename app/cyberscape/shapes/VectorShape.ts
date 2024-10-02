@@ -28,7 +28,6 @@ export abstract class VectorShape {
   fadeOutDuration: number;
   isFadingOut: boolean;
   opacity: number = 0;
-  glowIntensity: number = Math.random() * 10 + 15;
   radius: number = 0; // Represents the size of the shape for interactions
   scale: number = 1; // Current scale of the shape
   scaleTarget: number = 1; // Target scale for morphing
@@ -42,6 +41,14 @@ export abstract class VectorShape {
   temporaryDistortion: vec3;
 
   private config: CyberScapeConfig;
+
+  private glowIntensity: number;
+  private pulseDirection: number;
+  private colorShift: number;
+  private colorShiftSpeed: number;
+
+  // Increase the base size of the shape
+  protected baseSize: number = 45; // Increased from 30
 
   constructor() {
     this.config = CyberScapeConfig.getInstance();
@@ -85,6 +92,14 @@ export abstract class VectorShape {
 
     this.tempVector = vec3.create();
     this.temporaryDistortion = vec3.create();
+
+    this.glowIntensity = Math.random() * 10 + 15;
+    this.pulseDirection = Math.random() < 0.5 ? 1 : -1;
+    this.colorShift = 0;
+    this.colorShiftSpeed = Math.random() * 0.5 + 0.1;
+
+    // Adjust the radius based on the new base size
+    this.radius = this.baseSize * 0.9;
 
     // Initialize position and radius in derived classes
   }
@@ -317,6 +332,15 @@ export abstract class VectorShape {
 
     // Reset temporary distortion
     vec3.set(this.temporaryDistortion, 0, 0, 0);
+
+    // Update glow intensity
+    this.glowIntensity += this.pulseDirection * 0.2;
+    if (this.glowIntensity > 30 || this.glowIntensity < 10) {
+      this.pulseDirection *= -1;
+    }
+
+    // Update color shift
+    this.colorShift = (this.colorShift + this.colorShiftSpeed) % 360;
   }
 
   /**
@@ -372,16 +396,33 @@ export abstract class VectorShape {
     height: number
   ): void {
     if (this.opacity > 0 && !this.isExploded) {
-      const rgbColor = ColorManager.hexToRgb(this.color);
-      if (rgbColor) {
-        const { r, g, b } = rgbColor;
+      const baseColor = ColorManager.hexToRgb(this.color);
+      if (baseColor) {
+        // Apply color shift
+        const shiftedColor = ColorManager.shiftHue(baseColor, this.colorShift);
+        const { r, g, b } = shiftedColor;
+
+        // Create a gradient for the shape
+        const pos = VectorMath.project(this.position, width, height);
+        const gradient = ctx.createRadialGradient(
+          pos.x,
+          pos.y,
+          0,
+          pos.x,
+          pos.y,
+          this.radius * 2 * pos.scale
+        );
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${this.opacity})`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
         ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+        ctx.fillStyle = gradient;
         ctx.lineWidth = 2;
 
         // Apply dynamic glow based on opacity and glow intensity
         const glowEffect = this.opacity * this.glowIntensity * 1.5;
         ctx.shadowBlur = glowEffect;
-        ctx.shadowColor = this.color;
+        ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
 
         // Draw the shape
         ctx.beginPath();
@@ -406,7 +447,17 @@ export abstract class VectorShape {
           ctx.moveTo(projectedV1.x, projectedV1.y);
           ctx.lineTo(projectedV2.x, projectedV2.y);
         });
+        ctx.closePath();
+        ctx.fill();
         ctx.stroke();
+
+        // Add a subtle inner glow
+        ctx.globalCompositeOperation = "lighter";
+        ctx.shadowBlur = glowEffect * 0.5;
+        ctx.globalAlpha = 0.3;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
 
         // Reset shadow properties
         ctx.shadowBlur = 0;
@@ -457,11 +508,55 @@ export abstract class VectorShape {
     this.opacity = 0; // Hide the shape immediately
     this.triggerCollisionVisuals(); // Trigger visual effects
 
+    // Emit explosion particles with similar color
+    this.emitExplosionParticles();
+
     // Schedule respawn after a random delay (up to 10 seconds)
     const delay = Math.random() * 10000; // 0 to 10,000 milliseconds
     this.respawnTimer = window.setTimeout(() => {
       this.reset(new Set<string>(), window.innerWidth, window.innerHeight);
     }, delay);
+  }
+
+  /**
+   * Emits explosion particles with colors similar to the shape.
+   */
+  private emitExplosionParticles(): void {
+    const particleCount = 20; // Number of particles to emit
+    const baseColor = ColorManager.hexToRgb(this.color);
+    if (!baseColor) return;
+
+    for (let i = 0; i < particleCount; i++) {
+      // Create a slightly varied color for each particle
+      const particleColor = ColorManager.shiftHue(
+        baseColor,
+        Math.random() * 30 - 15
+      );
+      const hexColor = ColorManager.rgbToHex(
+        particleColor.r,
+        particleColor.g,
+        particleColor.b
+      );
+
+      // Create and emit the particle
+      // Note: You'll need to implement a method to add these particles to your particle system
+      this.emitParticle(hexColor);
+    }
+  }
+
+  /**
+   * Emits a single explosion particle.
+   * @param color - The color of the particle in hex format.
+   */
+  private emitParticle(color: string): void {
+    // This is a placeholder method. You'll need to implement this based on your particle system.
+    // It should create a new ParticleAtCollision instance and add it to your particle array.
+    // Example:
+    // const particle = new ParticleAtCollision(this.position, () => {
+    //   // Callback when particle expires
+    // }, color); // Use the color parameter here
+    // particleArray.push(particle);
+    console.log(`Emitting particle with color: ${color}`); // Temporary use to avoid unused variable warning
   }
 
   /**

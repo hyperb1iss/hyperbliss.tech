@@ -24,8 +24,9 @@ export class ParticleAtCollision extends Particle {
    * Creates a new `ParticleAtCollision` instance.
    * @param position - The initial position of the particle as a vec3.
    * @param onExpire - Callback function when the particle expires.
+   * @param color - The color of the particle in hex format.
    */
-  constructor(position: vec3, onExpire: () => void = () => {}) {
+  constructor(position: vec3, onExpire: () => void = () => {}, color?: string) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
     this.config = CyberScapeConfig.getInstance();
     this.onExpire = onExpire;
@@ -37,15 +38,16 @@ export class ParticleAtCollision extends Particle {
           this.config.particleAtCollisionMinSpeed) +
       this.config.particleAtCollisionMinSpeed;
     this.direction = vec3.create();
-    this.init(position, onExpire);
+    this.init(position, onExpire, color);
   }
 
   /**
    * Initializes the particle's properties for the explosion effect.
    * @param position - Initial position as a vec3.
    * @param onExpire - Callback function when the particle expires.
+   * @param color - The color of the particle in hex format.
    */
-  public init(position: vec3, onExpire: () => void): void {
+  public init(position: vec3, onExpire: () => void, color?: string): void {
     vec3.copy(this.position, position);
     this.onExpire = onExpire;
 
@@ -66,11 +68,10 @@ export class ParticleAtCollision extends Particle {
         (this.config.particleAtCollisionSizeMax -
           this.config.particleAtCollisionSizeMin) +
       this.config.particleAtCollisionSizeMin;
-    this.color = this.config.particleAtCollisionColor;
+    this.color = color || this.config.particleAtCollisionColor;
     this.lifespan = this.config.particleAtCollisionLifespan;
     this.age = 0;
     this.opacity = 1;
-    this.onExpire = onExpire;
     this.sparkleIntensity = Math.random();
   }
 
