@@ -1,12 +1,12 @@
 // app/cyberscape/shapes/DodecahedronShape.ts
 
+import { vec3 } from "gl-matrix";
+import { VectorShape } from "./VectorShape";
+
 /**
  * The `DodecahedronShape` class represents a dodecahedron in the CyberScape animation.
  * It extends the `VectorShape` base class and initializes the dodecahedron's specific vertices and edges.
  */
-
-import { VectorShape } from "./VectorShape";
-
 export class DodecahedronShape extends VectorShape {
   constructor(existingPositions: Set<string>, width: number, height: number) {
     super();
@@ -20,30 +20,30 @@ export class DodecahedronShape extends VectorShape {
    */
   protected initializeShape(): void {
     const size = 30;
-    const phi = (1 + Math.sqrt(5)) / 2;
+    const phi = (1 + Math.sqrt(5)) / 2; // Golden ratio
     const a = size * 0.35;
     const b = (size * 0.35) / phi;
     this.vertices = [
-      { x: a, y: a, z: a },
-      { x: a, y: a, z: -a },
-      { x: a, y: -a, z: a },
-      { x: a, y: -a, z: -a },
-      { x: -a, y: a, z: a },
-      { x: -a, y: a, z: -a },
-      { x: -a, y: -a, z: a },
-      { x: -a, y: -a, z: -a },
-      { x: 0, y: b, z: phi * a },
-      { x: 0, y: b, z: -phi * a },
-      { x: 0, y: -b, z: phi * a },
-      { x: 0, y: -b, z: -phi * a },
-      { x: b, y: phi * a, z: 0 },
-      { x: b, y: -phi * a, z: 0 },
-      { x: -b, y: phi * a, z: 0 },
-      { x: -b, y: -phi * a, z: 0 },
-      { x: phi * a, y: 0, z: b },
-      { x: phi * a, y: 0, z: -b },
-      { x: -phi * a, y: 0, z: b },
-      { x: -phi * a, y: 0, z: -b },
+      vec3.fromValues(a, a, a),
+      vec3.fromValues(a, a, -a),
+      vec3.fromValues(a, -a, a),
+      vec3.fromValues(a, -a, -a),
+      vec3.fromValues(-a, a, a),
+      vec3.fromValues(-a, a, -a),
+      vec3.fromValues(-a, -a, a),
+      vec3.fromValues(-a, -a, -a),
+      vec3.fromValues(0, b, phi * a),
+      vec3.fromValues(0, b, -phi * a),
+      vec3.fromValues(0, -b, phi * a),
+      vec3.fromValues(0, -b, -phi * a),
+      vec3.fromValues(b, phi * a, 0),
+      vec3.fromValues(b, -phi * a, 0),
+      vec3.fromValues(-b, phi * a, 0),
+      vec3.fromValues(-b, -phi * a, 0),
+      vec3.fromValues(phi * a, 0, b),
+      vec3.fromValues(phi * a, 0, -b),
+      vec3.fromValues(-phi * a, 0, b),
+      vec3.fromValues(-phi * a, 0, -b),
     ];
     this.edges = [
       [0, 8],

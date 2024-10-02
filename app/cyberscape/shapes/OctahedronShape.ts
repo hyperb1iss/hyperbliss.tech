@@ -1,12 +1,12 @@
 // app/cyberscape/shapes/OctahedronShape.ts
 
+import { VectorShape } from "./VectorShape";
+import { vec3 } from "gl-matrix";
+
 /**
  * The `OctahedronShape` class represents an octahedron in the CyberScape animation.
  * It extends the `VectorShape` base class and initializes the octahedron's specific vertices and edges.
  */
-
-import { VectorShape } from "./VectorShape";
-
 export class OctahedronShape extends VectorShape {
   constructor(existingPositions: Set<string>, width: number, height: number) {
     super();
@@ -21,12 +21,12 @@ export class OctahedronShape extends VectorShape {
   protected initializeShape(): void {
     const size = 30;
     this.vertices = [
-      { x: 0, y: size * 0.7, z: 0 },
-      { x: size * 0.7, y: 0, z: 0 },
-      { x: 0, y: 0, z: size * 0.7 },
-      { x: -size * 0.7, y: 0, z: 0 },
-      { x: 0, y: 0, z: -size * 0.7 },
-      { x: 0, y: -size * 0.7, z: 0 },
+      vec3.fromValues(0, size * 0.7, 0),
+      vec3.fromValues(size * 0.7, 0, 0),
+      vec3.fromValues(0, 0, size * 0.7),
+      vec3.fromValues(-size * 0.7, 0, 0),
+      vec3.fromValues(0, 0, -size * 0.7),
+      vec3.fromValues(0, -size * 0.7, 0),
     ];
     this.edges = [
       [0, 1],

@@ -1,9 +1,10 @@
 // app/cyberscape/shapes/VectorShape.ts
 
+import { vec3 } from "gl-matrix";
 import { CyberScapeConfig } from "../CyberScapeConfig";
+import { Particle } from "../particles/Particle";
 import { ColorManager } from "../utils/ColorManager";
 import { VectorMath } from "../utils/VectorMath";
-import { Particle } from "../particles/Particle";
 
 /**
  * The `VectorShape` abstract class represents a 3D shape in the CyberScape animation.
@@ -11,12 +12,12 @@ import { Particle } from "../particles/Particle";
  * pyramids, tetrahedrons, etc.
  */
 export abstract class VectorShape {
-  vertices: { x: number; y: number; z: number }[] = [];
+  vertices: vec3[] = [];
   edges: [number, number][] = [];
-  position: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
-  velocity: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
-  rotation: { x: number; y: number; z: number } = { x: 0, y: 0, z: 0 };
-  rotationSpeed: { x: number; y: number; z: number };
+  position: vec3 = vec3.create();
+  velocity: vec3 = vec3.create();
+  rotation: vec3 = vec3.create();
+  rotationSpeed: vec3 = vec3.create();
   color: string;
   targetColor: string;
   colorTransitionSpeed: number;
@@ -37,8 +38,8 @@ export abstract class VectorShape {
   respawnTimer: number | null; // Timer ID for respawning
 
   // Reusable objects for calculations
-  private tempVector: { x: number; y: number; z: number };
-  temporaryDistortion: { x: number; y: number; z: number };
+  private tempVector: vec3;
+  temporaryDistortion: vec3;
 
   private config: CyberScapeConfig;
 
@@ -49,12 +50,12 @@ export abstract class VectorShape {
     this.maxSpeed = this.config.shapeMaxSpeed;
     this.minSpeed = this.config.shapeMinSpeed;
 
-    this.rotation = { x: 0, y: 0, z: 0 };
-    this.rotationSpeed = {
-      x: (Math.random() - 0.5) * 0.01,
-      y: (Math.random() - 0.5) * 0.01,
-      z: (Math.random() - 0.5) * 0.01,
-    };
+    this.rotation = vec3.create();
+    this.rotationSpeed = vec3.fromValues(
+      (Math.random() - 0.5) * 0.01,
+      (Math.random() - 0.5) * 0.01,
+      (Math.random() - 0.5) * 0.01
+    );
 
     this.color = ColorManager.getRandomCyberpunkColor();
     this.targetColor = ColorManager.getRandomCyberpunkColor();
@@ -82,8 +83,8 @@ export abstract class VectorShape {
     this.isExploded = false;
     this.respawnTimer = null;
 
-    this.tempVector = { x: 0, y: 0, z: 0 };
-    this.temporaryDistortion = { x: 0, y: 0, z: 0 };
+    this.tempVector = vec3.create();
+    this.temporaryDistortion = vec3.create();
 
     // Initialize position and radius in derived classes
   }
@@ -108,11 +109,12 @@ export abstract class VectorShape {
     // Reset position
     let positionKey: string;
     do {
-      this.position = {
-        x: Math.random() * width - width / 2,
-        y: Math.random() * height - height / 2,
-        z: Math.random() * 600 - 300,
-      };
+      vec3.set(
+        this.position,
+        Math.random() * width - width / 2,
+        Math.random() * height - height / 2,
+        Math.random() * 600 - 300
+      );
       positionKey = this.getPositionKey();
     } while (existingPositions.has(positionKey));
     existingPositions.add(positionKey);
@@ -137,19 +139,21 @@ export abstract class VectorShape {
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     const speedZ =
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    this.velocity = {
-      x: Math.cos(angleXY) * speedXY,
-      y: Math.sin(angleXY) * speedXY,
-      z: Math.cos(angleZ) * speedZ,
-    };
+    vec3.set(
+      this.velocity,
+      Math.cos(angleXY) * speedXY,
+      Math.sin(angleXY) * speedXY,
+      Math.cos(angleZ) * speedZ
+    );
 
     // Reset rotation
-    this.rotation = { x: 0, y: 0, z: 0 };
-    this.rotationSpeed = {
-      x: (Math.random() - 0.5) * 0.01,
-      y: (Math.random() - 0.5) * 0.01,
-      z: (Math.random() - 0.5) * 0.01,
-    };
+    vec3.set(this.rotation, 0, 0, 0);
+    vec3.set(
+      this.rotationSpeed,
+      (Math.random() - 0.5) * 0.01,
+      (Math.random() - 0.5) * 0.01,
+      (Math.random() - 0.5) * 0.01
+    );
 
     // Reset glow intensity
     this.glowIntensity =
@@ -173,9 +177,9 @@ export abstract class VectorShape {
    * @returns A string representing the shape's position.
    */
   public getPositionKey(): string {
-    return `${this.position.x.toFixed(2)},${this.position.y.toFixed(
+    return `${this.position[0].toFixed(2)},${this.position[1].toFixed(
       2
-    )},${this.position.z.toFixed(2)}`;
+    )},${this.position[2].toFixed(2)}`;
   }
 
   /**
@@ -199,70 +203,77 @@ export abstract class VectorShape {
     if (this.isExploded) return; // Do not update if exploded
 
     if (isCursorOverHeader) {
-      this.tempVector.x = mouseX - this.position.x;
-      this.tempVector.y = mouseY - this.position.y;
-      const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
+      vec3.set(
+        this.tempVector,
+        mouseX - this.position[0],
+        mouseY - this.position[1],
+        0
+      );
+      const distance = vec3.length(this.tempVector);
 
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
           ((this.config.cursorInfluenceRadius - distance) /
             this.config.cursorInfluenceRadius) *
           this.config.cursorForce;
-        this.velocity.x += (this.tempVector.x / distance) * force;
-        this.velocity.y += (this.tempVector.y / distance) * force;
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
+        vec3.add(this.velocity, this.velocity, this.tempVector);
       }
     }
 
     // Apply slight attraction to center
-    this.velocity.x +=
-      (-this.position.x / (width * 10)) * this.config.centerAttractionForce;
-    this.velocity.y +=
-      (-this.position.y / (height * 10)) * this.config.centerAttractionForce;
+    vec3.add(
+      this.velocity,
+      this.velocity,
+      vec3.fromValues(
+        (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
+        (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+        0
+      )
+    );
 
     // Introduce Z-Drift Over Time
-    this.velocity.z += (Math.random() - 0.5) * 0.005; // Small random drift
+    this.velocity[2] += (Math.random() - 0.5) * 0.005; // Small random drift
 
     // Update position
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-    this.position.z += this.velocity.z;
+    vec3.add(this.position, this.position, this.velocity);
 
     // Wrap around edges smoothly
     const buffer = 200; // Ensure objects are fully offscreen before wrapping
     const wrapWidth = width + buffer * 2;
     const wrapHeight = height + buffer * 2;
 
-    this.position.x =
-      ((this.position.x + width / 2 + buffer) % wrapWidth) - width / 2 - buffer;
-    this.position.y =
-      ((this.position.y + height / 2 + buffer) % wrapHeight) -
+    this.position[0] =
+      ((this.position[0] + width / 2 + buffer) % wrapWidth) -
+      width / 2 -
+      buffer;
+    this.position[1] =
+      ((this.position[1] + height / 2 + buffer) % wrapHeight) -
       height / 2 -
       buffer;
-    this.position.z = ((this.position.z + 300) % 600) - 300;
+    this.position[2] = ((this.position[2] + 300) % 600) - 300;
 
     // Ensure minimum and maximum speed
-    const speed = Math.hypot(this.velocity.x, this.velocity.y, this.velocity.z);
+    const speed = vec3.length(this.velocity);
     if (speed < this.minSpeed) {
-      const scale = this.minSpeed / speed;
-      this.velocity.x *= scale;
-      this.velocity.y *= scale;
-      this.velocity.z *= scale;
+      vec3.scale(this.velocity, this.velocity, this.minSpeed / speed);
     } else if (speed > this.maxSpeed) {
-      const scale = this.maxSpeed / speed;
-      this.velocity.x *= scale;
-      this.velocity.y *= scale;
-      this.velocity.z *= scale;
+      vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
     }
 
     // Add small random changes to velocity for more natural movement
-    this.velocity.x += (Math.random() - 0.5) * 0.005;
-    this.velocity.y += (Math.random() - 0.5) * 0.005;
-    this.velocity.z += (Math.random() - 0.5) * 0.005;
+    vec3.add(
+      this.velocity,
+      this.velocity,
+      vec3.fromValues(
+        (Math.random() - 0.5) * 0.005,
+        (Math.random() - 0.5) * 0.005,
+        (Math.random() - 0.5) * 0.005
+      )
+    );
 
     // Update rotation on all axes
-    this.rotation.x += this.rotationSpeed.x;
-    this.rotation.y += this.rotationSpeed.y;
-    this.rotation.z += this.rotationSpeed.z;
+    vec3.add(this.rotation, this.rotation, this.rotationSpeed);
 
     // Update scale towards target scale for morphing effect
     if (this.scale < this.scaleTarget) {
@@ -302,12 +313,10 @@ export abstract class VectorShape {
     this.interactWithParticles(particles);
 
     // Apply temporary distortion
-    this.position.x += this.temporaryDistortion.x;
-    this.position.y += this.temporaryDistortion.y;
-    this.position.z += this.temporaryDistortion.z;
+    vec3.add(this.position, this.position, this.temporaryDistortion);
 
     // Reset temporary distortion
-    this.temporaryDistortion = { x: 0, y: 0, z: 0 };
+    vec3.set(this.temporaryDistortion, 0, 0, 0);
   }
 
   /**
@@ -333,23 +342,20 @@ export abstract class VectorShape {
    * @param particles - Array of Particle instances.
    */
   private interactWithParticles(particles: Particle[]): void {
-    const INTERACTION_RADIUS = 100;
+    const INTERACTION_RADIUS = this.config.shapeParticleInteractionRadius;
+    const INTERACTION_FORCE = this.config.shapeParticleInteractionForce;
     particles.forEach((particle) => {
-      const dx = particle.x - this.position.x;
-      const dy = particle.y - this.position.y;
-      const dz = particle.z - this.position.z;
-      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      vec3.subtract(this.tempVector, particle.position, this.position);
+      const distance = vec3.length(this.tempVector);
 
-      if (distance < INTERACTION_RADIUS) {
-        const force = 0.005 * (1 - distance / INTERACTION_RADIUS);
-        this.velocity.x += dx * force;
-        this.velocity.y += dy * force;
-        this.velocity.z += dz * force;
+      if (distance > 0 && distance < INTERACTION_RADIUS) {
+        const force = INTERACTION_FORCE * (1 - distance / INTERACTION_RADIUS);
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
+        vec3.add(this.velocity, this.velocity, this.tempVector);
 
-        // Emit small particles
-        if (Math.random() < 0.05) {
-          // Emitting is handled externally
-        }
+        // Optionally, influence particle's velocity
+        // vec3.scale(this.tempVector, this.tempVector, -1); // Reverse force
+        // vec3.add(particle.velocity, particle.velocity, this.tempVector);
       }
     });
   }
@@ -385,20 +391,18 @@ export abstract class VectorShape {
             this.rotation
           );
           const v2 = VectorMath.rotateVertex(this.vertices[end], this.rotation);
-          const projectedV1 = VectorMath.project(
-            v1.x * this.scale + this.position.x,
-            v1.y * this.scale + this.position.y,
-            v1.z * this.scale + this.position.z,
-            width,
-            height
-          );
-          const projectedV2 = VectorMath.project(
-            v2.x * this.scale + this.position.x,
-            v2.y * this.scale + this.position.y,
-            v2.z * this.scale + this.position.z,
-            width,
-            height
-          );
+
+          // Apply scaling and translation to vertices
+          const scaledV1 = vec3.create();
+          const scaledV2 = vec3.create();
+          vec3.scale(scaledV1, v1, this.scale);
+          vec3.scale(scaledV2, v2, this.scale);
+          vec3.add(scaledV1, scaledV1, this.position);
+          vec3.add(scaledV2, scaledV2, this.position);
+
+          const projectedV1 = VectorMath.project(scaledV1, width, height);
+          const projectedV2 = VectorMath.project(scaledV2, width, height);
+
           ctx.moveTo(projectedV1.x, projectedV1.y);
           ctx.lineTo(projectedV2.x, projectedV2.y);
         });
@@ -436,6 +440,14 @@ export abstract class VectorShape {
   }
 
   /**
+   * Checks if the shape is completely faded out.
+   * @returns True if the shape is faded out, false otherwise.
+   */
+  public isFadedOut(): boolean {
+    return this.isFadingOut && this.opacity <= 0 && !this.isExploded;
+  }
+
+  /**
    * Initiates the explosion and schedules respawning after a random delay.
    */
   public explodeAndRespawn(): void {
@@ -453,21 +465,11 @@ export abstract class VectorShape {
   }
 
   /**
-   * Checks if the shape is completely faded out.
-   * @returns True if the shape is faded out, false otherwise.
-   */
-  public isFadedOut(): boolean {
-    return this.isFadingOut && this.opacity <= 0 && !this.isExploded;
-  }
-
-  /**
    * Applies a force to the shape, affecting its velocity.
    * @param force - The force vector to apply.
    */
-  public applyForce(force: { x: number; y: number; z: number }): void {
-    this.velocity.x += force.x;
-    this.velocity.y += force.y;
-    this.velocity.z += force.z;
+  public applyForce(force: vec3): void {
+    vec3.add(this.velocity, this.velocity, force);
   }
 
   /**
@@ -476,7 +478,7 @@ export abstract class VectorShape {
    * @returns The distance between this shape and the other shape.
    */
   public distanceTo(other: VectorShape): number {
-    return VectorMath.distance(this.position, other.position);
+    return vec3.distance(this.position, other.position);
   }
 
   /**
@@ -510,26 +512,19 @@ export abstract class VectorShape {
     const distance = this.distanceTo(other);
     if (distance < attractionRadius && distance > repulsionRadius) {
       // Attraction
-      const force = attractionForce * (1 - distance / attractionRadius);
-      const dx = other.position.x - this.position.x;
-      const dy = other.position.y - this.position.y;
-      const dz = other.position.z - this.position.z;
-      this.applyForce({
-        x: (dx * force) / distance,
-        y: (dy * force) / distance,
-        z: (dz * force) / distance,
-      });
+      const forceMagnitude =
+        attractionForce * (1 - distance / attractionRadius);
+      vec3.subtract(this.tempVector, other.position, this.position);
+      vec3.normalize(this.tempVector, this.tempVector);
+      vec3.scale(this.tempVector, this.tempVector, forceMagnitude);
+      this.applyForce(this.tempVector);
     } else if (distance <= repulsionRadius) {
       // Repulsion
-      const force = repulsionForce * (1 - distance / repulsionRadius);
-      const dx = this.position.x - other.position.x;
-      const dy = this.position.y - other.position.y;
-      const dz = this.position.z - other.position.z;
-      this.applyForce({
-        x: (dx * force) / distance,
-        y: (dy * force) / distance,
-        z: (dz * force) / distance,
-      });
+      const forceMagnitude = repulsionForce * (1 - distance / repulsionRadius);
+      vec3.subtract(this.tempVector, this.position, other.position);
+      vec3.normalize(this.tempVector, this.tempVector);
+      vec3.scale(this.tempVector, this.tempVector, forceMagnitude);
+      this.applyForce(this.tempVector);
     }
   }
 }

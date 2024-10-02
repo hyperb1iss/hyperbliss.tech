@@ -1,5 +1,6 @@
 // app/cyberscape/particles/ParticleAtCollision.ts
 
+import { vec3 } from "gl-matrix";
 import { CyberScapeConfig } from "../CyberScapeConfig";
 import { VectorShape } from "../shapes/VectorShape";
 import { ColorManager } from "../utils/ColorManager";
@@ -15,11 +16,16 @@ export class ParticleAtCollision extends Particle {
   private fadeOutDuration: number;
   private sparkleIntensity: number;
   private initialSpeed: number;
-  private direction: { x: number; y: number; z: number };
+  private direction: vec3;
 
   protected config: CyberScapeConfig;
 
-  constructor(x: number, y: number, z: number, onExpire: () => void) {
+  /**
+   * Creates a new `ParticleAtCollision` instance.
+   * @param position - The initial position of the particle as a vec3.
+   * @param onExpire - Callback function when the particle expires.
+   */
+  constructor(position: vec3, onExpire: () => void = () => {}) {
     super(new Set<string>(), window.innerWidth, window.innerHeight);
     this.config = CyberScapeConfig.getInstance();
     this.onExpire = onExpire;
@@ -30,32 +36,31 @@ export class ParticleAtCollision extends Particle {
         (this.config.particleAtCollisionMaxSpeed -
           this.config.particleAtCollisionMinSpeed) +
       this.config.particleAtCollisionMinSpeed;
-    this.direction = { x: 0, y: 0, z: 0 };
-    this.init(x, y, z, onExpire);
+    this.direction = vec3.create();
+    this.init(position, onExpire);
   }
 
   /**
    * Initializes the particle's properties for the explosion effect.
-   * @param x - Initial x-coordinate.
-   * @param y - Initial y-coordinate.
-   * @param z - Initial z-coordinate.
+   * @param position - Initial position as a vec3.
    * @param onExpire - Callback function when the particle expires.
    */
-  public init(x: number, y: number, z: number, onExpire: () => void): void {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    // Set initial direction (normalized vector)
+  public init(position: vec3, onExpire: () => void): void {
+    vec3.copy(this.position, position);
+    this.onExpire = onExpire;
+
+    // Set initial direction (random normalized vector)
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
-    this.direction = {
-      x: Math.sin(phi) * Math.cos(theta),
-      y: Math.sin(phi) * Math.sin(theta),
-      z: Math.cos(phi),
-    };
-    this.velocityX = this.direction.x * this.initialSpeed;
-    this.velocityY = this.direction.y * this.initialSpeed;
-    this.velocityZ = this.direction.z * this.initialSpeed;
+    vec3.set(
+      this.direction,
+      Math.sin(phi) * Math.cos(theta),
+      Math.sin(phi) * Math.sin(theta),
+      Math.cos(phi)
+    );
+
+    vec3.scale(this.velocity, this.direction, this.initialSpeed);
+
     this.size =
       Math.random() *
         (this.config.particleAtCollisionSizeMax -
@@ -70,19 +75,16 @@ export class ParticleAtCollision extends Particle {
   }
 
   /**
-   * Updates the particle's position and fades it out over time.
+   * Updates the particle's position and velocity based on current state and interactions.
+   * This method is called every frame to animate the particle.
    */
   public update(): void {
     // Update position based on velocity
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-    this.z += this.velocityZ;
+    vec3.add(this.position, this.position, this.velocity);
 
     // Slow down the particle over time
     const slowdownFactor = this.config.particleAtCollisionSlowdownFactor;
-    this.velocityX *= slowdownFactor;
-    this.velocityY *= slowdownFactor;
-    this.velocityZ *= slowdownFactor;
+    vec3.scale(this.velocity, this.velocity, slowdownFactor);
 
     // Update age and opacity
     this.age += 16; // Assuming 60 FPS
@@ -100,7 +102,11 @@ export class ParticleAtCollision extends Particle {
     );
 
     if (this.opacity <= 0) {
-      this.onExpire();
+      if (typeof this.onExpire === "function") {
+        this.onExpire();
+      } else {
+        console.warn("ParticleAtCollision: onExpire is not a function", this);
+      }
     }
   }
 
@@ -121,7 +127,7 @@ export class ParticleAtCollision extends Particle {
   ): void {
     if (this.opacity <= 0) return;
 
-    const pos = VectorMath.project(this.x, this.y, this.z, width, height);
+    const pos = VectorMath.project(this.position, width, height);
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, this.size * pos.scale, 0, Math.PI * 2);
     ctx.fillStyle = ColorManager.adjustColorOpacity(this.color, this.opacity);
@@ -176,13 +182,7 @@ export class ParticleAtCollision extends Particle {
     ) {
       let connectionsForParticle = 0;
       const particleA = particles[i];
-      const posA = VectorMath.project(
-        particleA.x,
-        particleA.y,
-        particleA.z,
-        width,
-        height
-      );
+      const posA = VectorMath.project(particleA.position, width, height);
 
       for (
         let j = i + 1;
@@ -192,19 +192,10 @@ export class ParticleAtCollision extends Particle {
       ) {
         const particleB = particles[j];
 
-        const distance = VectorMath.distance(
-          { x: particleA.x, y: particleA.y, z: particleA.z },
-          { x: particleB.x, y: particleB.y, z: particleB.z }
-        );
+        const distance = vec3.distance(particleA.position, particleB.position);
 
         if (distance < MAX_DISTANCE) {
-          const posB = VectorMath.project(
-            particleB.x,
-            particleB.y,
-            particleB.z,
-            width,
-            height
-          );
+          const posB = VectorMath.project(particleB.position, width, height);
 
           const baseOpacity =
             (1 - distance / MAX_DISTANCE) *
@@ -255,22 +246,19 @@ export class ParticleAtCollision extends Particle {
     // Create temporary distortions in nearby shapes
     shapes.forEach((shape) => {
       particles.forEach((particle) => {
-        const distance = VectorMath.distance(shape.position, {
-          x: particle.x,
-          y: particle.y,
-          z: particle.z,
-        });
+        const distance = vec3.distance(shape.position, particle.position);
 
         if (distance < config.particleAtCollisionShapeDistortionRadius) {
           const distortionFactor =
             config.particleAtCollisionShapeDistortionFactor *
             (1 - distance / config.particleAtCollisionShapeDistortionRadius) *
             particle.opacity;
-          shape.temporaryDistortion = {
-            x: (Math.random() - 0.5) * distortionFactor,
-            y: (Math.random() - 0.5) * distortionFactor,
-            z: (Math.random() - 0.5) * distortionFactor,
-          };
+          vec3.set(
+            shape.temporaryDistortion,
+            (Math.random() - 0.5) * distortionFactor,
+            (Math.random() - 0.5) * distortionFactor,
+            (Math.random() - 0.5) * distortionFactor
+          );
         }
       });
     });

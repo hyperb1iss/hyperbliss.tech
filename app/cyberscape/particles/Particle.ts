@@ -3,6 +3,7 @@
 import { CyberScapeConfig } from "../CyberScapeConfig";
 import { VectorShape } from "../shapes/VectorShape";
 import { ColorManager } from "../utils/ColorManager";
+import { vec3 } from "gl-matrix";
 import { VectorMath } from "../utils/VectorMath";
 
 /**
@@ -10,13 +11,9 @@ import { VectorMath } from "../utils/VectorMath";
  * Each particle moves independently, reacts to user interaction, and maintains constant motion across the canvas.
  */
 export class Particle {
-  x: number;
-  y: number;
-  z: number;
+  position: vec3;
+  velocity: vec3;
   size: number;
-  velocityX: number;
-  velocityY: number;
-  velocityZ: number;
   color: string;
   maxSpeed: number;
   minSpeed: number;
@@ -28,7 +25,7 @@ export class Particle {
   hue: number;
 
   // Optimization: Reuse vector for calculations
-  private tempVector: { x: number; y: number; z: number };
+  private tempVector: vec3;
 
   protected config: CyberScapeConfig;
 
@@ -41,15 +38,19 @@ export class Particle {
   constructor(existingPositions: Set<string>, width: number, height: number) {
     this.config = CyberScapeConfig.getInstance();
 
-    // Ensure unique positions by checking existingPositions
+    // Initialize position
+    this.position = vec3.create();
     let positionKey: string;
     do {
-      this.x = Math.random() * width - width / 2;
-      this.y = Math.random() * height - height / 2;
-      this.z = Math.random() * 600 - 300;
-      positionKey = `${this.x.toFixed(2)},${this.y.toFixed(2)},${this.z.toFixed(
+      vec3.set(
+        this.position,
+        Math.random() * width - width / 2,
+        Math.random() * height - height / 2,
+        Math.random() * 600 - 300
+      );
+      positionKey = `${this.position[0].toFixed(2)},${this.position[1].toFixed(
         2
-      )}`;
+      )},${this.position[2].toFixed(2)}`;
     } while (existingPositions.has(positionKey));
     existingPositions.add(positionKey);
 
@@ -62,15 +63,19 @@ export class Particle {
     this.minSpeed = this.config.particleMinSpeed;
 
     // Initialize with a random velocity within speed limits
+    this.velocity = vec3.create();
     const angleXY = Math.random() * Math.PI * 2;
     const angleZ = Math.random() * Math.PI * 2;
     const speedXY =
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     const speedZ =
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    this.velocityX = Math.cos(angleXY) * speedXY;
-    this.velocityY = Math.sin(angleXY) * speedXY;
-    this.velocityZ = Math.cos(angleZ) * speedZ;
+    vec3.set(
+      this.velocity,
+      Math.cos(angleXY) * speedXY,
+      Math.sin(angleXY) * speedXY,
+      Math.cos(angleZ) * speedZ
+    );
 
     this.hue = ColorManager.getRandomCyberpunkHue();
     this.color = `hsl(${this.hue}, 100%, 50%)`;
@@ -81,7 +86,7 @@ export class Particle {
     this.opacity = 1;
 
     // Initialize tempVector for reuse in calculations
-    this.tempVector = { x: 0, y: 0, z: 0 };
+    this.tempVector = vec3.create();
     this.appearanceDelay = 0;
     this.isVisible = false;
   }
@@ -134,63 +139,70 @@ export class Particle {
   ): void {
     if (!this.isVisible) return;
     if (isCursorOverCyberScape) {
-      this.tempVector.x = mouseX - this.x;
-      this.tempVector.y = mouseY - this.y;
-      const distance = Math.hypot(this.tempVector.x, this.tempVector.y);
+      vec3.set(
+        this.tempVector,
+        mouseX - this.position[0],
+        mouseY - this.position[1],
+        0
+      );
+      const distance = vec3.length(this.tempVector);
 
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
           ((this.config.cursorInfluenceRadius - distance) /
             this.config.cursorInfluenceRadius) *
           this.config.cursorForce;
-        this.velocityX += (this.tempVector.x / distance) * force;
-        this.velocityY += (this.tempVector.y / distance) * force;
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
+        vec3.add(this.velocity, this.velocity, this.tempVector);
       }
     }
 
     // Apply slight attraction to center
-    this.velocityX +=
-      (-this.x / (width * 10)) * this.config.centerAttractionForce;
-    this.velocityY +=
-      (-this.y / (height * 10)) * this.config.centerAttractionForce;
+    vec3.add(
+      this.velocity,
+      this.velocity,
+      vec3.fromValues(
+        (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
+        (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+        0
+      )
+    );
 
     // Update position
-    this.x += this.velocityX;
-    this.y += this.velocityY;
-    this.z += this.velocityZ;
+    vec3.add(this.position, this.position, this.velocity);
 
     // Wrap around edges smoothly
     const buffer = 200; // Ensure objects are fully offscreen before wrapping
-    if (this.x < -width / 2 - buffer) {
-      this.x += width + buffer * 2;
-    } else if (this.x > width / 2 + buffer) {
-      this.x -= width + buffer * 2;
+    if (this.position[0] < -width / 2 - buffer) {
+      this.position[0] += width + buffer * 2;
+    } else if (this.position[0] > width / 2 + buffer) {
+      this.position[0] -= width + buffer * 2;
     }
-    if (this.y < -height / 2 - buffer) {
-      this.y += height + buffer * 2;
-    } else if (this.y > height / 2 + buffer) {
-      this.y -= height + buffer * 2;
+    if (this.position[1] < -height / 2 - buffer) {
+      this.position[1] += height + buffer * 2;
+    } else if (this.position[1] > height / 2 + buffer) {
+      this.position[1] -= height + buffer * 2;
     }
-    this.z = ((this.z + 300) % 600) - 300;
+    this.position[2] = ((this.position[2] + 300) % 600) - 300;
 
     // Ensure minimum and maximum speed
-    const speed = Math.hypot(this.velocityX, this.velocityY, this.velocityZ);
+    const speed = vec3.length(this.velocity);
     if (speed < this.minSpeed) {
-      const scale = this.minSpeed / speed;
-      this.velocityX *= scale;
-      this.velocityY *= scale;
-      this.velocityZ *= scale;
+      vec3.scale(this.velocity, this.velocity, this.minSpeed / speed);
     } else if (speed > this.maxSpeed) {
-      const scale = this.maxSpeed / speed;
-      this.velocityX *= scale;
-      this.velocityY *= scale;
-      this.velocityZ *= scale;
+      vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed);
     }
 
     // Add small random changes to velocity for more natural movement
-    this.velocityX += (Math.random() - 0.5) * 0.01;
-    this.velocityY += (Math.random() - 0.5) * 0.01;
-    this.velocityZ += (Math.random() - 0.5) * 0.01;
+    vec3.add(
+      this.velocity,
+      this.velocity,
+      vec3.fromValues(
+        (Math.random() - 0.5) * 0.01,
+        (Math.random() - 0.5) * 0.01,
+        (Math.random() - 0.5) * 0.01
+      )
+    );
 
     // Update lifecycle if lifespan is finite
     if (this.lifespan !== Infinity) {
@@ -207,23 +219,24 @@ export class Particle {
    * @param shapes - Array of VectorShape instances.
    */
   protected interactWithShapes(shapes: VectorShape[]): void {
-    const INTERACTION_RADIUS = 100;
+    const INTERACTION_RADIUS = this.config.particleInteractionRadius;
+    const INTERACTION_FORCE = this.config.particleInteractionForce;
     shapes.forEach((shape) => {
-      const dx = shape.position.x - this.x;
-      const dy = shape.position.y - this.y;
-      const dz = shape.position.z - this.z;
-      const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      vec3.subtract(this.tempVector, shape.position, this.position);
+      const distance = vec3.length(this.tempVector);
 
-      if (distance < INTERACTION_RADIUS) {
-        const force = 0.01 * (1 - distance / INTERACTION_RADIUS);
-        this.velocityX += dx * force;
-        this.velocityY += dy * force;
-        this.velocityZ += dz * force;
+      if (distance > 0 && distance < INTERACTION_RADIUS) {
+        const force = INTERACTION_FORCE * (1 - distance / INTERACTION_RADIUS);
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
+        vec3.add(this.velocity, this.velocity, this.tempVector);
 
         // Influence shape's rotation
-        shape.rotationSpeed.x += (Math.random() - 0.5) * 0.001;
-        shape.rotationSpeed.y += (Math.random() - 0.5) * 0.001;
-        shape.rotationSpeed.z += (Math.random() - 0.5) * 0.001;
+        const rotationInfluence = vec3.fromValues(
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001,
+          (Math.random() - 0.5) * 0.001
+        );
+        vec3.add(shape.rotationSpeed, shape.rotationSpeed, rotationInfluence);
       }
     });
   }
@@ -244,10 +257,13 @@ export class Particle {
     height: number
   ): void {
     if (!this.isVisible) return;
-    const pos = VectorMath.project(this.x, this.y, this.z, width, height);
+    const pos = VectorMath.project(this.position, width, height);
 
     // Calculate dynamic shadow blur based on position and proximity to cursor
-    const distanceToCursor = Math.hypot(mouseX - this.x, mouseY - this.y);
+    const distanceToCursor = Math.hypot(
+      mouseX - this.position[0],
+      mouseY - this.position[1]
+    );
     const dynamicShadowBlur = 10 + (200 - Math.min(distanceToCursor, 200)) / 20;
 
     // Set the particle's color and prepare for dynamic glow effect
@@ -278,12 +294,15 @@ export class Particle {
   ): void {
     let positionKey: string;
     do {
-      this.x = Math.random() * width - width / 2;
-      this.y = Math.random() * height - height / 2;
-      this.z = Math.random() * 600 - 300;
-      positionKey = `${this.x.toFixed(2)},${this.y.toFixed(2)},${this.z.toFixed(
+      vec3.set(
+        this.position,
+        Math.random() * width - width / 2,
+        Math.random() * height - height / 2,
+        Math.random() * 600 - 300
+      );
+      positionKey = `${this.position[0].toFixed(2)},${this.position[1].toFixed(
         2
-      )}`;
+      )},${this.position[2].toFixed(2)}`;
     } while (existingPositions.has(positionKey));
     existingPositions.add(positionKey);
 
@@ -294,9 +313,12 @@ export class Particle {
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     const speedZ =
       Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    this.velocityX = Math.cos(angleXY) * speedXY;
-    this.velocityY = Math.sin(angleXY) * speedXY;
-    this.velocityZ = Math.cos(angleZ) * speedZ;
+    vec3.set(
+      this.velocity,
+      Math.cos(angleXY) * speedXY,
+      Math.sin(angleXY) * speedXY,
+      Math.cos(angleZ) * speedZ
+    );
 
     // Optionally reset color for variety
     this.hue = ColorManager.getRandomCyberpunkHue();

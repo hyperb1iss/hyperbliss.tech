@@ -7,12 +7,11 @@
  * This effect is triggered during special animations and affects particles and shapes.
  */
 
+import { vec3 } from "gl-matrix";
 import { CyberScapeConfig } from "../CyberScapeConfig";
 import { Particle } from "../particles/Particle";
-import { ParticleAtCollision } from "../particles/ParticleAtCollision";
 import { VectorShape } from "../shapes/VectorShape";
 import { ParticlePool } from "../utils/ParticlePool";
-import { VectorMath } from "../utils/VectorMath";
 
 export class DatastreamEffect {
   private config: CyberScapeConfig;
@@ -54,7 +53,12 @@ export class DatastreamEffect {
     hue: number,
     animationProgress: number
   ) {
-    // Draw expanding circles
+    // Create a vec3 for the center position
+    const centerPos = vec3.fromValues(centerX, centerY, 0);
+
+    // ----------------------------
+    // 1. Draw Expanding Circles
+    // ----------------------------
     ctx.save();
     ctx.globalAlpha = intensity * 0.5;
     ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
@@ -68,11 +72,17 @@ export class DatastreamEffect {
     ctx.stroke();
     ctx.restore();
 
-    // Draw noise effect
+    // ----------------------------
+    // 2. Draw Noise Effect
+    // ----------------------------
     ctx.save();
     ctx.globalAlpha = intensity * 0.2;
     const noiseSize = 4;
     const noiseRadius = Math.max(width, height) * 0.2;
+
+    // Precompute squared noise radius for performance
+    const noiseRadiusSq = noiseRadius * noiseRadius;
+
     for (
       let x = centerX - noiseRadius;
       x < centerX + noiseRadius;
@@ -83,13 +93,15 @@ export class DatastreamEffect {
         y < centerY + noiseRadius;
         y += noiseSize
       ) {
-        if (
-          Math.random() < 0.5 &&
-          VectorMath.distance(
-            { x, y, z: 0 },
-            { x: centerX, y: centerY, z: 0 }
-          ) <= noiseRadius
-        ) {
+        // Create a vec3 for the current point
+        const point = vec3.fromValues(x, y, 0);
+
+        // Calculate squared distance to center to avoid sqrt for performance
+        const dx = point[0] - centerPos[0];
+        const dy = point[1] - centerPos[1];
+        const distanceSq = dx * dx + dy * dy;
+
+        if (Math.random() < 0.5 && distanceSq <= noiseRadiusSq) {
           ctx.fillStyle = `hsl(${hue}, 100%, ${Math.random() * 50 + 50}%)`;
           ctx.fillRect(x, y, noiseSize, noiseSize);
         }
@@ -97,44 +109,73 @@ export class DatastreamEffect {
     }
     ctx.restore();
 
-    // Emit datastream particles
+    // ----------------------------
+    // 3. Emit Datastream Particles
+    // ----------------------------
     if (animationProgress < 0.1) {
       const particlesToEmit = Math.min(
         10,
         this.config.maxDatastreamParticles - this.explosionParticlesCount
       );
       for (let i = 0; i < particlesToEmit; i++) {
-        const particle = this.particlePool.getParticle(
-          width,
-          height,
-          true
-        ) as ParticleAtCollision;
-        particle.init(centerX, centerY, 0, () => {
-          this.explosionParticlesCount--;
-        });
+        // Retrieve a ParticleAtCollision from the pool
+        const particle = this.particlePool.getCollisionParticle(
+          vec3.clone(centerPos),
+          () => {
+            this.explosionParticlesCount--;
+            // Optionally, additional logic upon particle expiration
+          }
+        );
+
+        // Set particle properties
         particle.lifespan = this.config.datastreamParticleLifespan;
         particle.setFadeOutDuration(this.config.datastreamFadeOutDuration);
+
+        // Add the particle to the active particles array
         this.particlesArray.push(particle);
         this.explosionParticlesCount++;
       }
     }
 
-    // Affect nearby shapes
+    // ----------------------------
+    // 4. Affect Nearby Shapes
+    // ----------------------------
     this.shapesArray.forEach((shape) => {
-      shape.rotationSpeed = {
-        x: intensity * 0.1,
-        y: intensity * 0.1,
-        z: intensity * 0.1,
-      };
-      const dx = centerX - shape.position.x;
-      const dy = centerY - shape.position.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const force = (intensity * 5) / (distance + 1);
-      shape.velocity.x += dx * force * 0.01;
-      shape.velocity.y += dy * force * 0.01;
+      // Update shape's rotation speed based on intensity
+      shape.rotationSpeed = vec3.fromValues(
+        intensity * 0.1,
+        intensity * 0.1,
+        intensity * 0.1
+      );
+
+      // Calculate vector from shape to center
+      const forceVector = vec3.create();
+      vec3.subtract(forceVector, centerPos, shape.position);
+
+      // Calculate distance
+      const distance = vec3.length(forceVector);
+
+      // Avoid division by zero
+      if (distance === 0) return;
+
+      // Normalize the force vector
+      vec3.scale(forceVector, forceVector, 1 / distance);
+
+      // Calculate force magnitude
+      const forceMagnitude = (intensity * 5) / (distance + 1);
+
+      // Apply force to shape's velocity
+      vec3.scaleAndAdd(
+        shape.velocity,
+        shape.velocity,
+        forceVector,
+        forceMagnitude * 0.01
+      );
     });
 
-    // Draw energy lines
+    // ----------------------------
+    // 5. Draw Energy Lines
+    // ----------------------------
     ctx.save();
     ctx.globalAlpha = intensity * 0.7;
     ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 50%)`;
@@ -144,12 +185,21 @@ export class DatastreamEffect {
     for (let i = 0; i < energyLineCount; i++) {
       const angle = Math.random() * Math.PI * 2;
       const length = Math.random() * maxRadius * 0.8;
-      const startX = centerX + Math.cos(angle) * length * 0.2;
-      const startY = centerY + Math.sin(angle) * length * 0.2;
-      const endX = centerX + Math.cos(angle) * length;
-      const endY = centerY + Math.sin(angle) * length;
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
+
+      // Calculate start and end points using vec3 for consistency
+      const startVec = vec3.fromValues(
+        centerPos[0] + Math.cos(angle) * length * 0.2,
+        centerPos[1] + Math.sin(angle) * length * 0.2,
+        0
+      );
+      const endVec = vec3.fromValues(
+        centerPos[0] + Math.cos(angle) * length,
+        centerPos[1] + Math.sin(angle) * length,
+        0
+      );
+
+      ctx.moveTo(startVec[0], startVec[1]);
+      ctx.lineTo(endVec[0], endVec[1]);
     }
     ctx.stroke();
     ctx.restore();

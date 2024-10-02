@@ -1,69 +1,100 @@
-// app/cyberscape/utils/ParticlePool.ts
-
 import { Particle } from "../particles/Particle";
 import { ParticleAtCollision } from "../particles/ParticleAtCollision";
+import { vec3 } from "gl-matrix";
 
 /**
  * ParticlePool class
  *
- * This class manages a pool of particle objects to improve performance
- * by reducing object creation and garbage collection.
+ * Manages pools of particle objects to optimize performance by reusing particles.
  */
 export class ParticlePool {
-  private pool: Particle[];
-  private maxSize: number;
+  private regularPool: Particle[];
+  private collisionPool: ParticleAtCollision[];
+  private maxRegularPoolSize: number;
+  private maxCollisionPoolSize: number;
 
   /**
    * Creates a new ParticlePool instance.
-   * @param size - The maximum number of particles to store in the pool.
+   * @param maxRegularPoolSize - Maximum number of regular particles in the pool.
+   * @param maxCollisionPoolSize - Maximum number of collision particles in the pool.
    */
-  constructor(size: number) {
-    this.maxSize = size;
-    this.pool = [];
-    this.initialize();
+  constructor(
+    maxRegularPoolSize: number = 500,
+    maxCollisionPoolSize: number = 100
+  ) {
+    this.maxRegularPoolSize = maxRegularPoolSize;
+    this.maxCollisionPoolSize = maxCollisionPoolSize;
+    this.regularPool = [];
+    this.collisionPool = [];
+    this.initializePools();
   }
 
   /**
-   * Initializes the particle pool with inactive particles.
+   * Initializes the particle pools with inactive particles.
    */
-  private initialize(): void {
-    for (let i = 0; i < this.maxSize; i++) {
-      this.pool.push(new Particle(new Set<string>(), 0, 0));
+  private initializePools(): void {
+    for (let i = 0; i < this.maxRegularPoolSize; i++) {
+      this.regularPool.push(
+        new Particle(new Set<string>(), window.innerWidth, window.innerHeight)
+      );
+    }
+    for (let i = 0; i < this.maxCollisionPoolSize; i++) {
+      this.collisionPool.push(new ParticleAtCollision(vec3.create(), () => {}));
     }
   }
 
   /**
-   * Retrieves a particle from the pool or creates a new one if the pool is empty.
+   * Retrieves a regular particle from the pool or creates a new one if the pool is empty.
    * @param width - The width of the canvas.
    * @param height - The height of the canvas.
-   * @param isCollision - Whether the particle is for a collision effect.
-   * @returns A Particle or ParticleAtCollision instance.
+   * @returns A Particle instance.
    */
-  public getParticle(
-    width: number,
-    height: number,
-    isCollision: boolean = false
-  ): Particle | ParticleAtCollision {
-    if (this.pool.length > 0) {
-      const particle = this.pool.pop()!;
-      if (isCollision) {
-        return new ParticleAtCollision(0, 0, 0, () => {});
-      }
+  public getParticle(width: number, height: number): Particle {
+    if (this.regularPool.length > 0) {
+      const particle = this.regularPool.pop()!;
       particle.reset(new Set<string>(), width, height);
       return particle;
     }
-    return isCollision
-      ? new ParticleAtCollision(0, 0, 0, () => {})
-      : new Particle(new Set<string>(), width, height);
+    // If pool is empty, create a new particle
+    return new Particle(new Set<string>(), width, height);
   }
 
   /**
-   * Returns a particle to the pool if there's space.
+   * Retrieves a collision particle from the collision pool or creates a new one if the pool is empty.
+   * @param position - The initial position of the collision particle.
+   * @param onExpire - Callback function when the particle expires.
+   * @returns A ParticleAtCollision instance.
+   */
+  public getCollisionParticle(
+    position: vec3,
+    onExpire: () => void
+  ): ParticleAtCollision {
+    if (this.collisionPool.length > 0) {
+      const particle = this.collisionPool.pop()!;
+      particle.init(vec3.clone(position), onExpire);
+      return particle;
+    }
+    // If pool is empty, create a new collision particle
+    return new ParticleAtCollision(vec3.clone(position), onExpire);
+  }
+
+  /**
+   * Returns a regular particle to the pool if there's space.
    * @param particle - The particle to return to the pool.
    */
   public returnParticle(particle: Particle): void {
-    if (this.pool.length < this.maxSize) {
-      this.pool.push(particle);
+    if (this.regularPool.length < this.maxRegularPoolSize) {
+      this.regularPool.push(particle);
+    }
+  }
+
+  /**
+   * Returns a collision particle to the collision pool if there's space.
+   * @param particle - The collision particle to return to the pool.
+   */
+  public returnCollisionParticle(particle: ParticleAtCollision): void {
+    if (this.collisionPool.length < this.maxCollisionPoolSize) {
+      this.collisionPool.push(particle);
     }
   }
 }

@@ -72,6 +72,14 @@ export class CyberScapeConfig {
   public cursorInfluenceRadius: number = 300;
   public cursorForce: number = 0.01;
   public centerAttractionForce: number = 0.005;
+  public particleInteractionRadius: number = 100;
+  public particleInteractionForce: number = 0.1;
+  public shapeParticleInteractionRadius: number = 100;
+  public shapeParticleInteractionForce: number = 0.005;
+  public shapeAttractionRadius: number = 200;
+  public shapeRepulsionRadius: number = 80;
+  public shapeAttractionForce: number = 0.0005;
+  public shapeRepulsionForce: number = 0.001;
 
   // Glitch effect settings
   public glitchIntervalMin: number = 5000;

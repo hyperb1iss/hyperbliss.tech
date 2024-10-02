@@ -1,5 +1,6 @@
 // app/cyberscape/CyberScape.ts
 
+import { vec3 } from "gl-matrix";
 import { CyberScapeConfig } from "./CyberScapeConfig";
 import { DatastreamEffect } from "./effects/DatastreamEffect";
 import { GlitchManager } from "./effects/GlitchManager";
@@ -48,6 +49,7 @@ export const initializeCyberScape = (
 
   const config = CyberScapeConfig.getInstance();
   const particlePool = new ParticlePool(config.particlePoolSize);
+  CollisionHandler.initialize(particlePool);
 
   let width = canvas.offsetWidth;
   let height = canvas.offsetHeight;
@@ -58,8 +60,9 @@ export const initializeCyberScape = (
   let animationFrameId: number;
   let lastFrameTime = 0;
 
-  const particlesArray: Particle[] = [];
   const shapesArray: VectorShape[] = [];
+  const particlesArray: Particle[] = [];
+  const collisionParticlesArray: ParticleAtCollision[] = [];
   let numberOfParticles = config.calculateParticleCount(width, height);
   let numberOfShapes = config.getShapeCount(width);
 
@@ -148,7 +151,10 @@ export const initializeCyberScape = (
         ShapeFactory.createShape(shapeType, existingPositions, width, height)
       );
     }
-    shapesArray.length = numberOfShapes;
+    // If there are more shapes than needed, remove the excess
+    if (shapesArray.length > numberOfShapes) {
+      shapesArray.length = numberOfShapes;
+    }
   };
 
   adjustShapeCounts();
@@ -181,9 +187,9 @@ export const initializeCyberScape = (
           continue;
         }
 
-        const distance = VectorMath.distance(
-          { x: particles[a].x, y: particles[a].y, z: particles[a].z },
-          { x: particles[b].x, y: particles[b].y, z: particles[b].z }
+        const distance = vec3.distance(
+          particles[a].position,
+          particles[b].position
         );
 
         if (distance < config.particleConnectionDistance) {
@@ -191,20 +197,8 @@ export const initializeCyberScape = (
             (1 - distance / config.particleConnectionDistance) * 0.7;
           ctx.strokeStyle = `rgba(200, 100, 255, ${alpha})`;
 
-          const posA = VectorMath.project(
-            particles[a].x,
-            particles[a].y,
-            particles[a].z,
-            width,
-            height
-          );
-          const posB = VectorMath.project(
-            particles[b].x,
-            particles[b].y,
-            particles[b].z,
-            width,
-            height
-          );
+          const posA = VectorMath.project(particles[a].position, width, height);
+          const posB = VectorMath.project(particles[b].position, width, height);
 
           ctx.beginPath();
           ctx.moveTo(posA.x, posA.y);
@@ -221,18 +215,20 @@ export const initializeCyberScape = (
   const updateParticleConnections = (particles: Particle[]) => {
     particles.forEach((particle) => {
       if (Math.random() < 0.05) {
-        particle.velocityX += (Math.random() - 0.5) * 0.2;
-        particle.velocityY += (Math.random() - 0.5) * 0.2;
-        particle.velocityZ += (Math.random() - 0.5) * 0.2;
-
-        const speed = Math.sqrt(
-          particle.velocityX ** 2 +
-            particle.velocityY ** 2 +
-            particle.velocityZ ** 2
+        vec3.add(
+          particle.velocity,
+          particle.velocity,
+          vec3.fromValues(
+            (Math.random() - 0.5) * 0.2,
+            (Math.random() - 0.5) * 0.2,
+            (Math.random() - 0.5) * 0.2
+          )
         );
-        particle.velocityX /= speed;
-        particle.velocityY /= speed;
-        particle.velocityZ /= speed;
+
+        const speed = vec3.length(particle.velocity);
+        if (speed > 0) {
+          vec3.scale(particle.velocity, particle.velocity, 1 / speed);
+        }
       }
     });
   };
@@ -261,12 +257,11 @@ export const initializeCyberScape = (
     lastFrameTime = timestamp;
 
     updateCanvasSize();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, width, height);
 
     updateHue();
     updateParticleConnections(particlesArray);
+    updateParticleConnections(collisionParticlesArray);
 
     if (activeParticles < numberOfParticles && Math.random() < 0.1) {
       const newParticle = particlePool.getParticle(width, height);
@@ -275,7 +270,7 @@ export const initializeCyberScape = (
       activeParticles++;
     }
 
-    // Update and draw particles
+    // Update and draw regular particles
     for (const particle of particlesArray) {
       if (particle.isReady()) {
         particle.update(
@@ -286,6 +281,16 @@ export const initializeCyberScape = (
           height,
           shapesArray
         );
+        particle.draw(ctx, mouseX, mouseY, width, height);
+      } else {
+        particle.updateDelay();
+      }
+    }
+
+    // Update and draw collision particles
+    for (const particle of collisionParticlesArray) {
+      if (particle.isReady()) {
+        particle.update();
         particle.draw(ctx, mouseX, mouseY, width, height);
       } else {
         particle.updateDelay();
@@ -313,73 +318,87 @@ export const initializeCyberScape = (
       // Emit small particles from shapes
       if (Math.random() < 0.01) {
         const emittedParticle = particlePool.getParticle(width, height);
-        emittedParticle.x = shape.position.x;
-        emittedParticle.y = shape.position.y;
-        emittedParticle.z = shape.position.z;
+        vec3.copy(emittedParticle.position, shape.position);
+        vec3.copy(emittedParticle.velocity, shape.velocity); // Ensure emitted particle's velocity matches shape
         emittedParticle.size = Math.random() * 1 + 0.5;
         emittedParticle.color = shape.color;
         emittedParticle.lifespan = 1000;
+        emittedParticle.setDelayedAppearance();
         particlesArray.push(emittedParticle);
+        activeParticles++;
       }
     }
 
     // Handle collisions, color blending, and forces using handler classes
-    CollisionHandler.handleCollisions(shapesArray, (shapeA, shapeB) => {
-      const now = Date.now();
-      if (
-        currentExplosions >= config.maxSimultaneousExplosions ||
-        now - lastExplosionTime < config.explosionCooldown
-      ) {
-        return;
-      }
-
-      const collisionX = (shapeA.position.x + shapeB.position.x) / 2;
-      const collisionY = (shapeA.position.y + shapeB.position.y) / 2;
-      const collisionZ = (shapeA.position.z + shapeB.position.z) / 2;
-
-      if (
-        particlesArray.length + config.explosionParticlesToEmit <=
-          config.particlePoolSize &&
-        explosionParticlesCount + config.explosionParticlesToEmit <=
-          config.maxExplosionParticles
-      ) {
-        for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-          const particle = particlePool.getParticle(
-            width,
-            height,
-            true
-          ) as ParticleAtCollision;
-          particle.init(collisionX, collisionY, collisionZ, () => {
-            explosionParticlesCount--;
-            currentExplosions = Math.max(0, currentExplosions - 1);
-          });
-          particle.lifespan = config.particleAtCollisionLifespan;
-          particle.setFadeOutDuration(
-            config.particleAtCollisionFadeOutDuration
-          );
-          particlesArray.push(particle);
-          explosionParticlesCount++;
+    CollisionHandler.handleCollisions(
+      shapesArray, // First argument: VectorShape[]
+      (shapeA, shapeB) => {
+        const now = Date.now();
+        if (
+          currentExplosions >= config.maxSimultaneousExplosions ||
+          now - lastExplosionTime < config.explosionCooldown
+        ) {
+          return;
         }
-        currentExplosions++;
-        lastExplosionTime = now;
-      }
 
-      shapeA.explodeAndRespawn();
-      shapeB.explodeAndRespawn();
-    });
+        const collisionPos = vec3.create();
+        vec3.add(collisionPos, shapeA.position, shapeB.position);
+        vec3.scale(collisionPos, collisionPos, 0.5);
+
+        if (
+          collisionParticlesArray.length + config.explosionParticlesToEmit <=
+            config.maxExplosionParticles &&
+          explosionParticlesCount + config.explosionParticlesToEmit <=
+            config.maxExplosionParticles
+        ) {
+          for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+            const particle = particlePool.getCollisionParticle(
+              vec3.clone(collisionPos),
+              () => {
+                explosionParticlesCount--;
+                currentExplosions = Math.max(0, currentExplosions - 1);
+                particlePool.returnCollisionParticle(particle);
+              }
+            ) as ParticleAtCollision;
+            particle.lifespan = config.particleAtCollisionLifespan;
+            particle.setFadeOutDuration(
+              config.particleAtCollisionFadeOutDuration
+            );
+            collisionParticlesArray.push(particle);
+            explosionParticlesCount++;
+          }
+          currentExplosions++;
+          lastExplosionTime = now;
+        }
+
+        shapeA.explodeAndRespawn();
+        shapeB.explodeAndRespawn();
+      },
+      collisionParticlesArray // Third argument: ParticleAtCollision[]
+    );
 
     ColorBlender.blendColors(shapesArray);
     ForceHandler.applyForces(shapesArray);
 
-    // Draw connections
+    // Draw connections between shapes
     drawShapeConnections(ctx);
+
+    // Connect regular particles
     connectParticles(particlesArray, ctx);
 
-    // Remove expired particles
+    // Remove expired regular particles
     for (let i = particlesArray.length - 1; i >= 0; i--) {
       if (particlesArray[i].opacity <= 0) {
         particlePool.returnParticle(particlesArray[i]);
         particlesArray.splice(i, 1);
+      }
+    }
+
+    // Remove expired collision particles
+    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+      if (collisionParticlesArray[i].opacity <= 0) {
+        // The callback in ParticleAtCollision.handleExpire will handle the removal
+        collisionParticlesArray.splice(i, 1);
       }
     }
 
@@ -407,20 +426,6 @@ export const initializeCyberScape = (
       }
     }
 
-    // Draw explosion particle connections
-    const explosionParticles = particlesArray.filter(
-      (p) => p instanceof ParticleAtCollision
-    ) as ParticleAtCollision[];
-    if (explosionParticles.length > 0) {
-      ParticleAtCollision.drawConnections(
-        ctx,
-        explosionParticles,
-        width,
-        height,
-        shapesArray
-      );
-    }
-
     animationFrameId = requestAnimationFrame(animateCyberScape);
   };
 
@@ -435,23 +440,11 @@ export const initializeCyberScape = (
       for (let j = i + 1; j < shapesArray.length; j++) {
         const shapeA = shapesArray[i];
         const shapeB = shapesArray[j];
-        const distance = VectorMath.distance(shapeA.position, shapeB.position);
+        const distance = vec3.distance(shapeA.position, shapeB.position);
 
         if (distance < config.shapeConnectionDistance) {
-          const projectedA = VectorMath.project(
-            shapeA.position.x,
-            shapeA.position.y,
-            shapeA.position.z,
-            width,
-            height
-          );
-          const projectedB = VectorMath.project(
-            shapeB.position.x,
-            shapeB.position.y,
-            shapeB.position.z,
-            width,
-            height
-          );
+          const projectedA = VectorMath.project(shapeA.position, width, height);
+          const projectedB = VectorMath.project(shapeB.position, width, height);
 
           ctx.beginPath();
           ctx.moveTo(projectedA.x, projectedA.y);
@@ -491,7 +484,9 @@ function throttle<T extends unknown[]>(
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
+      setTimeout(() => {
+        inThrottle = false;
+      }, limit);
     }
   };
 }

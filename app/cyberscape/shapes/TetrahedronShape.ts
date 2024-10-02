@@ -1,12 +1,12 @@
 // app/cyberscape/shapes/TetrahedronShape.ts
 
+import { vec3 } from "gl-matrix";
+import { VectorShape } from "./VectorShape";
+
 /**
  * The `TetrahedronShape` class represents a tetrahedron in the CyberScape animation.
  * It extends the `VectorShape` base class and initializes the tetrahedron's specific vertices and edges.
  */
-
-import { VectorShape } from "./VectorShape";
-
 export class TetrahedronShape extends VectorShape {
   constructor(existingPositions: Set<string>, width: number, height: number) {
     super();
@@ -21,10 +21,10 @@ export class TetrahedronShape extends VectorShape {
   protected initializeShape(): void {
     const size = 30;
     this.vertices = [
-      { x: size * 0.7, y: size * 0.7, z: size * 0.7 },
-      { x: -size * 0.7, y: -size * 0.7, z: size * 0.7 },
-      { x: -size * 0.7, y: size * 0.7, z: -size * 0.7 },
-      { x: size * 0.7, y: -size * 0.7, z: -size * 0.7 },
+      vec3.fromValues(size * 0.7, size * 0.7, size * 0.7),
+      vec3.fromValues(-size * 0.7, -size * 0.7, size * 0.7),
+      vec3.fromValues(-size * 0.7, size * 0.7, -size * 0.7),
+      vec3.fromValues(size * 0.7, -size * 0.7, -size * 0.7),
     ];
     this.edges = [
       [0, 1],
