@@ -1,4 +1,5 @@
 // app/components/CyberpunkCodeBlock.tsx
+import type { CSSProperties } from "react";
 import React from "react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vs } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -9,20 +10,25 @@ interface CyberpunkCodeBlockProps {
   language: string;
 }
 
+// Define a type for the cyberpunk theme
+type CyberpunkTheme = {
+  [key: string]: CSSProperties | { [key: string]: CSSProperties };
+};
+
 /**
  * CyberpunkCodeBlock Component
  * Renders code blocks with a custom cyberpunk-themed syntax highlighting.
  * @param {CyberpunkCodeBlockProps} props - The component props
  * @returns {JSX.Element} Rendered code block
  */
-const cyberpunkTheme = {
+const cyberpunkTheme: CyberpunkTheme = {
   ...vs,
   'code[class*="language-"]': {
     color: "#f0f0f0",
     background: "#1a1a2e",
     fontFamily: '"Space Mono", monospace',
     fontSize: "0.7em",
-    lineHeight: "1.4",
+    lineHeight: 1.4,
     whiteSpace: "pre-wrap",
     wordSpacing: "normal",
     wordBreak: "normal",

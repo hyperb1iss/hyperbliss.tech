@@ -3,7 +3,6 @@
 
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import { CodeProps } from "react-markdown/lib/ast-to-react";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import CyberpunkCodeBlock from "./CyberpunkCodeBlock";
@@ -25,6 +24,14 @@ import {
 // Define the props interface
 interface MarkdownRendererProps {
   content: string;
+}
+
+// Define a custom interface for the code component props
+interface CodeComponentProps {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  // Add any other props as needed
 }
 
 /**
@@ -62,7 +69,12 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         hr: (props) => <StyledHr {...props} />,
 
         // Inline Code and Code Blocks
-        code: ({ inline, className, children, ...props }: CodeProps) => {
+        code: ({
+          inline,
+          className,
+          children,
+          ...props
+        }: CodeComponentProps) => {
           if (inline) {
             return <StyledInlineCode {...props}>{children}</StyledInlineCode>;
           }

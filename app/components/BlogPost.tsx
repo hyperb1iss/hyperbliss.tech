@@ -24,7 +24,10 @@ const Container = styled.div`
   }
 `;
 
-// Centered Title with underline effect and animation
+/**
+ * Centered Title with underline effect and animation
+ * Added enhanced text styling for better visibility.
+ */
 const Title = styled(motion.h1)`
   font-size: 3rem;
   color: #ff00ff;
@@ -49,7 +52,10 @@ const Title = styled(motion.h1)`
   }
 `;
 
-// Centered Meta Information with improved styling
+/**
+ * Centered Meta Information with improved styling
+ * Stylized the author and date to make them pop.
+ */
 const Meta = styled(motion.div)`
   font-size: 1.4rem;
   color: var(--color-muted);
@@ -62,10 +68,18 @@ const Meta = styled(motion.div)`
 
   span {
     margin: 0 0.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    background: rgba(0, 255, 255, 0.1);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
   }
 `;
 
-// Tags styling
+/**
+ * Tags styling
+ */
 const TagsContainer = styled(motion.div)`
   display: flex;
   justify-content: center;
@@ -76,12 +90,32 @@ const TagsContainer = styled(motion.div)`
 
 const Tag = styled.span`
   background-color: rgba(162, 89, 255, 0.2);
-  color: var(--color-primary);
+  color: var(--color-accent);
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
   font-size: 1.2rem;
-  text-shadow: 0 0 5px var(--color-primary);
+  text-shadow: 0 0 5px var(--color-accent);
   cursor: pointer; /* Show hover cursor */
+`;
+
+/**
+ * Centered GitHub Link with animation
+ * Stylized the GitHub link for better visibility.
+ */
+const GitHubLink = styled(motion.a)`
+  display: block;
+  margin: 2rem auto 0;
+  width: fit-content;
+  font-size: 1.6rem;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  text-align: center;
+
+  &:hover {
+    color: var(--color-secondary);
+    text-shadow: 0 0 5px var(--color-secondary);
+  }
 `;
 
 const Content = styled(motion.div)``;
@@ -89,6 +123,7 @@ const Content = styled(motion.div)``;
 /**
  * BlogPost component
  * Renders the detailed view of a blog post with animations.
+ * Stylized author and date to make them pop.
  * @param {BlogPostProps} props - The component props
  * @returns {JSX.Element} Rendered blog post
  */
@@ -134,6 +169,16 @@ const BlogPost: React.FC<BlogPostProps> = ({
       >
         <MarkdownRenderer content={content} />
       </Content>
+      <GitHubLink
+        href={author ? `/projects/${author}` : "#"} /* Adjusted link based on author */
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+      >
+        View on GitHub
+      </GitHubLink>
     </Container>
   );
 };

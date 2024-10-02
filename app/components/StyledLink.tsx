@@ -7,6 +7,7 @@ import styled from "styled-components";
 /**
  * StyledAnchor component
  * Enhances the link with a cyberpunk-themed glow effect and subtle scaling on hover.
+ * Added blur effect and reduced glow intensity for a more refined appearance.
  */
 const StyledAnchor = styled(motion.a)`
   display: block;
@@ -17,16 +18,17 @@ const StyledAnchor = styled(motion.a)`
     rgba(0, 0, 0, 0.8),
     rgba(10, 10, 20, 0.8)
   );
-  border: 1px solid rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;
   padding: 2rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(0, 255, 255, 0.1); bbbbb
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), 0 0 50px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2); /* Reduced glow on hover */
   }
 
   &::before {

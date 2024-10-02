@@ -9,7 +9,10 @@ import Link from "next/link";
  * Styled components for the Featured Projects section
  */
 
-// Wrapper for the Featured Projects section
+/**
+ * Wrapper for the Featured Projects section
+ * Added backdrop blur for a frosted glass effect.
+ */
 const FeaturedProjectsSection = styled.section`
   padding: 6rem 2rem;
   background: linear-gradient(
@@ -22,7 +25,9 @@ const FeaturedProjectsSection = styled.section`
   overflow: hidden;
 `;
 
-// Animated background elements (e.g., moving particles)
+/**
+ * Animated background elements (e.g., moving particles)
+ */
 const BackgroundElement = styled(motion.div)<{
   top: number;
   left: number;
@@ -38,7 +43,9 @@ const BackgroundElement = styled(motion.div)<{
   opacity: 0.6;
 `;
 
-// Section title
+/**
+ * Section title
+ */
 const SectionTitle = styled(motion.h2)`
   font-size: 3.6rem;
   color: #ff00ff;
@@ -49,7 +56,9 @@ const SectionTitle = styled(motion.h2)`
   text-shadow: 0 0 10px #ff00ff;
 `;
 
-// Grid container for project cards
+/**
+ * Grid container for project cards
+ */
 const ProjectGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -58,7 +67,9 @@ const ProjectGrid = styled(motion.div)`
   margin: 0 auto;
 `;
 
-// Individual project card
+/**
+ * Individual project card
+ */
 const ProjectCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 0, 255, 0.2);
@@ -71,7 +82,7 @@ const ProjectCard = styled(motion.div)`
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
   }
 
   &::before {
@@ -95,7 +106,9 @@ const ProjectCard = styled(motion.div)`
   }
 `;
 
-// Project title
+/**
+ * Project title
+ */
 const ProjectTitle = styled.h3`
   font-size: 2.4rem;
   color: #00ffff;
@@ -103,7 +116,9 @@ const ProjectTitle = styled.h3`
   text-shadow: 0 0 5px #00ffff;
 `;
 
-// Project description
+/**
+ * Project description
+ */
 const ProjectDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-text);
@@ -111,7 +126,9 @@ const ProjectDescription = styled.p`
   line-height: 1.6;
 `;
 
-// Link to view the project
+/**
+ * Link to view the project
+ */
 const ViewProjectLink = styled(Link)`
   font-size: 1.6rem;
   color: #ff00ff;
@@ -140,7 +157,9 @@ const ViewProjectLink = styled(Link)`
   }
 `;
 
-// Interface for project data
+/**
+ * Interface for project data
+ */
 interface Project {
   slug: string;
   frontmatter: {
@@ -149,7 +168,9 @@ interface Project {
   };
 }
 
-// Interface for component props
+/**
+ * Interface for component props
+ */
 interface FeaturedProjectsProps {
   projects: Project[];
 }
@@ -199,7 +220,7 @@ export default function FeaturedProjects({
             opacity: 1,
             transition: {
               delayChildren: 0.2,
-              staggerChildren: 0.15,
+              staggerChildren: 0.15, // Staggered animation
             },
           },
           hidden: { opacity: 0 },

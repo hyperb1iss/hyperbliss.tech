@@ -16,12 +16,18 @@ const Title = styled.h2`
 
 /**
  * DateAuthor component
- * Styles the date and author information.
+ * Styles the date and author information to make them pop.
  */
 const DateAuthor = styled.div`
-  font-size: 1.2rem;
-  color: var(--color-muted);
+  font-size: 1.4rem; /* Increased font size */
+  color: var(--color-primary); /* Changed color to accent color */
   margin-bottom: 0.5rem;
+  font-weight: bold; /* Made text bold */
+  background: rgba(0, 255, 255, 0.1); /* Added subtle background */
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  display: inline-block;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3); /* Added subtle shadow */
 `;
 
 /**

@@ -34,6 +34,7 @@ interface BlogListProps {
 /**
  * BlogList component
  * Renders a list of blog posts with animations.
+ * Added staggered animation for enhanced visual effect.
  * @param {BlogListProps} props - The component props
  * @returns {JSX.Element} Rendered blog list
  */
@@ -49,7 +50,7 @@ export default function BlogList({ posts }: BlogListProps) {
             opacity: 1,
             transition: {
               delayChildren: 0.2,
-              staggerChildren: 0.15,
+              staggerChildren: 0.15, // Staggered animation
             },
           },
           hidden: { opacity: 0 },
