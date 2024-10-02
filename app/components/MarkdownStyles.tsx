@@ -30,6 +30,7 @@ export const StyledH2 = styled.h2`
 export const StyledH3 = styled.h3`
   font-size: 1.75rem;
   color: var(--color-primary);
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 6px var(--color-primary);
   text-align: left; /* Left-aligned */
