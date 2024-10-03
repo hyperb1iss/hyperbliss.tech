@@ -192,9 +192,9 @@ export class ColorManager {
     b /= 255;
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
-    let h: number;
+    let h = 0; // Initialize h to 0
     let s: number;
-    const l = (max + min) / 2; // Changed to const
+    const l = (max + min) / 2;
 
     if (max === min) {
       h = s = 0; // achromatic
