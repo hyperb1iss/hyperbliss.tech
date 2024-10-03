@@ -32,6 +32,12 @@ const ResumeContent = styled(ReactMarkdown)`
     text-shadow: 0 0 10px var(--color-primary);
   }
 
+  // Center the first two paragraphs (tagline and links)
+  & > p:nth-of-type(1),
+  & > p:nth-of-type(2) {
+    text-align: center;
+  }
+
   h2 {
     font-size: 2.8rem;
     color: var(--color-secondary);
