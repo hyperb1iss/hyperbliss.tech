@@ -4,23 +4,17 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
 
-/**
- * Styled components for the Hero section
- */
-
-// Wrapper for the Hero section
 const HeroSectionWrapper = styled.section`
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  min-height: 80vh;
-  padding: 0 2rem;
+  min-height: 100%;  // Changed from min-height: 60vh
+  padding: 2rem;
   overflow: hidden;
 `;
 
-// Animated background with improved effect and reduced opacity
 const AnimatedBackground = styled(motion.div)`
   position: absolute;
   top: -50%;
@@ -33,7 +27,7 @@ const AnimatedBackground = styled(motion.div)`
     transparent 70%
   );
   background-size: cover;
-  opacity: 0.5; /* Reduced opacity */
+  opacity: 0.5;
   animation: rotateBG 60s linear infinite;
   z-index: -1;
 
@@ -47,7 +41,6 @@ const AnimatedBackground = styled(motion.div)`
   }
 `;
 
-// Neon lines with enhanced animation
 const NeonLine = styled(motion.div)<{ left: number; duration: number }>`
   position: absolute;
   width: 2px;
@@ -68,9 +61,8 @@ const NeonLine = styled(motion.div)<{ left: number; duration: number }>`
   }
 `;
 
-// Styled title with enhanced aesthetics
 const Title = styled(motion.h1)`
-  font-size: 6rem;
+  font-size: 4.8rem;
   margin-bottom: 1.5rem;
   color: var(--color-primary);
   text-shadow: 0 0 20px var(--color-primary);
@@ -78,14 +70,13 @@ const Title = styled(motion.h1)`
   font-family: var(--font-heading);
 
   @media (max-width: 768px) {
-    font-size: 4rem;
+    font-size: 3.6rem;
   }
 `;
 
-// Styled subtitle with enhanced aesthetics
 const Subtitle = styled(motion.p)`
-  font-size: 2.4rem;
-  max-width: 800px;
+  font-size: 2.2rem;
+  max-width: 600px;
   margin-bottom: 2rem;
   color: var(--color-secondary);
   text-shadow: 0 0 15px var(--color-secondary);
@@ -97,24 +88,37 @@ const Subtitle = styled(motion.p)`
   }
 `;
 
-/**
- * HeroSection component
- * Renders the hero section with animated background and title.
- */
+const CTAButton = styled(motion.a)`
+  background-color: transparent;
+  color: var(--color-accent);
+  padding: 1.2rem 2.4rem;
+  border: 2px solid var(--color-accent);
+  border-radius: 50px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    box-shadow: 0 0 10px var(--color-accent);
+  }
+`;
+
 export default function HeroSection(): JSX.Element {
   return (
     <HeroSectionWrapper>
-      {/* Animated background with improved effect and reduced opacity */}
       <AnimatedBackground />
-      {/* Enhanced neon lines */}
-      {[...Array(20)].map((_, index) => (
+      {[...Array(10)].map((_, index) => (
         <NeonLine
           key={index}
           left={Math.random() * 100}
           duration={Math.random() * 15 + 5}
         />
       ))}
-      {/* Title */}
       <Title
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -122,7 +126,6 @@ export default function HeroSection(): JSX.Element {
       >
         Welcome to <span className="glow">Hyperbliss</span>
       </Title>
-      {/* Subtitle */}
       <Subtitle
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -130,6 +133,16 @@ export default function HeroSection(): JSX.Element {
       >
         Exploring the intersection of code, design, and innovation
       </Subtitle>
+      <CTAButton
+        href="/about"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        Learn More
+      </CTAButton>
     </HeroSectionWrapper>
   );
 }

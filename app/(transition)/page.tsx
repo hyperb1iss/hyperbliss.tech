@@ -1,59 +1,47 @@
-// app/(transition)/page.tsx
-import { getAllMarkdownSlugs, getMarkdownContent } from "../lib/markdown";
-import HeroSection from "../components/HeroSection";
-import FeaturedProjects from "../components/FeaturedProjects";
-import LatestBlogPosts from "../components/LatestBlogPosts";
+import { getAllMarkdownSlugs, getMarkdownContent } from "@/lib/markdown";
+import HomeLayout from "@/components/HomeLayout";
 
-interface Project {
-  slug: string;
-  frontmatter: {
-    title: string;
-    description: string;
-  };
-}
-
-interface BlogPost {
-  slug: string;
-  frontmatter: {
-    title: string;
-    excerpt: string;
-  };
-}
-
-export default async function Home(): Promise<JSX.Element> {
-  const projectSlugs = await getAllMarkdownSlugs("src/projects");
-  const featuredProjects: Project[] = await Promise.all(
-    projectSlugs.slice(0, 3).map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent("src/projects", slug);
-      return {
-        slug,
-        frontmatter: {
-          title: frontmatter.title as string,
-          description: frontmatter.description as string,
-        },
-      };
-    })
-  );
-
+export default async function Home() {
   const postSlugs = await getAllMarkdownSlugs("src/posts");
-  const latestPosts: BlogPost[] = await Promise.all(
-    postSlugs.slice(0, 3).map(async (slug) => {
+  const posts = await Promise.all(
+    postSlugs.map(async (slug) => {
       const { frontmatter } = await getMarkdownContent("src/posts", slug);
       return {
         slug,
         frontmatter: {
           title: frontmatter.title as string,
+          date: frontmatter.date as string,
           excerpt: frontmatter.excerpt as string,
         },
       };
     })
   );
 
-  return (
-    <>
-      <HeroSection />
-      <FeaturedProjects projects={featuredProjects} />
-      <LatestBlogPosts posts={latestPosts} />
-    </>
+  // Sort posts by date
+  posts.sort(
+    (a, b) =>
+      new Date(b.frontmatter.date).getTime() -
+      new Date(a.frontmatter.date).getTime()
   );
+
+  // Take only the latest 5 posts for the sidebar
+  const latestPosts = posts.slice(0, 5);
+
+  // Fetch real project data
+  const projectSlugs = await getAllMarkdownSlugs("src/projects");
+  const projects = await Promise.all(
+    projectSlugs.map(async (slug) => {
+      const { frontmatter } = await getMarkdownContent("src/projects", slug);
+      return {
+        slug,
+        frontmatter: {
+          title: frontmatter.title as string,
+          description: frontmatter.description as string,
+          github: frontmatter.github as string,
+        },
+      };
+    })
+  );
+
+  return <HomeLayout latestPosts={latestPosts} projects={projects} />;
 }

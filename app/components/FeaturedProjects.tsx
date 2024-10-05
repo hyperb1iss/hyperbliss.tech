@@ -1,255 +1,225 @@
-// app/components/FeaturedProjects.tsx
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
+import { FaGithub, FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
-/**
- * Styled components for the Featured Projects section
- */
-
-/**
- * Wrapper for the Featured Projects section
- * Added backdrop blur for a frosted glass effect.
- */
 const FeaturedProjectsSection = styled.section`
-  padding: 6rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 10, 20, 0.9) 0%,
-    rgba(20, 20, 40, 0.9) 100%
-  );
-  backdrop-filter: blur(10px);
+  padding: 2rem 0;
+  background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
   position: relative;
   overflow: hidden;
 `;
 
-/**
- * Animated background elements (e.g., moving particles)
- */
-const BackgroundElement = styled(motion.div)<{
-  top: number;
-  left: number;
-  size: number;
-}>`
-  position: absolute;
-  top: ${(props) => props.top}%;
-  left: ${(props) => props.left}%;
-  width: ${(props) => props.size}px;
-  height: ${(props) => props.size}px;
-  background: radial-gradient(circle, rgba(255, 0, 255, 0.3), transparent 70%);
-  border-radius: 50%;
-  opacity: 0.6;
-`;
-
-/**
- * Section title
- */
 const SectionTitle = styled(motion.h2)`
-  font-size: 3.6rem;
+  font-size: 2.5rem;
   color: #ff00ff;
-  margin-bottom: 3rem;
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  text-shadow: 0 0 10px #ff00ff;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 `;
 
-/**
- * Grid container for project cards
- */
-const ProjectGrid = styled(motion.div)`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+const CarouselContainer = styled.div`
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-/**
- * Individual project card
- */
-const ProjectCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 0, 255, 0.2);
+const ProjectCarousel = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const ProjectCard = styled(motion.div)<{ $isCenter: boolean }>`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;
-  padding: 2rem;
+  padding: 1.5rem;
+  width: 280px;
+  height: ${props => props.$isCenter ? '260px' : '220px'};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
-  position: relative;
-  overflow: hidden;
+  position: absolute;
+  opacity: ${props => props.$isCenter ? 1 : 0.7};
+  z-index: ${props => props.$isCenter ? 2 : 1};
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 20px rgba(255, 0, 255, 0.4);
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-      circle at center,
-      rgba(255, 0, 255, 0.2),
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-
-  &:hover::before {
-    opacity: 1;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    transform: translateY(-5px);
   }
 `;
 
-/**
- * Project title
- */
 const ProjectTitle = styled.h3`
-  font-size: 2.4rem;
+  font-size: 1.3rem;
   color: #00ffff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 5px #00ffff;
 `;
 
-/**
- * Project description
- */
 const ProjectDescription = styled.p`
-  font-size: 1.6rem;
+  font-size: 0.9rem;
   color: var(--color-text);
-  margin-bottom: 2rem;
-  line-height: 1.6;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 `;
 
-/**
- * Link to view the project
- */
-const ViewProjectLink = styled(Link)`
-  font-size: 1.6rem;
+const ProjectLinks = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ProjectLink = styled(Link)`
+  font-size: 0.9rem;
   color: #ff00ff;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
   transition: all 0.3s ease;
-  position: relative;
 
   &:hover {
     color: #00ffff;
     text-shadow: 0 0 5px #00ffff;
   }
+`;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background-color: #00ffff;
-    transition: width 0.3s ease;
-  }
+const GithubLink = styled.a`
+  font-size: 1.2rem;
+  color: #ff00ff;
+  transition: all 0.3s ease;
 
-  &:hover::after {
-    width: 100%;
+  &:hover {
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
   }
 `;
 
-/**
- * Interface for project data
- */
+const ControlButton = styled(motion.button)`
+  background: rgba(0, 255, 255, 0.1);
+  border: none;
+  color: #00ffff;
+  font-size: 2rem;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  padding: 1rem;
+  border-radius: 50%;
+
+  &:hover {
+    background: rgba(0, 255, 255, 0.2);
+  }
+
+  &.prev {
+    left: 10px;
+  }
+
+  &.next {
+    right: 10px;
+  }
+`;
+
 interface Project {
   slug: string;
   frontmatter: {
     title: string;
     description: string;
+    github: string;
   };
 }
 
-/**
- * Interface for component props
- */
 interface FeaturedProjectsProps {
   projects: Project[];
 }
 
-/**
- * FeaturedProjects component
- * Displays a section with featured projects, styled with animations.
- * @param {FeaturedProjectsProps} props - The component props
- * @returns {JSX.Element} Rendered featured projects section
- */
-export default function FeaturedProjects({
-  projects,
-}: FeaturedProjectsProps): JSX.Element {
+export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, projects.length]);
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + projects.length) % projects.length);
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
+  };
+
+  const getVisibleProjects = () => {
+    const prev = (currentIndex - 1 + projects.length) % projects.length;
+    const next = (currentIndex + 1) % projects.length;
+    return [prev, currentIndex, next];
+  };
+
   return (
     <FeaturedProjectsSection>
-      {/* Animated background elements */}
-      {[...Array(15)].map((_, index) => (
-        <BackgroundElement
-          key={index}
-          top={Math.random() * 100}
-          left={Math.random() * 100}
-          size={Math.random() * 80 + 20}
-          animate={{
-            y: [0, Math.random() * 100 - 50],
-            x: [0, Math.random() * 100 - 50],
-          }}
-          transition={{
-            duration: Math.random() * 20 + 10,
-            repeat: Infinity,
-            repeatType: "mirror",
-          }}
-        />
-      ))}
-
       <SectionTitle
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
         Featured Projects
       </SectionTitle>
-      <ProjectGrid
-        initial="hidden"
-        animate="visible"
-        variants={{
-          visible: {
-            opacity: 1,
-            transition: {
-              delayChildren: 0.2,
-              staggerChildren: 0.15, // Staggered animation
-            },
-          },
-          hidden: { opacity: 0 },
-        }}
-      >
-        {projects.map((project, index) => (
-          <ProjectCard
-            key={project.slug}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ scale: 1.05 }}
-            transition={{
-              duration: 0.4,
-              ease: "easeOut",
-              delay: index * 0.1,
-            }}
-          >
-            <ProjectTitle>{project.frontmatter.title}</ProjectTitle>
-            <ProjectDescription>
-              {project.frontmatter.description}
-            </ProjectDescription>
-            <ViewProjectLink href={`/projects/${project.slug}`}>
-              View Project →
-            </ViewProjectLink>
-          </ProjectCard>
-        ))}
-      </ProjectGrid>
+      <CarouselContainer>
+        <AnimatePresence initial={false} mode="popLayout">
+          {getVisibleProjects().map((index, i) => (
+            <ProjectCard
+              key={projects[index].slug}
+              $isCenter={i === 1}
+              initial={{ opacity: 0, x: i === 0 ? -300 : i === 2 ? 300 : 0 }}
+              animate={{ 
+                opacity: i === 1 ? 1 : 0.7, 
+                x: i === 0 ? -300 : i === 2 ? 300 : 0,
+                scale: i === 1 ? 1 : 0.9
+              }}
+              exit={{ opacity: 0, x: i === 0 ? -300 : i === 2 ? 300 : 0 }}
+              transition={{ duration: 0.5 }}
+              style={{ left: `${i * 50 - 50}%` }}
+            >
+              <ProjectTitle>{projects[index].frontmatter.title}</ProjectTitle>
+              <ProjectDescription>{projects[index].frontmatter.description}</ProjectDescription>
+              <ProjectLinks>
+                <ProjectLink href={`/projects/${projects[index].slug}`}>
+                  Learn More
+                  <FaArrowRight style={{ marginLeft: '5px' }} />
+                </ProjectLink>
+                <GithubLink href={projects[index].frontmatter.github} target="_blank" rel="noopener noreferrer">
+                  <FaGithub />
+                </GithubLink>
+              </ProjectLinks>
+            </ProjectCard>
+          ))}
+        </AnimatePresence>
+        <ControlButton className="prev" onClick={handlePrev} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <FaChevronLeft />
+        </ControlButton>
+        <ControlButton className="next" onClick={handleNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <FaChevronRight />
+        </ControlButton>
+      </CarouselContainer>
     </FeaturedProjectsSection>
   );
 }
