@@ -42,7 +42,7 @@ const SidebarContainer = styled(motion.div)<{
     transition: width 0.3s ease;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 255, 255, 0.5) rgba(10, 10, 20, 0.8);
-    z-index: 1000; // Ensure this is lower than the footer's z-index
+    z-index: 1000;
     max-height: calc(100vh - var(--header-height, 100px));
   `}
 
@@ -90,67 +90,7 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   flex-direction: ${(props) => (props.$isMobile ? "unset" : "column")};
   grid-template-columns: ${(props) =>
     props.$isMobile ? "repeat(2, 1fr)" : "unset"};
-  gap: 1rem; // Reduced from 1.5rem
-`;
-
-const SidebarTitle = styled(motion.h2)<{ $isMobile: boolean }>`
-  font-size: ${(props) => (props.$isMobile ? "2.5rem" : "2rem")};
-  color: #00ffff;
-  margin-bottom: 0.5rem; // Reduced from 1rem
-  text-align: center;
-  letter-spacing: 2px;
-  font-family: var(--font-heading);
-  grid-column: 1 / -1;
-  position: relative;
-  padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 255, 0.1),
-    rgba(255, 0, 255, 0.1)
-  );
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
-    background-size: 200% 100%;
-    animation: shimmer 6s linear infinite;
-    opacity: 0.5;
-    z-index: -1;
-  }
-
-  &::after {
-    filter: blur(10px);
-    opacity: 0.3;
-  }
-
-  &:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
-    border-color: #00ffff;
-
-    &::before,
-    &::after {
-      opacity: 0.8;
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
-  }
+  gap: 1rem;
 `;
 
 const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
@@ -160,11 +100,9 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   padding: 1.2rem;
   position: relative;
   overflow: hidden;
-  margin-bottom: ${(props) =>
-    props.$isMobile ? "0" : "0.8rem"}; // Reduced from 1.2rem for non-mobile
+  margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;
-  height: ${(props) =>
-    props.$isMobile ? "220px" : "auto"}; // Kept at 220px for mobile
+  height: ${(props) => (props.$isMobile ? "220px" : "auto")};
   display: flex;
   flex-direction: column;
 
@@ -197,7 +135,7 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
 `;
 
 const PostTitle = styled.h3<{ $isMobile: boolean }>`
-  font-size: 1.4rem; // Reduced from 1.6rem
+  font-size: 1.4rem;
   color: #ff00ff;
   margin-bottom: 0.6rem;
   text-shadow: 0 0 5px #ff00ff;
@@ -205,18 +143,17 @@ const PostTitle = styled.h3<{ $isMobile: boolean }>`
 `;
 
 const PostExcerpt = styled.p<{ $isMobile: boolean }>`
-  font-size: 1.2rem; // Increased from 1.1rem
+  font-size: 1.2rem;
   color: var(--color-text);
   margin-bottom: 0.4rem;
   line-height: 1.4;
   opacity: 0.9;
   flex-grow: 1;
-  // Removed overflow, text-overflow, and -webkit-line-clamp properties
-  display: block; // Changed from -webkit-box to block
+  display: block;
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
-  font-size: 1.3rem; // Increased from 1.2rem
+  font-size: 1.3rem;
   color: #00ffff;
   text-decoration: none;
   transition: all 0.3s ease;
@@ -238,13 +175,11 @@ const DateTag = styled.span<{ $isMobile: boolean }>`
   color: #ff00ff;
   padding: 0.2rem 0.5rem;
   border-radius: 10px;
-  font-size: 1.1rem; // Increased from 1rem
+  font-size: 1.1rem;
   text-shadow: 0 0 3px #ff00ff;
 `;
 
-const HoverIcon = styled(FaArrowRight)`
-  // Remove any styles from here as they're now in the BlogPostCard
-`;
+const HoverIcon = styled(FaArrowRight)``;
 
 interface BlogPost {
   slug: string;
@@ -280,7 +215,6 @@ const LatestBlogPostsSidebar: React.FC<LatestBlogPostsSidebarProps> = ({
     }
 
     if (!isMobile) {
-      // Add this effect to update CSS variables
       const updateSidebarHeight = () => {
         const header = document.querySelector("header");
         const footer = document.querySelector("footer");
@@ -336,12 +270,12 @@ const LatestBlogPostsSidebar: React.FC<LatestBlogPostsSidebarProps> = ({
               visible: { opacity: 1, y: 0 },
             }}
             $isMobile={isMobile}
-            style={{ gridColumn: isMobile ? "1 / -1" : "auto" }} // Ensure full width on mobile
+            style={{ gridColumn: isMobile ? "1 / -1" : "auto" }}
           >
             <GlitchSpan data-text="Latest Posts">Latest Posts</GlitchSpan>
           </StyledTitle>
           {posts.length > 0 ? (
-            posts.map((post, index) => (
+            posts.map((post) => (
               <Link href={`/blog/${post.slug}`} key={post.slug} passHref>
                 <BlogPostCard
                   variants={{

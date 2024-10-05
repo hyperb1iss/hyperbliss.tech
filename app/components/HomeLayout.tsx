@@ -1,12 +1,12 @@
 // app/components/HomeLayout.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
+import Header from "./Header";
 import HeroSection from "./HeroSection";
 import LatestBlogPostsSidebar from "./LatestBlogPostsSidebar";
-import Header from "./Header"; // Make sure to create this component if it doesn't exist
 
 const MainContainer = styled.div`
   display: flex;
@@ -31,7 +31,7 @@ const MainContent = styled.main<{ $isSidebarCollapsed: boolean }>`
   transition: margin-right 0.3s ease;
 
   @media (min-width: 768px) {
-    margin-right: ${props => props.$isSidebarCollapsed ? "40px" : "300px"};
+    margin-right: ${(props) => (props.$isSidebarCollapsed ? "40px" : "300px")};
   }
 `;
 
@@ -42,16 +42,27 @@ const HeroWrapper = styled.div`
   justify-content: center;
 `;
 
+interface BlogPost {
+  slug: string;
+  frontmatter: {
+    title: string;
+    date: string;
+    excerpt: string;
+  };
+}
+
+interface Project {
+  slug: string;
+  frontmatter: {
+    title: string;
+    description: string;
+    github: string;
+  };
+}
+
 interface HomeLayoutProps {
-  latestPosts: any[]; // Replace 'any' with your actual post type
-  projects: {
-    slug: string;
-    frontmatter: {
-      title: string;
-      description: string;
-      github: string;
-    };
-  }[];
+  latestPosts: BlogPost[];
+  projects: Project[];
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
@@ -64,10 +75,10 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
     };
 
     checkIsMobile();
-    window.addEventListener('resize', checkIsMobile);
+    window.addEventListener("resize", checkIsMobile);
 
     return () => {
-      window.removeEventListener('resize', checkIsMobile);
+      window.removeEventListener("resize", checkIsMobile);
     };
   }, []);
 

@@ -1,8 +1,9 @@
+// app/components/FeaturedProjects.tsx
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FaArrowRight,
   FaChevronLeft,
@@ -31,7 +32,7 @@ const SectionTitle = styled(motion.h2)`
   text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 `;
 
-const CarouselContainer = styled.div`
+const ProjectsContainer = styled.div`
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
@@ -39,13 +40,6 @@ const CarouselContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const ProjectCarousel = styled(motion.div)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
 `;
 
 const ProjectCard = styled(motion.div)<{ $isCenter: boolean }>`
@@ -162,29 +156,29 @@ interface FeaturedProjectsProps {
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const handleNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
+  }, [projects.length]);
+
+  const handlePrev = useCallback(() => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + projects.length) % projects.length
+    );
+  }, [projects.length]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       handleNext();
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [currentIndex, projects.length]);
+  }, [handleNext]); 
 
-  const handlePrev = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + projects.length) % projects.length
-    );
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
-  };
-
-  const getVisibleProjects = () => {
+  const getVisibleProjects = useCallback(() => {
     const prev = (currentIndex - 1 + projects.length) % projects.length;
     const next = (currentIndex + 1) % projects.length;
     return [prev, currentIndex, next];
-  };
+  }, [currentIndex, projects.length]);
 
   return (
     <FeaturedProjectsSection>
@@ -195,7 +189,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
       >
         <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
       </SectionTitle>
-      <CarouselContainer>
+      <ProjectsContainer>
         <AnimatePresence initial={false} mode="popLayout">
           {getVisibleProjects().map((index, i) => (
             <ProjectCard
@@ -247,7 +241,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         >
           <FaChevronRight />
         </ControlButton>
-      </CarouselContainer>
+      </ProjectsContainer>
     </FeaturedProjectsSection>
   );
 }
