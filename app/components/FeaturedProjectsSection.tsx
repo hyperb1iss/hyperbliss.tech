@@ -21,12 +21,13 @@ const FeaturedProjectsSection = styled.section`
 
   @media (max-width: 768px) {
     background: none;
-    padding: 2rem 1rem;
+    padding: 2rem 2rem; // Further increased padding on the left and right
   }
 `;
 
 const CustomStyledTitle = styled(StyledTitle)`
   padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
+  margin-bottom: ${(props) => (props.$isMobile ? "1rem" : "2rem")}; // Added margin-bottom for spacing
   border: 1px solid rgba(0, 255, 255, 0.2);
   background: linear-gradient(
     90deg,
@@ -77,7 +78,7 @@ const CustomStyledTitle = styled(StyledTitle)`
 const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1rem; // Reduced gap between cards to match the blog cards
   max-width: 1200px;
   margin: 0 auto;
 
