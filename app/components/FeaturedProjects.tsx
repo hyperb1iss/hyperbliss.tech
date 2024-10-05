@@ -10,6 +10,7 @@ import {
   FaGithub,
 } from "react-icons/fa";
 import styled from "styled-components";
+import GlitchSpan from "./GlitchSpan";
 
 const FeaturedProjectsSection = styled.section`
   padding: 2rem 0;
@@ -192,7 +193,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        Featured Projects
+        <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
       </SectionTitle>
       <CarouselContainer>
         <AnimatePresence initial={false} mode="popLayout">
