@@ -8,6 +8,8 @@ const FooterContainer = styled.footer`
   padding-top: 2rem;
   text-align: center;
   color: var(--color-text);
+  position: relative; // Ensure the footer is positioned relative to the document flow
+  z-index: 1100; // Set a higher z-index than the sidebar
 
   .socials {
     a {

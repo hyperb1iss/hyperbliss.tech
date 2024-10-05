@@ -29,6 +29,7 @@ const SidebarContainer = styled(motion.div)<{
     position: fixed;
     top: var(--header-height, 100px);
     right: 0;
+    bottom: 0;
     width: ${props.$isCollapsed ? "40px" : "300px"};
     background: linear-gradient(
       135deg,
@@ -41,10 +42,8 @@ const SidebarContainer = styled(motion.div)<{
     transition: width 0.3s ease;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 255, 255, 0.5) rgba(10, 10, 20, 0.8);
-    z-index: 1000;
-    max-height: calc(
-      100vh - var(--header-height, 100px) - var(--footer-height, 0px)
-    );
+    z-index: 1000; // Ensure this is lower than the footer's z-index
+    max-height: calc(100vh - var(--header-height, 100px));
   `}
 
   &::-webkit-scrollbar {
