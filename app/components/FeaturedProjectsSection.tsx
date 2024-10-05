@@ -1,4 +1,3 @@
-// app/components/FeaturedProjectsSection.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -19,25 +18,21 @@ const FeaturedProjectsSection = styled.section`
   overflow: hidden;
   border-left: 1px solid rgba(0, 255, 255, 0.2);
   transition: all 0.3s ease;
+
+  @media (max-width: 768px) {
+    background: none; // Match mobile background to be seamless
+    padding: 2rem 1rem; // Adjust padding for mobile
+  }
 `;
 
-const SectionTitle = styled(motion.h2)`
-  font-size: 2rem; // Reduced from 3.5rem to match the Latest Posts title
-  color: #ff00ff;
-  text-align: center;
-  margin-bottom: 3rem;
-  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
-  position: relative;
-  padding: 1rem;
+const CustomStyledTitle = styled(StyledTitle)`
+  padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
+  border: 1px solid rgba(0, 255, 255, 0.2);
   background: linear-gradient(
     90deg,
     rgba(0, 255, 255, 0.1),
     rgba(255, 0, 255, 0.1)
   );
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.3s ease;
 
   &::before,
   &::after {
@@ -81,17 +76,17 @@ const SectionTitle = styled(motion.h2)`
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(4, 1fr); // Changed to 4 columns
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr); // Adjust for medium screens
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr; // Adjust for small screens
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
@@ -104,15 +99,35 @@ const ProjectCard = styled(motion.div)`
   flex-direction: column;
   justify-content: space-between;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 
   &:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
     transform: translateY(-5px);
+    border-color: #00ffff;
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1.4rem;  // Changed from 2.2rem to 1.4rem to match sidebar cards
+  font-size: 1.4rem;
   color: #00ffff;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #00ffff;
@@ -172,13 +187,14 @@ interface FeaturedProjectsProps {
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   return (
     <FeaturedProjectsSection>
-      <StyledTitle
+      <CustomStyledTitle
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
+        $isMobile={true}
       >
         <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
-      </StyledTitle>
+      </CustomStyledTitle>
       <ProjectsGrid
         initial="hidden"
         animate="visible"
@@ -192,7 +208,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           },
         }}
       >
-        {projects.slice(0, 16).map((project) => ( // Adjusted to show up to 16 projects
+        {projects.slice(0, 16).map((project) => (
           <ProjectCard
             key={project.slug}
             variants={{
