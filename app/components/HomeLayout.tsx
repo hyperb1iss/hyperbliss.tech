@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import FeaturedProjects from "./FeaturedProjects";
+import FeaturedProjectsSection from "./FeaturedProjectsSection";
 import HeroSection from "./HeroSection";
 import LatestBlogPostsSidebar from "./LatestBlogPostsSidebar";
 import Header from "./Header"; // Make sure to create this component if it doesn't exist
@@ -40,11 +40,6 @@ const HeroWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const FeaturedProjectsWrapper = styled.div`
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
 `;
 
 interface HomeLayoutProps {
@@ -96,6 +91,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
               isMobile={true}
             />
           )}
+          <FeaturedProjectsSection projects={projects} />
         </MainContent>
         {!isMobile && (
           <LatestBlogPostsSidebar
@@ -106,9 +102,6 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           />
         )}
       </ContentWrapper>
-      <FeaturedProjectsWrapper>
-        <FeaturedProjects projects={projects} />
-      </FeaturedProjectsWrapper>
     </MainContainer>
   );
 };

@@ -2,29 +2,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import styled from "styled-components";
 import Link from "next/link";
-import { FaGithub, FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { FaArrowRight, FaGithub } from "react-icons/fa";
+import styled from "styled-components";
 
-const SectionContainer = styled.section`
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  background: linear-gradient(
-    135deg,
-    rgba(10, 10, 20, 0.9) 0%,
-    rgba(30, 30, 60, 0.9) 100%
-  );
-  padding: 4rem 0;
-  overflow: hidden;
-`;
-
-const InnerContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+const FeaturedProjectsSection = styled.section`
+  padding: 4rem 2rem;
+  background: rgba(10, 10, 20, 0.8);
+  position: relative;
 `;
 
 const SectionTitle = styled(motion.h2)`
@@ -35,33 +20,43 @@ const SectionTitle = styled(motion.h2)`
   text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 `;
 
+const ProjectsGrid = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
 const ProjectCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 15px;
-  padding: 2rem;
-  margin: 0 1rem;
-  transition: all 0.3s ease;
+  border-radius: 10px;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 300px;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 5px 20px rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-5px);
   }
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 2.2rem;
+  font-size: 1.4rem;  // Changed from 2.2rem to 1.4rem to match sidebar cards
   color: #00ffff;
-  margin-bottom: 1rem;
-  text-shadow: 0 0 5px #00ffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 7px #00ffff;
 `;
 
 const ProjectDescription = styled.p`
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   color: var(--color-text);
   margin-bottom: 1.5rem;
   flex-grow: 1;
@@ -74,7 +69,7 @@ const ProjectLinks = styled.div`
 `;
 
 const ProjectLink = styled(Link)`
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   color: #ff00ff;
   text-decoration: none;
   display: inline-flex;
@@ -85,19 +80,10 @@ const ProjectLink = styled(Link)`
     color: #00ffff;
     text-shadow: 0 0 5px #00ffff;
   }
-
-  svg {
-    margin-left: 5px;
-    transition: transform 0.3s ease;
-  }
-
-  &:hover svg {
-    transform: translateX(5px);
-  }
 `;
 
 const GithubLink = styled.a`
-  font-size: 2rem;
+  font-size: 1.3rem;
   color: #ff00ff;
   transition: all 0.3s ease;
 
@@ -107,121 +93,71 @@ const GithubLink = styled.a`
   }
 `;
 
-const StyledSlider = styled(Slider)`
-  .slick-slide > div {
-    margin: 0 15px;
-  }
-  .slick-list {
-    margin: 0 -15px;
-  }
-`;
-
-const ArrowButton = styled.button`
-  background: none;
-  border: none;
-  color: #00ffff;
-  font-size: 2rem;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-  transition: all 0.3s ease;
-
-  &:hover {
-    color: #ff00ff;
-    text-shadow: 0 0 5px #ff00ff;
-  }
-
-  &.prev {
-    left: -40px;
-  }
-
-  &.next {
-    right: -40px;
-  }
-`;
-
 interface Project {
   slug: string;
-  title: string;
-  description: string;
-  github: string;
+  frontmatter: {
+    title: string;
+    description: string;
+    github: string;
+  };
 }
 
-interface FeaturedProjectsSectionProps {
+interface FeaturedProjectsProps {
   projects: Project[];
 }
 
-const FeaturedProjectsSection: React.FC<FeaturedProjectsSectionProps> = ({
-  projects,
-}) => {
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
-    prevArrow: (
-      <ArrowButton className="prev">
-        <FaChevronLeft />
-      </ArrowButton>
-    ),
-    nextArrow: (
-      <ArrowButton className="next">
-        <FaChevronRight />
-      </ArrowButton>
-    ),
-  };
-
+export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   return (
-    <SectionContainer>
-      <InnerContainer>
-        <SectionTitle
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Featured Projects
-        </SectionTitle>
-        <StyledSlider {...sliderSettings}>
-          {projects.map((project) => (
-            <ProjectCard key={project.slug}>
-              <ProjectTitle>{project.title}</ProjectTitle>
-              <ProjectDescription>{project.description}</ProjectDescription>
-              <ProjectLinks>
-                <ProjectLink href={`/projects/${project.slug}`}>
-                  Learn More
-                  <FaChevronRight />
-                </ProjectLink>
-                <GithubLink
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FaGithub />
-                </GithubLink>
-              </ProjectLinks>
-            </ProjectCard>
-          ))}
-        </StyledSlider>
-      </InnerContainer>
-    </SectionContainer>
+    <FeaturedProjectsSection>
+      <SectionTitle
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        Featured Projects
+      </SectionTitle>
+      <ProjectsGrid
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+      >
+        {projects.slice(0, 4).map((project) => (
+          <ProjectCard
+            key={project.slug}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            transition={{ duration: 0.5 }}
+          >
+            <ProjectTitle>{project.frontmatter.title}</ProjectTitle>
+            <ProjectDescription>
+              {project.frontmatter.description}
+            </ProjectDescription>
+            <ProjectLinks>
+              <ProjectLink href={`/projects/${project.slug}`}>
+                Learn More
+                <FaArrowRight style={{ marginLeft: "5px" }} />
+              </ProjectLink>
+              <GithubLink
+                href={project.frontmatter.github}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGithub />
+              </GithubLink>
+            </ProjectLinks>
+          </ProjectCard>
+        ))}
+      </ProjectsGrid>
+    </FeaturedProjectsSection>
   );
-};
-
-export default FeaturedProjectsSection;
+}
