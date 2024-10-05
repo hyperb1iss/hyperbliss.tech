@@ -212,11 +212,8 @@ const PostExcerpt = styled.p<{ $isMobile: boolean }>`
   line-height: 1.4;
   opacity: 0.9;
   flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  // Removed overflow, text-overflow, and -webkit-line-clamp properties
+  display: block; // Changed from -webkit-box to block
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`

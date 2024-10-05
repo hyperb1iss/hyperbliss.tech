@@ -20,8 +20,8 @@ const FeaturedProjectsSection = styled.section`
   transition: all 0.3s ease;
 
   @media (max-width: 768px) {
-    background: none; // Match mobile background to be seamless
-    padding: 2rem 1rem; // Adjust padding for mobile
+    background: none;
+    padding: 2rem 1rem;
   }
 `;
 
@@ -86,7 +86,7 @@ const ProjectsGrid = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); // 2x2 grid on mobile
   }
 `;
 
@@ -208,7 +208,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           },
         }}
       >
-        {projects.slice(0, 16).map((project) => (
+        {projects.slice(0, 4).map((project) => ( // Show up to 4 projects for 2x2 grid
           <ProjectCard
             key={project.slug}
             variants={{
