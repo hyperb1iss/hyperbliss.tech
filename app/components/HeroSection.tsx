@@ -10,9 +10,14 @@ const HeroSectionWrapper = styled.section`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 100%;  // Changed from min-height: 60vh
+  min-height: 100%;
   padding: 2rem;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    min-height: 60vh; // Reduced from 80vh to 60vh
+    padding: 2rem 1.5rem; // Slightly reduced padding on mobile
+  }
 `;
 
 const AnimatedBackground = styled(motion.div)`

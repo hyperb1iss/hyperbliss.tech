@@ -12,7 +12,11 @@ import "slick-carousel/slick/slick-theme.css";
 const SectionContainer = styled.section`
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(30, 30, 60, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 20, 0.9) 0%,
+    rgba(30, 30, 60, 0.9) 100%
+  );
   padding: 4rem 0;
   overflow: hidden;
 `;
@@ -149,7 +153,9 @@ interface FeaturedProjectsSectionProps {
   projects: Project[];
 }
 
-const FeaturedProjectsSection: React.FC<FeaturedProjectsSectionProps> = ({ projects }) => {
+const FeaturedProjectsSection: React.FC<FeaturedProjectsSectionProps> = ({
+  projects,
+}) => {
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -161,17 +167,25 @@ const FeaturedProjectsSection: React.FC<FeaturedProjectsSectionProps> = ({ proje
         breakpoint: 1024,
         settings: {
           slidesToShow: 2,
-        }
+        },
       },
       {
         breakpoint: 600,
         settings: {
           slidesToShow: 1,
-        }
-      }
+        },
+      },
     ],
-    prevArrow: <ArrowButton className="prev"><FaChevronLeft /></ArrowButton>,
-    nextArrow: <ArrowButton className="next"><FaChevronRight /></ArrowButton>,
+    prevArrow: (
+      <ArrowButton className="prev">
+        <FaChevronLeft />
+      </ArrowButton>
+    ),
+    nextArrow: (
+      <ArrowButton className="next">
+        <FaChevronRight />
+      </ArrowButton>
+    ),
   };
 
   return (
@@ -194,7 +208,11 @@ const FeaturedProjectsSection: React.FC<FeaturedProjectsSectionProps> = ({ proje
                   Learn More
                   <FaChevronRight />
                 </ProjectLink>
-                <GithubLink href={project.github} target="_blank" rel="noopener noreferrer">
+                <GithubLink
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FaGithub />
                 </GithubLink>
               </ProjectLinks>

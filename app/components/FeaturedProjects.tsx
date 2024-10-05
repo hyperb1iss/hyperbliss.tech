@@ -1,14 +1,23 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import styled from "styled-components";
-import { FaGithub, FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  FaArrowRight,
+  FaChevronLeft,
+  FaChevronRight,
+  FaGithub,
+} from "react-icons/fa";
+import styled from "styled-components";
 
 const FeaturedProjectsSection = styled.section`
   padding: 2rem 0;
-  background: linear-gradient(135deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(10, 10, 20, 0.9) 0%,
+    rgba(20, 20, 40, 0.9) 100%
+  );
   position: relative;
   overflow: hidden;
 `;
@@ -44,15 +53,15 @@ const ProjectCard = styled(motion.div)<{ $isCenter: boolean }>`
   border-radius: 15px;
   padding: 1.5rem;
   width: 280px;
-  height: ${props => props.$isCenter ? '260px' : '220px'};
+  height: ${(props) => (props.$isCenter ? "260px" : "220px")};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
   transition: all 0.3s ease;
   position: absolute;
-  opacity: ${props => props.$isCenter ? 1 : 0.7};
-  z-index: ${props => props.$isCenter ? 2 : 1};
+  opacity: ${(props) => (props.$isCenter ? 1 : 0.7)};
+  z-index: ${(props) => (props.$isCenter ? 2 : 1)};
 
   &:hover {
     box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
@@ -161,7 +170,9 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   }, [currentIndex, projects.length]);
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + projects.length) % projects.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + projects.length) % projects.length
+    );
   };
 
   const handleNext = () => {
@@ -190,33 +201,49 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
               key={projects[index].slug}
               $isCenter={i === 1}
               initial={{ opacity: 0, x: i === 0 ? -300 : i === 2 ? 300 : 0 }}
-              animate={{ 
-                opacity: i === 1 ? 1 : 0.7, 
+              animate={{
+                opacity: i === 1 ? 1 : 0.7,
                 x: i === 0 ? -300 : i === 2 ? 300 : 0,
-                scale: i === 1 ? 1 : 0.9
+                scale: i === 1 ? 1 : 0.9,
               }}
               exit={{ opacity: 0, x: i === 0 ? -300 : i === 2 ? 300 : 0 }}
               transition={{ duration: 0.5 }}
               style={{ left: `${i * 50 - 50}%` }}
             >
               <ProjectTitle>{projects[index].frontmatter.title}</ProjectTitle>
-              <ProjectDescription>{projects[index].frontmatter.description}</ProjectDescription>
+              <ProjectDescription>
+                {projects[index].frontmatter.description}
+              </ProjectDescription>
               <ProjectLinks>
                 <ProjectLink href={`/projects/${projects[index].slug}`}>
                   Learn More
-                  <FaArrowRight style={{ marginLeft: '5px' }} />
+                  <FaArrowRight style={{ marginLeft: "5px" }} />
                 </ProjectLink>
-                <GithubLink href={projects[index].frontmatter.github} target="_blank" rel="noopener noreferrer">
+                <GithubLink
+                  href={projects[index].frontmatter.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <FaGithub />
                 </GithubLink>
               </ProjectLinks>
             </ProjectCard>
           ))}
         </AnimatePresence>
-        <ControlButton className="prev" onClick={handlePrev} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+        <ControlButton
+          className="prev"
+          onClick={handlePrev}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
           <FaChevronLeft />
         </ControlButton>
-        <ControlButton className="next" onClick={handleNext} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+        <ControlButton
+          className="next"
+          onClick={handleNext}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
           <FaChevronRight />
         </ControlButton>
       </CarouselContainer>
