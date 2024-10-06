@@ -1,4 +1,4 @@
-// app/components/LatestBlogPostsSidebar.tsx
+// app/components/LatestBlogPosts.tsx
 "use client";
 
 import { motion, useAnimation } from "framer-motion";
@@ -86,10 +86,9 @@ const ToggleButton = styled.button`
 `;
 
 const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
-  display: ${(props) => (props.$isMobile ? "grid" : "flex")};
-  flex-direction: ${(props) => (props.$isMobile ? "unset" : "column")};
+  display: grid;
   grid-template-columns: ${(props) =>
-    props.$isMobile ? "repeat(2, 1fr)" : "unset"};
+    props.$isMobile ? "repeat(2, 1fr)" : "1fr"};
   gap: 1rem;
 `;
 
@@ -102,7 +101,8 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   overflow: hidden;
   margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;
-  height: ${(props) => (props.$isMobile ? "220px" : "auto")};
+  height: ${(props) => (props.$isMobile ? "auto" : "auto")};
+  min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
   display: flex;
   flex-direction: column;
 
@@ -150,6 +150,11 @@ const PostExcerpt = styled.p<{ $isMobile: boolean }>`
   opacity: 0.9;
   flex-grow: 1;
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
@@ -190,14 +195,14 @@ interface BlogPost {
   };
 }
 
-interface LatestBlogPostsSidebarProps {
+interface LatestBlogPostsProps {
   posts: BlogPost[];
   isCollapsed: boolean;
   onToggle: () => void;
   isMobile: boolean;
 }
 
-const LatestBlogPostsSidebar: React.FC<LatestBlogPostsSidebarProps> = ({
+const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
   posts,
   isCollapsed,
   onToggle,
@@ -324,4 +329,4 @@ const LatestBlogPostsSidebar: React.FC<LatestBlogPostsSidebarProps> = ({
   );
 };
 
-export default LatestBlogPostsSidebar;
+export default LatestBlogPosts;

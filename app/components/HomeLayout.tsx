@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
 import HeroSection from "./HeroSection";
-import LatestBlogPostsSidebar from "./LatestBlogPostsSidebar";
+import LatestBlogPosts from "./LatestBlogPosts";
 
 const MainContainer = styled.div`
   display: flex;
@@ -93,7 +93,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
             <HeroSection />
           </HeroWrapper>
           {isMobile && (
-            <LatestBlogPostsSidebar
+            <LatestBlogPosts
               posts={latestPosts}
               isCollapsed={false}
               onToggle={() => {}}
@@ -103,7 +103,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           <FeaturedProjectsSection projects={projects} />
         </MainContent>
         {!isMobile && (
-          <LatestBlogPostsSidebar
+          <LatestBlogPosts
             posts={latestPosts}
             isCollapsed={isSidebarCollapsed}
             onToggle={toggleSidebar}
