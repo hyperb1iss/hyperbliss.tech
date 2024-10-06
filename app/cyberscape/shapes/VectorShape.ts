@@ -404,19 +404,33 @@ export abstract class VectorShape {
 
         // Create a gradient for the shape
         const pos = VectorMath.project(this.position, width, height);
-        const gradient = ctx.createRadialGradient(
-          pos.x,
-          pos.y,
-          0,
-          pos.x,
-          pos.y,
-          this.radius * 2 * pos.scale
-        );
-        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${this.opacity})`);
-        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
 
-        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
-        ctx.fillStyle = gradient;
+        // Check if pos.x and pos.y are valid numbers
+        if (
+          !isNaN(pos.x) &&
+          !isNaN(pos.y) &&
+          isFinite(pos.x) &&
+          isFinite(pos.y)
+        ) {
+          const gradient = ctx.createRadialGradient(
+            pos.x,
+            pos.y,
+            0,
+            pos.x,
+            pos.y,
+            this.radius * 2 * pos.scale
+          );
+          gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${this.opacity})`);
+          gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+          ctx.fillStyle = gradient;
+        } else {
+          // Fallback to solid color if gradient creation fails
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+          ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity * 0.5})`;
+        }
+
         ctx.lineWidth = 2;
 
         // Apply dynamic glow based on opacity and glow intensity

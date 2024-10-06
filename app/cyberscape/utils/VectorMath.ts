@@ -18,15 +18,15 @@ export class VectorMath {
    * @param height - The height of the 2D plane.
    * @returns An object containing the projected x, y coordinates and the scale.
    */
-  public static project(
-    position: vec3,
-    width: number,
-    height: number
-  ) {
+  public static project(position: vec3, width: number, height: number) {
     const fov = 500; // Field of view
     const minScale = 0.5; // Minimum scale to prevent shapes from becoming too small
     const maxScale = 1.5; // Maximum scale to prevent shapes from becoming too large
-    const scale = fov / (fov + position[2]);
+
+    // Ensure z is not zero to avoid division by zero
+    const z = position[2] === 0 ? 0.001 : position[2];
+
+    const scale = fov / (fov + z);
     const clampedScale = Math.min(Math.max(scale, minScale), maxScale);
     return {
       x: position[0] * clampedScale + width / 2,
