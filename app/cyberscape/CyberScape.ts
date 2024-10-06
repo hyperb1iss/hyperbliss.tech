@@ -12,9 +12,16 @@ import { ParticleAtCollision } from "./particles/ParticleAtCollision";
 import { ShapeFactory } from "./shapes/ShapeFactory";
 import { VectorShape } from "./shapes/VectorShape";
 import { ColorManager } from "./utils/ColorManager";
-import { ParticlePool } from "./utils/ParticlePool";
-import { VectorMath } from "./utils/VectorMath";
 import { ParticleConnector } from "./utils/ParticleConnector";
+import { ParticlePool } from "./utils/ParticlePool";
+import { PerformanceMonitor } from "./utils/PerformanceMonitor";
+import { VectorMath } from "./utils/VectorMath";
+
+declare global {
+  interface Window {
+    cyberScapePerformance?: (command: string) => void;
+  }
+}
 
 /**
  * Function to trigger the CyberScape animation at specific coordinates.
@@ -59,7 +66,7 @@ export const initializeCyberScape = (
   let mouseY = 0;
   let hue = 210;
   let animationFrameId: number;
-  let lastFrameTime = 0;
+  let lastFrameTime = performance.now();
 
   const shapesArray: VectorShape[] = [];
   const particlesArray: Particle[] = [];
@@ -85,6 +92,8 @@ export const initializeCyberScape = (
   );
 
   const particleConnector = new ParticleConnector();
+
+  const performanceMonitor = new PerformanceMonitor();
 
   /**
    * Updates the canvas size based on the navigation element's dimensions.
@@ -212,183 +221,193 @@ export const initializeCyberScape = (
    * The main animation loop for CyberScape.
    */
   const animateCyberScape = (timestamp: number) => {
-    const deltaTime = timestamp - lastFrameTime;
-    if (deltaTime < config.frameTime) {
-      animationFrameId = requestAnimationFrame(animateCyberScape);
-      return;
-    }
-    lastFrameTime = timestamp;
+    const now = performance.now();
+    const deltaTime = now - lastFrameTime;
 
-    updateCanvasSize();
-    ctx.clearRect(0, 0, width, height);
+    if (deltaTime >= config.frameTime) {
+      lastFrameTime = now - (deltaTime % config.frameTime);
 
-    updateHue();
-    updateParticleConnections(particlesArray);
-    updateParticleConnections(collisionParticlesArray);
+      updateCanvasSize();
+      ctx.clearRect(0, 0, width, height);
 
-    if (activeParticles < numberOfParticles && Math.random() < 0.1) {
-      const newParticle = particlePool.getParticle(width, height);
-      newParticle.setDelayedAppearance();
-      particlesArray.push(newParticle);
-      activeParticles++;
-    }
+      updateHue();
+      updateParticleConnections(particlesArray);
+      updateParticleConnections(collisionParticlesArray);
 
-    // Update and draw regular particles
-    for (const particle of particlesArray) {
-      if (particle.isReady()) {
-        particle.update(
+      if (activeParticles < numberOfParticles && Math.random() < 0.1) {
+        const newParticle = particlePool.getParticle(width, height);
+        newParticle.setDelayedAppearance();
+        particlesArray.push(newParticle);
+        activeParticles++;
+      }
+
+      // Update and draw regular particles
+      for (const particle of particlesArray) {
+        if (particle.isReady()) {
+          particle.update(
+            isCursorOverCyberScape,
+            mouseX,
+            mouseY,
+            width,
+            height,
+            shapesArray
+          );
+          particle.draw(ctx, mouseX, mouseY, width, height);
+        } else {
+          particle.updateDelay();
+        }
+      }
+
+      // Update and draw collision particles
+      for (const particle of collisionParticlesArray) {
+        if (particle.isReady()) {
+          particle.update();
+          particle.draw(ctx, mouseX, mouseY, width, height);
+        } else {
+          particle.updateDelay();
+        }
+      }
+
+      // Update and draw shapes
+      const existingPositions = new Set<string>();
+      for (const shape of shapesArray) {
+        shape.update(
           isCursorOverCyberScape,
           mouseX,
           mouseY,
           width,
           height,
-          shapesArray
+          particlesArray
         );
-        particle.draw(ctx, mouseX, mouseY, width, height);
-      } else {
-        particle.updateDelay();
-      }
-    }
-
-    // Update and draw collision particles
-    for (const particle of collisionParticlesArray) {
-      if (particle.isReady()) {
-        particle.update();
-        particle.draw(ctx, mouseX, mouseY, width, height);
-      } else {
-        particle.updateDelay();
-      }
-    }
-
-    // Update and draw shapes
-    const existingPositions = new Set<string>();
-    for (const shape of shapesArray) {
-      shape.update(
-        isCursorOverCyberScape,
-        mouseX,
-        mouseY,
-        width,
-        height,
-        particlesArray
-      );
-      if (shape.opacity > 0 && !shape.isExploded) {
-        existingPositions.add(shape.getPositionKey());
-        shape.draw(ctx, width, height);
-      }
-      if (shape.isFadedOut()) {
-        shape.reset(existingPositions, width, height);
-      }
-      // Emit small particles from shapes
-      if (Math.random() < 0.01) {
-        const emittedParticle = particlePool.getParticle(width, height);
-        vec3.copy(emittedParticle.position, shape.position);
-        vec3.copy(emittedParticle.velocity, shape.velocity); // Ensure emitted particle's velocity matches shape
-        emittedParticle.size = Math.random() * 1 + 0.5;
-        emittedParticle.color = shape.color;
-        emittedParticle.lifespan = 1000;
-        emittedParticle.setDelayedAppearance();
-        particlesArray.push(emittedParticle);
-        activeParticles++;
-      }
-    }
-
-    // Handle collisions, color blending, and forces using handler classes
-    CollisionHandler.handleCollisions(
-      shapesArray, // First argument: VectorShape[]
-      (shapeA: VectorShape, shapeB: VectorShape) => {
-        const now = Date.now();
-        if (
-          currentExplosions >= config.maxSimultaneousExplosions ||
-          now - lastExplosionTime < config.explosionCooldown
-        ) {
-          return;
+        if (shape.opacity > 0 && !shape.isExploded) {
+          existingPositions.add(shape.getPositionKey());
+          shape.draw(ctx, width, height);
         }
+        if (shape.isFadedOut()) {
+          shape.reset(existingPositions, width, height);
+        }
+        // Emit small particles from shapes
+        if (Math.random() < 0.01) {
+          const emittedParticle = particlePool.getParticle(width, height);
+          vec3.copy(emittedParticle.position, shape.position);
+          vec3.copy(emittedParticle.velocity, shape.velocity); // Ensure emitted particle's velocity matches shape
+          emittedParticle.size = Math.random() * 1 + 0.5;
+          emittedParticle.color = shape.color;
+          emittedParticle.lifespan = 1000;
+          emittedParticle.setDelayedAppearance();
+          particlesArray.push(emittedParticle);
+          activeParticles++;
+        }
+      }
 
-        const collisionPos = vec3.create();
-        vec3.add(collisionPos, shapeA.position, shapeB.position);
-        vec3.scale(collisionPos, collisionPos, 0.5);
-
-        if (
-          collisionParticlesArray.length + config.explosionParticlesToEmit <=
-            config.maxExplosionParticles &&
-          explosionParticlesCount + config.explosionParticlesToEmit <=
-            config.maxExplosionParticles
-        ) {
-          for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-            const particle = particlePool.getCollisionParticle(
-              vec3.clone(collisionPos),
-              () => {
-                explosionParticlesCount--;
-                currentExplosions = Math.max(0, currentExplosions - 1);
-                particlePool.returnCollisionParticle(particle);
-              }
-            ) as ParticleAtCollision;
-            particle.lifespan = config.particleAtCollisionLifespan;
-            particle.setFadeOutDuration(
-              config.particleAtCollisionFadeOutDuration
-            );
-            collisionParticlesArray.push(particle);
-            explosionParticlesCount++;
+      // Handle collisions, color blending, and forces using handler classes
+      CollisionHandler.handleCollisions(
+        shapesArray, // First argument: VectorShape[]
+        (shapeA: VectorShape, shapeB: VectorShape) => {
+          const now = Date.now();
+          if (
+            currentExplosions >= config.maxSimultaneousExplosions ||
+            now - lastExplosionTime < config.explosionCooldown
+          ) {
+            return;
           }
-          currentExplosions++;
-          lastExplosionTime = now;
+
+          const collisionPos = vec3.create();
+          vec3.add(collisionPos, shapeA.position, shapeB.position);
+          vec3.scale(collisionPos, collisionPos, 0.5);
+
+          if (
+            collisionParticlesArray.length + config.explosionParticlesToEmit <=
+              config.maxExplosionParticles &&
+            explosionParticlesCount + config.explosionParticlesToEmit <=
+              config.maxExplosionParticles
+          ) {
+            for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+              const particle = particlePool.getCollisionParticle(
+                vec3.clone(collisionPos),
+                () => {
+                  explosionParticlesCount--;
+                  currentExplosions = Math.max(0, currentExplosions - 1);
+                  particlePool.returnCollisionParticle(particle);
+                }
+              ) as ParticleAtCollision;
+              particle.lifespan = config.particleAtCollisionLifespan;
+              particle.setFadeOutDuration(
+                config.particleAtCollisionFadeOutDuration
+              );
+              collisionParticlesArray.push(particle);
+              explosionParticlesCount++;
+            }
+            currentExplosions++;
+            lastExplosionTime = now;
+          }
+
+          shapeA.explodeAndRespawn();
+          shapeB.explodeAndRespawn();
+        },
+        collisionParticlesArray // Third argument: ParticleAtCollision[]
+      );
+
+      ColorBlender.blendColors(shapesArray);
+      ForceHandler.applyForces(shapesArray);
+
+      // Draw connections between shapes
+      drawShapeConnections(ctx);
+
+      // Connect regular particles with animation
+      particleConnector.connectParticles(
+        particlesArray,
+        ctx,
+        timestamp,
+        width,
+        height
+      );
+
+      // Remove expired regular particles
+      for (let i = particlesArray.length - 1; i >= 0; i--) {
+        if (particlesArray[i].opacity <= 0) {
+          particlePool.returnParticle(particlesArray[i]);
+          particlesArray.splice(i, 1);
         }
-
-        shapeA.explodeAndRespawn();
-        shapeB.explodeAndRespawn();
-      },
-      collisionParticlesArray // Third argument: ParticleAtCollision[]
-    );
-
-    ColorBlender.blendColors(shapesArray);
-    ForceHandler.applyForces(shapesArray);
-
-    // Draw connections between shapes
-    drawShapeConnections(ctx);
-
-    // Connect regular particles with animation
-    particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height);
-
-    // Remove expired regular particles
-    for (let i = particlesArray.length - 1; i >= 0; i--) {
-      if (particlesArray[i].opacity <= 0) {
-        particlePool.returnParticle(particlesArray[i]);
-        particlesArray.splice(i, 1);
       }
+
+      // Remove expired collision particles
+      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+        if (collisionParticlesArray[i].opacity <= 0) {
+          // The callback in ParticleAtCollision.handleExpire will handle the removal
+          collisionParticlesArray.splice(i, 1);
+        }
+      }
+
+      // Apply glitch effects
+      glitchManager.handleGlitchEffects(ctx, width, height, timestamp);
+
+      // Handle triggered animations
+      if (isAnimationTriggered) {
+        animationProgress += 0.02;
+        if (animationProgress >= 1) {
+          isAnimationTriggered = false;
+          animationProgress = 0;
+        } else {
+          const intensity = Math.sin(animationProgress * Math.PI);
+          datastreamEffect.draw(
+            ctx,
+            width,
+            height,
+            animationCenterX,
+            animationCenterY,
+            intensity,
+            hue,
+            animationProgress
+          );
+        }
+      }
+
+      // Update the performance monitor
+      performanceMonitor.update(timestamp, deltaTime);
     }
 
-    // Remove expired collision particles
-    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
-      if (collisionParticlesArray[i].opacity <= 0) {
-        // The callback in ParticleAtCollision.handleExpire will handle the removal
-        collisionParticlesArray.splice(i, 1);
-      }
-    }
-
-    // Apply glitch effects
-    glitchManager.handleGlitchEffects(ctx, width, height, timestamp);
-
-    // Handle triggered animations
-    if (isAnimationTriggered) {
-      animationProgress += 0.02;
-      if (animationProgress >= 1) {
-        isAnimationTriggered = false;
-        animationProgress = 0;
-      } else {
-        const intensity = Math.sin(animationProgress * Math.PI);
-        datastreamEffect.draw(
-          ctx,
-          width,
-          height,
-          animationCenterX,
-          animationCenterY,
-          intensity,
-          hue,
-          animationProgress
-        );
-      }
-    }
-
+    // Schedule the next frame
     animationFrameId = requestAnimationFrame(animateCyberScape);
   };
 
@@ -419,6 +438,25 @@ export const initializeCyberScape = (
   };
 
   animateCyberScape(0);
+
+  // Handle performance monitoring commands
+  const handlePerformanceCommand = (command: string) => {
+    switch (command) {
+      case "start":
+        performanceMonitor.enable();
+        console.log("Performance monitoring started");
+        break;
+      case "stop":
+        performanceMonitor.disable();
+        console.log("Performance monitoring stopped");
+        break;
+      default:
+        console.log("Unknown performance command");
+    }
+  };
+
+  // Expose the handlePerformanceCommand function
+  window.cyberScapePerformance = handlePerformanceCommand;
 
   /**
    * Cleanup function to remove event listeners and cancel animations.

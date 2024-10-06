@@ -10,7 +10,7 @@ export class CyberScapeConfig {
   private static instance: CyberScapeConfig;
 
   // Animation and rendering
-  public targetFPS: number = 60;
+  public targetFPS: number = 30;
   public frameTime: number = 1000 / this.targetFPS;
 
   // Particle settings

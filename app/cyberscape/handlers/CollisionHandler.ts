@@ -39,9 +39,6 @@ export class CollisionHandler {
     this.spatialGrid = new SpatialGrid(
       CyberScapeConfig.getInstance().collisionGridSize
     );
-    console.log(
-      "CollisionHandler initialized with ParticlePool and SpatialGrid."
-    );
   }
 
   /**

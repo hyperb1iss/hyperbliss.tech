@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
-import Header from "./Header";
 import HeroSection from "./HeroSection";
 import LatestBlogPostsSidebar from "./LatestBlogPostsSidebar";
 

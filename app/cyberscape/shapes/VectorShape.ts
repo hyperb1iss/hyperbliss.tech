@@ -562,15 +562,7 @@ export abstract class VectorShape {
    * Emits a single explosion particle.
    * @param color - The color of the particle in hex format.
    */
-  private emitParticle(color: string): void {
-    // This is a placeholder method. You'll need to implement this based on your particle system.
-    // It should create a new ParticleAtCollision instance and add it to your particle array.
-    // Example:
-    // const particle = new ParticleAtCollision(this.position, () => {
-    //   // Callback when particle expires
-    // }, color); // Use the color parameter here
-    // particleArray.push(particle);
-    console.log(`Emitting particle with color: ${color}`); // Temporary use to avoid unused variable warning
+  private emitParticle(_color: string): void {
   }
 
   /**
