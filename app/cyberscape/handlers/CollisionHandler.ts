@@ -7,12 +7,12 @@
  */
 
 import { vec3 } from "gl-matrix";
-import { CyberScapeConfig } from "../CyberScapeConfig"; // Import CyberScapeConfig
+import { CyberScapeConfig } from "../CyberScapeConfig";
 import { ParticleAtCollision } from "../particles/ParticleAtCollision";
 import { VectorShape } from "../shapes/VectorShape";
 import { ColorManager } from "../utils/ColorManager";
+import { Octree } from "../utils/Octree";
 import { ParticlePool } from "../utils/ParticlePool";
-import { SpatialGrid } from "../utils/SpatialGrid";
 
 /**
  * Type definition for the collision callback function.
@@ -26,8 +26,8 @@ export type CollisionCallback = (
 export class CollisionHandler {
   // Static reference to the ParticlePool instance
   private static particlePool: ParticlePool | null = null;
-  // Static reference to the SpatialGrid instance for spatial partitioning
-  private static spatialGrid: SpatialGrid;
+  // Static reference to the Octree instance for spatial partitioning
+  private static octree: Octree;
 
   /**
    * Initializes the CollisionHandler with a ParticlePool instance.
@@ -36,9 +36,11 @@ export class CollisionHandler {
    */
   public static initialize(pool: ParticlePool): void {
     this.particlePool = pool;
-    this.spatialGrid = new SpatialGrid(
-      CyberScapeConfig.getInstance().collisionGridSize
-    );
+    const config = CyberScapeConfig.getInstance();
+    this.octree = new Octree({
+      min: [-config.canvasWidth / 2, -config.canvasHeight / 2, -300],
+      max: [config.canvasWidth / 2, config.canvasHeight / 2, 300],
+    });
   }
 
   /**
@@ -60,24 +62,33 @@ export class CollisionHandler {
       return;
     }
 
-    // Clear the spatial grid before adding new shapes
-    this.spatialGrid.clear();
+    // Clear the octree before adding new shapes
+    this.octree.clear();
 
-    // Add shapes to the spatial grid for efficient collision detection
+    // Add shapes to the octree for efficient collision detection
     shapes.forEach((shape) => {
       if (!shape.isExploded) {
-        this.spatialGrid.addShape(shape);
+        this.octree.insert(shape);
       }
     });
 
-    // Check collisions using spatial grid
+    // Check collisions using octree
     shapes.forEach((shapeA) => {
       if (shapeA.isExploded) return;
 
-      // Retrieve nearby shapes from the spatial grid
-      const nearbyShapes = this.spatialGrid.getNearbyObjects(
-        shapeA.position
-      ) as VectorShape[];
+      // Retrieve nearby shapes from the octree
+      const nearbyShapes = this.octree.query({
+        min: vec3.sub(vec3.create(), shapeA.position, [
+          shapeA.radius,
+          shapeA.radius,
+          shapeA.radius,
+        ]),
+        max: vec3.add(vec3.create(), shapeA.position, [
+          shapeA.radius,
+          shapeA.radius,
+          shapeA.radius,
+        ]),
+      }) as VectorShape[];
 
       nearbyShapes.forEach((shapeB) => {
         if (shapeA === shapeB || shapeB.isExploded) return;

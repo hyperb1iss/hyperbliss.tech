@@ -1,6 +1,6 @@
 // app/cyberscape/CyberScape.ts
 
-import { vec3 } from "gl-matrix";
+import { mat4, vec3 } from "gl-matrix";
 import { CyberScapeConfig } from "./CyberScapeConfig";
 import { DatastreamEffect } from "./effects/DatastreamEffect";
 import { GlitchManager } from "./effects/GlitchManager";
@@ -12,6 +12,8 @@ import { ParticleAtCollision } from "./particles/ParticleAtCollision";
 import { ShapeFactory } from "./shapes/ShapeFactory";
 import { VectorShape } from "./shapes/VectorShape";
 import { ColorManager } from "./utils/ColorManager";
+import { FrustumCuller } from "./utils/FrustumCuller";
+import { Octree, OctreeObject } from "./utils/Octree";
 import { ParticleConnector } from "./utils/ParticleConnector";
 import { ParticlePool } from "./utils/ParticlePool";
 import { PerformanceMonitor } from "./utils/PerformanceMonitor";
@@ -95,6 +97,12 @@ export const initializeCyberScape = (
 
   const performanceMonitor = new PerformanceMonitor();
 
+  const octree = new Octree({
+    min: [-width / 2, -height / 2, -300],
+    max: [width / 2, height / 2, 300],
+  });
+  const frustumCuller = new FrustumCuller();
+
   /**
    * Updates the canvas size based on the navigation element's dimensions.
    */
@@ -119,6 +127,15 @@ export const initializeCyberScape = (
     numberOfParticles = config.calculateParticleCount(width, height);
     numberOfShapes = config.getShapeCount(width);
     adjustShapeCounts();
+
+    // Update octree bounds
+    octree.updateBounds({
+      min: [-width / 2, -height / 2, -300],
+      max: [width / 2, height / 2, 300],
+    });
+
+    // Update config canvas size
+    config.updateCanvasSize(width, height);
   };
 
   window.addEventListener("resize", handleResize);
@@ -234,6 +251,25 @@ export const initializeCyberScape = (
       updateParticleConnections(particlesArray);
       updateParticleConnections(collisionParticlesArray);
 
+      // Clear the octree before adding new objects
+      octree.clear();
+
+      // Update frustum culling
+      const projectionMatrix = mat4.perspective(
+        mat4.create(),
+        Math.PI / 4,
+        width / height,
+        0.1,
+        1000
+      );
+      const viewMatrix = mat4.lookAt(
+        mat4.create(),
+        [0, 0, 500],
+        [0, 0, 0],
+        [0, 1, 0]
+      );
+      frustumCuller.updateFrustum(projectionMatrix, viewMatrix);
+
       if (activeParticles < numberOfParticles && Math.random() < 0.1) {
         const newParticle = particlePool.getParticle(width, height);
         newParticle.setDelayedAppearance();
@@ -252,7 +288,12 @@ export const initializeCyberScape = (
             height,
             shapesArray
           );
-          particle.draw(ctx, mouseX, mouseY, width, height);
+          octree.insert(particle as unknown as OctreeObject);
+          if (
+            frustumCuller.isShapeVisible(particle as unknown as VectorShape)
+          ) {
+            particle.draw(ctx, mouseX, mouseY, width, height);
+          }
         } else {
           particle.updateDelay();
         }
@@ -262,7 +303,12 @@ export const initializeCyberScape = (
       for (const particle of collisionParticlesArray) {
         if (particle.isReady()) {
           particle.update();
-          particle.draw(ctx, mouseX, mouseY, width, height);
+          octree.insert(particle as unknown as OctreeObject);
+          if (
+            frustumCuller.isShapeVisible(particle as unknown as VectorShape)
+          ) {
+            particle.draw(ctx, mouseX, mouseY, width, height);
+          }
         } else {
           particle.updateDelay();
         }
@@ -281,7 +327,10 @@ export const initializeCyberScape = (
         );
         if (shape.opacity > 0 && !shape.isExploded) {
           existingPositions.add(shape.getPositionKey());
-          shape.draw(ctx, width, height);
+          octree.insert(shape as unknown as OctreeObject);
+          if (frustumCuller.isShapeVisible(shape)) {
+            shape.draw(ctx, width, height);
+          }
         }
         if (shape.isFadedOut()) {
           shape.reset(existingPositions, width, height);
@@ -290,7 +339,7 @@ export const initializeCyberScape = (
         if (Math.random() < 0.01) {
           const emittedParticle = particlePool.getParticle(width, height);
           vec3.copy(emittedParticle.position, shape.position);
-          vec3.copy(emittedParticle.velocity, shape.velocity); // Ensure emitted particle's velocity matches shape
+          vec3.copy(emittedParticle.velocity, shape.velocity);
           emittedParticle.size = Math.random() * 1 + 0.5;
           emittedParticle.color = shape.color;
           emittedParticle.lifespan = 1000;
@@ -300,53 +349,62 @@ export const initializeCyberScape = (
         }
       }
 
-      // Handle collisions, color blending, and forces using handler classes
-      CollisionHandler.handleCollisions(
-        shapesArray, // First argument: VectorShape[]
-        (shapeA: VectorShape, shapeB: VectorShape) => {
-          const now = Date.now();
-          if (
-            currentExplosions >= config.maxSimultaneousExplosions ||
-            now - lastExplosionTime < config.explosionCooldown
-          ) {
-            return;
-          }
-
-          const collisionPos = vec3.create();
-          vec3.add(collisionPos, shapeA.position, shapeB.position);
-          vec3.scale(collisionPos, collisionPos, 0.5);
-
-          if (
-            collisionParticlesArray.length + config.explosionParticlesToEmit <=
-              config.maxExplosionParticles &&
-            explosionParticlesCount + config.explosionParticlesToEmit <=
-              config.maxExplosionParticles
-          ) {
-            for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-              const particle = particlePool.getCollisionParticle(
-                vec3.clone(collisionPos),
-                () => {
-                  explosionParticlesCount--;
-                  currentExplosions = Math.max(0, currentExplosions - 1);
-                  particlePool.returnCollisionParticle(particle);
-                }
-              ) as ParticleAtCollision;
-              particle.lifespan = config.particleAtCollisionLifespan;
-              particle.setFadeOutDuration(
-                config.particleAtCollisionFadeOutDuration
-              );
-              collisionParticlesArray.push(particle);
-              explosionParticlesCount++;
+      // Handle collisions using octree
+      const handleCollisions = () => {
+        const bounds = octree.getBounds();
+        const allObjects = octree.query(bounds);
+        CollisionHandler.handleCollisions(
+          allObjects.filter(
+            (obj): obj is VectorShape => obj instanceof VectorShape
+          ),
+          (shapeA: VectorShape, shapeB: VectorShape) => {
+            const now = Date.now();
+            if (
+              currentExplosions >= config.maxSimultaneousExplosions ||
+              now - lastExplosionTime < config.explosionCooldown
+            ) {
+              return;
             }
-            currentExplosions++;
-            lastExplosionTime = now;
-          }
 
-          shapeA.explodeAndRespawn();
-          shapeB.explodeAndRespawn();
-        },
-        collisionParticlesArray // Third argument: ParticleAtCollision[]
-      );
+            const collisionPos = vec3.create();
+            vec3.add(collisionPos, shapeA.position, shapeB.position);
+            vec3.scale(collisionPos, collisionPos, 0.5);
+
+            if (
+              collisionParticlesArray.length +
+                config.explosionParticlesToEmit <=
+                config.maxExplosionParticles &&
+              explosionParticlesCount + config.explosionParticlesToEmit <=
+                config.maxExplosionParticles
+            ) {
+              for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+                const particle = particlePool.getCollisionParticle(
+                  vec3.clone(collisionPos),
+                  () => {
+                    explosionParticlesCount--;
+                    currentExplosions = Math.max(0, currentExplosions - 1);
+                    particlePool.returnCollisionParticle(particle);
+                  }
+                ) as ParticleAtCollision;
+                particle.lifespan = config.particleAtCollisionLifespan;
+                particle.setFadeOutDuration(
+                  config.particleAtCollisionFadeOutDuration
+                );
+                collisionParticlesArray.push(particle);
+                explosionParticlesCount++;
+              }
+              currentExplosions++;
+              lastExplosionTime = now;
+            }
+
+            shapeA.explodeAndRespawn();
+            shapeB.explodeAndRespawn();
+          },
+          collisionParticlesArray
+        );
+      };
+
+      handleCollisions();
 
       ColorBlender.blendColors(shapesArray);
       ForceHandler.applyForces(shapesArray);

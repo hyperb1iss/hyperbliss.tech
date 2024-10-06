@@ -111,6 +111,9 @@ export class CyberScapeConfig {
   public minConnectionDelay: number = 100;
   public maxConnectionDelay: number = 500;
 
+  public canvasWidth: number = 800;
+  public canvasHeight: number = 600;
+
   private constructor() {}
 
   /**
@@ -133,6 +136,10 @@ export class CyberScapeConfig {
     this.frameTime = 1000 / this.targetFPS;
   }
 
+  public updateCanvasSize(width: number, height: number): void {
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+  }
   /**
    * Calculates the number of particles based on canvas dimensions and device type.
    * @param width - Canvas width.
