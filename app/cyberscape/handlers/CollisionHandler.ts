@@ -12,8 +12,12 @@ import { ParticleAtCollision } from "../particles/ParticleAtCollision";
 import { VectorShape } from "../shapes/VectorShape";
 import { ColorManager } from "../utils/ColorManager";
 import { ParticlePool } from "../utils/ParticlePool";
+import { SpatialGrid } from "../utils/SpatialGrid";
 
-// Define the type for the collision callback function
+/**
+ * Type definition for the collision callback function.
+ * This function is called when a collision is detected between two shapes.
+ */
 export type CollisionCallback = (
   shapeA: VectorShape,
   shapeB: VectorShape
@@ -22,9 +26,8 @@ export type CollisionCallback = (
 export class CollisionHandler {
   // Static reference to the ParticlePool instance
   private static particlePool: ParticlePool | null = null;
-
-  // Configuration parameters (can be extended or moved to a config file)
-  private static readonly gridSize: number = 100; // Adjust based on your needs
+  // Static reference to the SpatialGrid instance for spatial partitioning
+  private static spatialGrid: SpatialGrid;
 
   /**
    * Initializes the CollisionHandler with a ParticlePool instance.
@@ -33,11 +36,17 @@ export class CollisionHandler {
    */
   public static initialize(pool: ParticlePool): void {
     this.particlePool = pool;
-    console.log("CollisionHandler initialized with ParticlePool.");
+    this.spatialGrid = new SpatialGrid(
+      CyberScapeConfig.getInstance().collisionGridSize
+    );
+    console.log(
+      "CollisionHandler initialized with ParticlePool and SpatialGrid."
+    );
   }
 
   /**
    * Handles collision detection and response between shapes.
+   * Uses spatial partitioning to efficiently detect potential collisions.
    * @param shapes - Array of VectorShape instances to check collisions with.
    * @param collisionCallback - Optional callback to trigger additional effects upon collision.
    * @param collisionParticlesArray - Array of ParticleAtCollision instances to add emitted particles to.
@@ -54,70 +63,53 @@ export class CollisionHandler {
       return;
     }
 
-    const activeShapes = shapes.filter((shape) => !shape.isExploded);
-    const gridSize = this.gridSize;
-    const grid: Map<string, VectorShape[]> = new Map();
+    // Clear the spatial grid before adding new shapes
+    this.spatialGrid.clear();
 
-    // Place shapes in grid cells
-    for (const shape of activeShapes) {
-      const cellX = Math.floor(shape.position[0] / gridSize);
-      const cellY = Math.floor(shape.position[1] / gridSize);
-      const cellZ = Math.floor(shape.position[2] / gridSize);
-      const cellKey = `${cellX},${cellY},${cellZ}`;
-
-      if (!grid.has(cellKey)) {
-        grid.set(cellKey, []);
+    // Add shapes to the spatial grid for efficient collision detection
+    shapes.forEach((shape) => {
+      if (!shape.isExploded) {
+        this.spatialGrid.addShape(shape);
       }
-      grid.get(cellKey)!.push(shape);
-    }
+    });
 
-    // Check collisions only within the same cell and neighboring cells
-    grid.forEach((shapesInCell, cellKey) => {
-      const [cellX, cellY, cellZ] = cellKey.split(",").map(Number);
+    // Check collisions using spatial grid
+    shapes.forEach((shapeA) => {
+      if (shapeA.isExploded) return;
 
-      for (let dx = -1; dx <= 1; dx++) {
-        for (let dy = -1; dy <= 1; dy++) {
-          for (let dz = -1; dz <= 1; dz++) {
-            const neighborKey = `${cellX + dx},${cellY + dy},${cellZ + dz}`;
-            const neighborShapes = grid.get(neighborKey) || [];
+      // Retrieve nearby shapes from the spatial grid
+      const nearbyShapes = this.spatialGrid.getNearbyObjects(
+        shapeA.position
+      ) as VectorShape[];
 
-            for (const shapeA of shapesInCell) {
-              for (const shapeB of neighborShapes) {
-                if (shapeA === shapeB) continue;
+      nearbyShapes.forEach((shapeB) => {
+        if (shapeA === shapeB || shapeB.isExploded) return;
 
-                const deltaPos = vec3.create();
-                vec3.subtract(deltaPos, shapeB.position, shapeA.position);
-                const distance = vec3.length(deltaPos);
+        const deltaPos = vec3.create();
+        vec3.subtract(deltaPos, shapeB.position, shapeA.position);
+        const distance = vec3.length(deltaPos);
 
-                if (distance < shapeA.radius + shapeB.radius) {
-                  // Collision detected, handle it
-                  this.handleCollisionResponse(
-                    shapeA,
-                    shapeB,
-                    deltaPos,
-                    distance
-                  );
+        if (distance < shapeA.radius + shapeB.radius) {
+          // Handle collision response between the two shapes
+          this.handleCollisionResponse(shapeA, shapeB, deltaPos, distance);
 
-                  if (collisionCallback) {
-                    collisionCallback(shapeA, shapeB);
-                  }
+          // Trigger additional effects if a collision callback is provided
+          if (collisionCallback) {
+            collisionCallback(shapeA, shapeB);
+          }
 
-                  // Emit collision particles
-                  if (collisionParticlesArray) {
-                    this.emitCollisionParticles(
-                      shapeA,
-                      shapeB,
-                      deltaPos,
-                      distance,
-                      collisionParticlesArray
-                    );
-                  }
-                }
-              }
-            }
+          // Emit collision particles if a collision particles array is provided
+          if (collisionParticlesArray) {
+            this.emitCollisionParticles(
+              shapeA,
+              shapeB,
+              deltaPos,
+              distance,
+              collisionParticlesArray
+            );
           }
         }
-      }
+      });
     });
   }
 
@@ -225,21 +217,12 @@ export class CollisionHandler {
       // Retrieve a ParticleAtCollision from the ParticlePool
       const particle = this.particlePool!.getCollisionParticle(
         vec3.clone(collisionPos),
-        () => {
-          // Callback when the particle expires
-          // This can be used to track active explosions or other effects
-          // For example:
-          // explosionParticlesCount--;
-          // currentExplosions = Math.max(0, currentExplosions - 1);
-        }
+        () => {}
       );
 
       // Configure particle properties using CyberScapeConfig
       particle.lifespan = config.particleAtCollisionLifespan;
       particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration);
-
-      // Optionally, you can randomize additional properties here
-      // For example, size or color variations
 
       // Add the particle to the collision particles array
       collisionParticlesArray.push(particle);
