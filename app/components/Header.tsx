@@ -13,7 +13,7 @@ import Logo from "./Logo";
 import MobileMenuIcon from "./MobileMenuIcon";
 import MobileNavLinks from "./MobileNavLinks";
 import NavLinks from "./NavLinks";
-import { debounce } from "lodash"; // Add this import
+import { debounce } from "lodash";
 
 /**
  * Styled components for the header
@@ -47,8 +47,8 @@ const Canvas = styled.canvas`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; // Ensures the canvas scales to the full width
+  height: 100%; // Ensures the canvas scales to the full height
   pointer-events: none;
   z-index: -1;
 `;
@@ -90,39 +90,20 @@ const Header: React.FC = () => {
   const navRef = useRef<HTMLElement>(null);
   const { isExpanded, setIsExpanded } = useHeaderContext();
 
-  // Move resizeCanvas function outside of useEffect
-  const resizeCanvas = () => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const { width, height } = canvas.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.scale(dpr, dpr);
-      }
-    }
-  };
-
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
     let cleanupCanvas: () => void = () => {};
     if (canvasRef.current && navRef.current) {
-      resizeCanvas(); // Initial resize
-      window.addEventListener("resize", resizeCanvas);
-
       cleanupCanvas = initializeCyberScape(
         canvasRef.current,
         navRef.current as unknown as HTMLAnchorElement,
-        navRef.current as unknown as HTMLAnchorElement
+        navRef.current as HTMLElement
       );
     }
 
     // Cleanup on unmount
     return () => {
       if (cleanupCanvas) cleanupCanvas();
-      window.removeEventListener("resize", resizeCanvas);
     };
   }, []);
 
@@ -158,7 +139,7 @@ const Header: React.FC = () => {
       if (navElement) {
         navElement.removeEventListener("click", clickHandler);
       }
-      clickHandler.cancel(); // Now this will work
+      clickHandler.cancel();
     };
   }, [handleHeaderClick]);
 

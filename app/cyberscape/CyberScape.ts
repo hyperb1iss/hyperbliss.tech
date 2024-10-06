@@ -104,16 +104,30 @@ export const initializeCyberScape = (
   const frustumCuller = new FrustumCuller();
 
   /**
-   * Updates the canvas size based on the navigation element's dimensions.
+   * Updates the canvas size based on the navigation element's dimensions and scales it for performance.
    */
   const updateCanvasSize = () => {
     const { width: newWidth, height: newHeight } =
       navElement.getBoundingClientRect();
-    if (canvas.width !== newWidth || canvas.height !== newHeight) {
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = newWidth * dpr;
-      canvas.height = newHeight * dpr;
-      ctx.scale(dpr, dpr);
+
+    const isMobile = newWidth <= config.mobileWidthThreshold;
+
+    let canvasScaleFactor = 1;
+
+    if (isMobile) {
+      canvasScaleFactor = 0.75;
+    } 
+
+    const scaledWidth = newWidth * canvasScaleFactor;
+    const scaledHeight = newHeight * canvasScaleFactor;
+
+    if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+      ctx.resetTransform();
+      const scaleX = newWidth / scaledWidth;
+      const scaleY = newHeight / scaledHeight;
+      ctx.scale(scaleX, scaleY);
       width = newWidth;
       height = newHeight;
     }
@@ -471,6 +485,7 @@ export const initializeCyberScape = (
 
   /**
    * Draws connections between shapes.
+   * @param ctx - The canvas rendering context.
    */
   const drawShapeConnections = (ctx: CanvasRenderingContext2D) => {
     ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
