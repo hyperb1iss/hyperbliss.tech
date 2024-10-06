@@ -88,7 +88,6 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
 
   return (
     <MainContainer>
-      <Header />
       <ContentWrapper>
         <MainContent $isSidebarCollapsed={isSidebarCollapsed}>
           <HeroWrapper>
