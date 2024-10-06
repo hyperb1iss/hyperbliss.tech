@@ -12,9 +12,9 @@ import { ParticleAtCollision } from "./particles/ParticleAtCollision";
 import { ShapeFactory } from "./shapes/ShapeFactory";
 import { VectorShape } from "./shapes/VectorShape";
 import { ColorManager } from "./utils/ColorManager";
-import { Connection } from "./utils/Connection"; // Import Connection interface
 import { ParticlePool } from "./utils/ParticlePool";
 import { VectorMath } from "./utils/VectorMath";
+import { ParticleConnector } from "./utils/ParticleConnector";
 
 /**
  * Function to trigger the CyberScape animation at specific coordinates.
@@ -83,6 +83,8 @@ export const initializeCyberScape = (
     particlesArray,
     shapesArray
   );
+
+  const particleConnector = new ParticleConnector();
 
   /**
    * Updates the canvas size based on the navigation element's dimensions.
@@ -168,150 +170,6 @@ export const initializeCyberScape = (
     if (!ColorManager.isValidCyberpunkHue(hue)) {
       hue = ColorManager.getRandomCyberpunkHue();
     }
-  };
-
-  /**
-   * The list of active connections between particles.
-   */
-  const connections: Connection[] = [];
-  const CONNECTION_ANIMATION_DURATION = 1000; // Increased duration from 500 to 1000 ms
-
-  // Remove or comment out the unused constant
-  // const MAX_CONNECTIONS_PER_PARTICLE = 5; // You can adjust this value as needed
-
-  // New: Maximum connection distance relative to canvas size (e.g., 10% of canvas diagonal)
-  const MAX_CONNECTION_DISTANCE = config.particleConnectionDistance;
-
-  /**
-   * Connects particles by drawing lines between those that are within a certain distance.
-   * Animates the connection lines smoothly.
-   */
-  const connectParticles = (
-    particles: Particle[],
-    ctx: CanvasRenderingContext2D,
-    timestamp: number
-  ) => {
-    const newConnections: Connection[] = [];
-
-    // Filter particles to only those visible
-    const visibleParticles = particles.filter((p) => p.isVisible);
-
-    for (let a = 0; a < visibleParticles.length; a++) {
-      const particleA = visibleParticles[a];
-      if (particleA instanceof ParticleAtCollision) continue;
-
-      for (let b = a + 1; b < visibleParticles.length; b++) {
-        const particleB = visibleParticles[b];
-        if (particleB instanceof ParticleAtCollision) continue;
-
-        const posA = VectorMath.project(particleA.position, width, height);
-        const posB = VectorMath.project(particleB.position, width, height);
-
-        const dx = posA.x - posB.x;
-        const dy = posA.y - posB.y;
-        const distance = Math.hypot(dx, dy);
-
-        if (
-          distance > MAX_CONNECTION_DISTANCE ||
-          distance >= config.particleConnectionDistance
-        ) {
-          continue;
-        }
-
-        // Check if this connection already exists
-        const existingConnection = connections.find(
-          (conn) =>
-            (conn.particleA === particleA && conn.particleB === particleB) ||
-            (conn.particleA === particleB && conn.particleB === particleA)
-        );
-
-        if (existingConnection) {
-          // Update existing connection
-          const elapsed = timestamp - existingConnection.createdAt;
-          existingConnection.opacity = Math.min(
-            elapsed / existingConnection.duration,
-            1
-          );
-          newConnections.push(existingConnection);
-        } else if (
-          particleA.canCreateNewConnection(timestamp) &&
-          particleB.canCreateNewConnection(timestamp)
-        ) {
-          // Create a new connection only if both particles are ready
-          newConnections.push({
-            particleA: particleA,
-            particleB: particleB,
-            createdAt: timestamp,
-            duration: CONNECTION_ANIMATION_DURATION,
-            opacity: 0, // Start fully transparent
-          });
-          particleA.incrementConnectionCount();
-          particleB.incrementConnectionCount();
-        }
-      }
-    }
-
-    // Handle fade-out for obsolete connections
-    const obsoleteConnections = connections.filter((conn) => {
-      const stillExists = newConnections.some(
-        (newConn) =>
-          (newConn.particleA === conn.particleA &&
-            newConn.particleB === conn.particleB) ||
-          (newConn.particleA === conn.particleB &&
-            newConn.particleB === conn.particleA)
-      );
-      return !stillExists;
-    });
-
-    obsoleteConnections.forEach((conn: Connection) => {
-      if (conn.opacity > 0) {
-        // Start fade-out
-        conn.opacity = Math.max(conn.opacity - 0.01, 0);
-        if (conn.opacity > 0) {
-          newConnections.push(conn);
-        } else {
-          // Connection is fully faded out, decrement connection counts
-          conn.particleA.decrementConnectionCount();
-          conn.particleB.decrementConnectionCount();
-        }
-      }
-    });
-
-    // Replace the old connections with the new ones
-    connections.length = 0;
-    connections.push(...newConnections);
-
-    // Draw connections
-    connections.forEach((conn: Connection) => {
-      const { particleA, particleB, opacity } = conn;
-
-      // Only draw if opacity is greater than 0
-      if (opacity > 0) {
-        const posA = VectorMath.project(particleA.position, width, height);
-        const posB = VectorMath.project(particleB.position, width, height);
-
-        const rgbA = ColorManager.hexToRgb(particleA.color);
-        const rgbB = ColorManager.hexToRgb(particleB.color);
-        let connectionColor = `rgba(200, 100, 255, ${opacity * 0.7})`;
-
-        if (rgbA && rgbB) {
-          const blendedR = Math.floor((rgbA.r + rgbB.r) / 2);
-          const blendedG = Math.floor((rgbA.g + rgbB.g) / 2);
-          const blendedB = Math.floor((rgbA.b + rgbB.b) / 2);
-          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${
-            opacity * 0.7
-          })`;
-        }
-
-        ctx.strokeStyle = connectionColor;
-        ctx.lineWidth = 1;
-
-        ctx.beginPath();
-        ctx.moveTo(posA.x, posA.y);
-        ctx.lineTo(posB.x, posB.y);
-        ctx.stroke();
-      }
-    });
   };
 
   /**
@@ -489,7 +347,7 @@ export const initializeCyberScape = (
     drawShapeConnections(ctx);
 
     // Connect regular particles with animation
-    connectParticles(particlesArray, ctx, timestamp);
+    particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height);
 
     // Remove expired regular particles
     for (let i = particlesArray.length - 1; i >= 0; i--) {

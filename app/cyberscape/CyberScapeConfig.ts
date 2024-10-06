@@ -100,6 +100,7 @@ export class CyberScapeConfig {
   // Connection settings
   public particleConnectionDistance: number = 100;
   public shapeConnectionDistance: number = 120;
+  public connectionAnimationDuration: number = 1000; // Default duration in milliseconds
 
   // Mobile specific settings
   public mobileWidthThreshold: number = 768;
