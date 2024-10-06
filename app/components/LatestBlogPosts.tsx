@@ -12,6 +12,7 @@ import StyledTitle from "./StyledTitle";
 const SidebarContainer = styled(motion.div)<{
   $isCollapsed: boolean;
   $isMobile: boolean;
+  $isHeaderExpanded: boolean;
 }>`
   ${(props) =>
     props.$isMobile
@@ -27,7 +28,9 @@ const SidebarContainer = styled(motion.div)<{
   `
       : `
     position: fixed;
-    top: var(--header-height, 100px);
+    top: ${
+      props.$isHeaderExpanded ? "200px" : "100px"
+    }; // Adjust based on header expansion
     right: 0;
     bottom: 0;
     width: ${props.$isCollapsed ? "40px" : "300px"};
@@ -39,11 +42,11 @@ const SidebarContainer = styled(motion.div)<{
     border-left: 1px solid rgba(0, 255, 255, 0.2);
     padding: ${props.$isCollapsed ? "1rem 0" : "2rem"};
     overflow-y: auto;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, top 0.3s ease;
     scrollbar-width: thin;
     scrollbar-color: rgba(0, 255, 255, 0.5) rgba(10, 10, 20, 0.8);
     z-index: 1000;
-    max-height: calc(100vh - var(--header-height, 100px));
+    max-height: calc(100vh - ${props.$isHeaderExpanded ? "200px" : "100px"});
   `}
 
   &::-webkit-scrollbar {
@@ -119,7 +122,11 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
       transparent 70%
     );
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.5s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
   }
 
   .hover-icon {
@@ -200,13 +207,21 @@ interface LatestBlogPostsProps {
   isCollapsed: boolean;
   onToggle: () => void;
   isMobile: boolean;
+  isHeaderExpanded: boolean;
 }
 
+/**
+ * LatestBlogPosts component
+ * Renders a sidebar or section displaying the latest blog posts.
+ * @param {LatestBlogPostsProps} props - The component props
+ * @returns {JSX.Element} Rendered latest blog posts component
+ */
 const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
   posts,
   isCollapsed,
   onToggle,
   isMobile,
+  isHeaderExpanded,
 }) => {
   const controls = useAnimation();
 
@@ -218,32 +233,6 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
         transition: { delay: i * 0.1 },
       }));
     }
-
-    if (!isMobile) {
-      const updateSidebarHeight = () => {
-        const header = document.querySelector("header");
-        const footer = document.querySelector("footer");
-        if (header) {
-          document.documentElement.style.setProperty(
-            "--header-height",
-            `${header.offsetHeight}px`
-          );
-        }
-        if (footer) {
-          document.documentElement.style.setProperty(
-            "--footer-height",
-            `${footer.offsetHeight}px`
-          );
-        }
-      };
-
-      updateSidebarHeight();
-      window.addEventListener("resize", updateSidebarHeight);
-
-      return () => {
-        window.removeEventListener("resize", updateSidebarHeight);
-      };
-    }
   }, [controls, isCollapsed, isMobile]);
 
   return (
@@ -253,6 +242,7 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
       transition={{ duration: 0.8, ease: "easeOut" }}
       $isCollapsed={isCollapsed}
       $isMobile={isMobile}
+      $isHeaderExpanded={isHeaderExpanded}
     >
       {!isMobile && (
         <ToggleButton onClick={onToggle}>

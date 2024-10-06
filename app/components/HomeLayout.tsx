@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
+import { useHeaderContext } from "./HeaderContext";
 import HeroSection from "./HeroSection";
 import LatestBlogPosts from "./LatestBlogPosts";
 
@@ -67,6 +68,7 @@ interface HomeLayoutProps {
 const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const { isExpanded } = useHeaderContext();
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -98,6 +100,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
               isCollapsed={false}
               onToggle={() => {}}
               isMobile={true}
+              isHeaderExpanded={isExpanded}
             />
           )}
           <FeaturedProjectsSection projects={projects} />
@@ -108,6 +111,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
             isCollapsed={isSidebarCollapsed}
             onToggle={toggleSidebar}
             isMobile={false}
+            isHeaderExpanded={isExpanded}
           />
         )}
       </ContentWrapper>
