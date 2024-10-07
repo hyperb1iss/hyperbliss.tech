@@ -4,7 +4,13 @@
 import { motion, useAnimation } from "framer-motion";
 import Link from "next/link";
 import { useEffect } from "react";
-import { FaArrowRight, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaCalendarAlt,
+  FaChevronLeft,
+  FaChevronRight,
+  FaUser,
+} from "react-icons/fa";
 import styled from "styled-components";
 import GlitchSpan from "./GlitchSpan";
 import StyledTitle from "./StyledTitle";
@@ -28,7 +34,7 @@ const SidebarContainer = styled(motion.div)<{
   `
       : `
     position: sticky;
-    top: 0; // Changed from 100px to 0
+    top: 0;
     right: 0;
     width: ${props.$isCollapsed ? "40px" : "300px"};
     background: linear-gradient(
@@ -42,7 +48,7 @@ const SidebarContainer = styled(motion.div)<{
     margin-top: -100px; // Added to offset the top position
     transition: width 0.3s ease;
     z-index: 10;
-    height: 100vh; // Changed to full viewport height
+    height: 100vh;
     overflow-y: auto;
   `}
 
@@ -96,15 +102,15 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 12px;
-  padding: 1.2rem;
+  padding: 1.7rem;
   position: relative;
   overflow: hidden;
   margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  height: auto; // Changed from fixed height to auto
-  min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
+  height: auto;
+  min-height: ${(props) => (props.$isMobile ? "280px" : "auto")};
 
   &::before {
     content: "";
@@ -126,6 +132,10 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
     opacity: 1;
   }
 
+  &:hover {
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.4), 0 0 50px rgba(255, 0, 255, 0.3);
+  }
+
   .hover-icon {
     position: absolute;
     top: 50%;
@@ -141,18 +151,22 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
 const PostTitle = styled.h3<{ $isMobile: boolean }>`
   font-size: 1.4rem;
   color: #ff00ff;
-  margin-bottom: 0.6rem;
-  text-shadow: 0 0 5px #ff00ff;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 7px #ff00ff;
   font-family: var(--font-heading);
 `;
 
 const PostExcerpt = styled.p<{ $isMobile: boolean }>`
   font-size: 1.2rem;
   color: var(--color-text);
-  margin-bottom: 0.4rem;
-  line-height: 1.4;
-  opacity: 0.9;
+  margin-bottom: 0.6rem;
+  line-height: 1.5;
+  opacity: 0.95;
   flex-grow: 1;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
@@ -163,26 +177,58 @@ const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
   display: flex;
   align-items: center;
   width: fit-content;
+  margin-top: 0.8rem;
 
   &:hover {
     color: #ff00ff;
-    text-shadow: 0 0 5px #ff00ff;
+    text-shadow: 0 0 7px #ff00ff;
   }
 `;
 
-const DateTag = styled.span<{ $isMobile: boolean }>`
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: rgba(255, 0, 255, 0.2);
-  color: #ff00ff;
-  padding: 0.2rem 0.5rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  text-shadow: 0 0 3px #ff00ff;
+const HoverIcon = styled(FaArrowRight)``;
+
+const PostMeta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
 `;
 
-const HoverIcon = styled(FaArrowRight)``;
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff;
+
+  svg {
+    margin-right: 0.4rem;
+    font-size: 1.2rem;
+  }
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+`;
+
+const Tag = styled.span`
+  background-color: rgba(162, 89, 255, 0.3);
+  color: #ff00ff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  text-shadow: 0 0 5px #ff00ff;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(162, 89, 255, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+  }
+`;
 
 interface BlogPost {
   slug: string;
@@ -190,6 +236,8 @@ interface BlogPost {
     title: string;
     excerpt: string;
     date: string;
+    author: string;
+    tags: string[];
   };
 }
 
@@ -270,26 +318,38 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
                   }}
                   $isMobile={isMobile}
                   whileHover={{
-                    scale: 1.03,
+                    scale: 1.05,
                     boxShadow:
-                      "0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4)",
+                      "0 0 30px rgba(0, 255, 255, 0.6), 0 0 50px rgba(255, 0, 255, 0.4)",
                     borderColor: "#00ffff",
-                    transition: { duration: 0.2, ease: "easeInOut" },
+                    transition: { duration: 0.3, ease: "easeInOut" },
                   }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <PostTitle $isMobile={isMobile}>
                     {post.frontmatter.title}
                   </PostTitle>
+                  <PostMeta>
+                    <MetaItem>
+                      <FaUser />
+                      {post.frontmatter.author}
+                    </MetaItem>
+                    <MetaItem>
+                      <FaCalendarAlt />
+                      {new Date(post.frontmatter.date).toLocaleDateString()}
+                    </MetaItem>
+                  </PostMeta>
                   <PostExcerpt $isMobile={isMobile}>
                     {post.frontmatter.excerpt}
                   </PostExcerpt>
+                  <TagsContainer>
+                    {post.frontmatter.tags.map((tag) => (
+                      <Tag key={tag}>{tag}</Tag>
+                    ))}
+                  </TagsContainer>
                   <ReadMoreLink $isMobile={isMobile}>
                     Read More <FaChevronRight style={{ marginLeft: "5px" }} />
                   </ReadMoreLink>
-                  <DateTag $isMobile={isMobile}>
-                    {new Date(post.frontmatter.date).toLocaleDateString()}
-                  </DateTag>
                   <HoverIcon className="hover-icon" />
                 </BlogPostCard>
               </Link>
