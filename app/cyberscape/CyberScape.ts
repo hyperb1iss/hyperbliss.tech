@@ -115,8 +115,8 @@ export const initializeCyberScape = (
     let canvasScaleFactor = 1;
 
     if (isMobile) {
-      canvasScaleFactor = 0.75;
-    } 
+      canvasScaleFactor = window.devicePixelRatio || 1; // Use device pixel ratio for mobile
+    }
 
     const scaledWidth = newWidth * canvasScaleFactor;
     const scaledHeight = newHeight * canvasScaleFactor;
@@ -124,10 +124,10 @@ export const initializeCyberScape = (
     if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
       canvas.width = scaledWidth;
       canvas.height = scaledHeight;
+      canvas.style.width = `${newWidth}px`;
+      canvas.style.height = `${newHeight}px`;
       ctx.resetTransform();
-      const scaleX = newWidth / scaledWidth;
-      const scaleY = newHeight / scaledHeight;
-      ctx.scale(scaleX, scaleY);
+      ctx.scale(canvasScaleFactor, canvasScaleFactor);
       width = newWidth;
       height = newHeight;
     }
@@ -181,6 +181,12 @@ export const initializeCyberScape = (
    * Adjusts the number of shapes based on the current configuration.
    */
   const adjustShapeCounts = () => {
+    const isMobile = width <= config.mobileWidthThreshold;
+    const mobileShapeFactor = isMobile ? 0.5 : 1; // Reduce shapes by half on mobile
+    numberOfShapes = Math.floor(
+      config.getShapeCount(width) * mobileShapeFactor
+    );
+
     const existingPositions = new Set<string>();
     while (shapesArray.length < numberOfShapes) {
       const shapeType = [
@@ -190,9 +196,29 @@ export const initializeCyberScape = (
         "octahedron",
         "dodecahedron",
       ][shapesArray.length % 5];
-      shapesArray.push(
-        ShapeFactory.createShape(shapeType, existingPositions, width, height)
+      const newShape = ShapeFactory.createShape(
+        shapeType,
+        existingPositions,
+        width,
+        height
       );
+
+      // Ensure shapes are initialized on-screen for all devices
+      newShape.position[0] = Math.random() * width - width / 2;
+      newShape.position[1] = Math.random() * height - height / 2;
+      newShape.position[2] = Math.random() * 200 - 100;
+
+      // Adjust the position to ensure it's within the visible area
+      newShape.position[0] = Math.max(
+        Math.min(newShape.position[0], width / 2 - 50),
+        -width / 2 + 50
+      );
+      newShape.position[1] = Math.max(
+        Math.min(newShape.position[1], height / 2 - 50),
+        -height / 2 + 50
+      );
+
+      shapesArray.push(newShape);
     }
     // If there are more shapes than needed, remove the excess
     if (shapesArray.length > numberOfShapes) {
@@ -242,8 +268,16 @@ export const initializeCyberScape = (
   const triggerSpecialAnimation = (x: number, y: number) => {
     isAnimationTriggered = true;
     animationProgress = 0;
-    animationCenterX = x;
-    animationCenterY = y;
+    const isMobile = width <= config.mobileWidthThreshold;
+    if (isMobile) {
+      // Adjust coordinates for mobile devices
+      const rect = canvas.getBoundingClientRect();
+      animationCenterX = (x / rect.width) * width;
+      animationCenterY = (y / rect.height) * height;
+    } else {
+      animationCenterX = x;
+      animationCenterY = y;
+    }
   };
 
   triggerAnimation = triggerSpecialAnimation;

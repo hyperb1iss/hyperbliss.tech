@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import {
@@ -13,7 +14,6 @@ import Logo from "./Logo";
 import MobileMenuIcon from "./MobileMenuIcon";
 import MobileNavLinks from "./MobileNavLinks";
 import NavLinks from "./NavLinks";
-import { debounce } from "lodash";
 
 /**
  * Styled components for the header
@@ -108,40 +108,50 @@ const Header: React.FC = () => {
   }, []);
 
   // Optimized handler for triggering CyberScape animation
-  const handleHeaderClick = useCallback(() => {
-    const debouncedTrigger = debounce((event: MouseEvent) => {
+  const handleHeaderInteraction = useCallback(() => {
+    const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect();
       if (rect) {
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        triggerCyberScapeAnimation(x, y);
+        let x, y;
+        if (event instanceof MouseEvent) {
+          x = event.clientX - rect.left;
+          y = event.clientY - rect.top;
+        } else if (event instanceof TouchEvent) {
+          x = event.touches[0].clientX - rect.left;
+          y = event.touches[0].clientY - rect.top;
+        }
+        if (x !== undefined && y !== undefined) {
+          triggerCyberScapeAnimation(x, y);
+        }
       }
     }, 100);
 
-    const clickHandler = (event: MouseEvent) => {
+    const interactionHandler = (event: MouseEvent | TouchEvent) => {
       debouncedTrigger(event);
     };
 
-    // Attach the cancel method to the clickHandler
-    clickHandler.cancel = debouncedTrigger.cancel;
+    // Attach the cancel method to the interactionHandler
+    interactionHandler.cancel = debouncedTrigger.cancel;
 
-    return clickHandler;
+    return interactionHandler;
   }, [canvasRef]);
 
-  // Attach the click event listener to the header for CyberScape
+  // Attach the interaction event listeners to the header for CyberScape
   useEffect(() => {
     const navElement = navRef.current;
-    const clickHandler = handleHeaderClick();
+    const interactionHandler = handleHeaderInteraction();
     if (navElement) {
-      navElement.addEventListener("click", clickHandler);
+      navElement.addEventListener("click", interactionHandler);
+      navElement.addEventListener("touchstart", interactionHandler);
     }
     return () => {
       if (navElement) {
-        navElement.removeEventListener("click", clickHandler);
+        navElement.removeEventListener("click", interactionHandler);
+        navElement.removeEventListener("touchstart", interactionHandler);
       }
-      clickHandler.cancel();
+      interactionHandler.cancel();
     };
-  }, [handleHeaderClick]);
+  }, [handleHeaderInteraction]);
 
   // Function to trigger CyberScape animation when menu is opened
   const triggerMenuAnimation = useCallback(() => {
