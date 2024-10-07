@@ -41,10 +41,7 @@ const MainContent = styled.main`
 `;
 
 const HeroWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
 `;
 
 interface BlogPost {
@@ -102,6 +99,15 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           <HeroWrapper>
             <HeroSection />
           </HeroWrapper>
+          {isMobile && (
+            <LatestBlogPosts
+              posts={latestPosts}
+              isCollapsed={false}
+              onToggle={() => {}}
+              isMobile={true}
+              isHeaderExpanded={isExpanded}
+            />
+          )}
           <FeaturedProjectsSection projects={projects} />
         </MainContent>
         {!isMobile && (
@@ -114,15 +120,6 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           />
         )}
       </ContentWrapper>
-      {isMobile && (
-        <LatestBlogPosts
-          posts={latestPosts}
-          isCollapsed={false}
-          onToggle={() => {}}
-          isMobile={true}
-          isHeaderExpanded={isExpanded}
-        />
-      )}
     </MainContainer>
   );
 };
