@@ -27,12 +27,9 @@ const SidebarContainer = styled(motion.div)<{
     max-height: none;
   `
       : `
-    position: fixed;
-    top: ${
-      props.$isHeaderExpanded ? "200px" : "100px"
-    }; // Adjust based on header expansion
+    position: sticky;
+    top: 0; // Changed from 100px to 0
     right: 0;
-    bottom: 0;
     width: ${props.$isCollapsed ? "40px" : "300px"};
     background: linear-gradient(
       135deg,
@@ -41,12 +38,12 @@ const SidebarContainer = styled(motion.div)<{
     );
     border-left: 1px solid rgba(0, 255, 255, 0.2);
     padding: ${props.$isCollapsed ? "1rem 0" : "2rem"};
+    padding-top: calc(100px + 2rem); // Adjusted to account for header height plus desired top padding
+    margin-top: -100px; // Added to offset the top position
+    transition: width 0.3s ease;
+    z-index: 10;
+    height: 100vh; // Changed to full viewport height
     overflow-y: auto;
-    transition: width 0.3s ease, top 0.3s ease;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 255, 255, 0.5) rgba(10, 10, 20, 0.8);
-    z-index: 1000;
-    max-height: calc(100vh - ${props.$isHeaderExpanded ? "200px" : "100px"});
   `}
 
   &::-webkit-scrollbar {
@@ -104,10 +101,10 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   overflow: hidden;
   margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;
-  height: ${(props) => (props.$isMobile ? "auto" : "auto")};
-  min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
   display: flex;
   flex-direction: column;
+  height: auto; // Changed from fixed height to auto
+  min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
 
   &::before {
     content: "";
@@ -156,12 +153,6 @@ const PostExcerpt = styled.p<{ $isMobile: boolean }>`
   line-height: 1.4;
   opacity: 0.9;
   flex-grow: 1;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`

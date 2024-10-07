@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
+import Header from "./Header";
 import { useHeaderContext } from "./HeaderContext";
 import HeroSection from "./HeroSection";
 import LatestBlogPosts from "./LatestBlogPosts";
@@ -14,25 +15,29 @@ const MainContainer = styled.div`
   min-height: 100vh;
 `;
 
+const HeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 1000; // Ensure the header is always on top
+`;
+
 const ContentWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
+  overflow-y: auto;
+  height: calc(100vh - 100px); // Adjust this value based on your header height
 
   @media (min-width: 768px) {
     flex-direction: row;
   }
 `;
 
-const MainContent = styled.main<{ $isSidebarCollapsed: boolean }>`
+const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  transition: margin-right 0.3s ease;
-
-  @media (min-width: 768px) {
-    margin-right: ${(props) => (props.$isSidebarCollapsed ? "40px" : "300px")};
-  }
+  padding-top: 2rem; // Add padding to align with sidebar
 `;
 
 const HeroWrapper = styled.div`
@@ -89,20 +94,14 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
 
   return (
     <MainContainer>
+      <HeaderWrapper>
+        <Header />
+      </HeaderWrapper>
       <ContentWrapper>
-        <MainContent $isSidebarCollapsed={isSidebarCollapsed}>
+        <MainContent>
           <HeroWrapper>
             <HeroSection />
           </HeroWrapper>
-          {isMobile && (
-            <LatestBlogPosts
-              posts={latestPosts}
-              isCollapsed={false}
-              onToggle={() => {}}
-              isMobile={true}
-              isHeaderExpanded={isExpanded}
-            />
-          )}
           <FeaturedProjectsSection projects={projects} />
         </MainContent>
         {!isMobile && (
@@ -115,6 +114,15 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           />
         )}
       </ContentWrapper>
+      {isMobile && (
+        <LatestBlogPosts
+          posts={latestPosts}
+          isCollapsed={false}
+          onToggle={() => {}}
+          isMobile={true}
+          isHeaderExpanded={isExpanded}
+        />
+      )}
     </MainContainer>
   );
 };
