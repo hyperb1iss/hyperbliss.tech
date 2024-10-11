@@ -9,25 +9,17 @@ import StyledTitle from "./StyledTitle";
 
 const FeaturedProjectsSection = styled.section`
   padding: 4rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgba(10, 10, 20, 0.8) 0%,
-    rgba(30, 30, 60, 0.8) 100%
-  );
   position: relative;
   overflow: hidden;
-  border-left: 1px solid rgba(0, 255, 255, 0.2);
-  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
-    background: none;
-    padding: 2rem 2rem; // Further increased padding on the left and right
+    padding: 2rem 2rem;
   }
 `;
 
 const CustomStyledTitle = styled(StyledTitle)`
   padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
-  margin-bottom: ${(props) => (props.$isMobile ? "1rem" : "2rem")}; // Added margin-bottom for spacing
+  margin-bottom: ${(props) => (props.$isMobile ? "1rem" : "2rem")};
   border: 1px solid rgba(0, 255, 255, 0.2);
   background: linear-gradient(
     90deg,
@@ -78,7 +70,7 @@ const CustomStyledTitle = styled(StyledTitle)`
 const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem; // Reduced gap between cards to match the blog cards
+  gap: 1rem;
   max-width: 1200px;
   margin: 0 auto;
 
@@ -87,7 +79,7 @@ const ProjectsGrid = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr); // 2x2 grid on mobile
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
@@ -121,7 +113,11 @@ const ProjectCard = styled(motion.div)`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(0, 255, 255, 0.1) 0%,
+      transparent 70%
+    );
     opacity: 0;
     transition: opacity 0.3s ease;
   }
@@ -209,7 +205,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           },
         }}
       >
-        {projects.slice(0, 4).map((project) => ( // Show up to 4 projects for 2x2 grid
+        {projects.slice(0, 4).map((project) => (
           <ProjectCard
             key={project.slug}
             variants={{

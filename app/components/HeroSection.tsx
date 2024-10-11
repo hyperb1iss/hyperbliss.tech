@@ -213,8 +213,8 @@ export default function HeroSection(): JSX.Element {
       >
         <Title>Welcome to Hyperbliss</Title>
         <Subtitle>
-          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a full-stack
-          software engineer and leader pushing the boundaries of
+          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a
+          full-stack software engineer and leader pushing the boundaries of
           technology from embedded systems to cloud infrastructure.
         </Subtitle>
         <TagCloud>

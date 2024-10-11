@@ -18,8 +18,6 @@ const ContentWrapper = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  overflow-y: auto;
-  height: calc(100vh - 100px); // Adjust this value based on your header height
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -30,11 +28,19 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 2rem; // Add padding to align with sidebar
 `;
 
 const HeroWrapper = styled.div`
   width: 100%;
+`;
+
+const SidebarWrapper = styled.div`
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: 300px;
+    min-width: 300px;
+  }
 `;
 
 interface BlogPost {
@@ -43,7 +49,6 @@ interface BlogPost {
     title: string;
     excerpt: string;
     date: string;
-    author: string;
     tags: string[];
   };
 }
@@ -63,9 +68,7 @@ interface HomeLayoutProps {
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const { isExpanded } = useHeaderContext();
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -80,38 +83,45 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
     };
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
+  const renderContent = () => {
+    if (isMobile) {
+      return (
+        <>
+          <HeroWrapper>
+            <HeroSection />
+          </HeroWrapper>
+          <SidebarWrapper>
+            <LatestBlogPosts
+              posts={latestPosts}
+              isMobile={isMobile}
+            />
+          </SidebarWrapper>
+          <FeaturedProjectsSection projects={projects} />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <MainContent>
+            <HeroWrapper>
+              <HeroSection />
+            </HeroWrapper>
+            <FeaturedProjectsSection projects={projects} />
+          </MainContent>
+          <SidebarWrapper>
+            <LatestBlogPosts
+              posts={latestPosts}
+              isMobile={isMobile}
+            />
+          </SidebarWrapper>
+        </>
+      );
+    }
   };
 
   return (
     <MainContainer>
-      <ContentWrapper>
-        <MainContent>
-          <HeroWrapper>
-            <HeroSection />
-          </HeroWrapper>
-          {isMobile && (
-            <LatestBlogPosts
-              posts={latestPosts}
-              isCollapsed={false}
-              onToggle={() => {}}
-              isMobile={true}
-              isHeaderExpanded={isExpanded}
-            />
-          )}
-          <FeaturedProjectsSection projects={projects} />
-        </MainContent>
-        {!isMobile && (
-          <LatestBlogPosts
-            posts={latestPosts}
-            isCollapsed={isSidebarCollapsed}
-            onToggle={toggleSidebar}
-            isMobile={false}
-            isHeaderExpanded={isExpanded}
-          />
-        )}
-      </ContentWrapper>
+      <ContentWrapper>{renderContent()}</ContentWrapper>
     </MainContainer>
   );
 };
