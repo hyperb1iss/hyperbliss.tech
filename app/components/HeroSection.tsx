@@ -2,8 +2,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import styled from "styled-components";
+import { useEffect, useRef, useState } from "react";
+import styled, { keyframes } from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
@@ -124,7 +124,7 @@ const ContentWrapper = styled(motion.div)`
 
 const Title = styled(motion.h1)`
   font-size: 4rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   color: var(--color-primary);
   text-shadow: 0 0 20px var(--color-primary);
   letter-spacing: 2px;
@@ -139,11 +139,55 @@ const Title = styled(motion.h1)`
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, var(--color-primary), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-primary),
+      var(--color-accent),
+      var(--color-primary),
+      transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    100% {
+      background-position: -100% 0;
+    }
   }
 
   @media (max-width: 768px) {
     font-size: 3rem;
+  }
+`;
+
+const HyperblissSpan = styled.span`
+  background: linear-gradient(
+    45deg,
+    var(--color-primary),
+    var(--color-accent),
+    var(--color-secondary)
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 5s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 `;
 
@@ -160,11 +204,52 @@ const Subtitle = styled(motion.p)`
   }
 `;
 
-const HighlightedName = styled.span`
+const sparkle = keyframes`
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+`;
+
+const SparkleWrapper = styled.span`
+  position: relative;
+  display: inline-block;
+`;
+
+const Sparkle = styled.span<{
+  $size: number;
+  $top: number;
+  $left: number;
+  $delay: number;
+}>`
+  position: absolute;
+  display: block;
+  width: ${(props) => props.$size}px;
+  height: ${(props) => props.$size}px;
+  top: ${(props) => props.$top}%;
+  left: ${(props) => props.$left}%;
+  background-color: var(--color-accent);
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  opacity: 0;
+  animation: ${sparkle} 1.5s ease-in-out infinite;
+  animation-delay: ${(props) => props.$delay}s;
+`;
+
+const HighlightedName = styled(motion.span)`
   color: var(--color-accent);
   font-weight: bold;
   text-shadow: 0 0 10px var(--color-accent);
   position: relative;
+  cursor: pointer;
 
   &::after {
     content: "";
@@ -175,8 +260,23 @@ const HighlightedName = styled.span`
     height: 2px;
     background-color: var(--color-accent);
     box-shadow: 0 0 5px var(--color-accent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
   }
 `;
+
+const createSparkles = (count: number) =>
+  Array.from({ length: count }, (_, i) => ({
+    id: i,
+    size: Math.random() * 4 + 2,
+    top: Math.random() * 100,
+    left: Math.random() * 100,
+    delay: Math.random() * 1.5,
+  }));
 
 const TagCloud = styled(motion.div)`
   display: flex;
@@ -295,6 +395,9 @@ const tags = [
 export default function HeroSection(): JSX.Element {
   const { isExpanded } = useHeaderContext();
 
+  const [isHovered, setIsHovered] = useState(false);
+  const sparkles = createSparkles(10);
+
   return (
     <HeroSectionWrapper $isHeaderExpanded={isExpanded}>
       <AnimatedBackground />
@@ -303,12 +406,39 @@ export default function HeroSection(): JSX.Element {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <Title>Welcome to Hyperbliss</Title>
+        <Title
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
+        </Title>
         <Subtitle>
-          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a
-          full-stack software engineer and leader. I do everything from embedded
-          systems to mobile to cloud. Welcome to my personal site! You&apos;ll
-          find my blog, projects, and more about me here.
+          I&apos;m{" "}
+          <SparkleWrapper
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <HighlightedName
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300, damping: 10 }}
+            >
+              Stefanie Jane
+            </HighlightedName>
+            {isHovered &&
+              sparkles.map((sparkle) => (
+                <Sparkle
+                  key={sparkle.id}
+                  $size={sparkle.size}
+                  $top={sparkle.top}
+                  $left={sparkle.left}
+                  $delay={sparkle.delay}
+                />
+              ))}
+          </SparkleWrapper>
+          , a full-stack software engineer and leader. I do everything from
+          embedded systems to mobile to cloud. Welcome to my personal site!
+          You&apos;ll find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
