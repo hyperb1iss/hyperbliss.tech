@@ -17,62 +17,13 @@ const FeaturedProjectsSection = styled.section`
   }
 `;
 
-const CustomStyledTitle = styled(StyledTitle)`
-  padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
-  margin-bottom: ${(props) => (props.$isMobile ? "1rem" : "2rem")};
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 255, 0.1),
-    rgba(255, 0, 255, 0.1)
-  );
-
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
-    background-size: 200% 100%;
-    animation: shimmer 6s linear infinite;
-    opacity: 0.5;
-    z-index: -1;
-  }
-
-  &::after {
-    filter: blur(10px);
-    opacity: 0.3;
-  }
-
-  &:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
-    border-color: #00ffff;
-
-    &::before,
-    &::after {
-      opacity: 0.8;
-    }
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
-  }
-`;
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 2rem 0 0 0;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -184,14 +135,14 @@ interface FeaturedProjectsProps {
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   return (
     <FeaturedProjectsSection>
-      <CustomStyledTitle
+      <StyledTitle
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         $isMobile={true}
       >
         <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
-      </CustomStyledTitle>
+      </StyledTitle>
       <ProjectsGrid
         initial="hidden"
         animate="visible"

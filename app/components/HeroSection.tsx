@@ -120,8 +120,9 @@ const HighlightedName = styled.span`
 const TagCloud = styled(motion.div)`
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.8rem;
   margin-bottom: 2rem;
+  max-width: 100%;
 `;
 
 const Tag = styled(motion.span)`
@@ -129,18 +130,29 @@ const Tag = styled(motion.span)`
   color: var(--color-accent);
   padding: 0.5rem 1rem;
   border-radius: 2rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   transition: all 0.3s ease;
   border: 1px solid rgba(162, 89, 255, 0.3);
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(162, 89, 255, 0.2);
 
   &:hover {
     background-color: rgba(162, 89, 255, 0.2);
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(162, 89, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(162, 89, 255, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(162, 89, 255, 0.3);
   }
 
   @media (max-width: 768px) {
-    font-size: 1rem;
+    font-size: 1.1rem;
     padding: 0.4rem 0.8rem;
   }
 `;

@@ -9,7 +9,7 @@ const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
   letter-spacing: 2px;
   font-family: var(--font-heading);
   position: relative;
-  padding: ${(props) => (props.$isMobile ? "1rem" : "0.5rem 1rem")};
+  padding: 0.5rem;
   background: linear-gradient(
     90deg,
     rgba(0, 255, 255, 0.1),

@@ -4,15 +4,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
-import { useHeaderContext } from "./HeaderContext";
 import HeroSection from "./HeroSection";
 import LatestBlogPosts from "./LatestBlogPosts";
-
-const MainContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-`;
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -28,10 +21,6 @@ const MainContent = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-`;
-
-const HeroWrapper = styled.div`
-  width: 100%;
 `;
 
 const SidebarWrapper = styled.div`
