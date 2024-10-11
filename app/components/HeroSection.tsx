@@ -2,8 +2,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useHeaderContext } from "./HeaderContext";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useHeaderContext } from "./HeaderContext";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
@@ -12,7 +13,8 @@ const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   align-items: center;
   justify-content: center;
   min-height: 75vh;
-  padding-top: ${props => props.$isHeaderExpanded ? 'calc(4rem + 100px)' : '4rem'};
+  padding-top: ${(props) =>
+    props.$isHeaderExpanded ? "calc(4rem + 100px)" : "4rem"};
   padding-bottom: 4rem;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -20,38 +22,97 @@ const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   transition: padding-top 0.3s ease;
 
   @media (max-width: 768px) {
-    padding-top: ${props => props.$isHeaderExpanded ? 'calc(3rem + 80px)' : '3rem'};
+    padding-top: ${(props) =>
+      props.$isHeaderExpanded ? "calc(3rem + 80px)" : "3rem"};
     padding-bottom: 3rem;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
 `;
 
-const AnimatedBackground = styled(motion.div)`
+const ParticleCanvas = styled.canvas`
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background-image: radial-gradient(
-    circle at center,
-    rgba(255, 0, 255, 0.15),
-    transparent 70%
-  );
-  background-size: cover;
-  opacity: 0.5;
-  animation: rotateBG 60s linear infinite;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -1;
-
-  @keyframes rotateBG {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
 `;
+
+interface Particle {
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  vx: number;
+  vy: number;
+}
+
+const createParticles = (
+  count: number,
+  width: number,
+  height: number
+): Particle[] => {
+  return Array.from({ length: count }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 1.5 + 0.5,
+    color: `rgba(${Math.floor(Math.random() * 100) + 155}, ${
+      Math.floor(Math.random() * 100) + 155
+    }, 255, ${Math.random() * 0.3 + 0.2})`,
+    vx: Math.random() * 0.2 - 0.1,
+    vy: Math.random() * 0.2 - 0.1,
+  }));
+};
+
+const AnimatedBackground: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const particles = createParticles(50, canvas.width, canvas.height);
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = particle.color;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, []);
+
+  return <ParticleCanvas ref={canvasRef} />;
+};
 
 const ContentWrapper = styled(motion.div)`
   max-width: 800px;
@@ -244,10 +305,10 @@ export default function HeroSection(): JSX.Element {
       >
         <Title>Welcome to Hyperbliss</Title>
         <Subtitle>
-          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a full-stack
-          software engineer and leader. I do everything from
-          embedded systems to mobile to cloud. Welcome to my personal
-          site! You&apos;ll find my blog, projects, and more about me here.
+          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a
+          full-stack software engineer and leader. I do everything from embedded
+          systems to mobile to cloud. Welcome to my personal site! You&apos;ll
+          find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
