@@ -31,6 +31,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NavContent = styled.div`
