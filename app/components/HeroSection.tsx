@@ -2,21 +2,28 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useHeaderContext } from "./HeaderContext";
 import styled from "styled-components";
 
-const HeroSectionWrapper = styled.section`
+const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 600px; // Fixed height
-  padding: 2rem;
+  min-height: 75vh;
+  padding-top: ${props => props.$isHeaderExpanded ? 'calc(4rem + 100px)' : '4rem'};
+  padding-bottom: 4rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   overflow: hidden;
+  transition: padding-top 0.3s ease;
 
   @media (max-width: 768px) {
-    height: 500px; // Slightly reduced height for mobile
-    padding: 2rem 1.5rem;
+    padding-top: ${props => props.$isHeaderExpanded ? 'calc(3rem + 80px)' : '3rem'};
+    padding-bottom: 3rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 `;
 
@@ -55,7 +62,7 @@ const ContentWrapper = styled(motion.div)`
 `;
 
 const Title = styled(motion.h1)`
-  font-size: 4.8rem;
+  font-size: 4rem;
   margin-bottom: 1.5rem;
   color: var(--color-primary);
   text-shadow: 0 0 20px var(--color-primary);
@@ -75,12 +82,12 @@ const Title = styled(motion.h1)`
   }
 
   @media (max-width: 768px) {
-    font-size: 3.6rem;
+    font-size: 3rem;
   }
 `;
 
 const Subtitle = styled(motion.p)`
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   margin-bottom: 2rem;
   color: var(--color-secondary);
   text-shadow: 0 0 15px var(--color-secondary);
@@ -88,7 +95,7 @@ const Subtitle = styled(motion.p)`
   font-family: var(--font-body);
 
   @media (max-width: 768px) {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 `;
 
@@ -122,7 +129,7 @@ const Tag = styled(motion.span)`
   color: var(--color-accent);
   padding: 0.5rem 1rem;
   border-radius: 2rem;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   transition: all 0.3s ease;
   border: 1px solid rgba(162, 89, 255, 0.3);
 
@@ -131,15 +138,20 @@ const Tag = styled(motion.span)`
     transform: scale(1.05);
     box-shadow: 0 0 10px rgba(162, 89, 255, 0.5);
   }
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    padding: 0.4rem 0.8rem;
+  }
 `;
 
 const CTAButton = styled(motion.a)`
   background-color: transparent;
   color: var(--color-accent);
-  padding: 1.2rem 2.4rem;
+  padding: 1rem 2rem;
   border: 2px solid var(--color-accent);
   border-radius: 50px;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: bold;
   text-transform: uppercase;
   transition: all 0.3s ease;
@@ -172,6 +184,11 @@ const CTAButton = styled(motion.a)`
     transform: scaleX(1);
     transform-origin: left;
   }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    padding: 0.8rem 1.6rem;
+  }
 `;
 
 const ButtonText = styled.span`
@@ -203,8 +220,10 @@ const tags = [
 ];
 
 export default function HeroSection(): JSX.Element {
+  const { isExpanded } = useHeaderContext();
+
   return (
-    <HeroSectionWrapper>
+    <HeroSectionWrapper $isHeaderExpanded={isExpanded}>
       <AnimatedBackground />
       <ContentWrapper
         initial={{ opacity: 0, y: 20 }}
@@ -213,9 +232,10 @@ export default function HeroSection(): JSX.Element {
       >
         <Title>Welcome to Hyperbliss</Title>
         <Subtitle>
-          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a
-          full-stack software engineer and leader pushing the boundaries of
-          technology from embedded systems to cloud infrastructure.
+          I&apos;m <HighlightedName>Stefanie Jane</HighlightedName>, a full-stack
+          software engineer and leader. I do everything from
+          embedded systems to mobile to cloud. Welcome to my personal
+          site! You&apos;ll find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (

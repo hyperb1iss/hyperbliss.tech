@@ -87,14 +87,9 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
     if (isMobile) {
       return (
         <>
-          <HeroWrapper>
-            <HeroSection />
-          </HeroWrapper>
+          <HeroSection />
           <SidebarWrapper>
-            <LatestBlogPosts
-              posts={latestPosts}
-              isMobile={isMobile}
-            />
+            <LatestBlogPosts posts={latestPosts} isMobile={isMobile} />
           </SidebarWrapper>
           <FeaturedProjectsSection projects={projects} />
         </>
@@ -103,27 +98,18 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
       return (
         <>
           <MainContent>
-            <HeroWrapper>
-              <HeroSection />
-            </HeroWrapper>
+            <HeroSection />
             <FeaturedProjectsSection projects={projects} />
           </MainContent>
           <SidebarWrapper>
-            <LatestBlogPosts
-              posts={latestPosts}
-              isMobile={isMobile}
-            />
+            <LatestBlogPosts posts={latestPosts} isMobile={isMobile} />
           </SidebarWrapper>
         </>
       );
     }
   };
 
-  return (
-    <MainContainer>
-      <ContentWrapper>{renderContent()}</ContentWrapper>
-    </MainContainer>
-  );
+  return <ContentWrapper>{renderContent()}</ContentWrapper>;
 };
 
 export default HomeLayout;

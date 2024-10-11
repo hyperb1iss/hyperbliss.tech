@@ -6,7 +6,7 @@ import Script from "next/script";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import { HeaderProvider } from "./components/HeaderContext";
-import MainContentWrapper from "./components/MainContentWrapper";
+import GlobalLayout from "./components/GlobalLayout";
 import siteMetadata from "./lib/metadata";
 import StyledComponentsRegistry from "./lib/registry";
 import "./styles/fonts.css";
@@ -14,21 +14,14 @@ import "./styles/globals.css";
 
 export const metadata: Metadata = siteMetadata;
 
-// Dynamically import the Analytics component (client-side only)
 const Analytics = dynamic(() => import("./components/Analytics"), {
   ssr: false,
 });
 
-// Dynamically import DefaultSeo with ssr disabled
 const SeoWrapper = dynamic(() => import("./components/SeoWrapper"), {
   ssr: false,
 });
 
-/**
- * Root layout component for the app
- * @param {React.ReactNode} children - The content to be rendered within the layout.
- * @returns {JSX.Element} Rendered layout component
- */
 export default function RootLayout({
   children,
 }: {
@@ -37,34 +30,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* StyledComponentsRegistry for server-side rendering of styled-components */}
         <StyledComponentsRegistry>
           <HeaderProvider>
-            {/* SEO wrapper to manage meta tags dynamically */}
             <SeoWrapper />
-            {/* Main site header */}
             <Header />
-            {/* Google Analytics tracking */}
             <Analytics />
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                minHeight: "100vh",
-              }}
-            >
-              {/* Wraps the content with layout and animation handling */}
-              <MainContentWrapper>
-                <main>
-                  <AnimatePresence mode="wait">{children}</AnimatePresence>
-                </main>
-              </MainContentWrapper>
-              {/* Main site footer */}
+            <GlobalLayout>
+              <main>
+                <AnimatePresence mode="wait">{children}</AnimatePresence>
+              </main>
               <Footer />
-            </div>
+            </GlobalLayout>
           </HeaderProvider>
         </StyledComponentsRegistry>
-        {/* Custom script to add console tagline */}
         <Script id="tagline" strategy="afterInteractive">
           {`
             console.log(
