@@ -48,7 +48,7 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
 `;
 
 const PostTitle = styled.h3<{ $isMobile: boolean }>`
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #ff00ff;
   margin-bottom: 0.6rem;
   text-shadow: 0 0 5px #ff00ff;
@@ -56,7 +56,7 @@ const PostTitle = styled.h3<{ $isMobile: boolean }>`
 `;
 
 const PostExcerpt = styled.p<{ $isMobile: boolean }>`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--color-text);
   margin-bottom: 0.4rem;
   line-height: 1.4;
@@ -65,14 +65,14 @@ const PostExcerpt = styled.p<{ $isMobile: boolean }>`
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #00ffff;
   text-decoration: none;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   width: fit-content;
-
+  padding-top: 0.5rem;
   &:hover {
     color: #ff00ff;
     text-shadow: 0 0 5px #ff00ff;
@@ -87,7 +87,7 @@ const DateTag = styled.span<{ $isMobile: boolean }>`
   color: #ff00ff;
   padding: 0.2rem 0.5rem;
   border-radius: 10px;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   text-shadow: 0 0 3px #ff00ff;
 `;
 
@@ -104,7 +104,7 @@ const Tag = styled.span`
   color: #00ffff;
   padding: 0.2rem 0.5rem;
   border-radius: 10px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   text-shadow: 0 0 3px #00ffff;
 `;
 

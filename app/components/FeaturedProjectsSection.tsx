@@ -75,14 +75,14 @@ const ProjectCard = styled(motion.div)`
 `;
 
 const ProjectTitle = styled.h3`
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: #00ffff;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #00ffff;
 `;
 
 const ProjectDescription = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: var(--color-text);
   margin-bottom: 1.5rem;
   flex-grow: 1;
@@ -95,7 +95,7 @@ const ProjectLinks = styled.div`
 `;
 
 const ProjectLink = styled(Link)`
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #ff00ff;
   text-decoration: none;
   display: inline-flex;
@@ -109,7 +109,7 @@ const ProjectLink = styled(Link)`
 `;
 
 const GithubLink = styled.a`
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #ff00ff;
   transition: all 0.3s ease;
 
