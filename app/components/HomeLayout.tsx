@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import FeaturedProjectsSection from "./FeaturedProjectsSection";
-import Header from "./Header";
 import { useHeaderContext } from "./HeaderContext";
 import HeroSection from "./HeroSection";
 import LatestBlogPosts from "./LatestBlogPosts";
@@ -13,12 +12,6 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 1000; // Ensure the header is always on top
 `;
 
 const ContentWrapper = styled.div`
@@ -93,9 +86,6 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
 
   return (
     <MainContainer>
-      <HeaderWrapper>
-        <Header />
-      </HeaderWrapper>
       <ContentWrapper>
         <MainContent>
           <HeroWrapper>
