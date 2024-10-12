@@ -8,13 +8,11 @@ import { useHeaderContext } from "./HeaderContext";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 75vh;
-  padding-top: ${(props) =>
-    props.$isHeaderExpanded ? "calc(4rem + 100px)" : "4rem"};
+  min-height: 60vh;
+  padding-top: 8rem;
   padding-bottom: 4rem;
   padding-left: 2rem;
   padding-right: 2rem;
@@ -22,8 +20,7 @@ const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   transition: padding-top 0.3s ease;
 
   @media (max-width: 768px) {
-    padding-top: ${(props) =>
-      props.$isHeaderExpanded ? "calc(3rem + 80px)" : "3rem"};
+    padding-top: 6rem;
     padding-bottom: 3rem;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -141,23 +138,13 @@ const Title = styled(motion.h1)`
     height: 2px;
     background: linear-gradient(
       90deg,
-      transparent,
+      var(--color-primary),
       var(--color-primary),
       var(--color-accent),
       var(--color-primary),
-      transparent
+      var(--color-primary)
     );
     background-size: 200% 100%;
-    animation: shimmer 3s linear infinite;
-  }
-
-  @keyframes shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
   }
 
   @media (max-width: 768px) {
