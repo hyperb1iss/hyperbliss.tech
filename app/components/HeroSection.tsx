@@ -11,7 +11,7 @@ const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  min-height: 54vh;
   padding-top: 8rem;
   padding-bottom: 4rem;
   padding-left: 2rem;
@@ -148,7 +148,7 @@ const Title = styled(motion.h1)`
   }
 
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 3.5rem;
   }
 `;
 
@@ -173,7 +173,7 @@ const HyperblissSpan = styled.span`
       background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%;
+      background-position: 0% 50 s%;
     }
   }
 `;
@@ -187,7 +187,7 @@ const Subtitle = styled(motion.p)`
   font-family: var(--font-body);
 
   @media (max-width: 768px) {
-    font-size: 1.5rem;
+    font-size: 1.7 srem;
   }
 `;
 
@@ -227,7 +227,7 @@ const Sparkle = styled.span<{
     39% 35%
   );
   opacity: 0;
-  animation: ${sparkle} 1.5s ease-in-out infinite;
+  animation: ${sparkle} 2.5s ease-in-out infinite;
   animation-delay: ${(props) => props.$delay}s;
 `;
 
@@ -300,7 +300,7 @@ const Tag = styled(motion.span)`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
     padding: 0.4rem 0.8rem;
   }
 `;
@@ -311,7 +311,7 @@ const CTAButton = styled(motion.a)`
   padding: 1rem 2rem;
   border: 2px solid var(--color-accent);
   border-radius: 50px;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   text-transform: uppercase;
   transition: all 0.3s ease;
@@ -346,7 +346,7 @@ const CTAButton = styled(motion.a)`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.2rem;
+    font-size: 1.45rem;
     padding: 0.8rem 1.6rem;
   }
 `;
