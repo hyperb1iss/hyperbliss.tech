@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
 
@@ -382,7 +382,6 @@ const tags = [
 export default function HeroSection(): JSX.Element {
   const { isExpanded } = useHeaderContext();
 
-  const [isHovered, setIsHovered] = useState(false);
   const sparkles = createSparkles(10);
 
   return (
@@ -402,26 +401,22 @@ export default function HeroSection(): JSX.Element {
         </Title>
         <Subtitle>
           I&apos;m{" "}
-          <SparkleWrapper
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
+          <SparkleWrapper>
             <HighlightedName
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300, damping: 10 }}
             >
               Stefanie Jane
             </HighlightedName>
-            {isHovered &&
-              sparkles.map((sparkle) => (
-                <Sparkle
-                  key={sparkle.id}
-                  $size={sparkle.size}
-                  $top={sparkle.top}
-                  $left={sparkle.left}
-                  $delay={sparkle.delay}
-                />
-              ))}
+            {sparkles.map((sparkle) => (
+              <Sparkle
+                key={sparkle.id}
+                $size={sparkle.size}
+                $top={sparkle.top}
+                $left={sparkle.left}
+                $delay={sparkle.delay}
+              />
+            ))}
           </SparkleWrapper>
           , a full-stack software engineer and leader. I do everything from
           embedded systems to mobile to cloud. Welcome to my personal site!
