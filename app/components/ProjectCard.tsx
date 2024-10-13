@@ -70,6 +70,7 @@ const TagsContainer = styled.div`
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
+  margin-bottom: 1rem; // Add some space between tags and description
 `;
 
 /**
@@ -77,17 +78,17 @@ const TagsContainer = styled.div`
  * Styles individual tags with interactivity.
  */
 const Tag = styled.span`
-  background-color: rgba(0, 255, 255, 0.2);
-  color: var(--color-accent);
+  background-color: rgba(162, 89, 255, 0.2);
+  color: var(--color-primary);
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
   font-size: 1.2rem;
-  text-shadow: 0 0 5px var(--color-accent);
-  cursor: pointer; /* Show hover cursor */
+  text-shadow: 0 0 5px var(--color-primary);
+  cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    background-color: rgba(0, 255, 255, 0.4);
+    background-color: rgba(162, 89, 255, 0.4);
     color: #ffffff;
   }
 `;
@@ -146,12 +147,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
           </TagsContainer>
         )}
         <ProjectDescription>{description}</ProjectDescription>
-        <ProjectLinks>
-          <ProjectLink href={`/projects/${slug}`}>Learn More</ProjectLink>
-          <ProjectLink href={github} target="_blank" rel="noopener noreferrer">
-            GitHub
-          </ProjectLink>
-        </ProjectLinks>
       </motion.div>
     </StyledLink>
   );
