@@ -27,11 +27,12 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
 `;
 
 const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 12px;
   padding: 1.2rem;
   position: relative;
+  backdrop-filter: blur(5px);
   overflow: hidden;
   margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;

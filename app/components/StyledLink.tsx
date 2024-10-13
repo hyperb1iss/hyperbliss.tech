@@ -13,11 +13,7 @@ const StyledAnchor = styled(motion.a)`
   display: block;
   text-decoration: none;
   color: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.8),
-    rgba(10, 10, 20, 0.8)
-  );
+  background: rgba(255, 255, 255, 0.02);
   backdrop-filter: blur(5px);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 15px;

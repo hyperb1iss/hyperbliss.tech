@@ -35,10 +35,11 @@ const ProjectsGrid = styled(motion.div)`
 `;
 
 const ProjectCard = styled(motion.div)`
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 10px;
   padding: 1.5rem;
+  backdrop-filter: blur(5px);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

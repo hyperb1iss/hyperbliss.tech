@@ -12,8 +12,9 @@ import PageTitle from "./PageTitle";
 const ResumeContainer = styled(motion.div)`
   max-width: 800px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(0, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
   border-radius: 15px;
   padding: 3rem;
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);

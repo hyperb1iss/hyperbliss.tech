@@ -36,32 +36,6 @@ const ProjectDescription = styled.p`
 `;
 
 /**
- * ProjectLinks component
- * Styles the container holding the project links.
- */
-const ProjectLinks = styled.div`
-  display: flex;
-  gap: 1rem;
-`;
-
-/**
- * ProjectLink component
- * Styles individual project links with interactivity.
- */
-const ProjectLink = styled.a`
-  font-size: 1.6rem;
-  color: #ff00ff;
-  text-decoration: none;
-  transition: color 0.3s ease;
-  position: relative;
-
-  &:hover {
-    color: #00ffff;
-    text-shadow: 0 0 5px #00ffff;
-  }
-`;
-
-/**
  * TagsContainer component
  * Styles the container holding the tags.
  */
@@ -118,7 +92,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   slug,
   title,
   description,
-  github,
   author,
   tags,
   index,
