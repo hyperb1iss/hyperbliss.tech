@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { keyframes, styled } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 
@@ -125,12 +125,6 @@ const shimmer = keyframes`
   100% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
 `;
 
-// Update these keyframes for emoji animations
-const rotateOnce = keyframes`
-  0%, 70% { transform: rotate(0deg); }
-  80%, 100% { transform: rotate(calc(var(--rotation-angle) * var(--direction))); }
-`;
-
 /**
  * Styled components for the Logo
  */
@@ -181,20 +175,13 @@ const LogoEmojis = styled.span`
 `;
 
 // Update the GlowingEmoji styled component
-const GlowingEmoji = styled(LogoEmojis) <{
-  $animationDelay: number;
-  $rotationAngle: number;
-}>`
-  --rotation-angle: ${(props) => props.$rotationAngle}deg;
-  animation: ${rotateOnce} 10s ease-in-out infinite;
-  animation-delay: ${(props) => props.$animationDelay}s, 0s, 0s;
+const GlowingEmoji = styled(LogoEmojis)`
+  animation: ${chromaticAberration} 3s ease-in-out infinite;
   transition: text-shadow 0.3s ease;
-  text-shadow: 0 0 1px #fff, 0 0 2px #a259ff;
   display: inline-block;
-  transform-origin: center;
 
   &:hover {
-    text-shadow: 0 0 1px #fff, 0 0 2px #00fff0, 0 0 3px #00fff0;
+    animation: ${shiftingGlow} 4s linear infinite;
   }
 `;
 
@@ -224,25 +211,6 @@ const Logo: React.FC = () => {
   const logoRef = useRef<HTMLAnchorElement>(null);
   const animateAndNavigate = useAnimatedNavigation();
 
-  const [emojiPropsList, setEmojiPropsList] = useState<
-    { $animationDelay: number; $rotationAngle: number }[]
-  >([]);
-
-  useEffect(() => {
-    // Generate random values on the client side
-    const getRandomEmojiProps = () => ({
-      $animationDelay: Math.random() * -10,
-      $rotationAngle: Math.random() < 0.5 ? 90 : -90,
-    });
-
-    // Generate the props for each emoji
-    const newEmojiPropsList = Array(4)
-      .fill(null)
-      .map(() => getRandomEmojiProps());
-
-    setEmojiPropsList(newEmojiPropsList);
-  }, []);
-
   const handleNavigation = (e: React.MouseEvent) => {
     e.preventDefault();
     animateAndNavigate("/");
@@ -253,9 +221,9 @@ const Logo: React.FC = () => {
       <LogoEmojis>🌠</LogoEmojis>
       <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
       <LogoEmojis>✨</LogoEmojis>
-      {emojiPropsList.map((props, index) => (
-        <GlowingEmoji key={index} {...props} style={{ '--direction': Math.random() < 0.5 ? 1 : -1 } as React.CSSProperties}>
-          {['⎊', '⨳', '✵', '⊹'][index]}
+      {['⎊', '⨳', '✵', '⊹'].map((emoji, index) => (
+        <GlowingEmoji key={index}>
+          {emoji}
         </GlowingEmoji>
       ))}
     </LogoLink>
