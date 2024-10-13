@@ -24,7 +24,7 @@ const StyledAnchor = styled(motion.a)`
   padding: 2rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(0, 255, 255, 0.1); bbbbb
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(0, 255, 255, 0.1);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
 
   &:hover {
