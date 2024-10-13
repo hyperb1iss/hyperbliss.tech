@@ -128,7 +128,7 @@ const shimmer = keyframes`
 // Update these keyframes for emoji animations
 const rotateOnce = keyframes`
   0%, 70% { transform: rotate(0deg); }
-  80%, 100% { transform: rotate(var(--rotation-angle)); }
+  80%, 100% { transform: rotate(calc(var(--rotation-angle) * var(--direction))); }
 `;
 
 /**
@@ -181,13 +181,12 @@ const LogoEmojis = styled.span`
 `;
 
 // Update the GlowingEmoji styled component
-const GlowingEmoji = styled(LogoEmojis)<{
+const GlowingEmoji = styled(LogoEmojis) <{
   $animationDelay: number;
-  $clockwise: boolean;
+  $rotationAngle: number;
 }>`
-  --rotation-angle: ${(props) => (props.$clockwise ? "90deg" : "-90deg")};
-  animation: ${rotateOnce} 20s ease-in-out infinite,
-    ${sparkle} 3s ease-in-out infinite, ${shimmer} 5s linear infinite;
+  --rotation-angle: ${(props) => props.$rotationAngle}deg;
+  animation: ${rotateOnce} 10s ease-in-out infinite;
   animation-delay: ${(props) => props.$animationDelay}s, 0s, 0s;
   transition: text-shadow 0.3s ease;
   text-shadow: 0 0 1px #fff, 0 0 2px #a259ff;
@@ -226,14 +225,14 @@ const Logo: React.FC = () => {
   const animateAndNavigate = useAnimatedNavigation();
 
   const [emojiPropsList, setEmojiPropsList] = useState<
-    { $animationDelay: number; $clockwise: boolean }[]
+    { $animationDelay: number; $rotationAngle: number }[]
   >([]);
 
   useEffect(() => {
     // Generate random values on the client side
     const getRandomEmojiProps = () => ({
-      $animationDelay: Math.random() * -20,
-      $clockwise: Math.random() < 0.5,
+      $animationDelay: Math.random() * -10,
+      $rotationAngle: Math.random() < 0.5 ? 90 : -90,
     });
 
     // Generate the props for each emoji
@@ -254,10 +253,11 @@ const Logo: React.FC = () => {
       <LogoEmojis>🌠</LogoEmojis>
       <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
       <LogoEmojis>✨</LogoEmojis>
-      <GlowingEmoji {...emojiPropsList[0]}>⎊</GlowingEmoji>
-      <GlowingEmoji {...emojiPropsList[1]}>⨳</GlowingEmoji>
-      <GlowingEmoji {...emojiPropsList[2]}>✵</GlowingEmoji>
-      <GlowingEmoji {...emojiPropsList[3]}>⊹</GlowingEmoji>
+      {emojiPropsList.map((props, index) => (
+        <GlowingEmoji key={index} {...props} style={{ '--direction': Math.random() < 0.5 ? 1 : -1 } as React.CSSProperties}>
+          {['⎊', '⨳', '✵', '⊹'][index]}
+        </GlowingEmoji>
+      ))}
     </LogoLink>
   );
 };
