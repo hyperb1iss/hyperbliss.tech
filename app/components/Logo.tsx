@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { keyframes, styled } from "styled-components";
 import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
 
@@ -217,15 +217,6 @@ const LogoLink = styled(Link)`
 `;
 
 /**
- * Function to generate random emoji animation props
- * @returns {object} Randomized animation delay and rotation direction
- */
-const getRandomEmojiProps = () => ({
-  $animationDelay: Math.random() * -20,
-  $clockwise: Math.random() < 0.5,
-});
-
-/**
  * Logo component
  * Renders the animated logo with emojis and text.
  * @returns {JSX.Element} Rendered logo component
@@ -233,6 +224,25 @@ const getRandomEmojiProps = () => ({
 const Logo: React.FC = () => {
   const logoRef = useRef<HTMLAnchorElement>(null);
   const animateAndNavigate = useAnimatedNavigation();
+
+  const [emojiPropsList, setEmojiPropsList] = useState<
+    { $animationDelay: number; $clockwise: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    // Generate random values on the client side
+    const getRandomEmojiProps = () => ({
+      $animationDelay: Math.random() * -20,
+      $clockwise: Math.random() < 0.5,
+    });
+
+    // Generate the props for each emoji
+    const newEmojiPropsList = Array(4)
+      .fill(null)
+      .map(() => getRandomEmojiProps());
+
+    setEmojiPropsList(newEmojiPropsList);
+  }, []);
 
   const handleNavigation = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -244,10 +254,10 @@ const Logo: React.FC = () => {
       <LogoEmojis>🌠</LogoEmojis>
       <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
       <LogoEmojis>✨</LogoEmojis>
-      <GlowingEmoji {...getRandomEmojiProps()}>⎊</GlowingEmoji>
-      <GlowingEmoji {...getRandomEmojiProps()}>⨳</GlowingEmoji>
-      <GlowingEmoji {...getRandomEmojiProps()}>✵</GlowingEmoji>
-      <GlowingEmoji {...getRandomEmojiProps()}>⊹</GlowingEmoji>
+      <GlowingEmoji {...emojiPropsList[0]}>⎊</GlowingEmoji>
+      <GlowingEmoji {...emojiPropsList[1]}>⨳</GlowingEmoji>
+      <GlowingEmoji {...emojiPropsList[2]}>✵</GlowingEmoji>
+      <GlowingEmoji {...emojiPropsList[3]}>⊹</GlowingEmoji>
     </LogoLink>
   );
 };

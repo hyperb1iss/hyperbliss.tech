@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
 
@@ -45,6 +45,13 @@ interface Particle {
   vy: number;
 }
 
+/**
+ * Creates an array of particles for the animated background.
+ * @param count - Number of particles to create.
+ * @param width - Width of the canvas.
+ * @param height - Height of the canvas.
+ * @returns Array of Particle objects.
+ */
 const createParticles = (
   count: number,
   width: number,
@@ -62,6 +69,10 @@ const createParticles = (
   }));
 };
 
+/**
+ * AnimatedBackground component
+ * Renders an animated particle background using canvas.
+ */
 const AnimatedBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -256,7 +267,23 @@ const HighlightedName = styled(motion.span)`
   }
 `;
 
-const createSparkles = (count: number) =>
+/**
+ * Type definition for a sparkle effect.
+ */
+interface SparkleType {
+  id: number;
+  size: number;
+  top: number;
+  left: number;
+  delay: number;
+}
+
+/**
+ * Generates an array of sparkles for the highlighted name.
+ * @param count - Number of sparkles to generate.
+ * @returns Array of SparkleType objects.
+ */
+const createSparkles = (count: number): SparkleType[] =>
   Array.from({ length: count }, (_, i) => ({
     id: i,
     size: Math.random() * 4 + 2,
@@ -379,10 +406,19 @@ const tags = [
   "API Design",
 ];
 
+/**
+ * HeroSection component
+ * Renders the hero section with animated background, title, subtitle, and tags.
+ */
 export default function HeroSection(): JSX.Element {
   const { isExpanded } = useHeaderContext();
 
-  const sparkles = createSparkles(10);
+  const [sparkles, setSparkles] = useState<SparkleType[]>([]);
+
+  useEffect(() => {
+    const sparklesArray = createSparkles(10);
+    setSparkles(sparklesArray);
+  }, []);
 
   return (
     <HeroSectionWrapper $isHeaderExpanded={isExpanded}>

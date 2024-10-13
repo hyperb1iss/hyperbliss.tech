@@ -127,11 +127,6 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
   posts,
   isMobile,
 }) => {
-  const getRandomTags = (tags: string[], count: number = 5) => {
-    const shuffled = tags.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  };
-
   return (
     <SidebarContainer
       initial={{ opacity: 0 }}
@@ -177,7 +172,7 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
                   {post.frontmatter.excerpt}
                 </PostExcerpt>
                 <TagsContainer>
-                  {getRandomTags(post.frontmatter.tags).map((tag) => (
+                  {post.frontmatter.tags.map((tag) => (
                     <Tag key={tag}>{tag}</Tag>
                   ))}
                 </TagsContainer>

@@ -56,12 +56,12 @@ const MobileNavLinksContainer = styled.ul<{ open: boolean }>`
   }
 `;
 
-const MobileNavItem = styled(motion.li)<{ index: number; open: boolean }>`
+const MobileNavItem = styled(motion.li)<{ $index: number; $open: boolean }>`
   @media (max-width: 768px) {
     opacity: 0;
     transform: translateX(20px);
     animation: ${slideIn} 0.3s forwards;
-    animation-delay: ${(props) => (props.open ? props.index * 0.1 : 0)}s;
+    animation-delay: ${(props) => (props.$open ? props.$index * 0.1 : 0)}s;
   }
 `;
 
@@ -174,8 +174,8 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({
       {NAV_ITEMS.map((item, index) => (
         <MobileNavItem
           key={item}
-          index={index}
-          open={open}
+          $index={index}
+          $open={open}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
