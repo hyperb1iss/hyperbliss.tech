@@ -5,7 +5,7 @@ import {
   getMarkdownContent,
 } from "../../../lib/markdown";
 
-interface BlogFrontmatter {
+interface BlogFrontmatter extends Record<string, unknown> {
   title: string;
   date: string;
   excerpt: string;

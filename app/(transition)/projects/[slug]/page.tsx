@@ -5,7 +5,7 @@ import {
   getMarkdownContent,
 } from "../../../lib/markdown";
 
-interface ProjectFrontmatter {
+interface ProjectFrontmatter extends Record<string, unknown> {
   title: string;
   description: string;
   github: string;
