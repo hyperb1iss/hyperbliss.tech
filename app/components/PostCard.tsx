@@ -8,7 +8,7 @@ import StyledLink from "./StyledLink"; // Import the StyledLink component
  * Styles the post title with a prominent color and shadow.
  */
 const Title = styled.h2`
-  font-size: 2.4rem;
+  font-size: 2.0rem;
   color: #ff00ff;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #ff00ff;
@@ -36,8 +36,9 @@ const DateAuthor = styled.div`
  */
 const Excerpt = styled.p`
   font-size: 1.6rem;
-  line-height: 1.6;
+  line-height: 1.2;
   color: var(--color-text);
+  padding-top: 1rem;
 `;
 
 /**

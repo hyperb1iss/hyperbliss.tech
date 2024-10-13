@@ -8,7 +8,7 @@ import StyledLink from "./StyledLink"; // Import the StyledLink component
  * Styles the project title with a prominent color and shadow.
  */
 const ProjectTitle = styled.h2`
-  font-size: 2.4rem;
+  font-size: 2.0rem;
   color: #00ffff;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #00ffff;
@@ -32,7 +32,7 @@ const ProjectDescription = styled.p`
   font-size: 1.6rem;
   color: var(--color-text);
   margin-bottom: 2rem;
-  line-height: 1.6;
+  line-height: 1.2;
 `;
 
 /**
