@@ -1,7 +1,10 @@
 // app/components/Footer.tsx
 "use client";
+
 import styled from "styled-components";
 import { SOCIAL_LINKS } from "../lib/socials";
+import { FaRss } from "react-icons/fa";
+import Link from "next/link";
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
@@ -75,9 +78,42 @@ const FooterText = styled.p`
   }
 `;
 
+const RSSLink = styled(Link)`
+  margin: 0 1rem;
+  color: var(--color-text);
+  font-size: 3rem;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  display: inline-block;
+
+  &:hover {
+    color: var(--color-accent);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: var(--color-accent);
+    opacity: 0;
+    border-radius: 50%;
+    filter: blur(15px);
+    transition: all 0.3s ease-in-out;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+
+  &:hover::before {
+    opacity: 0.3;
+    animation: pulseGlow 2s infinite alternate;
+  }
+`;
+
 /**
  * Footer component
- * Renders the footer section of the website with social links and copyright information.
+ * Renders the footer section of the website with social links, RSS feed link, and copyright information.
  * @returns {JSX.Element} Rendered footer
  */
 const Footer: React.FC = () => {
@@ -95,6 +131,9 @@ const Footer: React.FC = () => {
             <Icon />
           </a>
         ))}
+        <RSSLink href="/api/rss" aria-label="RSS Feed">
+          <FaRss />
+        </RSSLink>
       </div>
       <FooterText>
         &copy; {new Date().getFullYear()} Stefanie Jane 🌠
