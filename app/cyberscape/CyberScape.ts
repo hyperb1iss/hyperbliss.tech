@@ -54,7 +54,7 @@ export const initializeCyberScape = (
   logoElement: HTMLAnchorElement,
   navElement: HTMLElement
 ) => {
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
   if (!ctx) return () => {};
 
   const config = CyberScapeConfig.getInstance();

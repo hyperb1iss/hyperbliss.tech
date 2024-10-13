@@ -93,7 +93,7 @@ const Header: React.FC = () => {
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
-    let cleanupCanvas: () => void = () => {};
+    let cleanupCanvas: () => void = () => { };
     if (canvasRef.current && navRef.current) {
       cleanupCanvas = initializeCyberScape(
         canvasRef.current,
@@ -143,7 +143,7 @@ const Header: React.FC = () => {
     const interactionHandler = handleHeaderInteraction();
     if (navElement) {
       navElement.addEventListener("click", interactionHandler);
-      navElement.addEventListener("touchstart", interactionHandler);
+      navElement.addEventListener("touchstart", interactionHandler, { passive: true });
     }
     return () => {
       if (navElement) {
