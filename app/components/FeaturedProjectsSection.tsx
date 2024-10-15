@@ -17,7 +17,6 @@ const FeaturedProjectsSection = styled.section`
   }
 `;
 
-
 const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -158,32 +157,35 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         }}
       >
         {projects.slice(0, 4).map((project) => (
-          <ProjectCard
-            key={project.slug}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.5 }}
-          >
-            <ProjectTitle>{project.frontmatter.title}</ProjectTitle>
-            <ProjectDescription>
-              {project.frontmatter.description}
-            </ProjectDescription>
-            <ProjectLinks>
-              <ProjectLink href={`/projects/${project.slug}`}>
-                Learn More
-                <FaArrowRight style={{ marginLeft: "5px" }} />
-              </ProjectLink>
-              <GithubLink
-                href={project.frontmatter.github}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaGithub />
-              </GithubLink>
-            </ProjectLinks>
-          </ProjectCard>
+          <Link href={`/projects/${project.slug}`} key={project.slug} passHref>
+            <ProjectCard
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.03 }}
+            >
+              <ProjectTitle>{project.frontmatter.title}</ProjectTitle>
+              <ProjectDescription>
+                {project.frontmatter.description}
+              </ProjectDescription>
+              <ProjectLinks>
+                <ProjectLink href={`/projects/${project.slug}`}>
+                  Learn More
+                  <FaArrowRight style={{ marginLeft: "5px" }} />
+                </ProjectLink>
+                <GithubLink
+                  href={project.frontmatter.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FaGithub />
+                </GithubLink>
+              </ProjectLinks>
+            </ProjectCard>
+          </Link>
         ))}
       </ProjectsGrid>
     </FeaturedProjectsSection>
