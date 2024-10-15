@@ -9,7 +9,7 @@ import styled from "styled-components";
 import GlitchSpan from "./GlitchSpan";
 import StyledTitle from "./StyledTitle";
 
-const SidebarContainer = styled(motion.div)<{ $isMobile: boolean }>`
+const SidebarContainer = styled(motion.div) <{ $isMobile: boolean }>`
   width: 100%;
   padding: 8rem 2rem 2rem;
   overflow-y: auto;
@@ -19,18 +19,18 @@ const SidebarContainer = styled(motion.div)<{ $isMobile: boolean }>`
   }
 `;
 
-const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
+const SidebarContent = styled(motion.div) <{ $isMobile: boolean }>`
   display: grid;
   grid-template-columns: ${(props) =>
     props.$isMobile ? "repeat(2, 1fr)" : "1fr"};
   gap: 1rem;
 `;
 
-const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
+const BlogPostCard = styled(motion.div) <{ $isMobile: boolean }>`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 1.2rem;
+  border-radius: 10px;
+  padding: 1.5rem;
   position: relative;
   backdrop-filter: blur(5px);
   overflow: hidden;
@@ -43,8 +43,29 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(255, 0, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
     transform: translateY(-5px);
+    border-color: #00ffff;
+
+    &::before {
+    opacity: 1;
+  }
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle,
+      rgba(0, 255, 255, 0.1) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 `;
 
