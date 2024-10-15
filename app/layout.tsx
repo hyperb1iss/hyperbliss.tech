@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Script from "next/script";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import HeaderFade from "./components/HeaderFade";
 import { HeaderProvider } from "./components/HeaderContext";
 import GlobalLayout from "./components/GlobalLayout";
 import siteMetadata from "./lib/metadata";
@@ -34,6 +35,7 @@ export default function RootLayout({
           <HeaderProvider>
             <SeoWrapper />
             <Header />
+            <HeaderFade />
             <Analytics />
             <GlobalLayout>
               <main>
