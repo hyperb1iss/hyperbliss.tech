@@ -17,7 +17,7 @@ interface ProjectDetailProps {
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
-  padding: 4rem 2rem 2rem;
+  padding: 8rem 2rem 2rem;
 
   @media (max-width: 768px) {
     padding: 3rem 1rem 1rem;
