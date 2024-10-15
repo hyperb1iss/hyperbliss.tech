@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaArrowRight, FaGithub } from "react-icons/fa";
 import styled from "styled-components";
 import GlitchSpan from "./GlitchSpan";
@@ -94,7 +95,7 @@ const ProjectLinks = styled.div`
   align-items: center;
 `;
 
-const ProjectLink = styled(Link)`
+const ProjectLink = styled.div`
   font-size: 1.4rem;
   color: #ff00ff;
   text-decoration: none;
@@ -108,7 +109,7 @@ const ProjectLink = styled(Link)`
   }
 `;
 
-const GithubLink = styled.a`
+const GithubLink = styled.div`
   font-size: 1.4rem;
   color: #ff00ff;
   transition: all 0.3s ease;
@@ -133,6 +134,13 @@ interface FeaturedProjectsProps {
 }
 
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
+  const [projectList, setProjectList] = useState(projects);
+
+  useEffect(() => {
+    const shuffled = [...projects].sort(() => 0.5 - Math.random());
+    setProjectList(shuffled.slice(0, 4));
+  }, []);
+
   return (
     <FeaturedProjectsSection>
       <StyledTitle
@@ -156,7 +164,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           },
         }}
       >
-        {projects.slice(0, 4).map((project) => (
+        {projectList.map((project) => (
           <Link href={`/projects/${project.slug}`} key={project.slug} passHref>
             <ProjectCard
               variants={{
@@ -171,16 +179,11 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
                 {project.frontmatter.description}
               </ProjectDescription>
               <ProjectLinks>
-                <ProjectLink href={`/projects/${project.slug}`}>
+                <ProjectLink>
                   Learn More
                   <FaArrowRight style={{ marginLeft: "5px" }} />
                 </ProjectLink>
-                <GithubLink
-                  href={project.frontmatter.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                >
+                <GithubLink>
                   <FaGithub />
                 </GithubLink>
               </ProjectLinks>
