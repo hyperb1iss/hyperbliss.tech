@@ -3,7 +3,6 @@ import { AnimatePresence } from "framer-motion";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Script from "next/script";
-import Footer from "./components/Footer";
 import Header from "./components/Header";
 import HeaderFade from "./components/HeaderFade";
 import { HeaderProvider } from "./components/HeaderContext";
@@ -23,6 +22,13 @@ const SeoWrapper = dynamic(() => import("./components/SeoWrapper"), {
   ssr: false,
 });
 
+/**
+ * RootLayout component
+ * The main layout component that wraps the entire application.
+ * Provides global context, headers, and scripts.
+ * @param {React.ReactNode} children - Child components
+ * @returns {JSX.Element} Rendered root layout
+ */
 export default function RootLayout({
   children,
 }: {
@@ -38,10 +44,7 @@ export default function RootLayout({
             <HeaderFade />
             <Analytics />
             <GlobalLayout>
-              <main>
-                <AnimatePresence mode="wait">{children}</AnimatePresence>
-              </main>
-              <Footer />
+              <AnimatePresence mode="wait">{children}</AnimatePresence>
             </GlobalLayout>
           </HeaderProvider>
         </StyledComponentsRegistry>
