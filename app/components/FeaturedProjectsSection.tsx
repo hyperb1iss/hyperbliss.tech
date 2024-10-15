@@ -24,6 +24,7 @@ const ProjectsGrid = styled(motion.div)`
   gap: 1rem;
   max-width: 1200px;
   margin: 2rem 0 0 0;
+  grid-auto-rows: 1fr;
 
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
@@ -111,13 +112,30 @@ const ProjectLink = styled.div`
 
 const GithubLink = styled.div`
   font-size: 1.4rem;
-  color: #ff00ff;
+  color: #00ffff;
   transition: all 0.3s ease;
 
   &:hover {
-    color: #00ffff;
-    text-shadow: 0 0 5px #00ffff;
+    color: #ff00ff;
+    text-shadow: 0 0 5px #ff00ff;
   }
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+`;
+
+const Tag = styled.span`
+  background: rgba(255, 0, 255, 0.1);
+  color: #ff00ff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  text-shadow: 0 0 3px #ff00ff;
 `;
 
 interface Project {
@@ -126,6 +144,7 @@ interface Project {
     title: string;
     description: string;
     github: string;
+    tags: string[]; // Add this line
   };
 }
 
@@ -135,11 +154,33 @@ interface FeaturedProjectsProps {
 
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   const [projectList, setProjectList] = useState(projects);
+  const [maxHeight, setMaxHeight] = useState(0);
 
   useEffect(() => {
     const shuffled = [...projects].sort(() => 0.5 - Math.random());
     setProjectList(shuffled.slice(0, 4));
-  }, []);
+  }, [projects]);
+
+  useEffect(() => {
+    const updateMaxHeight = () => {
+      const cards = document.querySelectorAll(".project-card");
+      let maxCardHeight = 0;
+      cards.forEach((card) => {
+        const cardHeight = card.getBoundingClientRect().height;
+        if (cardHeight > maxCardHeight) {
+          maxCardHeight = cardHeight;
+        }
+      });
+      setMaxHeight(maxCardHeight);
+    };
+
+    updateMaxHeight();
+    window.addEventListener("resize", updateMaxHeight);
+
+    return () => {
+      window.removeEventListener("resize", updateMaxHeight);
+    };
+  }, [projectList]);
 
   return (
     <FeaturedProjectsSection>
@@ -167,17 +208,26 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
         {projectList.map((project) => (
           <Link href={`/projects/${project.slug}`} key={project.slug} passHref>
             <ProjectCard
+              className="project-card"
               variants={{
                 hidden: { opacity: 0, y: 20 },
                 visible: { opacity: 1, y: 0 },
               }}
               transition={{ duration: 0.5 }}
               whileHover={{ scale: 1.03 }}
+              style={{ height: maxHeight > 0 ? `${maxHeight}px` : "auto" }}
             >
               <ProjectTitle>{project.frontmatter.title}</ProjectTitle>
               <ProjectDescription>
                 {project.frontmatter.description}
               </ProjectDescription>
+              <TagsContainer>
+                {project.frontmatter.tags &&
+                  project.frontmatter.tags.length > 0 &&
+                  project.frontmatter.tags.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
+              </TagsContainer>
               <ProjectLinks>
                 <ProjectLink>
                   Learn More

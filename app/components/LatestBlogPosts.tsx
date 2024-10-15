@@ -9,7 +9,7 @@ import styled from "styled-components";
 import GlitchSpan from "./GlitchSpan";
 import StyledTitle from "./StyledTitle";
 
-const SidebarContainer = styled(motion.div) <{ $isMobile: boolean }>`
+const SidebarContainer = styled(motion.div)<{ $isMobile: boolean }>`
   width: 100%;
   padding: 8rem 2rem 2rem;
   overflow-y: auto;
@@ -19,14 +19,14 @@ const SidebarContainer = styled(motion.div) <{ $isMobile: boolean }>`
   }
 `;
 
-const SidebarContent = styled(motion.div) <{ $isMobile: boolean }>`
+const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   display: grid;
   grid-template-columns: ${(props) =>
     props.$isMobile ? "repeat(2, 1fr)" : "1fr"};
   gap: 1rem;
 `;
 
-const BlogPostCard = styled(motion.div) <{ $isMobile: boolean }>`
+const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 10px;
@@ -48,8 +48,8 @@ const BlogPostCard = styled(motion.div) <{ $isMobile: boolean }>`
     border-color: #00ffff;
 
     &::before {
-    opacity: 1;
-  }
+      opacity: 1;
+    }
   }
 
   &::before {

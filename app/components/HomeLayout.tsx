@@ -48,6 +48,7 @@ interface Project {
     title: string;
     description: string;
     github: string;
+    tags: string[]; // Add this line
   };
 }
 

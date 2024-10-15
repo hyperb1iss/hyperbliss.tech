@@ -13,7 +13,7 @@ export default async function Home() {
           date: frontmatter.date as string,
           excerpt: frontmatter.excerpt as string,
           author: frontmatter.author as string,
-          tags: frontmatter.tags as string[] || [],
+          tags: (frontmatter.tags as string[]) || [],
         },
       };
     })
@@ -40,6 +40,7 @@ export default async function Home() {
           title: frontmatter.title as string,
           description: frontmatter.description as string,
           github: frontmatter.github as string,
+          tags: (frontmatter.tags as string[]) || [],
         },
       };
     })
