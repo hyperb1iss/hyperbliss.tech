@@ -3,6 +3,11 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  output: "standalone",
+  poweredByHeader: false,
+  generateEtags: false,
+  compress: true,
   reactStrictMode: true,
+  swcMinify: true,
 };
 export default nextConfig;
