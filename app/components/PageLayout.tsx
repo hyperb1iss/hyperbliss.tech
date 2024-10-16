@@ -4,12 +4,18 @@ import styled from "styled-components";
 
 const MainContentWrapper = styled(motion.main)`
   flex: 1;
-  max-width: 1000px;
+  width: 75%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 80px 20px 40px;
+  padding: 8rem 2rem 4rem;
+
+  @media (max-width: 1200px) {
+    width: 85%;
+  }
 
   @media (max-width: 768px) {
-    padding: 80px 20px 20px;
+    width: 90%;
+    padding: 8rem 2rem 2rem;
   }
 `;
 
@@ -20,6 +26,7 @@ interface PageLayoutProps {
 /**
  * PageLayout component
  * Provides a consistent layout wrapper for page content with animations.
+ * Adjusted styling for better widescreen support and responsiveness.
  * @param {PageLayoutProps} props - The component props
  * @returns {JSX.Element} Rendered page layout
  */

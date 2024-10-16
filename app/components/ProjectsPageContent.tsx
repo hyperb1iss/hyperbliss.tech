@@ -1,21 +1,28 @@
 // app/components/ProjectsPageContent.tsx
 "use client";
 
+import React from "react";
 import ProjectList from "./ProjectList";
 import PageTitle from "./PageTitle";
 import PageLayout from "./PageLayout";
 
-// Interface for project data
+/**
+ * Interface for project data
+ */
 interface Project {
   slug: string;
   frontmatter: {
     title: string;
     description: string;
     github: string;
+    author?: string;
+    tags?: string[];
   };
 }
 
-// Interface for ProjectsPageContent component props
+/**
+ * Interface for ProjectsPageContent component props
+ */
 interface ProjectsPageContentProps {
   projects: Project[];
 }
@@ -23,6 +30,7 @@ interface ProjectsPageContentProps {
 /**
  * ProjectsPageContent component
  * Renders the projects page with a title and list of projects.
+ * Ensures correct layout without duplicate headers.
  * @param {ProjectsPageContentProps} props - The component props
  * @returns {JSX.Element} Rendered projects page
  */

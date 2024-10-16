@@ -1,4 +1,5 @@
 // app/components/AboutPageContent.tsx
+
 import { motion } from "framer-motion";
 import React from "react";
 import styled from "styled-components";
@@ -20,11 +21,11 @@ const ContentWrapper = styled(motion.div)`
 `;
 
 const ProfileImage = styled(motion.img)`
-  width: 200px;
-  height: 250px;
+  width: clamp(200px, 20vw, 400px);
+  height: auto;
   border-radius: 50% / 40%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  margin-right: 20px;
+  margin-right: 2rem;
   transition: transform 0.3s ease-in-out;
 
   &:hover {
@@ -34,16 +35,16 @@ const ProfileImage = styled(motion.img)`
 
   @media (max-width: 768px) {
     margin-right: 0;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
   }
 `;
 
 const TextContent = styled(motion.div)`
-  max-width: 600px;
+  width: 75%;
   text-align: justify;
 
   p {
-    font-size: 1.8rem;
+    font-size: clamp(1.6rem, 2vw, 2.4rem);
     line-height: 1.6;
     color: var(--color-text);
     margin-bottom: 2rem;
@@ -54,6 +55,7 @@ const TextContent = styled(motion.div)`
   }
 
   @media (max-width: 768px) {
+    width: 90%;
     text-align: center;
 
     p {
@@ -92,6 +94,7 @@ const itemVariants = {
 /**
  * AboutPageContent component
  * Renders the content for the About page, including a profile image and text.
+ * Adjusted styling for better widescreen support and responsiveness.
  */
 const AboutPageContent: React.FC = () => {
   return (

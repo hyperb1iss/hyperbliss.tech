@@ -10,7 +10,8 @@ import PageTitle from "./PageTitle";
 
 // Styled components for resume content
 const ResumeContainer = styled(motion.div)`
-  max-width: 800px;
+  width: 85%;
+  max-width: 1400px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(0, 255, 255, 0.2);
@@ -18,29 +19,33 @@ const ResumeContainer = styled(motion.div)`
   border-radius: 15px;
   padding: 3rem;
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const ResumeContent = styled(ReactMarkdown)`
-  font-size: 1.8rem;
+  font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.6;
   color: var(--color-text);
 
   h1 {
-    font-size: 3.6rem;
+    font-size: clamp(3rem, 4vw, 5rem);
     color: var(--color-primary);
     margin-bottom: 1rem;
     text-align: center;
     text-shadow: 0 0 10px var(--color-primary);
   }
 
-  // Center the first two paragraphs (tagline and links)
+  /* Center the first two paragraphs (tagline and links) */
   & > p:nth-of-type(1),
   & > p:nth-of-type(2) {
     text-align: center;
   }
 
   h2 {
-    font-size: 2.8rem;
+    font-size: clamp(2.4rem, 3vw, 4rem);
     color: var(--color-secondary);
     margin-top: 3rem;
     margin-bottom: 1.5rem;
@@ -50,7 +55,7 @@ const ResumeContent = styled(ReactMarkdown)`
   }
 
   h3 {
-    font-size: 2.2rem;
+    font-size: clamp(2rem, 2.5vw, 3.5rem);
     color: var(--color-accent);
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -58,7 +63,7 @@ const ResumeContent = styled(ReactMarkdown)`
   }
 
   h4 {
-    font-size: 2rem;
+    font-size: clamp(1.8rem, 2vw, 3rem);
     color: var(--color-text);
     margin-top: 1.5rem;
     margin-bottom: 0.5rem;
@@ -120,6 +125,7 @@ interface ResumePageContentProps {
 /**
  * ResumePageContent component
  * Renders the resume content with styling and animations.
+ * Adjusted layout to be wider and font sizes to be consistent across widescreens.
  * @param {ResumePageContentProps} props - The component props
  * @returns {JSX.Element} Rendered resume page
  */

@@ -15,22 +15,13 @@ interface BlogPostProps {
 }
 
 const Container = styled.div`
-  max-width: var(--content-max-width, 800px);
-  width: 100%;
+  width: 85%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 8rem var(--content-horizontal-padding, 2rem) 2rem;
+  padding: 8rem 2rem 2rem;
 
-  @media (min-width: 1200px) {
-    --content-max-width: 65%;
-    --content-horizontal-padding: 0;
-  }
-
-  @media (min-width: 1600px) {
-    --content-max-width: 55%;
-  }
-
-  @media (min-width: 2000px) {
-    --content-max-width: 50%;
+  @media (max-width: 1200px) {
+    width: 90%;
   }
 
   @media (max-width: 768px) {
@@ -39,11 +30,12 @@ const Container = styled.div`
 `;
 
 /**
- * Centered Title with underline effect and animation
- * Added enhanced text styling for better visibility.
+ * Title component
+ * Centered title with responsive font size and enhanced styling.
+ * Shrunk the font size slightly for better visual balance.
  */
 const Title = styled(motion.h1)`
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 3.5vw, 4.5rem); /* Reduced the font size */
   color: var(--color-secondary);
   margin-bottom: 1rem;
   text-shadow: 0 0 10px var(--color-secondary);
@@ -60,18 +52,14 @@ const Title = styled(motion.h1)`
     bottom: -10px;
     box-shadow: 0 0 10px var(--color-primary);
   }
-
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-  }
 `;
 
 /**
- * Centered Meta Information with improved styling
- * Stylized the author and date to make them pop.
+ * Meta component
+ * Centered meta information with responsive font size.
  */
 const Meta = styled(motion.div)`
-  font-size: 1.4rem;
+  font-size: clamp(1.4rem, 1.5vw, 2rem);
   color: var(--color-muted);
   margin-bottom: 2rem;
   text-align: center;
@@ -107,17 +95,22 @@ const Tag = styled.span`
   color: var(--color-accent);
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
-  font-size: 1.2rem;
+  font-size: clamp(1.2rem, 1.2vw, 1.6rem);
   text-shadow: 0 0 5px var(--color-accent);
   cursor: pointer;
 `;
 
-const Content = styled(motion.div)``;
+const Content = styled(motion.div)`
+  font-size: clamp(1.6rem, 1.5vw, 2.2rem);
+  line-height: 1.6;
+  color: var(--color-text);
+`;
 
 /**
  * BlogPost component
  * Renders the detailed view of a blog post with animations.
- * Stylized author and date to make them pop.
+ * Adjusted font sizes and layout for better widescreen support and consistency.
+ * Shrunk the title font size slightly.
  * @param {BlogPostProps} props - The component props
  * @returns {JSX.Element} Rendered blog post
  */

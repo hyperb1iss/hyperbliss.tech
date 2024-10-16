@@ -7,14 +7,23 @@ import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 import { PostCard } from "./PostCard";
 
-// Styled components for the blog list
+/**
+ * Styled components for the blog list
+ * Adjusted grid layout for better responsiveness on large screens.
+ */
 const PostList = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 3rem;
+
+  @media (min-width: 1600px) {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
 `;
 
-// Interface for blog post data
+/**
+ * Interface for blog post data
+ */
 interface Post {
   slug: string;
   frontmatter: {
@@ -26,7 +35,9 @@ interface Post {
   };
 }
 
-// Props interface for BlogList component
+/**
+ * Props interface for BlogList component
+ */
 interface BlogListProps {
   posts: Post[];
 }
@@ -34,7 +45,7 @@ interface BlogListProps {
 /**
  * BlogList component
  * Renders a list of blog posts with animations.
- * Added staggered animation for enhanced visual effect.
+ * Adjusted grid and card styles for better appearance on large screens.
  * @param {BlogListProps} props - The component props
  * @returns {JSX.Element} Rendered blog list
  */
@@ -50,7 +61,7 @@ export default function BlogList({ posts }: BlogListProps) {
             opacity: 1,
             transition: {
               delayChildren: 0.2,
-              staggerChildren: 0.15, // Staggered animation
+              staggerChildren: 0.15,
             },
           },
           hidden: { opacity: 0 },

@@ -1,14 +1,46 @@
 // app/components/PostCard.tsx
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import StyledLink from "./StyledLink"; // Import the StyledLink component
+import StyledLink from "./StyledLink";
+
+/**
+ * MotionLink component
+ * Extends the StyledLink component with motion capabilities.
+ */
+const MotionLink = motion(StyledLink);
+
+/**
+ * CardWrapper component
+ * Combines the link and card styling into one component.
+ * Now the link itself is the card, avoiding unnecessary nesting.
+ */
+const CardWrapper = styled(MotionLink)`
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(0, 255, 255, 0.1);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+  }
+`;
 
 /**
  * Title component
  * Styles the post title with a prominent color and shadow.
  */
 const Title = styled.h2`
-  font-size: 2.0rem;
+  font-size: clamp(2rem, 2vw, 2.4rem);
   color: #ff00ff;
   margin-bottom: 0.5rem;
   text-shadow: 0 0 7px #ff00ff;
@@ -19,15 +51,15 @@ const Title = styled.h2`
  * Styles the date and author information to make them pop.
  */
 const DateAuthor = styled.div`
-  font-size: 1.4rem; /* Increased font size */
-  color: var(--color-primary); /* Changed color to accent color */
+  font-size: clamp(1.4rem, 1.5vw, 1.8rem);
+  color: var(--color-primary);
   margin-bottom: 0.5rem;
-  font-weight: bold; /* Made text bold */
-  background: rgba(0, 255, 255, 0.1); /* Added subtle background */
+  font-weight: bold;
+  background: rgba(0, 255, 255, 0.1);
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   display: inline-block;
-  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3); /* Added subtle shadow */
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
 `;
 
 /**
@@ -35,7 +67,7 @@ const DateAuthor = styled.div`
  * Styles the excerpt text of the post.
  */
 const Excerpt = styled.p`
-  font-size: 1.6rem;
+  font-size: clamp(1.6rem, 1.5vw, 2rem);
   line-height: 1.2;
   color: var(--color-text);
   padding-top: 1rem;
@@ -61,9 +93,9 @@ const Tag = styled.span`
   color: var(--color-primary);
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
-  font-size: 1.2rem;
+  font-size: clamp(1.2rem, 1.2vw, 1.6rem);
   text-shadow: 0 0 5px var(--color-primary);
-  cursor: pointer; /* Show hover cursor */
+  cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
@@ -89,7 +121,7 @@ interface PostCardProps {
 /**
  * PostCard component
  * Renders a single blog post card with title, date, author, tags, and excerpt.
- * Includes a glow effect and subtle scaling on hover.
+ * Adjusted to avoid unnecessary nesting and ensure the card fills the space correctly.
  * @param {PostCardProps} props - The component props
  * @returns {JSX.Element} Rendered post card
  */
@@ -103,32 +135,31 @@ export const PostCard: React.FC<PostCardProps> = ({
   index,
 }) => {
   return (
-    <StyledLink href={`/blog/${slug}`}>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        whileHover={{
-          scale: 1.02,
-          transition: {
-            delay: index * 0.05,
-            type: "spring",
-            stiffness: 300,
-          },
-        }}
-      >
-        <Title>{title}</Title>
-        <DateAuthor>
-          {new Date(date).toLocaleDateString()} • {author}
-        </DateAuthor>
-        {tags && tags.length > 0 && (
-          <TagsContainer>
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
-          </TagsContainer>
-        )}
-        <Excerpt>{excerpt}</Excerpt>
-      </motion.div>
-    </StyledLink>
+    <CardWrapper
+      href={`/blog/${slug}`}
+      initial="hidden"
+      animate="visible"
+      whileHover={{
+        scale: 1.02,
+        transition: {
+          delay: index * 0.05,
+          type: "spring",
+          stiffness: 300,
+        },
+      }}
+    >
+      <Title>{title}</Title>
+      <DateAuthor>
+        {new Date(date).toLocaleDateString()} • {author}
+      </DateAuthor>
+      {tags && tags.length > 0 && (
+        <TagsContainer>
+          {tags.map((tag) => (
+            <Tag key={tag}>{tag}</Tag>
+          ))}
+        </TagsContainer>
+      )}
+      <Excerpt>{excerpt}</Excerpt>
+    </CardWrapper>
   );
 };
