@@ -23,7 +23,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   top: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  padding: 1rem 2rem; // Increased horizontal padding
+  padding: 1rem;
   height: ${(props) => (props.$isExpanded ? "200px" : "100px")};
   transition: height 0.3s ease;
   z-index: 1000;
