@@ -163,22 +163,39 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
 
   useEffect(() => {
     const updateMaxHeight = () => {
-      const cards = document.querySelectorAll(".project-card");
-      let maxCardHeight = 0;
-      cards.forEach((card) => {
-        const cardHeight = card.getBoundingClientRect().height;
-        if (cardHeight > maxCardHeight) {
-          maxCardHeight = cardHeight;
-        }
-      });
-      setMaxHeight(maxCardHeight);
+      // Reset the maxHeight to 0 before recalculating
+      setMaxHeight(0);
+
+      // Use setTimeout to ensure the DOM has updated
+      setTimeout(() => {
+        const cards = document.querySelectorAll(".project-card");
+        let maxCardHeight = 0;
+        cards.forEach((card) => {
+          // Reset the height to auto before measuring
+          (card as HTMLElement).style.height = "auto";
+          const cardHeight = card.getBoundingClientRect().height;
+          if (cardHeight > maxCardHeight) {
+            maxCardHeight = cardHeight;
+          }
+        });
+        setMaxHeight(maxCardHeight);
+      }, 0);
     };
 
     updateMaxHeight();
-    window.addEventListener("resize", updateMaxHeight);
+
+    // Debounce the resize event
+    let resizeTimer: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateMaxHeight, 250);
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", updateMaxHeight);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimer);
     };
   }, [projectList]);
 

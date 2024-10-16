@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import React from "react";
+import { useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa";
 import styled from "styled-components";
 import GlitchSpan from "./GlitchSpan";
@@ -26,7 +26,10 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   gap: 1rem;
 `;
 
-const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
+const BlogPostCard = styled(motion.div)<{
+  $isMobile: boolean;
+  $height: number;
+}>`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 10px;
@@ -36,7 +39,7 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   overflow: hidden;
   margin-bottom: ${(props) => (props.$isMobile ? "0" : "0.8rem")};
   cursor: pointer;
-  height: ${(props) => (props.$isMobile ? "auto" : "auto")};
+  height: ${(props) => (props.$height ? `${props.$height}px` : "auto")};
   min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
   display: flex;
   flex-direction: column;
@@ -155,6 +158,46 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
   posts,
   isMobile,
 }) => {
+  const [maxHeight, setMaxHeight] = useState(0);
+
+  useEffect(() => {
+    const updateMaxHeight = () => {
+      // Reset the maxHeight to 0 before recalculating
+      setMaxHeight(0);
+
+      // Use setTimeout to ensure the DOM has updated
+      setTimeout(() => {
+        const cards = document.querySelectorAll(".blog-post-card");
+        let maxCardHeight = 0;
+        cards.forEach((card) => {
+          // Reset the height to auto before measuring
+          (card as HTMLElement).style.height = "auto";
+          const cardHeight = card.getBoundingClientRect().height;
+          if (cardHeight > maxCardHeight) {
+            maxCardHeight = cardHeight;
+          }
+        });
+        setMaxHeight(maxCardHeight);
+      }, 0);
+    };
+
+    updateMaxHeight();
+
+    // Debounce the resize event
+    let resizeTimer: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateMaxHeight, 250);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimer);
+    };
+  }, [posts, isMobile]); // Add isMobile to the dependency array
+
   return (
     <SidebarContainer
       initial={{ opacity: 0 }}
@@ -185,11 +228,13 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
           posts.map((post) => (
             <Link href={`/blog/${post.slug}`} key={post.slug} passHref>
               <BlogPostCard
+                className="blog-post-card"
                 variants={{
                   hidden: { opacity: 0, x: 20 },
                   visible: { opacity: 1, x: 0 },
                 }}
                 $isMobile={isMobile}
+                $height={maxHeight}
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.2 }}
               >
