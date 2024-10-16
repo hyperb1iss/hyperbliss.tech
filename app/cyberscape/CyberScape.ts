@@ -18,6 +18,7 @@ import { ParticleConnector } from "./utils/ParticleConnector";
 import { ParticlePool } from "./utils/ParticlePool";
 import { PerformanceMonitor } from "./utils/PerformanceMonitor";
 import { VectorMath } from "./utils/VectorMath";
+import { ScreenSizeManager } from "./utils/ScreenSizeManager";
 
 declare global {
   interface Window {
@@ -110,12 +111,14 @@ export const initializeCyberScape = (
     const { width: newWidth, height: newHeight } =
       navElement.getBoundingClientRect();
 
-    const isMobile = newWidth <= config.mobileWidthThreshold;
+    const screenSize = ScreenSizeManager.getScreenSize(newWidth, newHeight);
 
     let canvasScaleFactor = 1;
 
-    if (isMobile) {
-      canvasScaleFactor = window.devicePixelRatio || 1; // Use device pixel ratio for mobile
+    if (screenSize === 'mobile') {
+      canvasScaleFactor = window.devicePixelRatio || 1;
+    } else if (screenSize === 'widescreen') {
+      canvasScaleFactor = 1.5; // Increase scale factor for widescreen
     }
 
     const scaledWidth = newWidth * canvasScaleFactor;
@@ -178,14 +181,25 @@ export const initializeCyberScape = (
   window.addEventListener("mousemove", throttledHandleMouseMove);
 
   /**
-   * Adjusts the number of shapes based on the current configuration.
+   * Adjusts the number of shapes based on the current configuration and screen size.
    */
   const adjustShapeCounts = () => {
-    const isMobile = width <= config.mobileWidthThreshold;
-    const mobileShapeFactor = isMobile ? 0.5 : 1; // Reduce shapes by half on mobile
-    numberOfShapes = Math.floor(
-      config.getShapeCount(width) * mobileShapeFactor
-    );
+    const screenSize = ScreenSizeManager.getScreenSize(width, height);
+    let shapeFactor = 1;
+
+    switch (screenSize) {
+      case 'mobile':
+        shapeFactor = 0.5;
+        break;
+      case 'desktop':
+        shapeFactor = 1;
+        break;
+      case 'widescreen':
+        shapeFactor = 1.5;
+        break;
+    }
+
+    numberOfShapes = Math.floor(config.getShapeCount(width) * shapeFactor);
 
     const existingPositions = new Set<string>();
     while (shapesArray.length < numberOfShapes) {
@@ -319,10 +333,28 @@ export const initializeCyberScape = (
       frustumCuller.updateFrustum(projectionMatrix, viewMatrix);
 
       if (activeParticles < numberOfParticles && Math.random() < 0.1) {
-        const newParticle = particlePool.getParticle(width, height);
-        newParticle.setDelayedAppearance();
-        particlesArray.push(newParticle);
-        activeParticles++;
+        const screenSize = ScreenSizeManager.getScreenSize(width, height);
+        let particleFactor = 1;
+
+        switch (screenSize) {
+          case 'mobile':
+            particleFactor = 0.75;
+            break;
+          case 'desktop':
+            particleFactor = 1;
+            break;
+          case 'widescreen':
+            particleFactor = 1.5;
+            break;
+        }
+
+        const particlesToAdd = Math.floor(particleFactor);
+        for (let i = 0; i < particlesToAdd; i++) {
+          const newParticle = particlePool.getParticle(width, height);
+          newParticle.setDelayedAppearance();
+          particlesArray.push(newParticle);
+          activeParticles++;
+        }
       }
 
       // Update and draw regular particles
