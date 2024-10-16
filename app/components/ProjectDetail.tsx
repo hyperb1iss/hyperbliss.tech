@@ -15,9 +15,23 @@ interface ProjectDetailProps {
 }
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: var(--content-max-width, 800px);
+  width: 100%;
   margin: 0 auto;
-  padding: 8rem 2rem 2rem;
+  padding: 8rem var(--content-horizontal-padding, 2rem) 2rem;
+
+  @media (min-width: 1200px) {
+    --content-max-width: 65%;
+    --content-horizontal-padding: 0;
+  }
+
+  @media (min-width: 1600px) {
+    --content-max-width: 55%;
+  }
+
+  @media (min-width: 2000px) {
+    --content-max-width: 50%;
+  }
 
   @media (max-width: 768px) {
     padding: 3rem 1rem 1rem;

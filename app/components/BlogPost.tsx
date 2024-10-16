@@ -15,9 +15,23 @@ interface BlogPostProps {
 }
 
 const Container = styled.div`
-  max-width: 800px;
+  max-width: var(--content-max-width, 800px);
+  width: 100%;
   margin: 0 auto;
-  padding: 8rem 2rem 2rem;
+  padding: 8rem var(--content-horizontal-padding, 2rem) 2rem;
+
+  @media (min-width: 1200px) {
+    --content-max-width: 65%;
+    --content-horizontal-padding: 0;
+  }
+
+  @media (min-width: 1600px) {
+    --content-max-width: 55%;
+  }
+
+  @media (min-width: 2000px) {
+    --content-max-width: 50%;
+  }
 
   @media (max-width: 768px) {
     padding: 3rem 1rem 1rem;
@@ -30,9 +44,9 @@ const Container = styled.div`
  */
 const Title = styled(motion.h1)`
   font-size: 3rem;
-  color: #ff00ff;
+  color: var(--color-secondary);
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #ff00ff;
+  text-shadow: 0 0 10px var(--color-secondary);
   text-align: center;
   position: relative;
 
@@ -70,10 +84,10 @@ const Meta = styled(motion.div)`
     margin: 0 0.5rem;
     font-weight: bold;
     color: var(--color-primary);
-    background: rgba(0, 255, 255, 0.1);
+    background: var(--color-tag-background);
     padding: 0.3rem 0.6rem;
     border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 5px var(--color-card-hover-shadow1);
   }
 `;
 
@@ -89,13 +103,13 @@ const TagsContainer = styled(motion.div)`
 `;
 
 const Tag = styled.span`
-  background-color: rgba(162, 89, 255, 0.2);
+  background-color: var(--color-tag-background);
   color: var(--color-accent);
   padding: 0.3rem 0.6rem;
   border-radius: 0.5rem;
   font-size: 1.2rem;
   text-shadow: 0 0 5px var(--color-accent);
-  cursor: pointer; /* Show hover cursor */
+  cursor: pointer;
 `;
 
 const Content = styled(motion.div)``;
