@@ -40,6 +40,7 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   min-height: ${(props) => (props.$isMobile ? "220px" : "auto")};
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   transition: all 0.3s ease;
 
   &:hover {
@@ -69,6 +70,17 @@ const BlogPostCard = styled(motion.div)<{ $isMobile: boolean }>`
   }
 `;
 
+const PostContent = styled.div`
+  flex-grow: 1;
+`;
+
+const CardFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+`;
+
 const PostTitle = styled.h3<{ $isMobile: boolean }>`
   font-size: 1.6rem;
   color: #ff00ff;
@@ -83,7 +95,6 @@ const PostExcerpt = styled.p<{ $isMobile: boolean }>`
   margin-bottom: 0.4rem;
   line-height: 1.4;
   opacity: 0.9;
-  flex-grow: 1;
 `;
 
 const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
@@ -93,8 +104,6 @@ const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  width: fit-content;
-  padding-top: 0.5rem;
   &:hover {
     color: #ff00ff;
     text-shadow: 0 0 5px #ff00ff;
@@ -102,9 +111,6 @@ const ReadMoreLink = styled.span<{ $isMobile: boolean }>`
 `;
 
 const DateTag = styled.span<{ $isMobile: boolean }>`
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
   background: rgba(255, 0, 255, 0.2);
   color: #ff00ff;
   padding: 0.2rem 0.5rem;
@@ -187,23 +193,27 @@ const LatestBlogPosts: React.FC<LatestBlogPostsProps> = ({
                 whileHover={{ scale: 1.03 }}
                 transition={{ duration: 0.2 }}
               >
-                <PostTitle $isMobile={isMobile}>
-                  {post.frontmatter.title}
-                </PostTitle>
-                <PostExcerpt $isMobile={isMobile}>
-                  {post.frontmatter.excerpt}
-                </PostExcerpt>
-                <TagsContainer>
-                  {post.frontmatter.tags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
-                </TagsContainer>
-                <ReadMoreLink $isMobile={isMobile}>
-                  Read More <FaChevronRight style={{ marginLeft: "5px" }} />
-                </ReadMoreLink>
-                <DateTag $isMobile={isMobile}>
-                  {new Date(post.frontmatter.date).toLocaleDateString()}
-                </DateTag>
+                <PostContent>
+                  <PostTitle $isMobile={isMobile}>
+                    {post.frontmatter.title}
+                  </PostTitle>
+                  <PostExcerpt $isMobile={isMobile}>
+                    {post.frontmatter.excerpt}
+                  </PostExcerpt>
+                  <TagsContainer>
+                    {post.frontmatter.tags.map((tag) => (
+                      <Tag key={tag}>{tag}</Tag>
+                    ))}
+                  </TagsContainer>
+                </PostContent>
+                <CardFooter>
+                  <ReadMoreLink $isMobile={isMobile}>
+                    Read More <FaChevronRight style={{ marginLeft: "5px" }} />
+                  </ReadMoreLink>
+                  <DateTag $isMobile={isMobile}>
+                    {new Date(post.frontmatter.date).toLocaleDateString()}
+                  </DateTag>
+                </CardFooter>
               </BlogPostCard>
             </Link>
           ))
