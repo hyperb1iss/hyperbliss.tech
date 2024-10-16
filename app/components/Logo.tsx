@@ -23,7 +23,7 @@ const animateGradient = keyframes`
   }
 `;
 
-// Modify the flicker keyframe animation
+// Flicker keyframe animation
 const flicker = keyframes`
   0%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%, 45%, 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95%, 100% {
     opacity: 1;
@@ -56,7 +56,7 @@ const flicker = keyframes`
   }
 `;
 
-// Add a new keyframe for chromatic aberration
+// Keyframe for chromatic aberration
 const chromaticAberration = keyframes`
   0%, 95%, 100% {
     text-shadow: 
@@ -75,7 +75,7 @@ const chromaticAberration = keyframes`
   }
 `;
 
-// Add this new keyframe for the color-shifting glow effect
+// Keyframe for the color-shifting glow effect
 const shiftingGlow = keyframes`
   0%, 100% {
     text-shadow: 
@@ -111,7 +111,7 @@ const shiftingGlow = keyframes`
   }
 `;
 
-// Add these new keyframes for the sparkle and shimmer effect
+// Keyframes for the sparkle and shimmer effect
 const sparkle = keyframes`
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(0.95); }
@@ -131,7 +131,7 @@ const shimmer = keyframes`
 
 const LogoText = styled.span`
   font-family: var(--font-logo);
-  font-size: 3rem;
+  font-size: 2.6rem; // Baseline size (matches mobile view)
   background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
   background-size: 800% 800%;
   background-clip: text;
@@ -150,11 +150,18 @@ const LogoText = styled.span`
   @media (max-width: 768px) {
     font-size: 2.6rem;
   }
+
+  @media (min-width: 769px) {
+    font-size: calc(2.2rem + 0.8vw); // Increased base size for desktop
+  }
+
+  @media (min-width: 1200px) {
+    font-size: calc(2.4rem + 0.8vw); // Further increase for very large screens
+  }
 `;
 
-// Update the LogoEmojis styled component
 const LogoEmojis = styled.span`
-  font-size: 2.4rem;
+  font-size: 1.8rem; // Baseline size (matches mobile view)
   margin: 0 0.5rem;
   flex-shrink: 0;
   animation: ${sparkle} 3s ease-in-out infinite, ${shimmer} 5s linear infinite;
@@ -172,9 +179,16 @@ const LogoEmojis = styled.span`
     z-index: 1;
     padding-top: 5px;
   }
+
+  @media (min-width: 769px) {
+    font-size: calc(1.6rem + 0.4vw); // Increased base size for desktop
+  }
+
+  @media (min-width: 1200px) {
+    font-size: calc(1.8rem + 0.4vw); // Further increase for very large screens
+  }
 `;
 
-// Update the GlowingEmoji styled component
 const GlowingEmoji = styled(LogoEmojis)`
   animation: ${chromaticAberration} 3s ease-in-out infinite;
   transition: text-shadow 0.3s ease;
@@ -185,21 +199,23 @@ const GlowingEmoji = styled(LogoEmojis)`
   }
 `;
 
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-right: auto;
+  overflow: hidden;
+`;
+
 const LogoLink = styled(Link)`
   display: flex;
   align-items: center;
   text-decoration: none;
   cursor: pointer;
   position: relative;
-  max-width: 60%;
-  white-space: nowrap;
   height: 100%;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    max-width: calc(100% - 80px);
-    overflow: hidden;
-  }
+  white-space: nowrap;
 `;
 
 /**
@@ -217,16 +233,16 @@ const Logo: React.FC = () => {
   };
 
   return (
-    <LogoLink href="/" onClick={handleNavigation} ref={logoRef}>
-      <LogoEmojis>🌠</LogoEmojis>
-      <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
-      <LogoEmojis>✨</LogoEmojis>
-      {['⎊', '⨳', '✵', '⊹'].map((emoji, index) => (
-        <GlowingEmoji key={index}>
-          {emoji}
-        </GlowingEmoji>
-      ))}
-    </LogoLink>
+    <LogoContainer>
+      <LogoLink href="/" onClick={handleNavigation} ref={logoRef}>
+        <LogoEmojis>🌠</LogoEmojis>
+        <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
+        <LogoEmojis>✨</LogoEmojis>
+        {["⎊", "⨳", "✵", "⊹"].map((emoji, index) => (
+          <GlowingEmoji key={index}>{emoji}</GlowingEmoji>
+        ))}
+      </LogoLink>
+    </LogoContainer>
   );
 };
 

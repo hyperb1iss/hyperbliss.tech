@@ -12,8 +12,18 @@ import { NAV_ITEMS } from "../lib/navigation";
 const NavLinksContainer = styled.ul`
   list-style: none;
   display: flex;
-  gap: 2rem;
+  gap: 0.5rem;
   flex-shrink: 0;
+  margin-left: auto;
+  align-items: center;
+
+  @media (min-width: 769px) {
+    gap: calc(0.5rem + 0.5vw); // Scale up gap for larger screens
+  }
+
+  @media (min-width: 1200px) {
+    gap: calc(0.5rem + 1vw); // Further increase gap for very large screens
+  }
 
   @media (max-width: 768px) {
     display: none;
@@ -32,10 +42,10 @@ const NavItem = styled.li`
  */
 const StyledNavLink = styled.a<{ $active: boolean }>`
   font-family: var(--font-body);
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 700;
   color: ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem; // Decreased initial padding
   transition: all 0.3s ease;
   position: relative;
   text-transform: uppercase;
@@ -69,42 +79,14 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
     transform: scaleX(1);
   }
 
-  @media (max-width: 1600px) {
-    font-size: 2.4rem;
-    padding: 0.5rem 0.9rem;
+  @media (min-width: 769px) {
+    font-size: calc(1.8rem + 0.3vw);
+    padding: 0.5rem calc(0.5rem + 0.2vw); // Scale up padding for larger screens
   }
 
-  @media (max-width: 1400px) {
-    font-size: 2.6rem;
-    padding: 0.5rem 0.8rem;
-  }
-
-  @media (max-width: 1200px) {
-    font-size: 2.4rem;
-    padding: 0.5rem 0.7rem;
-  }
-
-  @media (max-width: 1000px) {
-    font-size: 2.2rem;
-    padding: 0.5rem 0.6rem;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 2rem;
-    padding: 0.5rem 0.5rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-    padding: 0.5rem 0;
-    display: block;
-    width: 100%;
-    text-align: center;
-    color: ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
-
-    &::after {
-      bottom: 0;
-    }
+  @media (min-width: 1200px) {
+    font-size: calc(2rem + 0.3vw);
+    padding: 0.5rem calc(0.5rem + 0.4vw); // Further increase padding for very large screens
   }
 
   ${(props) =>

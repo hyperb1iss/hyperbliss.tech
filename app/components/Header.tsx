@@ -23,7 +23,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   top: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  padding: 1rem 1rem;
+  padding: 1rem 2rem; // Increased horizontal padding
   height: ${(props) => (props.$isExpanded ? "200px" : "100px")};
   transition: height 0.3s ease;
   z-index: 1000;
@@ -39,7 +39,7 @@ const NavContent = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   height: 100%;
   overflow: hidden;
 `;
@@ -93,7 +93,7 @@ const Header: React.FC = () => {
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
-    let cleanupCanvas: () => void = () => { };
+    let cleanupCanvas: () => void = () => {};
     if (canvasRef.current && navRef.current) {
       cleanupCanvas = initializeCyberScape(
         canvasRef.current,
@@ -143,7 +143,9 @@ const Header: React.FC = () => {
     const interactionHandler = handleHeaderInteraction();
     if (navElement) {
       navElement.addEventListener("click", interactionHandler);
-      navElement.addEventListener("touchstart", interactionHandler, { passive: true });
+      navElement.addEventListener("touchstart", interactionHandler, {
+        passive: true,
+      });
     }
     return () => {
       if (navElement) {
@@ -179,11 +181,8 @@ const Header: React.FC = () => {
     <Nav ref={navRef} $isExpanded={isExpanded}>
       <Canvas ref={canvasRef} />
       <NavContent>
-        {/* Logo */}
         <Logo />
-        {/* Desktop Navigation */}
         <NavLinks />
-        {/* Mobile Menu Icon */}
         <MobileMenuIcon menuOpen={menuOpen} toggleMenu={toggleMenu} />
       </NavContent>
       {/* Mobile Navigation */}
