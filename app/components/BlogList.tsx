@@ -7,10 +7,6 @@ import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 import { PostCard } from "./PostCard";
 
-/**
- * Styled components for the blog list
- * Adjusted grid layout for better responsiveness on large screens.
- */
 const PostList = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -21,9 +17,6 @@ const PostList = styled(motion.div)`
   }
 `;
 
-/**
- * Interface for blog post data
- */
 interface Post {
   slug: string;
   frontmatter: {
@@ -35,20 +28,10 @@ interface Post {
   };
 }
 
-/**
- * Props interface for BlogList component
- */
 interface BlogListProps {
   posts: Post[];
 }
 
-/**
- * BlogList component
- * Renders a list of blog posts with animations.
- * Adjusted grid and card styles for better appearance on large screens.
- * @param {BlogListProps} props - The component props
- * @returns {JSX.Element} Rendered blog list
- */
 export default function BlogList({ posts }: BlogListProps) {
   return (
     <PageLayout>

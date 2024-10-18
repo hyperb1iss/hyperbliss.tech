@@ -5,10 +5,6 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { ProjectCard } from "./ProjectCard";
 
-/**
- * Styled components for project list
- * Adjusted grid layout for better responsiveness on large screens.
- */
 const ProjectsGrid = styled(motion.div)`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -19,9 +15,6 @@ const ProjectsGrid = styled(motion.div)`
   }
 `;
 
-/**
- * Interface for project data
- */
 interface Project {
   slug: string;
   frontmatter: {
@@ -33,20 +26,10 @@ interface Project {
   };
 }
 
-/**
- * Props interface for ProjectList component
- */
 interface ProjectListProps {
   projects: Project[];
 }
 
-/**
- * ProjectList component
- * Renders a grid of project cards with animations.
- * Adjusted grid and card styles for better appearance on large screens.
- * @param {ProjectListProps} props - The component props
- * @returns {JSX.Element} Rendered project list
- */
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
   return (
     <ProjectsGrid
