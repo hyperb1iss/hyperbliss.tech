@@ -2,9 +2,9 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
-  font-size: ${(props) => (props.$isMobile ? "2.5rem" : "2rem")};
+  font-size: clamp(2rem, 1.5vw, 3rem);
   color: #00ffff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   text-align: center;
   letter-spacing: 2px;
   font-family: var(--font-heading);

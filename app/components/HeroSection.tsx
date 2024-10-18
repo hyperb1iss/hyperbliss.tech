@@ -8,22 +8,27 @@ import { useHeaderContext } from "./HeaderContext";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
+  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 54vh;
-  padding-top: 8rem;
-  padding-bottom: 4rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding: 8rem 16px 4rem;
   overflow: hidden;
   transition: padding-top 0.3s ease;
+`;
 
-  @media (max-width: 768px) {
-    padding-top: 6rem;
-    padding-bottom: 3rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+const ContentWrapper = styled(motion.div)`
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  @media (min-width: 768px) {
+    max-width: 800px; /* Restrict max-width to prevent overflow */
+  }
+
+  @media (min-width: 1200px) {
+    max-width: 1000px;
   }
 `;
 
@@ -122,16 +127,8 @@ const AnimatedBackground: React.FC = () => {
   return <ParticleCanvas ref={canvasRef} />;
 };
 
-const ContentWrapper = styled(motion.div)`
-  max-width: 800px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
 const Title = styled(motion.h1)`
-  font-size: 4rem;
+  font-size: clamp(3rem, 5vw, 6rem);
   margin-bottom: 2.5rem;
   color: var(--color-primary);
   text-shadow: 0 0 20px var(--color-primary);
@@ -190,7 +187,7 @@ const HyperblissSpan = styled.span`
 `;
 
 const Subtitle = styled(motion.p)`
-  font-size: 1.8rem;
+  font-size: clamp(1.8rem, 2vw, 2.4rem);
   margin-bottom: 2rem;
   color: var(--color-secondary);
   text-shadow: 0 0 15px var(--color-secondary);
@@ -198,7 +195,7 @@ const Subtitle = styled(motion.p)`
   font-family: var(--font-body);
 
   @media (max-width: 768px) {
-    font-size: 1.7 srem;
+    font-size: 1.7rem;
   }
 `;
 
@@ -305,7 +302,7 @@ const Tag = styled(motion.span)`
   color: var(--color-accent);
   padding: 0.5rem 1rem;
   border-radius: 2rem;
-  font-size: 1.3rem;
+  font-size: clamp(1.3rem, 1.5vw, 1.6rem);
   transition: all 0.3s ease;
   border: 1px solid rgba(162, 89, 255, 0.3);
   cursor: pointer;
@@ -338,7 +335,7 @@ const CTAButton = styled(motion.a)`
   padding: 1rem 2rem;
   border: 2px solid var(--color-accent);
   border-radius: 50px;
-  font-size: 1.5rem;
+  font-size: clamp(1.5rem, 1.5vw, 2rem);
   font-weight: bold;
   text-transform: uppercase;
   transition: all 0.3s ease;
@@ -409,6 +406,7 @@ const tags = [
 /**
  * HeroSection component
  * Renders the hero section with animated background, title, subtitle, and tags.
+ * Adjusted font sizes and padding for better widescreen support.
  */
 export default function HeroSection(): JSX.Element {
   const { isExpanded } = useHeaderContext();

@@ -9,26 +9,45 @@ import LatestBlogPosts from "./LatestBlogPosts";
 
 const ContentWrapper = styled.div`
   display: flex;
-  flex: 1;
   flex-direction: column;
+  margin: 0 auto; /* Center the content */
+  width: 100%;
+  padding: 0 16px; /* Use consistent padding */
 
   @media (min-width: 768px) {
     flex-direction: row;
+    align-items: flex-start;
+    max-width: 1200px; /* Set a max-width to prevent content from stretching */
+  }
+
+  @media (min-width: 1400px) {
+    max-width: 1366px;
   }
 `;
 
 const MainContent = styled.main`
-  flex: 1;
+  flex: 1 1 0%;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* Allow flex item to shrink */
 `;
 
 const SidebarWrapper = styled.div`
-  width: 100%;
+  flex: 0 1 300px; /* Sidebar has an initial width of 300px but can shrink */
+  margin-top: 2rem;
+  min-width: 200px; /* Prevent sidebar from becoming too narrow */
 
   @media (min-width: 768px) {
-    width: 300px;
-    min-width: 300px;
+    margin-top: 0;
+    margin-left: 2rem; /* Space between main content and sidebar */
+  }
+
+  @media (max-width: 1024px) {
+    flex-basis: 250px; /* Adjust sidebar width on smaller desktops */
+  }
+
+  @media (min-width: 1400px) {
+    flex-basis: 350px; /* Increase sidebar width on larger screens */
   }
 `;
 
@@ -48,7 +67,7 @@ interface Project {
     title: string;
     description: string;
     github: string;
-    tags: string[]; // Add this line
+    tags: string[];
   };
 }
 
@@ -73,9 +92,9 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
     };
   }, []);
 
-  const renderContent = () => {
-    if (isMobile) {
-      return (
+  return (
+    <ContentWrapper>
+      {isMobile ? (
         <>
           <HeroSection />
           <SidebarWrapper>
@@ -83,9 +102,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           </SidebarWrapper>
           <FeaturedProjectsSection projects={projects} />
         </>
-      );
-    } else {
-      return (
+      ) : (
         <>
           <MainContent>
             <HeroSection />
@@ -95,11 +112,9 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
             <LatestBlogPosts posts={latestPosts} isMobile={isMobile} />
           </SidebarWrapper>
         </>
-      );
-    }
-  };
-
-  return <ContentWrapper>{renderContent()}</ContentWrapper>;
+      )}
+    </ContentWrapper>
+  );
 };
 
 export default HomeLayout;
