@@ -68,6 +68,7 @@ export default function LatestBlogPosts({
               description={post.frontmatter.excerpt}
               link={`/blog/${post.slug}`}
               color="255, 0, 255"
+              linkColor="0, 255, 255"
               tags={post.frontmatter.tags}
               meta={new Date(post.frontmatter.date).toLocaleDateString()}
               index={index}

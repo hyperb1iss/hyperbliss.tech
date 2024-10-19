@@ -27,6 +27,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
       description={description}
       link={`/projects/${slug}`}
       color="0, 255, 255"
+      linkColor="255, 0, 255"
       tags={tags}
       meta={author ? `Author: ${author}` : undefined}
       linkText="Learn More"

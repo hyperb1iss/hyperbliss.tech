@@ -74,6 +74,7 @@ export default function FeaturedProjects({
             description={project.frontmatter.description}
             link={`/projects/${project.slug}`}
             color="0, 255, 255"
+            linkColor="255, 0, 255"
             tags={project.frontmatter.tags}
             githubLink={project.frontmatter.github}
             linkText="Learn More"

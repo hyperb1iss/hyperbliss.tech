@@ -139,10 +139,10 @@ const CardLink = styled.button<{ $color: string }>`
   text-shadow: 0 0 5px rgba(${props => props.$color}, 0.5);
 
   &:hover {
-    color: #ff00ff;
-    background: rgba(255, 0, 255, 0.1);
-    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    color: rgb(${props => props.$color});
+    background: rgba(${props => props.$color}, 0.1);
+    text-shadow: 0 0 8px rgba(${props => props.$color}, 0.8);
+    box-shadow: 0 0 15px rgba(${props => props.$color}, 0.3);
   }
 
   @media (min-width: 1200px) {
@@ -163,10 +163,10 @@ const GithubLink = styled.a<{ $color: string }>`
   justify-content: center;
 
   &:hover {
-    color: #ff00ff;
-    background: rgba(255, 0, 255, 0.1);
-    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    color: rgb(${props => props.$color});
+    background: rgba(${props => props.$color}, 0.1);
+    text-shadow: 0 0 8px rgba(${props => props.$color}, 0.8);
+    box-shadow: 0 0 15px rgba(${props => props.$color}, 0.3);
     transform: scale(1.1);
   }
 `;
@@ -182,6 +182,7 @@ interface CardProps {
   description: string;
   link: string;
   color?: string;
+  linkColor?: string; // New prop for link color
   tags?: string[];
   meta?: string;
   linkText?: string;
@@ -196,6 +197,7 @@ export const Card: React.FC<CardProps> = ({
   description,
   link,
   color = "0, 255, 255",
+  linkColor, // New prop
   tags,
   meta,
   linkText = "Read More",
@@ -204,6 +206,8 @@ export const Card: React.FC<CardProps> = ({
   className,
   style,
 }) => {
+  const finalLinkColor = linkColor || color; // Use linkColor if provided, otherwise fall back to color
+
   const handleMainClick = (e: React.MouseEvent) => {
     // Prevent click if it's on a button or anchor
     if (
@@ -251,7 +255,7 @@ export const Card: React.FC<CardProps> = ({
         </CardContent>
         <CardFooter>
           <CardLink
-            $color={color}
+            $color={finalLinkColor}
             onClick={(e) => {
               e.stopPropagation();
               window.location.href = link;
@@ -264,7 +268,7 @@ export const Card: React.FC<CardProps> = ({
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              $color={color}
+              $color={finalLinkColor}
               onClick={(e) => e.stopPropagation()}
             >
               <FaGithub />

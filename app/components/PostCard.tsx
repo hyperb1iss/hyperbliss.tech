@@ -27,6 +27,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       description={excerpt}
       link={`/blog/${slug}`}
       color="255, 0, 255"
+      linkColor="0, 255, 255"
       tags={tags}
       meta={`${new Date(date).toLocaleDateString()} • ${author}`}
       linkText="Read More"
