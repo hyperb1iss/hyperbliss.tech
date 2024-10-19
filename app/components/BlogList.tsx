@@ -3,9 +3,9 @@
 
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import Card from "./Card";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
-import Card from "./Card";
 
 const PostList = styled(motion.div)`
   display: grid;
@@ -59,7 +59,9 @@ export default function BlogList({ posts }: BlogListProps) {
             color="255, 0, 255"
             linkColor="0, 255, 255"
             tags={frontmatter.tags}
-            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${frontmatter.author ? `• ${frontmatter.author}` : ''}`}
+            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
+              frontmatter.author ? `• ${frontmatter.author}` : ""
+            }`}
             linkText="Read More"
             index={index}
           />

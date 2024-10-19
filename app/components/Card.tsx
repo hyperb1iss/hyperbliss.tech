@@ -1,9 +1,8 @@
 // app/components/Card.tsx
 import { motion } from "framer-motion";
-import Link from "next/link";
 import React from "react";
-import styled from "styled-components";
 import { FaArrowRight, FaGithub } from "react-icons/fa";
+import styled from "styled-components";
 
 const CardWrapper = styled.div<{ $color: string }>`
   background: rgba(255, 255, 255, 0.03);
@@ -133,7 +132,7 @@ const ClickableArea = styled.div`
 const CardLink = styled.button<{ $color: string }>`
   font-size: clamp(1.4rem, 1.4vw, 1.6rem);
   font-family: inherit;
-  color: rgb(${props => props.$color});
+  color: rgb(${(props) => props.$color});
   background: none;
   border: none;
   padding: 0.5rem 1rem;
@@ -144,13 +143,13 @@ const CardLink = styled.button<{ $color: string }>`
   z-index: 2;
   position: relative;
   border-radius: 8px;
-  text-shadow: 0 0 5px rgba(${props => props.$color}, 0.5);
+  text-shadow: 0 0 5px rgba(${(props) => props.$color}, 0.5);
 
   &:hover {
-    color: rgb(${props => props.$color});
-    background: rgba(${props => props.$color}, 0.1);
-    text-shadow: 0 0 8px rgba(${props => props.$color}, 0.8);
-    box-shadow: 0 0 15px rgba(${props => props.$color}, 0.3);
+    color: rgb(${(props) => props.$color});
+    background: rgba(${(props) => props.$color}, 0.1);
+    text-shadow: 0 0 8px rgba(${(props) => props.$color}, 0.8);
+    box-shadow: 0 0 15px rgba(${(props) => props.$color}, 0.3);
   }
 
   @media (min-width: 1200px) {
@@ -159,7 +158,7 @@ const CardLink = styled.button<{ $color: string }>`
 `;
 
 const GithubLink = styled.a<{ $color: string }>`
-  color: rgb(${props => props.$color});
+  color: rgb(${(props) => props.$color});
   z-index: 2;
   position: relative;
   font-size: clamp(1.8rem, 1.8vw, 2rem);
@@ -171,10 +170,10 @@ const GithubLink = styled.a<{ $color: string }>`
   justify-content: center;
 
   &:hover {
-    color: rgb(${props => props.$color});
-    background: rgba(${props => props.$color}, 0.1);
-    text-shadow: 0 0 8px rgba(${props => props.$color}, 0.8);
-    box-shadow: 0 0 15px rgba(${props => props.$color}, 0.3);
+    color: rgb(${(props) => props.$color});
+    background: rgba(${(props) => props.$color}, 0.1);
+    text-shadow: 0 0 8px rgba(${(props) => props.$color}, 0.8);
+    box-shadow: 0 0 15px rgba(${(props) => props.$color}, 0.3);
     transform: scale(1.1);
   }
 `;
@@ -220,7 +219,7 @@ export const Card: React.FC<CardProps> = ({
     // Prevent click if it's on a button or anchor
     if (
       e.target instanceof HTMLElement &&
-      (e.target.closest('button') || e.target.closest('a'))
+      (e.target.closest("button") || e.target.closest("a"))
     ) {
       return;
     }
@@ -228,11 +227,7 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <CardWrapper
-      $color={color}
-      className={className}
-      style={style}
-    >
+    <CardWrapper $color={color} className={className} style={style}>
       <ClickableArea onClick={handleMainClick} />
       <motion.div
         initial="hidden"
@@ -245,7 +240,7 @@ export const Card: React.FC<CardProps> = ({
           duration: 0.5,
           delay: index * 0.1,
         }}
-        style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+        style={{ height: "100%", display: "flex", flexDirection: "column" }}
       >
         <CardContent>
           <CardTitle $color={color}>{title}</CardTitle>

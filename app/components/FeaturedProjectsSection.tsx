@@ -3,9 +3,9 @@
 
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import Card from "./Card";
 import GlitchSpan from "./GlitchSpan";
 import StyledTitle from "./StyledTitle";
-import Card from "./Card";
 
 const FeaturedProjectsSectionWrapper = styled.section`
   padding: 4rem 16px;
@@ -43,9 +43,7 @@ interface FeaturedProjectsProps {
   projects: Project[];
 }
 
-export default function FeaturedProjects({
-  projects,
-}: FeaturedProjectsProps) {
+export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   // Limit the projects to a maximum of 4
   const displayedProjects = projects.slice(0, 6);
 

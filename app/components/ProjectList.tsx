@@ -55,7 +55,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
           color="0, 255, 255"
           linkColor="255, 0, 255"
           tags={project.frontmatter.tags}
-          meta={project.frontmatter.author ? `Author: ${project.frontmatter.author}` : undefined}
+          meta={
+            project.frontmatter.author
+              ? `Author: ${project.frontmatter.author}`
+              : undefined
+          }
           linkText="Learn More"
           githubLink={project.frontmatter.github}
           index={index}

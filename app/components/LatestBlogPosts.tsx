@@ -3,9 +3,9 @@
 
 import { motion } from "framer-motion";
 import styled from "styled-components";
+import Card from "./Card";
 import GlitchSpan from "./GlitchSpan";
 import StyledTitle from "./StyledTitle";
-import Card from "./Card";
 
 interface BlogPost {
   slug: string;
@@ -71,7 +71,9 @@ export default function LatestBlogPosts({
               color="255, 0, 255"
               linkColor="0, 255, 255"
               tags={post.frontmatter.tags}
-              meta={`${new Date(post.frontmatter.date).toLocaleDateString()} ${post.frontmatter.author ? `• ${post.frontmatter.author}` : ''}`}
+              meta={`${new Date(post.frontmatter.date).toLocaleDateString()} ${
+                post.frontmatter.author ? `• ${post.frontmatter.author}` : ""
+              }`}
               index={index}
               className="blog-post-card"
             />
