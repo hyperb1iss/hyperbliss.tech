@@ -5,7 +5,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaArrowRight, FaGithub } from "react-icons/fa";
 
-const CardWrapper = styled(motion.div)<{ $color: string }>`
+const CardWrapper = styled.div<{ $color: string }>`
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid ${(props) => `rgba(${props.$color}, 0.2)`};
   border-radius: 15px;
@@ -113,17 +113,36 @@ const CardFooter = styled.div`
   margin-top: 1rem;
 `;
 
-const CardLink = styled.div<{ $color: string }>`
+const ClickableArea = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+`;
+
+const CardLink = styled.button<{ $color: string }>`
   font-size: clamp(1.4rem, 1.4vw, 1.6rem);
-  color: #00ffff; // Change color to cyan
-  text-decoration: none;
+  font-family: inherit;
+  color: rgb(${props => props.$color});
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   transition: all 0.3s ease;
+  z-index: 2;
+  position: relative;
+  border-radius: 8px;
+  text-shadow: 0 0 5px rgba(${props => props.$color}, 0.5);
 
   &:hover {
-    color: #ff00ff; // Change hover color to magenta
-    text-shadow: 0 0 5px #ff00ff;
+    color: #ff00ff;
+    background: rgba(255, 0, 255, 0.1);
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
   }
 
   @media (min-width: 1200px) {
@@ -131,13 +150,31 @@ const CardLink = styled.div<{ $color: string }>`
   }
 `;
 
-const GithubLink = styled(CardLink)`
-  color: #00ffff; // Change color to cyan
+const GithubLink = styled.a<{ $color: string }>`
+  color: rgb(${props => props.$color});
+  z-index: 2;
+  position: relative;
+  font-size: clamp(1.8rem, 1.8vw, 2rem);
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    color: #ff00ff; // Change hover color to magenta
-    text-shadow: 0 0 5px #ff00ff;
+    color: #ff00ff;
+    background: rgba(255, 0, 255, 0.1);
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    transform: scale(1.1);
   }
+`;
+
+const CardContent = styled.div`
+  flex-grow: 1; // This will allow the content to grow and push the footer down
+  display: flex;
+  flex-direction: column;
 `;
 
 interface CardProps {
@@ -167,10 +204,25 @@ export const Card: React.FC<CardProps> = ({
   className,
   style,
 }) => {
+  const handleMainClick = (e: React.MouseEvent) => {
+    // Prevent click if it's on a button or anchor
+    if (
+      e.target instanceof HTMLElement &&
+      (e.target.closest('button') || e.target.closest('a'))
+    ) {
+      return;
+    }
+    window.location.href = link;
+  };
+
   return (
-    <Link href={link} passHref>
-      <CardWrapper
-        $color={color}
+    <CardWrapper
+      $color={color}
+      className={className}
+      style={style}
+    >
+      <ClickableArea onClick={handleMainClick} />
+      <motion.div
         initial="hidden"
         animate="visible"
         variants={{
@@ -181,11 +233,9 @@ export const Card: React.FC<CardProps> = ({
           duration: 0.5,
           delay: index * 0.1,
         }}
-        whileHover={{ scale: 1.03 }}
-        className={className}
-        style={style}
+        style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
       >
-        <div>
+        <CardContent>
           <CardTitle $color={color}>{title}</CardTitle>
           {meta && <CardMeta>{meta}</CardMeta>}
           <CardDescription>{description}</CardDescription>
@@ -198,25 +248,31 @@ export const Card: React.FC<CardProps> = ({
               ))}
             </TagsContainer>
           )}
-        </div>
+        </CardContent>
         <CardFooter>
-          <CardLink $color={color}>
+          <CardLink
+            $color={color}
+            onClick={(e) => {
+              e.stopPropagation();
+              window.location.href = link;
+            }}
+          >
             {linkText} <FaArrowRight style={{ marginLeft: "5px" }} />
           </CardLink>
           {githubLink && (
             <GithubLink
-              as="a"
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
               $color={color}
+              onClick={(e) => e.stopPropagation()}
             >
               <FaGithub />
             </GithubLink>
           )}
         </CardFooter>
-      </CardWrapper>
-    </Link>
+      </motion.div>
+    </CardWrapper>
   );
 };
 

@@ -452,8 +452,8 @@ export default function HeroSection(): JSX.Element {
               />
             ))}
           </SparkleWrapper>
-          , a full-stack software engineer and leader. I do everything from
-          embedded systems to mobile to cloud. Welcome to my personal site!
+          , a polyglot software engineer and leader. I do everything from
+          embedded systems to cloud to mobile. Welcome to my personal site!
           You&apos;ll find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
