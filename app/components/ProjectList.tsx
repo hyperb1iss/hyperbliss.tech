@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { ProjectCard } from "./ProjectCard";
+import Card from "./Card";
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
@@ -47,14 +47,17 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
       }}
     >
       {projects.map((project, index) => (
-        <ProjectCard
+        <Card
           key={project.slug}
-          slug={project.slug}
           title={project.frontmatter.title}
           description={project.frontmatter.description}
-          github={project.frontmatter.github}
-          author={project.frontmatter.author}
+          link={`/projects/${project.slug}`}
+          color="0, 255, 255"
+          linkColor="255, 0, 255"
           tags={project.frontmatter.tags}
+          meta={project.frontmatter.author ? `Author: ${project.frontmatter.author}` : undefined}
+          linkText="Learn More"
+          githubLink={project.frontmatter.github}
           index={index}
         />
       ))}

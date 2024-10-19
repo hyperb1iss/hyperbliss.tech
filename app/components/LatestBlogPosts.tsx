@@ -13,6 +13,7 @@ interface BlogPost {
     title: string;
     excerpt: string;
     date: string;
+    author?: string;
     tags: string[];
   };
 }
@@ -70,7 +71,7 @@ export default function LatestBlogPosts({
               color="255, 0, 255"
               linkColor="0, 255, 255"
               tags={post.frontmatter.tags}
-              meta={new Date(post.frontmatter.date).toLocaleDateString()}
+              meta={`${new Date(post.frontmatter.date).toLocaleDateString()} ${post.frontmatter.author ? `• ${post.frontmatter.author}` : ''}`}
               index={index}
               className="blog-post-card"
             />

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
-import { PostCard } from "./PostCard";
+import Card from "./Card";
 
 const PostList = styled(motion.div)`
   display: grid;
@@ -51,14 +51,16 @@ export default function BlogList({ posts }: BlogListProps) {
         }}
       >
         {posts.map(({ slug, frontmatter }, index) => (
-          <PostCard
+          <Card
             key={slug}
-            slug={slug}
             title={frontmatter.title}
-            date={frontmatter.date}
-            excerpt={frontmatter.excerpt}
-            author={frontmatter.author}
+            description={frontmatter.excerpt}
+            link={`/blog/${slug}`}
+            color="255, 0, 255"
+            linkColor="0, 255, 255"
             tags={frontmatter.tags}
+            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${frontmatter.author ? `• ${frontmatter.author}` : ''}`}
+            linkText="Read More"
             index={index}
           />
         ))}
