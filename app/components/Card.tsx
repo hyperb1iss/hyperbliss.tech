@@ -19,7 +19,7 @@ const CardWrapper = styled.div<{ $color: string }>`
   justify-content: space-between;
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 0 0 10px ${(props) => `rgba(${props.$color}, 0.3)`}; // Add glow effect at rest
+  box-shadow: 0 0 10px ${(props) => `rgba(${props.$color}, 0.3)`};
 
   &:hover {
     box-shadow: 0 0 20px ${(props) => `rgba(${props.$color}, 0.6)`},
@@ -64,10 +64,18 @@ const CardTitle = styled.h3<{ $color: string }>`
   }
 `;
 
-const CardMeta = styled.div`
+const CardMeta = styled.div<{ $color: string }>`
   font-size: clamp(1.2rem, 1.4vw, 1.6rem);
-  color: var(--color-muted);
+  font-weight: 650;
+  color: rgb(${(props) => props.$color});
   margin-bottom: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background: rgba(${(props) => props.$color}, 0.15);
+  border-left: 3px solid rgb(${(props) => props.$color});
+  border-radius: 0 5px 5px 0;
+  display: inline-block;
+  text-shadow: 0 0 3px rgba(${(props) => props.$color}, 0.5);
+  box-shadow: 0 0 5px rgba(${(props) => props.$color}, 0.2);
 
   @media (min-width: 1200px) {
     font-size: clamp(1.1rem, 1.3vw, 1.5rem);
@@ -172,7 +180,7 @@ const GithubLink = styled.a<{ $color: string }>`
 `;
 
 const CardContent = styled.div`
-  flex-grow: 1; // This will allow the content to grow and push the footer down
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
 `;
@@ -182,7 +190,7 @@ interface CardProps {
   description: string;
   link: string;
   color?: string;
-  linkColor?: string; // New prop for link color
+  linkColor?: string;
   tags?: string[];
   meta?: string;
   linkText?: string;
@@ -197,7 +205,7 @@ export const Card: React.FC<CardProps> = ({
   description,
   link,
   color = "0, 255, 255",
-  linkColor, // New prop
+  linkColor,
   tags,
   meta,
   linkText = "Read More",
@@ -206,7 +214,7 @@ export const Card: React.FC<CardProps> = ({
   className,
   style,
 }) => {
-  const finalLinkColor = linkColor || color; // Use linkColor if provided, otherwise fall back to color
+  const finalLinkColor = linkColor || color;
 
   const handleMainClick = (e: React.MouseEvent) => {
     // Prevent click if it's on a button or anchor
@@ -241,7 +249,7 @@ export const Card: React.FC<CardProps> = ({
       >
         <CardContent>
           <CardTitle $color={color}>{title}</CardTitle>
-          {meta && <CardMeta>{meta}</CardMeta>}
+          {meta && <CardMeta $color={color}>{meta}</CardMeta>}
           <CardDescription>{description}</CardDescription>
           {tags && tags.length > 0 && (
             <TagsContainer>
