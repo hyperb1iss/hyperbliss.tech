@@ -303,7 +303,11 @@ export const initializeCyberScape = (
     }
 
     // Ensure all active particles are set to visible
-    for (let i = 0; i < Math.min(numberOfParticles, particlesArray.length); i++) {
+    for (
+      let i = 0;
+      i < Math.min(numberOfParticles, particlesArray.length);
+      i++
+    ) {
       particlesArray[i].isVisible = true;
     }
   };
@@ -364,6 +368,17 @@ export const initializeCyberScape = (
 
   triggerAnimation = triggerSpecialAnimation;
 
+  // Add this function to check if a position is within the viewport
+  const isWithinViewport = (x: number, y: number, z: number): boolean => {
+    const projectedPoint = VectorMath.project([x, y, z], width, height);
+    return (
+      projectedPoint.x >= 0 &&
+      projectedPoint.x <= width &&
+      projectedPoint.y >= 0 &&
+      projectedPoint.y <= height
+    );
+  };
+
   /**
    * The main animation loop for CyberScape.
    */
@@ -405,6 +420,7 @@ export const initializeCyberScape = (
       const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2);
       const totalCreationChance = baseCreationChance + additionalChance;
 
+      // Replace the existing particle creation logic with this new implementation
       if (
         activeParticles < numberOfParticles &&
         Math.random() < totalCreationChance
@@ -413,17 +429,94 @@ export const initializeCyberScape = (
           2 + Math.floor(recentlyExpiredParticles / 5),
           numberOfParticles - activeParticles
         );
+
+        // Divide the screen into a grid
+        const gridSize = 4; // 4x4 grid
+        const cellWidth = width / gridSize;
+        const cellHeight = height / gridSize;
+
+        // Count particles in each cell
+        const particleGrid: number[][] = Array(gridSize)
+          .fill(0)
+          .map(() => Array(gridSize).fill(0));
+        particlesArray.forEach((particle) => {
+          const cellX = Math.floor(
+            (particle.position[0] + width / 2) / cellWidth
+          );
+          const cellY = Math.floor(
+            (particle.position[1] + height / 2) / cellHeight
+          );
+          if (
+            cellX >= 0 &&
+            cellX < gridSize &&
+            cellY >= 0 &&
+            cellY < gridSize
+          ) {
+            particleGrid[cellY][cellX]++;
+          }
+        });
+
+        // Find cells with the least particles
+        const cellsWithCounts = particleGrid.flatMap((row, y) =>
+          row.map((count, x) => ({ x, y, count }))
+        );
+        cellsWithCounts.sort((a, b) => a.count - b.count);
+
         for (let i = 0; i < particlesToAdd; i++) {
+          const cell = cellsWithCounts[i % cellsWithCounts.length];
           const newParticle = particlePool.getParticle(width, height);
+
+          // Set position within the chosen cell
+          newParticle.position[0] =
+            cell.x * cellWidth + Math.random() * cellWidth - width / 2;
+          newParticle.position[1] =
+            cell.y * cellHeight + Math.random() * cellHeight - height / 2;
+          newParticle.position[2] = Math.random() * 200 - 100;
+
           newParticle.setDelayedAppearance();
           particlesArray.push(newParticle);
           activeParticles++;
+          cell.count++; // Update the count for this cell
         }
+
         recentlyExpiredParticles = Math.max(
           0,
           recentlyExpiredParticles - particlesToAdd
         );
       }
+
+      // Add this function to prevent particle clustering
+      const preventClustering = (particle: Particle) => {
+        const nearbyObjects = octree.query({
+          min: vec3.sub(vec3.create(), particle.position, [20, 20, 20]),
+          max: vec3.add(vec3.create(), particle.position, [20, 20, 20]),
+        });
+
+        const nearbyParticles = nearbyObjects.filter(
+          (obj) => obj instanceof Particle
+        ) as Particle[];
+
+        if (nearbyParticles.length > 20) {
+          // Calculate the average position of nearby particles
+          const avgPosition = vec3.create();
+          nearbyParticles.forEach((p) =>
+            vec3.add(avgPosition, avgPosition, p.position)
+          );
+          vec3.scale(avgPosition, avgPosition, 1 / nearbyParticles.length);
+
+          // Move the particle away from the cluster
+          const awayVector = vec3.sub(
+            vec3.create(),
+            particle.position,
+            avgPosition
+          );
+          vec3.normalize(awayVector, awayVector);
+          vec3.scale(awayVector, awayVector, 0.5); // Adjust this value to control the strength of repulsion
+
+          vec3.add(particle.velocity, particle.velocity, awayVector);
+          vec3.normalize(particle.velocity, particle.velocity);
+        }
+      };
 
       // Update and draw regular particles
       for (let i = particlesArray.length - 1; i >= 0; i--) {
@@ -437,19 +530,22 @@ export const initializeCyberScape = (
             height,
             shapesArray
           );
-          if (particle.isOutOfBounds(width, height)) {
-            // Remove the particle if it's out of bounds
+          preventClustering(particle); // Add this line to prevent clustering
+          if (
+            !isWithinViewport(
+              particle.position[0],
+              particle.position[1],
+              particle.position[2]
+            )
+          ) {
+            // Remove the particle if it's out of the viewport
             particlePool.returnParticle(particle);
             particlesArray.splice(i, 1);
             activeParticles--;
-            recentlyExpiredParticles++; // Increment the counter for expired particles
+            recentlyExpiredParticles++;
           } else {
             octree.insert(particle as unknown as OctreeObject);
-            if (
-              frustumCuller.isShapeVisible(particle as unknown as VectorShape)
-            ) {
-              particle.draw(ctx, mouseX, mouseY, width, height);
-            }
+            particle.draw(ctx, mouseX, mouseY, width, height);
           }
         } else {
           particle.updateDelay();
@@ -461,17 +557,19 @@ export const initializeCyberScape = (
         const particle = collisionParticlesArray[i];
         if (particle.isReady()) {
           particle.update();
-          if (particle.isOutOfBounds(width, height)) {
-            // Remove the collision particle if it's out of bounds
+          if (
+            !isWithinViewport(
+              particle.position[0],
+              particle.position[1],
+              particle.position[2]
+            )
+          ) {
+            // Remove the collision particle if it's out of the viewport
             particlePool.returnCollisionParticle(particle);
             collisionParticlesArray.splice(i, 1);
           } else {
             octree.insert(particle as unknown as OctreeObject);
-            if (
-              frustumCuller.isShapeVisible(particle as unknown as VectorShape)
-            ) {
-              particle.draw(ctx, mouseX, mouseY, width, height);
-            }
+            particle.draw(ctx, mouseX, mouseY, width, height);
           }
         } else {
           particle.updateDelay();
@@ -480,7 +578,8 @@ export const initializeCyberScape = (
 
       // Update and draw shapes
       const existingPositions = new Set<string>();
-      for (const shape of shapesArray) {
+      for (let i = shapesArray.length - 1; i >= 0; i--) {
+        const shape = shapesArray[i];
         shape.update(
           isCursorOverCyberScape,
           mouseX,
@@ -490,9 +589,18 @@ export const initializeCyberScape = (
           particlesArray
         );
         if (shape.opacity > 0 && !shape.isExploded) {
-          existingPositions.add(shape.getPositionKey());
-          octree.insert(shape as unknown as OctreeObject);
-          if (frustumCuller.isShapeVisible(shape)) {
+          if (
+            !isWithinViewport(
+              shape.position[0],
+              shape.position[1],
+              shape.position[2]
+            )
+          ) {
+            // Reset the shape if it's out of the viewport
+            shape.reset(existingPositions, width, height);
+          } else {
+            existingPositions.add(shape.getPositionKey());
+            octree.insert(shape as unknown as OctreeObject);
             shape.draw(ctx, width, height);
           }
         }
