@@ -16,7 +16,7 @@ export class CyberScapeConfig {
   // Particle settings
   public particlePoolSize: number = 1000;
   public particlesPerPixel: number = 1 / 2000;
-  public baseParticleCount: number = 250;
+  public baseParticleCount: number = 200;
   public particleMinSpeed: number = 0.1;
   public particleMaxSpeed: number = 0.5;
   public particleSizeMin: number = 1.5;

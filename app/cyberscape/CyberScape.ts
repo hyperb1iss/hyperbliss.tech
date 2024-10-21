@@ -104,6 +104,8 @@ export const initializeCyberScape = (
   });
   const frustumCuller = new FrustumCuller();
 
+  let recentlyExpiredParticles = 0;
+
   /**
    * Updates the canvas size based on the navigation element's dimensions and scales it for performance.
    */
@@ -115,9 +117,9 @@ export const initializeCyberScape = (
 
     let canvasScaleFactor = 1;
 
-    if (screenSize === 'mobile') {
+    if (screenSize === "mobile") {
       canvasScaleFactor = window.devicePixelRatio || 1;
-    } else if (screenSize === 'widescreen') {
+    } else if (screenSize === "widescreen") {
       canvasScaleFactor = 1.5; // Increase scale factor for widescreen
     }
 
@@ -140,10 +142,12 @@ export const initializeCyberScape = (
    * Handles window resize events and updates canvas and shape counts.
    */
   const handleResize = () => {
+    const oldWidth = width;
+    const oldHeight = height;
+
     updateCanvasSize();
-    numberOfParticles = config.calculateParticleCount(width, height);
-    numberOfShapes = config.getShapeCount(width);
     adjustShapeCounts();
+    adjustParticleCounts();
 
     // Update octree bounds
     octree.updateBounds({
@@ -153,6 +157,16 @@ export const initializeCyberScape = (
 
     // Update config canvas size
     config.updateCanvasSize(width, height);
+
+    // Adjust particle positions if the canvas size has changed
+    if (width !== oldWidth || height !== oldHeight) {
+      const widthRatio = width / oldWidth;
+      const heightRatio = height / oldHeight;
+      particlesArray.forEach((particle) => {
+        particle.position[0] *= widthRatio;
+        particle.position[1] *= heightRatio;
+      });
+    }
   };
 
   window.addEventListener("resize", handleResize);
@@ -188,13 +202,13 @@ export const initializeCyberScape = (
     let shapeFactor = 1;
 
     switch (screenSize) {
-      case 'mobile':
+      case "mobile":
         shapeFactor = 0.5;
         break;
-      case 'desktop':
+      case "desktop":
         shapeFactor = 1;
         break;
-      case 'widescreen':
+      case "widescreen":
         shapeFactor = 1.5;
         break;
     }
@@ -237,6 +251,60 @@ export const initializeCyberScape = (
     // If there are more shapes than needed, remove the excess
     if (shapesArray.length > numberOfShapes) {
       shapesArray.length = numberOfShapes;
+    }
+  };
+
+  // Add this new function
+  const adjustParticleCounts = () => {
+    const screenSize = ScreenSizeManager.getScreenSize(width, height);
+    let particleFactor = 1;
+
+    switch (screenSize) {
+      case "mobile":
+        particleFactor = 0.3;
+        break;
+      case "desktop":
+        particleFactor = 0.7;
+        break;
+      case "widescreen":
+        particleFactor = 1;
+        break;
+    }
+
+    const newParticleCount = Math.floor(
+      config.calculateParticleCount(width, height) * particleFactor
+    );
+
+    // Adjust the minimum and maximum number of particles
+    numberOfParticles = Math.max(
+      Math.min(
+        newParticleCount,
+        screenSize === "mobile" ? 50 : screenSize === "desktop" ? 100 : 150
+      ),
+      20
+    );
+
+    // Adjust the current particle count
+    if (activeParticles > numberOfParticles) {
+      // Instead of removing particles, just mark them as invisible
+      for (let i = numberOfParticles; i < particlesArray.length; i++) {
+        particlesArray[i].isVisible = false;
+      }
+      activeParticles = numberOfParticles;
+    } else if (activeParticles < numberOfParticles) {
+      // Add new particles only if needed
+      const particlesToAdd = numberOfParticles - activeParticles;
+      for (let i = 0; i < particlesToAdd; i++) {
+        const newParticle = particlePool.getParticle(width, height);
+        newParticle.setDelayedAppearance();
+        particlesArray.push(newParticle);
+        activeParticles++;
+      }
+    }
+
+    // Ensure all active particles are set to visible
+    for (let i = 0; i < Math.min(numberOfParticles, particlesArray.length); i++) {
+      particlesArray[i].isVisible = true;
     }
   };
 
@@ -332,33 +400,34 @@ export const initializeCyberScape = (
       );
       frustumCuller.updateFrustum(projectionMatrix, viewMatrix);
 
-      if (activeParticles < numberOfParticles && Math.random() < 0.1) {
-        const screenSize = ScreenSizeManager.getScreenSize(width, height);
-        let particleFactor = 1;
+      // Adjust particle creation logic
+      const baseCreationChance = 0.1;
+      const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2);
+      const totalCreationChance = baseCreationChance + additionalChance;
 
-        switch (screenSize) {
-          case 'mobile':
-            particleFactor = 0.75;
-            break;
-          case 'desktop':
-            particleFactor = 1;
-            break;
-          case 'widescreen':
-            particleFactor = 1.5;
-            break;
-        }
-
-        const particlesToAdd = Math.floor(particleFactor);
+      if (
+        activeParticles < numberOfParticles &&
+        Math.random() < totalCreationChance
+      ) {
+        const particlesToAdd = Math.min(
+          2 + Math.floor(recentlyExpiredParticles / 5),
+          numberOfParticles - activeParticles
+        );
         for (let i = 0; i < particlesToAdd; i++) {
           const newParticle = particlePool.getParticle(width, height);
           newParticle.setDelayedAppearance();
           particlesArray.push(newParticle);
           activeParticles++;
         }
+        recentlyExpiredParticles = Math.max(
+          0,
+          recentlyExpiredParticles - particlesToAdd
+        );
       }
 
       // Update and draw regular particles
-      for (const particle of particlesArray) {
+      for (let i = particlesArray.length - 1; i >= 0; i--) {
+        const particle = particlesArray[i];
         if (particle.isReady()) {
           particle.update(
             isCursorOverCyberScape,
@@ -368,11 +437,19 @@ export const initializeCyberScape = (
             height,
             shapesArray
           );
-          octree.insert(particle as unknown as OctreeObject);
-          if (
-            frustumCuller.isShapeVisible(particle as unknown as VectorShape)
-          ) {
-            particle.draw(ctx, mouseX, mouseY, width, height);
+          if (particle.isOutOfBounds(width, height)) {
+            // Remove the particle if it's out of bounds
+            particlePool.returnParticle(particle);
+            particlesArray.splice(i, 1);
+            activeParticles--;
+            recentlyExpiredParticles++; // Increment the counter for expired particles
+          } else {
+            octree.insert(particle as unknown as OctreeObject);
+            if (
+              frustumCuller.isShapeVisible(particle as unknown as VectorShape)
+            ) {
+              particle.draw(ctx, mouseX, mouseY, width, height);
+            }
           }
         } else {
           particle.updateDelay();
@@ -380,14 +457,21 @@ export const initializeCyberScape = (
       }
 
       // Update and draw collision particles
-      for (const particle of collisionParticlesArray) {
+      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+        const particle = collisionParticlesArray[i];
         if (particle.isReady()) {
           particle.update();
-          octree.insert(particle as unknown as OctreeObject);
-          if (
-            frustumCuller.isShapeVisible(particle as unknown as VectorShape)
-          ) {
-            particle.draw(ctx, mouseX, mouseY, width, height);
+          if (particle.isOutOfBounds(width, height)) {
+            // Remove the collision particle if it's out of bounds
+            particlePool.returnCollisionParticle(particle);
+            collisionParticlesArray.splice(i, 1);
+          } else {
+            octree.insert(particle as unknown as OctreeObject);
+            if (
+              frustumCuller.isShapeVisible(particle as unknown as VectorShape)
+            ) {
+              particle.draw(ctx, mouseX, mouseY, width, height);
+            }
           }
         } else {
           particle.updateDelay();
@@ -544,6 +628,9 @@ export const initializeCyberScape = (
       // Update the performance monitor
       performanceMonitor.update(timestamp, deltaTime);
     }
+
+    // Decay the recentlyExpiredParticles counter over time
+    recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - 0.1);
 
     // Schedule the next frame
     animationFrameId = requestAnimationFrame(animateCyberScape);

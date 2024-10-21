@@ -44,15 +44,15 @@ export class Particle {
     this.config = CyberScapeConfig.getInstance();
 
     // Initialize position
-    this.position = vec3.create();
+    this.position = vec3.fromValues(
+      Math.random() * width - width / 2,
+      Math.random() * height - height / 2,
+      Math.random() * 200 - 100 // Reduce z-range for better visibility
+    );
+
+    // Ensure particles start on screen
     let positionKey: string;
     do {
-      vec3.set(
-        this.position,
-        Math.random() * width - width / 2,
-        Math.random() * height - height / 2,
-        Math.random() * 600 - 300
-      );
       positionKey = `${this.position[0].toFixed(2)},${this.position[1].toFixed(
         2
       )},${this.position[2].toFixed(2)}`;
@@ -85,23 +85,25 @@ export class Particle {
     this.hue = ColorManager.getRandomCyberpunkHue();
     this.color = `hsl(${this.hue}, 100%, 50%)`;
 
-    // Initialize lifecycle properties
-    this.lifespan = this.config.particleLifespan;
+    // Set lifespan to infinity
+    this.lifespan = Infinity;
     this.age = 0;
-    this.opacity = 1;
+
+    // Set initial opacity
+    this.opacity = 0;
 
     // Initialize tempVector for reuse in calculations
     this.tempVector = vec3.create();
-    this.appearanceDelay = 0;
-    this.isVisible = false;
+    this.appearanceDelay = Math.random() * 1000; // Reduce max delay to 1 second
+    this.isVisible = this.appearanceDelay === 0;
   }
 
   /**
    * Sets a delayed appearance for the particle.
    */
   public setDelayedAppearance(): void {
-    this.appearanceDelay = Math.random() * 5000; // Random delay up to 5 seconds
-    this.isVisible = false;
+    this.appearanceDelay = Math.random() * 1000; // Reduce max delay to 1 second
+    this.isVisible = this.appearanceDelay === 0;
   }
 
   /**
@@ -112,6 +114,7 @@ export class Particle {
       this.appearanceDelay -= 16; // Assuming 60 FPS
       if (this.appearanceDelay <= 0) {
         this.isVisible = true;
+        this.opacity = 0.5; // Set initial opacity when becoming visible
       }
     }
   }
@@ -209,10 +212,9 @@ export class Particle {
       )
     );
 
-    // Update lifecycle if lifespan is finite
-    if (this.lifespan !== Infinity) {
-      this.age += 16; // Assuming 60 FPS
-      this.opacity = Math.max(0, 1 - this.age / this.lifespan);
+    // Gradually increase opacity when the particle becomes visible
+    if (this.opacity < 1) {
+      this.opacity = Math.min(this.opacity + 0.02, 1);
     }
 
     // Interact with nearby shapes
@@ -220,7 +222,8 @@ export class Particle {
 
     // Update visibility
     const pos = VectorMath.project(this.position, width, height);
-    this.isVisible = pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height;
+    this.isVisible =
+      pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height;
   }
 
   /**
@@ -343,7 +346,8 @@ export class Particle {
     const config = CyberScapeConfig.getInstance();
     if (this.lastConnectionTime === 0) {
       this.lastConnectionTime = currentTime;
-      this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
+      this.connectionDelay =
+        Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
       return true;
     }
 
@@ -351,7 +355,8 @@ export class Particle {
       return false;
     }
     this.lastConnectionTime = currentTime;
-    this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
+    this.connectionDelay =
+      Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
     return true;
   }
 
@@ -361,5 +366,16 @@ export class Particle {
 
   public decrementConnectionCount(): void {
     this.connectionCount = Math.max(0, this.connectionCount - 1);
+  }
+
+  public isOutOfBounds(width: number, height: number): boolean {
+    const pos = VectorMath.project(this.position, width, height);
+    const buffer = 100; // Buffer zone to prevent immediate re-creation
+    return (
+      pos.x < -buffer ||
+      pos.x > width + buffer ||
+      pos.y < -buffer ||
+      pos.y > height + buffer
+    );
   }
 }
