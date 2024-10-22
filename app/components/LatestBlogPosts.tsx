@@ -35,7 +35,7 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   ${(props) =>
     props.$isMobile &&
     `
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   `}
   gap: 2rem;
   max-width: 100%;
