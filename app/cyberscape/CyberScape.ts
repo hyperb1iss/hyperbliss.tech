@@ -531,14 +531,9 @@ export const initializeCyberScape = (
             shapesArray
           );
           preventClustering(particle); // Add this line to prevent clustering
-          if (
-            !isWithinViewport(
-              particle.position[0],
-              particle.position[1],
-              particle.position[2]
-            )
-          ) {
+          if (particle.isOutOfBounds(width, height)) {
             // Remove the particle if it's out of the viewport
+            particle.setOffScreen(); // Set the off-screen time
             particlePool.returnParticle(particle);
             particlesArray.splice(i, 1);
             activeParticles--;

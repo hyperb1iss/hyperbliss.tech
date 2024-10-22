@@ -33,6 +33,8 @@ export class Particle {
   public connectionCount: number = 0;
   public lastConnectionTime: number = 0;
   public connectionDelay: number = 0;
+  public lastOffScreenTime: number = 0;
+  public respawnCooldown: number = 2000; // 2 seconds cooldown
 
   /**
    * Creates a new Particle instance.
@@ -304,6 +306,12 @@ export class Particle {
     width: number,
     height: number
   ): void {
+    const currentTime = Date.now();
+    if (currentTime - this.lastOffScreenTime < this.respawnCooldown) {
+      // If the cooldown hasn't elapsed, don't reset the particle
+      return;
+    }
+
     let positionKey: string;
     do {
       vec3.set(
@@ -340,6 +348,9 @@ export class Particle {
     this.lifespan = this.config.particleLifespan;
     this.age = 0;
     this.opacity = 1;
+
+    // Reset the lastOffScreenTime
+    this.lastOffScreenTime = 0;
   }
 
   public canCreateNewConnection(currentTime: number): boolean {
@@ -377,5 +388,9 @@ export class Particle {
       pos.y < -buffer ||
       pos.y > height + buffer
     );
+  }
+
+  public setOffScreen(): void {
+    this.lastOffScreenTime = Date.now();
   }
 }
