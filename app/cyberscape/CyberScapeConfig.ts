@@ -14,9 +14,9 @@ export class CyberScapeConfig {
   public frameTime: number = 1000 / this.targetFPS;
 
   // Particle settings
-  public particlePoolSize: number = 1000;
+  public particlePoolSize: number = 500;
   public particlesPerPixel: number = 1 / 2000;
-  public baseParticleCount: number = 200;
+  public baseParticleCount: number = 100;
   public particleMinSpeed: number = 0.1;
   public particleMaxSpeed: number = 0.5;
   public particleSizeMin: number = 1.5;
@@ -51,7 +51,7 @@ export class CyberScapeConfig {
   public shapeGlowIntensityMax: number = 25;
 
   // Explosion settings
-  public maxExplosionParticles: number = 200;
+  public maxExplosionParticles: number = 100;
   public maxSimultaneousExplosions: number = 3;
   public explosionCooldown: number = 2000;
   public explosionParticlesToEmit: number = 10;
@@ -113,6 +113,13 @@ export class CyberScapeConfig {
 
   public canvasWidth: number = 800;
   public canvasHeight: number = 600;
+
+  public performanceMode: "high" | "medium" | "low" = "high";
+  public autoAdjustPerformance: boolean = true;
+  public minFPS: number = 24;
+  public performanceCheckInterval: number = 1000;
+  public particleScaleFactor: number = 1;
+  public effectsScaleFactor: number = 1;
 
   private constructor() {}
 
