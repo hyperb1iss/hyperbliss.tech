@@ -1,12 +1,13 @@
 # Stefanie Jane Kondik
 
-**Engineering Leader | Android Sorceress | Music Producer | Maker | Founder** 🏳️‍🌈
-
+**Engineering Leader | Android Sorceress | Music Producer | Maker | Founder**
 📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
 
 ## 🌠 Summary
 
-With a passion for technology and creativity, I bring deep experience in software development, spanning [Android OS](https://www.android.com/), application development, cloud services, firmware, and embedded systems. I've successfully led both open-source and enterprise projects, guiding teams to achieve technical excellence and innovation. Proficient in multiple programming languages, I thrive in hands-on leadership roles. Let's build something amazing together!
+With a passion for technology and creativity, I bring deep experience in software development across the entire stack, spanning [Android OS](https://www.android.com/), mobile application development, cloud services, firmware, and embedded systems. I've successfully led both open-source and enterprise projects, helping teams achieve technical excellence and innovation. Proficient in multiple programming languages, and highly skilled with the use of modern AI developer tooling and practices. I thrive in hands-on leadership roles, and am committed to continuous learning and self improvement.
+
+Let's build something amazing together!
 
 ## 💻 Top Skills
 
@@ -16,7 +17,9 @@ With a passion for technology and creativity, I bring deep experience in softwar
 
 ### Technical Expertise
 
-[Android OS](https://www.android.com/) | [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) | Firmware | [BSP](https://en.wikipedia.org/wiki/Board_support_package) | [Cloud Services](https://aws.amazon.com/) | Embedded Systems | Software Architecture | Infrastructure | [Linux Kernel](https://www.kernel.org/) | Device Drivers | [Android Apps](https://developer.android.com/guide)
+[Android OS](https://www.android.com/) | [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) | Firmware | [BSP](https://en.wikipedia.org/wiki/Board_support_package) | [Cloud Services](https://aws.amazon.com/)
+Embedded Systems | Software Architecture | Infrastructure | [Linux Kernel](https://www.kernel.org/)
+Device Drivers | [Android Apps](https://developer.android.com/guide)
 
 ### Engineering Leadership
 
@@ -30,7 +33,7 @@ Team Management | Software Development Lifecycle | Project Management | Mentorin
 
 _(Current Role)_
 
-- Leading a key new product initiative 🚀
+- Leading a key new AI product initiative 🚀
 - **Technologies:** Java, C++, Kotlin, Go, Python, [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
 
 #### Director of Software Engineering
@@ -156,3 +159,4 @@ _(April 1998 - April 2005)_
 
 - Avid roller skater and roller derby player
 - Electronic music producer
+- Open source software developer, check out my [GitHub](https://github.com/hyperb1iss)!
