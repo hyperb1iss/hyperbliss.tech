@@ -366,10 +366,10 @@ export default function HeroSection(): JSX.Element {
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
         <Subtitle>
-          I&apos;m <SparklingName name="Stefanie Jane" />, a polyglot software
+          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted software
           engineer and leader. I do everything from embedded systems to cloud to
-          mobile. Welcome to my personal site! You&apos;ll find my blog,
-          projects, and more about me here.
+          mobile, all the way across the stack and back. Welcome to my personal site!
+          You&apos;ll find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
