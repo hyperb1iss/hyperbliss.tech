@@ -1,5 +1,13 @@
 # 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d390d310-af4e-4f14-92ae-3cf5e4846e7b/deploy-status)](https://app.netlify.com/sites/hyperb1iss/deploys)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Jest](https://img.shields.io/badge/Jest-29.7-red?logo=jest)](https://jestjs.io/)
+[![React](https://img.shields.io/badge/React-18.0-blue?logo=react)](https://reactjs.org/)
+[![Styled Components](https://img.shields.io/badge/Styled_Components-6.1-pink?logo=styled-components)](https://styled-components.com/)
+[![License](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane— resident software sorceress and pixel enchantress. 🔮👩‍💻⚡
 
 ## 🌌 Vision
@@ -19,7 +27,7 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 
 ## ✨ Features
 
-- 🌙 Sleek, modern design with a touch of digital mystique
+- 🌙 Sleek, modern design with a touch of mystique
 - 📱 Responsive layout that morphs seamlessly across all devices
 - 🔮 Interactive elements that respond to user interaction
 - 📜 A blog that serves as a conduit for insights and knowledge
