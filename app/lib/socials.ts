@@ -2,10 +2,11 @@
 import { IconType } from "react-icons";
 import {
   FaBluesky,
-  FaMastodon,
+  FaGithub,
   FaInstagram,
   FaLinkedin,
-  FaGithub,
+  FaMastodon,
+  FaSpotify,
 } from "react-icons/fa6";
 
 /**
@@ -46,5 +47,10 @@ export const SOCIAL_LINKS: SocialLink[] = [
     href: "https://github.com/hyperb1iss",
     label: "GitHub",
     icon: FaGithub,
+  },
+  {
+    href: "https://open.spotify.com/user/12173574470",
+    label: "Spotify",
+    icon: FaSpotify,
   },
 ];
