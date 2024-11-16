@@ -3,6 +3,7 @@
 
 import { motion } from "framer-motion";
 import React from "react";
+import { FiDownload } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
 import styled from "styled-components";
 import PageLayout from "./PageLayout";
@@ -10,6 +11,7 @@ import PageTitle from "./PageTitle";
 
 // Styled components for resume content
 const ResumeContainer = styled(motion.div)`
+  position: relative;
   width: 85%;
   max-width: 1400px;
   margin: 0 auto;
@@ -117,6 +119,48 @@ const ResumeContent = styled(ReactMarkdown)`
   }
 `;
 
+// Styled component for the download button
+const DownloadButton = styled.a`
+  position: absolute;
+  top: -7rem;
+  right: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  background: rgba(0, 255, 255, 0.1);
+  color: var(--color-accent);
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  z-index: 10;
+
+  svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &:hover {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    top: -6rem;
+    right: 1.5rem;
+    width: 4rem;
+    height: 4rem;
+
+    svg {
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+`;
+
 // Interface for ResumePageContent component props
 interface ResumePageContentProps {
   content: string;
@@ -138,6 +182,14 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        <DownloadButton
+          href="/resume.pdf"
+          download
+          aria-label="Download Resume as PDF"
+          title="Download Resume as PDF"
+        >
+          <FiDownload />
+        </DownloadButton>
         <ResumeContent>{content}</ResumeContent>
       </ResumeContainer>
     </PageLayout>
