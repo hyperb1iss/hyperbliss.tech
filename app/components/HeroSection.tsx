@@ -2,9 +2,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
+import SparklingName from "./SparklingName";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
@@ -199,46 +200,6 @@ const Subtitle = styled(motion.p)`
   }
 `;
 
-const sparkle = keyframes`
-  0%, 100% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1); }
-`;
-
-const SparkleWrapper = styled.span`
-  position: relative;
-  display: inline-block;
-`;
-
-const Sparkle = styled.span<{
-  $size: number;
-  $top: number;
-  $left: number;
-  $delay: number;
-}>`
-  position: absolute;
-  display: block;
-  width: ${(props) => props.$size}px;
-  height: ${(props) => props.$size}px;
-  top: ${(props) => props.$top}%;
-  left: ${(props) => props.$left}%;
-  background-color: var(--color-accent);
-  clip-path: polygon(
-    50% 0%,
-    61% 35%,
-    98% 35%,
-    68% 57%,
-    79% 91%,
-    50% 70%,
-    21% 91%,
-    32% 57%,
-    2% 35%,
-    39% 35%
-  );
-  opacity: 0;
-  animation: ${sparkle} 2.5s ease-in-out infinite;
-  animation-delay: ${(props) => props.$delay}s;
-`;
-
 const HighlightedName = styled(motion.span)`
   color: var(--color-accent);
   font-weight: bold;
@@ -263,31 +224,6 @@ const HighlightedName = styled(motion.span)`
     transform: scaleX(1);
   }
 `;
-
-/**
- * Type definition for a sparkle effect.
- */
-interface SparkleType {
-  id: number;
-  size: number;
-  top: number;
-  left: number;
-  delay: number;
-}
-
-/**
- * Generates an array of sparkles for the highlighted name.
- * @param count - Number of sparkles to generate.
- * @returns Array of SparkleType objects.
- */
-const createSparkles = (count: number): SparkleType[] =>
-  Array.from({ length: count }, (_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    top: Math.random() * 100,
-    left: Math.random() * 100,
-    delay: Math.random() * 1.5,
-  }));
 
 const TagCloud = styled(motion.div)`
   display: flex;
@@ -382,25 +318,28 @@ const ButtonText = styled.span`
 
 const tags = [
   "Android OS",
-  "Cloud Services",
-  "Infrastructure",
-  "Firmware",
-  "Linux Kernel",
-  "Frontend",
-  "Embedded Systems",
-  "DevOps",
-  "Open Source",
-  "System Architecture",
-  "IoT",
-  "Mobile Development",
-  "Rust",
   "AWS",
-  "Cybersecurity",
-  "CI/CD",
+  "C/C++",
+  "Cloud Services",
+  "DevOps",
+  "Embedded Systems",
+  "Firmware",
+  "Full Stack",
+  "Golang",
+  "Infrastructure",
+  "IoT",
+  "Java",
+  "JavaScript",
   "Kotlin",
-  "React & Next.js",
-  "Scalable Systems",
-  "API Design",
+  "Linux Kernel",
+  "Mobile Development",
+  "Open Source",
+  "Python",
+  "Qualcomm Snapdragon",
+  "React",
+  "Rust",
+  "System Architecture",
+  "Team Leadership",
 ];
 
 /**
@@ -410,13 +349,6 @@ const tags = [
  */
 export default function HeroSection(): JSX.Element {
   const { isExpanded } = useHeaderContext();
-
-  const [sparkles, setSparkles] = useState<SparkleType[]>([]);
-
-  useEffect(() => {
-    const sparklesArray = createSparkles(10);
-    setSparkles(sparklesArray);
-  }, []);
 
   return (
     <HeroSectionWrapper $isHeaderExpanded={isExpanded}>
@@ -434,27 +366,10 @@ export default function HeroSection(): JSX.Element {
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
         <Subtitle>
-          I&apos;m{" "}
-          <SparkleWrapper>
-            <HighlightedName
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300, damping: 10 }}
-            >
-              Stefanie Jane
-            </HighlightedName>
-            {sparkles.map((sparkle) => (
-              <Sparkle
-                key={sparkle.id}
-                $size={sparkle.size}
-                $top={sparkle.top}
-                $left={sparkle.left}
-                $delay={sparkle.delay}
-              />
-            ))}
-          </SparkleWrapper>
-          , a polyglot software engineer and leader. I do everything from
-          embedded systems to cloud to mobile. Welcome to my personal site!
-          You&apos;ll find my blog, projects, and more about me here.
+          I&apos;m <SparklingName name="Stefanie Jane" />, a polyglot software
+          engineer and leader. I do everything from embedded systems to cloud to
+          mobile. Welcome to my personal site! You&apos;ll find my blog,
+          projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
