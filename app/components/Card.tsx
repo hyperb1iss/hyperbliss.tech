@@ -5,7 +5,8 @@ import { FaArrowRight, FaGithub } from "react-icons/fa";
 import styled from "styled-components";
 
 const CardWrapper = styled.div<{ $color: string }>`
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.025);
+  backdrop-filter: blur(5px);
   border: 1px solid ${(props) => `rgba(${props.$color}, 0.2)`};
   border-radius: 15px;
   padding: 2rem;
