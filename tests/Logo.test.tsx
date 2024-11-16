@@ -43,7 +43,7 @@ describe("Logo", () => {
     const logoText = screen.getByText("𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼");
     expect(logoText).toHaveStyle(`
       font-family: var(--font-logo);
-      font-size: 3rem;
+      font-size: 2.6rem;
     `);
 
     // Check if the link has the correct styling
