@@ -361,7 +361,8 @@ const AboutPageContent: React.FC = () => {
             <ContactSection>
               <Paragraph style={{ marginBottom: "1rem", opacity: 0.95 }}>
                 I'm always excited to connect with fellow technologists,
-                creators, and innovators. Here's how we might work together:
+                creators, and innovators. You can reach me via email or using
+                any of the links below. Here's how we might work together:
               </Paragraph>
 
               <ContactGrid>
@@ -379,7 +380,7 @@ const AboutPageContent: React.FC = () => {
                   {
                     title: "Collaboration",
                     description:
-                      "Have an interesting project or idea? I'm always open to exploring new opportunities and partnerships.",
+                      "Have an interesting project or idea and need help building it? I'm always open to exploring new opportunities and partnerships.",
                   },
                   {
                     title: "Mentorship",
