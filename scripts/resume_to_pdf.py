@@ -587,7 +587,7 @@ def create_styled_resume(input_path, output_path=None):
         {{ content }}
     </body>
     </html>
-    """
+    """  # noqa: E501
     )
 
     # Render the template
