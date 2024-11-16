@@ -3,7 +3,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
 import SparklingName from "./SparklingName";
 
@@ -197,31 +197,6 @@ const Subtitle = styled(motion.p)`
 
   @media (max-width: 768px) {
     font-size: 1.7rem;
-  }
-`;
-
-const HighlightedName = styled(motion.span)`
-  color: var(--color-accent);
-  font-weight: bold;
-  text-shadow: 0 0 10px var(--color-accent);
-  position: relative;
-  cursor: pointer;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--color-accent);
-    box-shadow: 0 0 5px var(--color-accent);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
-
-  &:hover::after {
-    transform: scaleX(1);
   }
 `;
 

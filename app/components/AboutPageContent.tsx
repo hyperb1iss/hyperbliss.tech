@@ -82,12 +82,6 @@ const Paragraph = styled.p`
   }
 `;
 
-const Highlight = styled.span`
-  color: var(--color-accent);
-  font-weight: bold;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-`;
-
 const StyledLink = styled.a`
   color: var(--color-accent);
   text-decoration: none;
@@ -284,7 +278,7 @@ const AboutPageContent: React.FC = () => {
         <TextContent>
           <motion.div variants={itemVariants}>
             <Paragraph>
-              Hey there! I'm <SparklingName name="Stefanie Jane" />, and I've
+              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and I&apos;ve
               spent
               <GradientText> the last 25+ years </GradientText>
               turning complex technical challenges into elegant solutions. My
@@ -295,8 +289,8 @@ const AboutPageContent: React.FC = () => {
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              I've successfully led both open-source and enterprise projects,
-              helping teams achieve technical excellence and innovation. I'm
+              I&apos;ve successfully led both open-source and enterprise projects,
+              helping teams achieve technical excellence and innovation. I&apos;m
               proficient in multiple programming languages, and highly skilled
               with the use of modern AI developer tooling and practices. I
               thrive in hands-on leadership roles, and am committed to
@@ -324,14 +318,14 @@ const AboutPageContent: React.FC = () => {
               </StyledLink>
               , which became the largest open-source Android distribution,
               empowering millions of people to take control of their devices. I
-              also co-founded the company which was formed to support it's
+              also co-founded the company which was formed to support it&apos;s
               development.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              When I'm not immersed in code or leading engineering teams, you'll
+              When I&apos;m not immersed in code or leading engineering teams, you&apos;ll
               find me skating with my roller derby team, producing electronic
               music, or creating and contributing to open-source projects. Check
               out all my work on{" "}
@@ -360,9 +354,9 @@ const AboutPageContent: React.FC = () => {
           >
             <ContactSection>
               <Paragraph style={{ marginBottom: "1rem", opacity: 0.95 }}>
-                I'm always excited to connect with fellow technologists,
+                I&apos;m always excited to connect with fellow technologists,
                 creators, and innovators. You can reach me via email or using
-                any of the links below. Here's how we might work together:
+                any of the links below. Here&apos;s how we might work together:
               </Paragraph>
 
               <ContactGrid>
