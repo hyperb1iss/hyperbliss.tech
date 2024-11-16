@@ -1,6 +1,12 @@
 // app/lib/socials.ts
 import { IconType } from "react-icons";
-import { FaMastodon, FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+import {
+  FaBluesky,
+  FaMastodon,
+  FaInstagram,
+  FaLinkedin,
+  FaGithub,
+} from "react-icons/fa6";
 
 /**
  * Interface for social media link objects
@@ -16,6 +22,11 @@ interface SocialLink {
  * Contains information for rendering social media icons and links
  */
 export const SOCIAL_LINKS: SocialLink[] = [
+  {
+    href: "https://bsky.app/profile/hyperbliss.tech",
+    label: "Bluesky",
+    icon: FaBluesky,
+  },
   {
     href: "https://hachyderm.io/@bliss",
     label: "Mastodon",
