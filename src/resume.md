@@ -1,4 +1,4 @@
-# Stefanie Jane Kondik
+# Stefanie Jane
 
 **Engineering Enchantress | Software Sorceress | Music Producer | Maker | Founder**
 
