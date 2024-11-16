@@ -1,21 +1,27 @@
 // app/(transition)/projects/[slug]/page.tsx
+import { ResolvingMetadata } from "next";
 import ProjectDetail from "../../../components/ProjectDetail";
 import {
-  getAllMarkdownSlugs,
-  getMarkdownContent,
-} from "../../../lib/markdown";
-
-interface ProjectFrontmatter extends Record<string, unknown> {
-  title: string;
-  description: string;
-  github: string;
-  author?: string;
-  tags?: string[];
-}
+  type ProjectFrontmatter,
+  generateProjectMetadata,
+} from "../../../lib/generateMetadata";
+import { getAllMarkdownSlugs, getMarkdownContent } from "../../../lib/markdown";
 
 export async function generateStaticParams() {
   const slugs = await getAllMarkdownSlugs("src/projects");
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+) {
+  const { slug } = params;
+  const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>(
+    "src/projects",
+    slug
+  );
+  return generateProjectMetadata(frontmatter, slug, parent);
 }
 
 export default async function ProjectPage({
@@ -38,20 +44,4 @@ export default async function ProjectPage({
       tags={frontmatter.tags}
     />
   );
-}
-
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
-  const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>(
-    "src/projects",
-    slug
-  );
-  return {
-    title: `Hyperbliss | ${frontmatter.title}`,
-    description: frontmatter.description,
-  };
 }

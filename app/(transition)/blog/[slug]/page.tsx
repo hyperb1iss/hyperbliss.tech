@@ -1,21 +1,27 @@
 // app/(transition)/blog/[slug]/page.tsx
+import { ResolvingMetadata } from "next";
 import BlogPost from "../../../components/BlogPost";
 import {
-  getAllMarkdownSlugs,
-  getMarkdownContent,
-} from "../../../lib/markdown";
-
-interface BlogFrontmatter extends Record<string, unknown> {
-  title: string;
-  date: string;
-  excerpt: string;
-  author?: string;
-  tags?: string[];
-}
+  type BlogFrontmatter,
+  generateBlogMetadata,
+} from "../../../lib/generateMetadata";
+import { getAllMarkdownSlugs, getMarkdownContent } from "../../../lib/markdown";
 
 export async function generateStaticParams() {
   const slugs = await getAllMarkdownSlugs("src/posts");
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata(
+  { params }: { params: { slug: string } },
+  parent: ResolvingMetadata
+) {
+  const { slug } = params;
+  const { frontmatter } = await getMarkdownContent<BlogFrontmatter>(
+    "src/posts",
+    slug
+  );
+  return generateBlogMetadata(frontmatter, slug, parent);
 }
 
 export default async function PostPage({

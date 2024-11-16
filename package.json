@@ -11,7 +11,9 @@
     "lint": "next lint --dir app --dir tests",
     "lint:fix": "next lint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:seo": "jest tests/seo",
+    "test:seo:watch": "jest tests/seo --watch"
   },
   "dependencies": {
     "feed": "^4.2.2",
