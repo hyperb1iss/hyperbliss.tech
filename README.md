@@ -1,6 +1,6 @@
 # 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹
 
-Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane—code sorceress, pixel enchantress, and digital oracle. 🔮👩‍💻⚡
+Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane— resident software sorceress and pixel enchantress. 🔮👩‍💻⚡
 
 ## 🌌 Vision
 
@@ -15,7 +15,7 @@ Here, you'll find:
 - 🔍 Optimized pathways ensuring discoverability across the web
 - 📊 Analytics to understand and enhance user experiences
 
-Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technology wizard. Her expertise spans the entire software stack, from crafting captivating user interfaces with front-end sorcery, to conjuring scalable infrastructure, and the arcane arts of embedded systems and operating systems. With an alchemical blend of technical prowess and artistic vision, she creates holistic software experiences that are as beautiful as they are powerful.
+Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technology witch. Her expertise spans the entire software stack, from crafting captivating user interfaces with front-end sorcery, to conjuring scalable infrastructure, and the arcane arts of embedded systems and operating systems. With an alchemical blend of technical prowess and artistic vision, she creates holistic software experiences that are as beautiful as they are powerful.
 
 ## ✨ Features
 
@@ -43,27 +43,49 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 ## 🏗️ Project Structure
 
 ```
-src/
+.
 ├── app/
 │   ├── (transition)/
 │   │   ├── about/
 │   │   ├── blog/
 │   │   ├── projects/
 │   │   └── resume/
+│   ├── api/
+│   │   └── rss/
 │   ├── components/
+│   ├── cyberscape/
+│   │   ├── utils/
+│   │   ├── handlers/
+│   │   ├── shapes/
+│   │   ├── effects/
+│   │   └── particles/
 │   ├── hooks/
 │   ├── lib/
 │   ├── styles/
 │   └── layout.tsx
-├── posts/
-├── projects/
-└── cyberscape/
-    ├── CyberScape.ts
-    ├── CyberScapeUtils.ts
-    ├── Particle.ts
-    ├── VectorShape.ts
-    └── glitchEffects.ts
+├── public/
+│   └── images/
+├── src/
+│   ├── posts/
+│   ├── projects/
+│   └── resume.md
+├── tests/
+│   ├── mocks/
+│   └── seo/
+├── scripts/
+└── various config files (.eslintrc.json, next.config.mjs, etc.)
 ```
+
+Key directories:
+
+- `app/`: Next.js 13+ app directory containing the main application code
+- `app/cyberscape/`: The interactive background animation system
+- `app/components/`: Reusable React components
+- `app/lib/`: Utility functions and configurations
+- `src/`: Content files (blog posts, projects, resume)
+- `tests/`: Test files and mocks
+- `public/`: Static assets
+- `scripts/`: Utility scripts
 
 ## 🚀 Getting Started
 
@@ -228,10 +250,43 @@ Under the following terms:
 
 For the full text of this license, see the [complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 
+## 🧪 Testing and Linting
+
+### Testing
+
+The project uses Jest and React Testing Library for testing. Tests are located in the `tests/` directory.
+
+Available test commands:
+
+- `npm test` or `yarn test`: Run all tests
+- `npm run test:watch` or `yarn test:watch`: Run tests in watch mode
+- `npm run test:seo` or `yarn test:seo`: Run SEO-specific tests
+- `npm run test:seo:watch` or `yarn test:seo:watch`: Run SEO tests in watch mode
+
+### Linting
+
+ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base.
+
+Available lint commands:
+
+- `npm run lint` or `yarn lint`: Lint the app and tests directories
+- `npm run lint:fix` or `yarn lint:fix`: Automatically fix linting issues
+
+### Test Setup
+
+The project uses the following testing libraries and configurations:
+
+- Jest with TypeScript support (ts-jest)
+- React Testing Library for component testing
+- jest-environment-jsdom for DOM simulation
+- Custom test environment for canvas-related tests
+
+Test files should be placed in the `tests/` directory with the `.test.ts` or `.test.tsx` extension.
+
 ---
 
-<p align="center">
-  <img src="https://hyperbliss.tech/images/logo.png" alt="hyperbliss.tech logo" width="200">
-  <br>
-  <em>Woven with 💜 and ✨ by Stefanie Jane</em>
-</p>
+<div align="center">
+
+Created by [Stefanie Jane 🌠](https://hyperbliss.tech)
+
+</div>

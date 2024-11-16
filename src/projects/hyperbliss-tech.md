@@ -43,13 +43,14 @@ Welcome to the source code of the very website you're viewing! hyperbliss.tech i
 
 ### CyberScape Animation
 
-The signature header animation is built using raw Canvas API and WebGL, featuring:
+The signature header animation is built using the Canvas 2D API, featuring:
 
-- Particle system with physics simulation
+- Advanced particle system with physics simulation
 - Dynamic connections between particles
 - Interactive force fields
 - Adaptive performance optimization
 - Glitch effects and visual enhancements
+- Octree-based spatial partitioning for efficient collision detection
 
 ### Content Management
 
