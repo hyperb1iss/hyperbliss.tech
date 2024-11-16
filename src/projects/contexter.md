@@ -68,10 +68,3 @@ contexter /path/to/your/project rust js --exclude ".*test.*"
 3. Choose the files you want to include
 4. Click "Fetch Content" or "Copy to Clipboard"
 
-## 🤝 Contributing
-
-Contributions are welcome! Please check out our [Contributing Guide](https://github.com/hyperb1iss/contexter/blob/main/CONTRIBUTING.md) for details on how to get started.
-
-## 📄 License
-
-Contexter is open-source software licensed under the Apache 2.0 License.

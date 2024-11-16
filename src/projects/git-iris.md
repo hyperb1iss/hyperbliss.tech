@@ -57,7 +57,4 @@ git-iris release-notes --from v1.0.0 --to v1.1.0
 
 For more detailed information on using Git-Iris, please refer to our [documentation](https://github.com/hyperb1iss/git-iris/wiki).
 
-## License
-
-Git-Iris is distributed under the Apache 2.0 License. See `LICENSE` for more information.
 

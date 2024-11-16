@@ -53,19 +53,3 @@ The Hyper Light Card automatically adapts its color scheme based on the current 
 ## 🚀 Performance
 
 Hyper Light Card is built with performance in mind. It uses efficient rendering techniques and optimized state management to ensure smooth interactions, even on less powerful devices.
-
-## 🔧 Development
-
-To set up the development environment:
-
-1. Clone the repository: `git clone https://github.com/hyperb1iss/hyper-light-card.git`
-2. Install dependencies: `npm install`
-3. Start the development server: `npm start`
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/hyperb1iss/hyper-light-card/blob/main/LICENSE) file for details.

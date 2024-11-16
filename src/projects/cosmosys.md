@@ -1,5 +1,5 @@
 ---
-title: "🌠 Cosmosys: Stellar Release Management"
+title: "🪐 Cosmosys: Stellar Release Management"
 description: "A powerful, flexible, and customizable release management tool designed to streamline your software deployment process."
 github: "https://github.com/hyperb1iss/cosmosys"
 ---
@@ -67,14 +67,3 @@ Cosmosys is designed to be highly customizable:
 - **Plugins**: Extend Cosmosys's functionality with custom plugins to integrate with your tools and workflows.
 - **Release Steps**: Define and order your release steps to create the perfect release process for your project.
 
-## Community and Support 🤝
-
-Join the Cosmosys community:
-
-- [GitHub Repository](https://github.com/hyperb1iss/cosmosys)
-- [Documentation](https://cosmosys.readthedocs.io/)
-- [Community Forum](https://community.cosmosys.com)
-
-## License 📄
-
-Cosmosys is open-source software licensed under the Apache License 2.0.

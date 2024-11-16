@@ -41,24 +41,3 @@ The SignalRGB Home Assistant Integration is a custom component that brings the p
 
 For manual installation and detailed setup instructions, please refer to the [GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).
 
-## 🖼️ Screenshots
-
-![Dashboard View](/images/projects/signalrgb-dashboard.jpg)
-*SignalRGB integration in a Home Assistant dashboard*
-
-![Effect Selection](/images/projects/signalrgb-effect-selection.jpg)
-*Selecting a SignalRGB effect through Home Assistant*
-
-## 🤝 Contributing
-
-Contributions are welcome! Whether it's bug reports, feature requests, or code contributions, please feel free to reach out or submit a pull request.
-
-## 📜 License
-
-This project is licensed under the Apache License 2.0. See the [LICENSE](https://github.com/hyperb1iss/signalrgb-homeassistant/blob/main/LICENSE) file for details.
-
-## 🔗 Links
-
-- [GitHub Repository](https://github.com/hyperb1iss/signalrgb-homeassistant)
-- [SignalRGB Website](https://www.signalrgb.com/)
-- [Home Assistant](https://www.home-assistant.io/)
