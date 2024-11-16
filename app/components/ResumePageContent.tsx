@@ -12,18 +12,20 @@ import PageTitle from "./PageTitle";
 // Styled components for resume content
 const ResumeContainer = styled(motion.div)`
   position: relative;
-  width: 85%;
-  max-width: 1400px;
+  width: 98%;
+  max-width: 1800px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(0, 255, 255, 0.2);
   backdrop-filter: blur(5px);
   border-radius: 15px;
-  padding: 3rem;
+  padding: 3rem 2rem;
   box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 
   @media (max-width: 768px) {
-    width: 90%;
+    width: 99.5%;
+    padding: 2rem 1.5rem;
+    border-radius: 8px;
   }
 `;
 
@@ -122,13 +124,13 @@ const ResumeContent = styled(ReactMarkdown)`
 // Styled component for the download button
 const DownloadButton = styled.a`
   position: absolute;
-  top: -7rem;
+  top: -6rem;
   right: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 4rem;
+  height: 4rem;
   background: rgba(0, 255, 255, 0.1);
   color: var(--color-accent);
   border-radius: 50%;
@@ -138,8 +140,8 @@ const DownloadButton = styled.a`
   z-index: 10;
 
   svg {
-    width: 2rem;
-    height: 2rem;
+    width: 1.8rem;
+    height: 1.8rem;
   }
 
   &:hover {
@@ -150,13 +152,25 @@ const DownloadButton = styled.a`
 
   @media (max-width: 768px) {
     top: -6rem;
-    right: 1.5rem;
-    width: 4rem;
-    height: 4rem;
+    right: 1rem;
+    width: 3.5rem;
+    height: 3.5rem;
 
     svg {
-      width: 1.8rem;
-      height: 1.8rem;
+      width: 1.6rem;
+      height: 1.6rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    top: -6rem;
+    right: 0.75rem;
+    width: 3.2rem;
+    height: 3.2rem;
+
+    svg {
+      width: 1.4rem;
+      height: 1.4rem;
     }
   }
 `;
