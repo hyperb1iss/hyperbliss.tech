@@ -129,6 +129,39 @@ Key directories:
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
+## 🧪 Testing and Linting
+
+### Testing
+
+The project uses Jest and React Testing Library for testing. Tests are located in the `tests/` directory.
+
+Available test commands:
+
+- `npm test` or `yarn test`: Run all tests
+- `npm run test:watch` or `yarn test:watch`: Run tests in watch mode
+- `npm run test:seo` or `yarn test:seo`: Run SEO-specific tests
+- `npm run test:seo:watch` or `yarn test:seo:watch`: Run SEO tests in watch mode
+
+### Linting
+
+ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base.
+
+Available lint commands:
+
+- `npm run lint` or `yarn lint`: Lint the app and tests directories
+- `npm run lint:fix` or `yarn lint:fix`: Automatically fix linting issues
+
+### Test Setup
+
+The project uses the following testing libraries and configurations:
+
+- Jest with TypeScript support (ts-jest)
+- React Testing Library for component testing
+- jest-environment-jsdom for DOM simulation
+- Custom test environment for canvas-related tests
+
+Test files should be placed in the `tests/` directory with the `.test.ts` or `.test.tsx` extension.
+
 ## 🌠 CyberScape: Immersive Interactive Background
 
 CyberScape is a custom-built, interactive background animation that brings the cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive environment that reacts to user interactions and adds depth to the overall user experience.
@@ -257,39 +290,6 @@ Under the following terms:
 - **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
 For the full text of this license, see the [complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
-
-## 🧪 Testing and Linting
-
-### Testing
-
-The project uses Jest and React Testing Library for testing. Tests are located in the `tests/` directory.
-
-Available test commands:
-
-- `npm test` or `yarn test`: Run all tests
-- `npm run test:watch` or `yarn test:watch`: Run tests in watch mode
-- `npm run test:seo` or `yarn test:seo`: Run SEO-specific tests
-- `npm run test:seo:watch` or `yarn test:seo:watch`: Run SEO tests in watch mode
-
-### Linting
-
-ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base.
-
-Available lint commands:
-
-- `npm run lint` or `yarn lint`: Lint the app and tests directories
-- `npm run lint:fix` or `yarn lint:fix`: Automatically fix linting issues
-
-### Test Setup
-
-The project uses the following testing libraries and configurations:
-
-- Jest with TypeScript support (ts-jest)
-- React Testing Library for component testing
-- jest-environment-jsdom for DOM simulation
-- Custom test environment for canvas-related tests
-
-Test files should be placed in the `tests/` directory with the `.test.ts` or `.test.tsx` extension.
 
 ---
 
