@@ -13,6 +13,7 @@ const FadeContainer = styled.div<{ $isExpanded: boolean }>`
   left: 0;
   right: 0;
   z-index: 999;
+  transition: top 0.3s ease;
 `;
 
 const HeaderFade: React.FC = () => {
