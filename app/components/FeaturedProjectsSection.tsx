@@ -43,9 +43,30 @@ interface FeaturedProjectsProps {
   projects: Project[];
 }
 
+// Add this hash function at the top level, before the component
+function getHashedProjects(projects: Project[], count: number): Project[] {
+  const date = new Date();
+  const dayOfYear = Math.floor(
+    (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000
+  );
+  const hour = date.getHours();
+
+  // Create a seed based on hour and day of year
+  const seed = dayOfYear * 24 + hour;
+
+  // Fisher-Yates shuffle with seeded random
+  const shuffled = [...projects];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const seededRandom = Math.sin(i * seed) * 10000;
+    const j = Math.floor(Math.abs(seededRandom) % (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, count);
+}
+
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
-  // Limit the projects to a maximum of 4
-  const displayedProjects = projects.slice(0, 6);
+  const displayedProjects = getHashedProjects(projects, 6);
 
   return (
     <FeaturedProjectsSectionWrapper>
