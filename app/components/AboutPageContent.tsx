@@ -21,18 +21,20 @@ const ProfileImage = styled(motion.img)`
   width: clamp(200px, 20vw, 400px);
   height: auto;
   border-radius: 50% / 40%;
-  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
   margin: 0 3rem 2rem 0;
   transition: all 0.3s ease-in-out;
-  border: 2px solid rgba(162, 89, 255, 0.2);
-  shape-outside: circle(50%);
-  filter: saturate(1.1) brightness(1.05);
+  position: relative;
+  filter: saturate(1.4) brightness(1.05);
+
+  /* Neon Glow Effect */
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.6), 0 0 10px rgba(0, 255, 255, 0.5),
+    0 0 20px rgba(0, 255, 255, 0.4);
+  border: 2px solid rgba(0, 255, 255, 0.2);
 
   &:hover {
-    transform: scale(1.05) rotate(-2deg);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5),
-      0 0 60px rgba(162, 89, 255, 0.2);
-    border-color: rgba(0, 255, 255, 0.4);
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.7), 0 0 20px rgba(255, 0, 255, 0.5);
+    border-color: rgba(255, 0, 255, 0.5);
   }
 
   @media (max-width: 768px) {
