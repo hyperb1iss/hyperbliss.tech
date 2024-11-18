@@ -2,6 +2,7 @@
 title: "🔮 Git-Iris: AI-Powered Git Workflow Assistant"
 description: "A comprehensive AI-powered Git workflow assistant that enhances your development process from start to finish."
 github: "https://github.com/hyperb1iss/git-iris"
+tags: ["rust", "git", "ai", "cli", "developer-tools", "automation", "openai", "anthropic"]
 ---
 
 Git-Iris is a comprehensive AI-powered Git workflow assistant that enhances your development process from start to finish. By leveraging advanced AI models, Git-Iris boosts your productivity and improves the quality of your project documentation.
