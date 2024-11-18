@@ -12,8 +12,8 @@ import PageTitle from "./PageTitle";
 // Styled components for resume content
 const ResumeContainer = styled(motion.div)`
   position: relative;
-  width: 98%;
-  max-width: 1800px;
+  width: 99%;
+  max-width: 2000px;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(0, 255, 255, 0.2);
