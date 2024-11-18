@@ -211,6 +211,41 @@ describe("Metadata Generation", () => {
 
       expect(metadata.authors).toEqual([{ name: "Stefanie Jane" }]);
     });
+
+    it("should include OpenGraph images", async () => {
+      const metadata = await generateBlogMetadata(
+        mockBlogFrontmatter,
+        "test-post",
+        mockParent()
+      );
+
+      // Check if images exist and is an array
+      expect(metadata.openGraph?.images).toBeDefined();
+      const ogImages = metadata.openGraph?.images;
+      expect(Array.isArray(ogImages)).toBe(true);
+
+      // Type guard to ensure we're working with an array
+      if (Array.isArray(ogImages)) {
+        expect(ogImages[0]).toMatchObject({
+          url: expect.stringContaining("hyperbliss.tech"),
+          width: 1200,
+          height: 630,
+          alt: expect.any(String),
+        });
+      }
+
+      // Check Twitter images
+      const twitterImages = metadata.twitter?.images;
+      expect(Array.isArray(twitterImages)).toBe(true);
+
+      // Type guard for Twitter images
+      if (Array.isArray(twitterImages)) {
+        expect(twitterImages[0]).toMatchObject({
+          url: expect.stringContaining("hyperbliss.tech"),
+          alt: expect.any(String),
+        });
+      }
+    });
   });
 
   describe("Project Metadata", () => {

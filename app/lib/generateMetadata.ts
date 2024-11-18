@@ -10,6 +10,14 @@ const SITE_NAME = "Hyperbliss";
 const DEFAULT_LOCALE = "en_US";
 const TWITTER_HANDLE = "@hyperb1iss";
 
+// Add new constant for images
+const DEFAULT_OG_IMAGE = {
+  url: `${BASE_URL}/images/og-default.jpg`,
+  width: 1200,
+  height: 630,
+  alt: "Hyperbliss",
+};
+
 /**
  * Base interface for all frontmatter data
  */
@@ -51,7 +59,8 @@ function createOpenGraph(
   url: string,
   author: string,
   tags?: string[],
-  publishedTime?: string
+  publishedTime?: string,
+  ogImage?: string
 ): NonNullable<MetadataInterface["openGraph"]> {
   return {
     title,
@@ -60,6 +69,14 @@ function createOpenGraph(
     siteName: SITE_NAME,
     locale: DEFAULT_LOCALE,
     type: "article",
+    images: [
+      {
+        ...DEFAULT_OG_IMAGE,
+        // Override with custom image if provided
+        url: ogImage ? `${BASE_URL}/images/${ogImage}` : DEFAULT_OG_IMAGE.url,
+        alt: title,
+      },
+    ],
     ...(publishedTime && { publishedTime }),
     ...(author && { authors: [author] }),
     ...(tags && tags.length > 0 && { tags }),
@@ -71,7 +88,8 @@ function createOpenGraph(
  */
 function createTwitter(
   title: string,
-  description: string
+  description: string,
+  ogImage?: string
 ): NonNullable<MetadataInterface["twitter"]> {
   return {
     card: "summary_large_image",
@@ -79,6 +97,12 @@ function createTwitter(
     description,
     creator: TWITTER_HANDLE,
     site: TWITTER_HANDLE,
+    images: [
+      {
+        url: ogImage ? `${BASE_URL}/images/${ogImage}` : DEFAULT_OG_IMAGE.url,
+        alt: title,
+      },
+    ],
   };
 }
 

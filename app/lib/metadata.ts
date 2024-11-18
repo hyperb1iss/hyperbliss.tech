@@ -10,6 +10,14 @@ const SITE_DESCRIPTION =
 const SITE_NAME = "🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹";
 const OG_LOCALE = "en_US";
 
+// Add new constants for images
+const DEFAULT_OG_IMAGE = {
+  url: `${BASE_URL}/images/og-default.jpg`,
+  width: 1200,
+  height: 630,
+  alt: SITE_DESCRIPTION,
+};
+
 /**
  * Site metadata configuration object
  * Contains all the necessary metadata for SEO and social sharing
@@ -39,6 +47,7 @@ const siteMetadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
   robots: {
     index: true,
@@ -55,6 +64,12 @@ const siteMetadata: Metadata = {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@hyperb1iss",
+    creator: "@hyperb1iss",
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 
