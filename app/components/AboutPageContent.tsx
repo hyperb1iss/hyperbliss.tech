@@ -278,23 +278,24 @@ const AboutPageContent: React.FC = () => {
         <TextContent>
           <motion.div variants={itemVariants}>
             <Paragraph>
-              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and I&apos;ve
-              spent
+              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and
+              I&apos;ve spent
               <GradientText> the last 25+ years </GradientText>
-              turning complex technical challenges into elegant solutions. My
-              journey spans the entire technology stack—from embedded systems
-              and OS development to cloud services, frontend, and AI.
+              turning complex technical challenges into beautiful products. My
+              experience spans the entire technology stack—from embedded
+              systems, hardware bringup, and OS development to cloud services,
+              frontend, and AI.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              I&apos;ve successfully led both open-source and enterprise projects,
-              helping teams achieve technical excellence and innovation. I&apos;m
-              proficient in multiple programming languages, and highly skilled
-              with the use of modern AI developer tooling and practices. I
-              thrive in hands-on leadership roles, and am committed to
-              continuous learning and self improvement.
+              I&apos;ve successfully led both open-source and enterprise
+              projects, helping teams achieve technical excellence and
+              innovation. I&apos;m proficient in multiple programming languages,
+              and highly skilled with the use of modern AI developer tooling and
+              practices. I thrive in hands-on leadership roles, and am committed
+              to continuous learning and self improvement.
             </Paragraph>
           </motion.div>
 
@@ -325,7 +326,7 @@ const AboutPageContent: React.FC = () => {
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              When I&apos;m not immersed in code or leading engineering teams, you&apos;ll
+              When I&apos;m not hacking on code or flashing devices, you&apos;ll
               find me skating with my roller derby team, producing electronic
               music, or creating and contributing to open-source projects. Check
               out all my work on{" "}
