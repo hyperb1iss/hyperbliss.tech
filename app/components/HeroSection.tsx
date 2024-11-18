@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useHeaderContext } from "./HeaderContext";
 import SparklingName from "./SparklingName";
+import { TECH_TAGS } from "../lib/constants";
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
@@ -291,31 +292,7 @@ const ButtonText = styled.span`
   z-index: 2;
 `;
 
-const tags = [
-  "Android OS",
-  "AWS",
-  "C/C++",
-  "Cloud Services",
-  "DevOps",
-  "Embedded Systems",
-  "Firmware",
-  "Full Stack",
-  "Golang",
-  "Infrastructure",
-  "IoT",
-  "Java",
-  "JavaScript",
-  "Kotlin",
-  "Linux Kernel",
-  "Mobile Development",
-  "Open Source",
-  "Python",
-  "Qualcomm Snapdragon",
-  "React",
-  "Rust",
-  "System Architecture",
-  "Team Leadership",
-];
+const tags = TECH_TAGS;
 
 /**
  * HeroSection component
@@ -341,10 +318,11 @@ export default function HeroSection(): JSX.Element {
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
         <Subtitle>
-          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted software
-          engineer and leader. I do everything from embedded systems to cloud to
-          mobile, all the way across the stack and back. Welcome to my personal site!
-          You&apos;ll find my blog, projects, and more about me here.
+          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted
+          software engineer and leader. I do everything from embedded systems to
+          cloud to mobile, all the way across the stack and back. Welcome to my
+          personal site! You&apos;ll find my blog, projects, and more about me
+          here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (

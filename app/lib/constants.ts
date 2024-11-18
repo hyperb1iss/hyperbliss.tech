@@ -1,0 +1,27 @@
+// app/lib/constants.ts
+
+export const TECH_TAGS = [
+  "Android OS",
+  "AWS",
+  "C/C++",
+  "Cloud Services",
+  "DevOps",
+  "Embedded Systems",
+  "Firmware",
+  "Full Stack",
+  "Golang",
+  "Infrastructure",
+  "IoT",
+  "Java",
+  "JavaScript",
+  "Kotlin",
+  "Linux Kernel",
+  "Mobile Development",
+  "Open Source",
+  "Python",
+  "Qualcomm Snapdragon",
+  "React",
+  "Rust",
+  "System Architecture",
+  "Team Leadership",
+];

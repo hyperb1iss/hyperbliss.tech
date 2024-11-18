@@ -1,5 +1,6 @@
 // app/lib/metadata.ts
 import { Metadata } from "next";
+import { TECH_TAGS } from "./constants";
 
 // Constants for site metadata
 const AUTHOR_NAME = "Stefanie Jane";
@@ -37,6 +38,7 @@ const siteMetadata: Metadata = {
     "design",
     "technology",
     "blog",
+    ...Array.from(TECH_TAGS),
   ],
   authors: [{ name: AUTHOR_NAME }],
   creator: AUTHOR_NAME,
