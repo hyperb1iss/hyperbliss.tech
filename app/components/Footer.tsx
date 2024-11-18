@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { SOCIAL_LINKS } from "../lib/socials";
 import { FaRss } from "react-icons/fa";
 import Link from "next/link";
+import { SparklingName } from "./SparklingName";
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
@@ -136,7 +137,7 @@ const Footer: React.FC = () => {
         </RSSLink>
       </div>
       <FooterText>
-        &copy; {new Date().getFullYear()} Stefanie Jane 🌠
+        &copy; {new Date().getFullYear()} <SparklingName name="Stefanie Jane" /> 🌠
       </FooterText>
     </FooterContainer>
   );
