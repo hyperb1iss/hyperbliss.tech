@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import styled from "styled-components";
 import Card from "./Card";
 import GlitchSpan from "./GlitchSpan";
@@ -26,6 +27,15 @@ const ProjectsGrid = styled(motion.div)`
 
   @media (min-width: 1200px) {
     max-width: 1000px;
+  }
+`;
+
+const TitleLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
   }
 `;
 
@@ -71,7 +81,11 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   return (
     <FeaturedProjectsSectionWrapper>
       <StyledTitle>
-        <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
+        <TitleLink href="/projects">
+          <GlitchSpan data-text="Featured Projects">
+            Featured Projects
+          </GlitchSpan>
+        </TitleLink>
       </StyledTitle>
       <ProjectsGrid
         initial="hidden"

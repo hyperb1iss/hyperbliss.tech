@@ -2,6 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import styled from "styled-components";
 import Card from "./Card";
 import GlitchSpan from "./GlitchSpan";
@@ -47,6 +48,15 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   }
 `;
 
+const TitleLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export default function LatestBlogPosts({
   posts,
   isMobile,
@@ -58,7 +68,9 @@ export default function LatestBlogPosts({
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <StyledTitle>
-        <GlitchSpan data-text="Latest Posts">Latest Posts</GlitchSpan>
+        <TitleLink href="/blog">
+          <GlitchSpan data-text="Latest Posts">Latest Posts</GlitchSpan>
+        </TitleLink>
       </StyledTitle>
       <SidebarContent $isMobile={isMobile}>
         {posts.length > 0 ? (
