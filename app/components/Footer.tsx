@@ -3,7 +3,7 @@
 
 import styled from "styled-components";
 import { SOCIAL_LINKS } from "../lib/socials";
-import { FaRss } from "react-icons/fa";
+import { FaRss } from "react-icons/fa6";
 import Link from "next/link";
 import { SparklingName } from "./SparklingName";
 

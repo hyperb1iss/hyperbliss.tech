@@ -1,7 +1,7 @@
 // app/components/Card.tsx
 import { motion } from "framer-motion";
 import React from "react";
-import { FaArrowRight, FaGithub } from "react-icons/fa";
+import { FaArrowRight, FaGithub } from "react-icons/fa6";
 import styled from "styled-components";
 
 const CardWrapper = styled.div<{ $color: string }>`
