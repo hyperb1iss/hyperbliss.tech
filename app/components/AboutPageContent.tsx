@@ -18,7 +18,7 @@ const ContentWrapper = styled(motion.div)`
 
 const ProfileImage = styled(motion.img)`
   float: left;
-  width: clamp(200px, 20vw, 400px);
+  width: clamp(200px, 18vw, 300px);
   height: auto;
   border-radius: 50% / 40%;
   margin: 0 3rem 2rem 0;
@@ -138,74 +138,107 @@ const ContactGrid = styled.div`
   gap: 2rem;
   margin-top: 2rem;
   padding: 0 1rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const ContactReason = styled.div`
-  padding: 2rem;
+  height: 100%;
+  min-height: 220px;
+  padding: 2.5rem;
   background: linear-gradient(
     135deg,
     rgba(162, 89, 255, 0.05) 0%,
     rgba(0, 255, 255, 0.05) 100%
   );
-  border-radius: 10px;
+  border-radius: 2px;
   transition: all 0.4s ease-out;
-  border: 1px solid transparent;
+  border: 1px solid rgba(0, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(5px);
 
-  &::before {
+  /* Cyberpunk corner accent */
+  &::after {
     content: "";
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(
+      45deg,
+      transparent 50%,
+      rgba(0, 255, 255, 0.1) 50%
+    );
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+  }
+
+  /* Glowing border effect */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(162, 89, 255, 0.1) 0%,
-      rgba(0, 255, 255, 0.1) 100%
+      transparent 40%,
+      rgba(0, 255, 255, 0.1),
+      rgba(162, 89, 255, 0.1)
     );
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    z-index: 1;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    padding: 1px;
+    border-radius: 2px;
+    pointer-events: none;
   }
 
   &:hover {
     transform: translateY(-5px);
-    border: 1px solid rgba(162, 89, 255, 0.1);
-    box-shadow: 0 5px 15px rgba(162, 89, 255, 0.1),
-      0 15px 40px rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), 0 0 40px rgba(0, 0, 0, 0.2),
+      inset 0 0 20px rgba(0, 255, 255, 0.05);
 
     &::before {
-      opacity: 1;
+      background: linear-gradient(
+        135deg,
+        transparent 40%,
+        rgba(0, 255, 255, 0.2),
+        rgba(162, 89, 255, 0.2)
+      );
     }
   }
 
   h3 {
     color: var(--color-accent);
     font-size: 1.8rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     transition: all 0.3s ease;
     position: relative;
     z-index: 2;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     letter-spacing: 0.02em;
+    padding-left: 15px;
 
     &::before {
       content: "";
       position: absolute;
-      left: -10px;
+      left: 0;
       top: 50%;
       width: 4px;
-      height: 0;
+      height: 70%;
       background: linear-gradient(
         to bottom,
         var(--color-accent),
         var(--color-secondary)
       );
-      transition: height 0.3s ease, transform 0.3s ease;
       transform: translateY(-50%);
       border-radius: 2px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
   }
 
@@ -217,12 +250,17 @@ const ContactReason = styled.div`
   p {
     font-size: 1.6rem;
     margin: 0;
-    line-height: 1.5;
+    line-height: 1.6;
     opacity: 0.9;
     position: relative;
     z-index: 2;
     text-align: left;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    min-height: auto;
+    height: auto;
   }
 `;
 
