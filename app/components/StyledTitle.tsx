@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
-  font-size: clamp(2rem, 1.5vw, 3rem);
+  font-size: clamp(2.2rem, 1.8vw, 3rem);
   color: #00ffff;
   margin-bottom: 2rem;
   text-align: center;
