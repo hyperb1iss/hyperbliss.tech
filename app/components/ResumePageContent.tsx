@@ -29,7 +29,8 @@ const ResumeContainer = styled(motion.div)`
   }
 `;
 
-const ResumeContent = styled(ReactMarkdown)`
+// Instead of styling ReactMarkdown directly, create a wrapper div
+const MarkdownWrapper = styled.div`
   font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.6;
   color: var(--color-text);
@@ -204,7 +205,9 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
         >
           <FiDownload />
         </DownloadButton>
-        <ResumeContent>{content}</ResumeContent>
+        <MarkdownWrapper>
+          <ReactMarkdown>{content}</ReactMarkdown>
+        </MarkdownWrapper>
       </ResumeContainer>
     </PageLayout>
   );

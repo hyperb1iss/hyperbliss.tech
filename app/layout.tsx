@@ -1,7 +1,6 @@
 // app/layout.tsx
 import { AnimatePresence } from "framer-motion";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
 import Script from "next/script";
 import Header from "./components/Header";
 import HeaderFade from "./components/HeaderFade";
@@ -9,18 +8,11 @@ import { HeaderProvider } from "./components/HeaderContext";
 import GlobalLayout from "./components/GlobalLayout";
 import siteMetadata from "./lib/metadata";
 import StyledComponentsRegistry from "./lib/registry";
+import ClientComponents from "./components/ClientComponents";
 import "./styles/fonts.css";
 import "./styles/globals.css";
 
 export const metadata: Metadata = siteMetadata;
-
-const Analytics = dynamic(() => import("./components/Analytics"), {
-  ssr: false,
-});
-
-const SeoWrapper = dynamic(() => import("./components/SeoWrapper"), {
-  ssr: false,
-});
 
 /**
  * RootLayout component
@@ -39,10 +31,9 @@ export default function RootLayout({
       <body>
         <StyledComponentsRegistry>
           <HeaderProvider>
-            <SeoWrapper />
+            <ClientComponents />
             <Header />
             <HeaderFade />
-            <Analytics />
             <GlobalLayout>
               <AnimatePresence mode="wait">{children}</AnimatePresence>
             </GlobalLayout>

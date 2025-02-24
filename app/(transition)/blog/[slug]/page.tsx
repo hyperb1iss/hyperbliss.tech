@@ -16,7 +16,9 @@ export async function generateMetadata(
   { params }: { params: { slug: string } },
   parent: ResolvingMetadata
 ) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  
   const { frontmatter } = await getMarkdownContent<BlogFrontmatter>(
     "src/posts",
     slug
@@ -29,7 +31,9 @@ export default async function PostPage({
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+  
   const { frontmatter, content } = await getMarkdownContent<BlogFrontmatter>(
     "src/posts",
     slug
