@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { FiDownload } from "react-icons/fi";
 import ReactMarkdown from "react-markdown";
-import styled from "styled-components";
+import styled, { StyleSheetManager } from "styled-components";
 import PageLayout from "./PageLayout";
 import PageTitle from "./PageTitle";
 
@@ -176,6 +176,13 @@ const DownloadButton = styled.a`
   }
 `;
 
+// Function to filter out props that shouldn't be forwarded to DOM elements
+const shouldForwardProp = (prop: string): boolean => {
+  // List of props that should not be forwarded to DOM elements
+  const invalidProps = ['node'];
+  return !invalidProps.includes(prop);
+};
+
 // Interface for ResumePageContent component props
 interface ResumePageContentProps {
   content: string;
@@ -206,7 +213,9 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
           <FiDownload />
         </DownloadButton>
         <MarkdownWrapper>
-          <ReactMarkdown>{content}</ReactMarkdown>
+          <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </StyleSheetManager>
         </MarkdownWrapper>
       </ResumeContainer>
     </PageLayout>

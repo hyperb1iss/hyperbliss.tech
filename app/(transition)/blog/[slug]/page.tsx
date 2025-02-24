@@ -6,6 +6,7 @@ import {
   generateBlogMetadata,
 } from "../../../lib/generateMetadata";
 import { getAllMarkdownSlugs, getMarkdownContent } from "../../../lib/markdown";
+import { PageProps } from "../../../types";
 
 export async function generateStaticParams() {
   const slugs = await getAllMarkdownSlugs("src/posts");
@@ -13,11 +14,11 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  { params }: { params: { slug: string } },
+  { params }: PageProps,
   parent: ResolvingMetadata
 ) {
   const resolvedParams = await params;
-  const slug = resolvedParams.slug;
+  const slug = resolvedParams.slug as string;
   
   const { frontmatter } = await getMarkdownContent<BlogFrontmatter>(
     "src/posts",
@@ -28,11 +29,9 @@ export async function generateMetadata(
 
 export default async function PostPage({
   params,
-}: {
-  params: { slug: string };
-}) {
+}: PageProps) {
   const resolvedParams = await params;
-  const slug = resolvedParams.slug;
+  const slug = resolvedParams.slug as string;
   
   const { frontmatter, content } = await getMarkdownContent<BlogFrontmatter>(
     "src/posts",

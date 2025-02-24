@@ -296,10 +296,10 @@ const tags = TECH_TAGS;
 
 /**
  * HeroSection component
- * Renders the hero section with animated background, title, subtitle, and tags.
+ * The main hero section of the homepage with animated text and a CTA button.
  * Adjusted font sizes and padding for better widescreen support.
  */
-export default function HeroSection(): JSX.Element {
+export default function HeroSection(): React.ReactElement {
   const { isExpanded } = useHeaderContext();
 
   return (
