@@ -49,6 +49,9 @@ const eslintConfig = [
     
     // Add TypeScript recommended rules for TypeScript files
     ...compat.extends("plugin:@typescript-eslint/recommended"),
+    
+    // Add Prettier config last to override any conflicting rules
+    ...compat.extends("prettier"),
 ];
 
 export default eslintConfig;
