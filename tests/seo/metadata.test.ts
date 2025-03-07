@@ -144,6 +144,10 @@ describe("Metadata Generation", () => {
       manifest: "/manifest.json",
       appLinks: {},
       facebook: {},
+      pagination: {
+        previous: null,
+        next: null,
+      },
     }) as Promise<ResolvedMetadata>;
 
   describe("Blog Metadata", () => {
