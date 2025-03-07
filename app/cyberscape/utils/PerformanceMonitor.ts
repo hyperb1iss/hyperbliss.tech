@@ -52,8 +52,7 @@ export class PerformanceMonitor {
     if (this.fpsHistory.length < 30) return;
 
     // Calculate average FPS
-    const avgFPS =
-      this.fpsHistory.reduce((a, b) => a + b) / this.fpsHistory.length;
+    const avgFPS = this.fpsHistory.reduce((a, b) => a + b) / this.fpsHistory.length;
     const fpsDiff = this.targetFPS - avgFPS;
 
     if (Math.abs(fpsDiff) > this.adjustmentThreshold) {
@@ -84,12 +83,8 @@ export class PerformanceMonitor {
       glitchEffectMaxNumSlices: Math.floor(8 * this.performanceLevel),
 
       // Connection adjustments
-      particleAtCollisionMaxConnectionsPerParticle: Math.floor(
-        5 * this.performanceLevel
-      ),
-      particleAtCollisionMaxTotalConnections: Math.floor(
-        50 * this.performanceLevel
-      ),
+      particleAtCollisionMaxConnectionsPerParticle: Math.floor(5 * this.performanceLevel),
+      particleAtCollisionMaxTotalConnections: Math.floor(50 * this.performanceLevel),
 
       // Mobile specific adjustments
       mobileParticleReductionFactor: Math.max(0.3, 0.8 * this.performanceLevel),

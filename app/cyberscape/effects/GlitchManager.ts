@@ -49,17 +49,14 @@ export class GlitchManager {
     if (!this.isGlitching && now - this.lastGlitchTime > this.glitchInterval) {
       this.isGlitching = true;
       this.glitchIntensity =
-        Math.random() *
-          (this.config.glitchIntensityMax - this.config.glitchIntensityMin) +
+        Math.random() * (this.config.glitchIntensityMax - this.config.glitchIntensityMin) +
         this.config.glitchIntensityMin;
       this.glitchDuration =
-        Math.random() *
-          (this.config.glitchDurationMax - this.config.glitchDurationMin) +
+        Math.random() * (this.config.glitchDurationMax - this.config.glitchDurationMin) +
         this.config.glitchDurationMin;
       this.lastGlitchTime = now;
       this.glitchInterval =
-        Math.random() *
-          (this.config.glitchIntervalMax - this.config.glitchIntervalMin) +
+        Math.random() * (this.config.glitchIntervalMax - this.config.glitchIntervalMin) +
         this.config.glitchIntervalMin;
     }
 
@@ -68,15 +65,9 @@ export class GlitchManager {
       if (glitchProgress >= 1) {
         this.isGlitching = false;
       } else {
-        const fadeIntensity =
-          Math.sin(glitchProgress * Math.PI) * this.glitchIntensity;
+        const fadeIntensity = Math.sin(glitchProgress * Math.PI) * this.glitchIntensity;
         this.glitchEffect.apply(ctx, width, height, fadeIntensity);
-        this.chromaticAberrationEffect.apply(
-          ctx,
-          width,
-          height,
-          fadeIntensity * 15
-        );
+        this.chromaticAberrationEffect.apply(ctx, width, height, fadeIntensity * 15);
         this.crtEffect.apply(ctx, width, height, fadeIntensity * 0.5);
       }
     }

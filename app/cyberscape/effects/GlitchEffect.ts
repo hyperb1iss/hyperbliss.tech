@@ -24,12 +24,7 @@ export class GlitchEffect {
    * @param height - The height of the canvas.
    * @param intensity - The intensity of the glitch effect (0-1).
    */
-  public apply(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    intensity: number
-  ) {
+  public apply(ctx: CanvasRenderingContext2D, width: number, height: number, intensity: number) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
 
@@ -46,8 +41,7 @@ export class GlitchEffect {
     }
 
     // Random pixel displacement with color inversion
-    const displacementThreshold =
-      intensity * this.config.glitchEffectDisplacementThresholdFactor;
+    const displacementThreshold = intensity * this.config.glitchEffectDisplacementThresholdFactor;
     for (let i = 0; i < dataLength; i += 4) {
       if (Math.random() < displacementThreshold) {
         const offset = (Math.random() * maxOffset) & ~3; // Ensure offset is multiple of 4
@@ -60,9 +54,7 @@ export class GlitchEffect {
     ctx.putImageData(imageData, 0, 0);
 
     // Add random vertical lines with gradient colors
-    const numLines = Math.floor(
-      intensity * this.config.glitchEffectMaxNumLines
-    );
+    const numLines = Math.floor(intensity * this.config.glitchEffectMaxNumLines);
     ctx.globalAlpha = intensity * 0.8;
     for (let i = 0; i < numLines; i++) {
       const x = Math.random() * width;
@@ -79,9 +71,7 @@ export class GlitchEffect {
     }
 
     // Add random horizontal slices with color inversion
-    const numSlices = Math.floor(
-      intensity * this.config.glitchEffectMaxNumSlices
-    );
+    const numSlices = Math.floor(intensity * this.config.glitchEffectMaxNumSlices);
     for (let i = 0; i < numSlices; i++) {
       const y = Math.random() * height;
       const sliceHeight = Math.random() * 20 + 2;
@@ -97,23 +87,18 @@ export class GlitchEffect {
     }
 
     // Add random color blocks
-    const numBlocks = Math.floor(
-      intensity * this.config.glitchEffectMaxNumBlocks
-    );
+    const numBlocks = Math.floor(intensity * this.config.glitchEffectMaxNumBlocks);
     for (let i = 0; i < numBlocks; i++) {
       const blockWidth = Math.random() * 100 + 20;
       const blockHeight = Math.random() * 100 + 20;
       const x = Math.random() * (width - blockWidth);
       const y = Math.random() * (height - blockHeight);
-      ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${
-        Math.random() * 0.5 + 0.2
-      })`;
+      ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${Math.random() * 0.5 + 0.2})`;
       ctx.fillRect(x, y, blockWidth, blockHeight);
     }
 
     // Add digital noise
-    const noiseIntensity =
-      intensity * this.config.glitchEffectNoiseIntensityFactor;
+    const noiseIntensity = intensity * this.config.glitchEffectNoiseIntensityFactor;
     for (let i = 0; i < dataLength; i += 4) {
       if (Math.random() < noiseIntensity) {
         const noise = Math.random() * 255;

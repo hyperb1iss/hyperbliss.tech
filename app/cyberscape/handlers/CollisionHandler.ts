@@ -18,10 +18,7 @@ import { ParticlePool } from "../utils/ParticlePool";
  * Type definition for the collision callback function.
  * This function is called when a collision is detected between two shapes.
  */
-export type CollisionCallback = (
-  shapeA: VectorShape,
-  shapeB: VectorShape
-) => void;
+export type CollisionCallback = (shapeA: VectorShape, shapeB: VectorShape) => void;
 
 export class CollisionHandler {
   // Static reference to the ParticlePool instance
@@ -177,11 +174,7 @@ export class CollisionHandler {
 
     // Limit the maximum velocity change to prevent abrupt movements
     const maxVelocityChange = 2;
-    const maxVelocityVec = vec3.fromValues(
-      maxVelocityChange,
-      maxVelocityChange,
-      maxVelocityChange
-    );
+    const maxVelocityVec = vec3.fromValues(maxVelocityChange, maxVelocityChange, maxVelocityChange);
     const minVelocityVec = vec3.fromValues(
       -maxVelocityChange,
       -maxVelocityChange,
@@ -223,10 +216,7 @@ export class CollisionHandler {
 
     for (let i = 0; i < PARTICLES_PER_COLLISION; i++) {
       // Retrieve a ParticleAtCollision from the ParticlePool
-      const particle = this.particlePool!.getCollisionParticle(
-        vec3.clone(collisionPos),
-        () => {}
-      );
+      const particle = this.particlePool!.getCollisionParticle(vec3.clone(collisionPos), () => {});
 
       // Configure particle properties using CyberScapeConfig
       particle.lifespan = config.particleAtCollisionLifespan;

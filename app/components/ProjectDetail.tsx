@@ -127,13 +127,7 @@ const GitHubLink = styled(motion.a)`
  * @param {ProjectDetailProps} props - The component props
  * @returns {JSX.Element} Rendered project detail
  */
-const ProjectDetail: React.FC<ProjectDetailProps> = ({
-  title,
-  github,
-  content,
-  author,
-  tags,
-}) => {
+const ProjectDetail: React.FC<ProjectDetailProps> = ({ title, github, content, author, tags }) => {
   return (
     <Container>
       <Title

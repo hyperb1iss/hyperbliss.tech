@@ -22,9 +22,7 @@ export default async function Blog() {
 
   // Sort posts by date
   posts.sort(
-    (a, b) =>
-      new Date(b.frontmatter.date).getTime() -
-      new Date(a.frontmatter.date).getTime()
+    (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
   );
 
   return <BlogList posts={posts} />;

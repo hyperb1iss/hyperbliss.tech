@@ -23,9 +23,7 @@ describe("Sitemap Generation", () => {
 
     // Check XML structure
     expect(content).toMatch(/<\?xml version="1.0" encoding="UTF-8"\?>/);
-    expect(content).toMatch(
-      /<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/
-    );
+    expect(content).toMatch(/<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
 
     // Check static pages
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech<\/loc>/);
@@ -34,15 +32,9 @@ describe("Sitemap Generation", () => {
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects<\/loc>/);
 
     // Check dynamic pages
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/blog\/post-1<\/loc>/
-    );
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/blog\/post-2<\/loc>/
-    );
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/projects\/project-1<\/loc>/
-    );
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-2<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/project-1<\/loc>/);
 
     // Check required elements
     expect(content).toMatch(/<lastmod>/);
@@ -55,9 +47,7 @@ describe("Sitemap Generation", () => {
     const content = await response.text();
 
     // Home page should have highest priority
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech<\/loc>[^]*?<priority>1<\/priority>/
-    );
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech<\/loc>[^]*?<priority>1<\/priority>/);
 
     // Blog and Projects index pages should have high priority
     expect(content).toMatch(

@@ -15,16 +15,13 @@ export interface BaseFrontmatter extends Record<string, unknown> {
 /**
  * Generic type for frontmatter that extends BaseFrontmatter
  */
-export type Frontmatter<
-  T extends Record<string, unknown> = Record<string, unknown>
-> = BaseFrontmatter & T;
+export type Frontmatter<T extends Record<string, unknown> = Record<string, unknown>> =
+  BaseFrontmatter & T;
 
 /**
  * Interface for markdown files with a flexible frontmatter type
  */
-export interface MarkdownFile<
-  T extends Record<string, unknown> = Record<string, unknown>
-> {
+export interface MarkdownFile<T extends Record<string, unknown> = Record<string, unknown>> {
   slug: string;
   frontmatter: Frontmatter<T>;
   content: string;
@@ -37,7 +34,7 @@ export interface MarkdownFile<
  * @returns A Promise resolving to a MarkdownFile object.
  */
 export async function getMarkdownContent<
-  T extends Record<string, unknown> = Record<string, unknown>
+  T extends Record<string, unknown> = Record<string, unknown>,
 >(directory: string, slug: string): Promise<MarkdownFile<T>> {
   const filePath = path.join(process.cwd(), directory, `${slug}.md`);
   const fileContents = await fs.readFile(filePath, "utf-8");
@@ -55,9 +52,7 @@ export async function getMarkdownContent<
  * @param directory - The directory containing the markdown files.
  * @returns A Promise resolving to an array of slugs.
  */
-export async function getAllMarkdownSlugs(
-  directory: string
-): Promise<string[]> {
+export async function getAllMarkdownSlugs(directory: string): Promise<string[]> {
   const files = await fs.readdir(path.join(process.cwd(), directory));
   return files.map((filename) => filename.replace(".md", ""));
 }

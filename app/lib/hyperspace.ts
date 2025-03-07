@@ -33,8 +33,7 @@ class HyperspaceManager {
       "background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); padding: 5px;",
     tagline:
       "background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); color: #00ffff; font-weight: bold; padding: 10px; border-radius: 5px; font-size: 18px; text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 35px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff, 0 0 75px #00ffff;",
-    techStack:
-      "color: #a259ff; font-style: italic; font-size: 14px; padding: 5px;",
+    techStack: "color: #a259ff; font-style: italic; font-size: 14px; padding: 5px;",
     hint: "color: #ff9900; font-size: 12px; font-style: italic;",
     activated: "color: #ff00ff; font-weight: bold; font-size: 16px;",
     deactivated: "color: #00ffff; font-weight: bold; font-size: 14px;",
@@ -87,10 +86,7 @@ class HyperspaceManager {
     );
 
     // Easter egg hint
-    console.log(
-      "%c⟨ hyperbliss.activate() to initiate neural interface ⟩",
-      this.styles.hint
-    );
+    console.log("%c⟨ hyperbliss.activate() to initiate neural interface ⟩", this.styles.hint);
   }
 
   /**
@@ -115,9 +111,8 @@ class HyperspaceManager {
     };
 
     // Properly type the window object with an interface extension
-    (
-      window as Window & typeof globalThis & { hyperbliss: HyperblissInterface }
-    ).hyperbliss = hyperblissObject;
+    (window as Window & typeof globalThis & { hyperbliss: HyperblissInterface }).hyperbliss =
+      hyperblissObject;
   }
 
   /**
@@ -125,17 +120,11 @@ class HyperspaceManager {
    */
   public setDuration(seconds: number): void {
     if (seconds < 1 || seconds > 60) {
-      console.log(
-        "%c⟨ parameter out of range: duration must be between 1-60s ⟩",
-        "color: #ff00ff"
-      );
+      console.log("%c⟨ parameter out of range: duration must be between 1-60s ⟩", "color: #ff00ff");
       return;
     }
     this._duration = seconds;
-    console.log(
-      `%c⟨ neural interface duration: ${seconds}s ⟩`,
-      "color: #00ffff"
-    );
+    console.log(`%c⟨ neural interface duration: ${seconds}s ⟩`, "color: #00ffff");
   }
 
   /**
@@ -143,10 +132,7 @@ class HyperspaceManager {
    */
   public setIntensity(level: number): void {
     if (level < 1 || level > 3) {
-      console.log(
-        "%c⟨ parameter out of range: intensity must be between 1-3 ⟩",
-        "color: #ff00ff"
-      );
+      console.log("%c⟨ parameter out of range: intensity must be between 1-3 ⟩", "color: #ff00ff");
       return;
     }
     this._intensity = level;
@@ -166,14 +152,14 @@ class HyperspaceManager {
       
       @keyframes neon-glow {
         0% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${
-      10 * this._intensity
-    }px #ff00ff; }
+          10 * this._intensity
+        }px #ff00ff; }
         50% { text-shadow: 0 0 ${15 * this._intensity}px #00ffff, 0 0 ${
-      25 * this._intensity
-    }px #00ffff; }
+          25 * this._intensity
+        }px #00ffff; }
         100% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${
-      10 * this._intensity
-    }px #ff00ff; }
+          10 * this._intensity
+        }px #ff00ff; }
       }
       
       @keyframes cyber-float {
@@ -185,15 +171,15 @@ class HyperspaceManager {
       @keyframes tunnel-zoom {
         0% { transform: translateZ(0) scale(1); opacity: 0.3; }
         100% { transform: translateZ(${500 * this._intensity}px) scale(${
-      3 + this._intensity
-    }); opacity: 0; }
+          3 + this._intensity
+        }); opacity: 0; }
       }
       
       @keyframes grid-pulse {
         0% { opacity: 0.05; box-shadow: 0 0 5px var(--grid-color), 0 0 10px var(--grid-color); }
         50% { opacity: ${0.15 * this._intensity}; box-shadow: 0 0 ${
-      10 * this._intensity
-    }px var(--grid-color), 0 0 ${20 * this._intensity}px var(--grid-color); }
+          10 * this._intensity
+        }px var(--grid-color), 0 0 ${20 * this._intensity}px var(--grid-color); }
         100% { opacity: 0.05; box-shadow: 0 0 5px var(--grid-color), 0 0 10px var(--grid-color); }
       }
       
@@ -238,8 +224,8 @@ class HyperspaceManager {
         border-radius: 50%;
         border: 1px solid var(--ring-color);
         box-shadow: 0 0 ${8 * this._intensity}px var(--ring-color), inset 0 0 ${
-      5 * this._intensity
-    }px var(--ring-color);
+          5 * this._intensity
+        }px var(--ring-color);
         opacity: 0.2;
         top: 50%;
         left: 50%;
@@ -275,8 +261,8 @@ class HyperspaceManager {
         height: 0;
         background: linear-gradient(to bottom, var(--drip-color) 0%, transparent 100%);
         box-shadow: 0 0 ${5 * this._intensity}px var(--drip-color), 0 0 ${
-      8 * this._intensity
-    }px var(--drip-color);
+          8 * this._intensity
+        }px var(--drip-color);
         animation: neon-drip var(--drip-duration) ease-in forwards;
         animation-delay: var(--drip-delay);
         opacity: 0.7;
@@ -295,8 +281,8 @@ class HyperspaceManager {
         border-radius: 50%;
         background: var(--drip-color);
         box-shadow: 0 0 ${8 * this._intensity}px var(--drip-color), 0 0 ${
-      15 * this._intensity
-    }px var(--drip-color);
+          15 * this._intensity
+        }px var(--drip-color);
         opacity: 0.8;
       }
     `;
@@ -408,9 +394,7 @@ class HyperspaceManager {
       const size = 50 + i * 25;
       const delay = i * (0.2 / this._intensity);
       const color =
-        this.cyberElements.colors[
-          Math.floor(Math.random() * this.cyberElements.colors.length)
-        ];
+        this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)];
 
       ringsHTML += `<div class="tunnel-ring" style="
         width: ${size}px;
@@ -426,8 +410,7 @@ class HyperspaceManager {
     // Horizontal grid lines
     for (let i = 0; i < gridCount; i++) {
       const position = (100 / gridCount) * i;
-      const color =
-        this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
+      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
       const delay = i * 0.1;
 
       ringsHTML += `<div class="grid-line horizontal-grid" style="
@@ -440,8 +423,7 @@ class HyperspaceManager {
     // Vertical grid lines
     for (let i = 0; i < gridCount; i++) {
       const position = (100 / gridCount) * i;
-      const color =
-        this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
+      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
       const delay = i * 0.1;
 
       ringsHTML += `<div class="grid-line vertical-grid" style="
@@ -463,10 +445,7 @@ class HyperspaceManager {
 
     // Check if hyperspace is already active
     if (this._isActive) {
-      console.log(
-        "%c⟨ neural interface already engaged ⟩",
-        this.styles.alreadyActive
-      );
+      console.log("%c⟨ neural interface already engaged ⟩", this.styles.alreadyActive);
       return "Already active";
     }
 
@@ -501,20 +480,14 @@ class HyperspaceManager {
     for (let i = 0; i < particleCount; i++) {
       const size = Math.random() * 10 + 3 * this._intensity;
       const symbol =
-        this.cyberElements.symbols[
-          Math.floor(Math.random() * this.cyberElements.symbols.length)
-        ];
+        this.cyberElements.symbols[Math.floor(Math.random() * this.cyberElements.symbols.length)];
       const color =
-        this.cyberElements.colors[
-          Math.floor(Math.random() * this.cyberElements.colors.length)
-        ];
+        this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)];
       const duration = Math.random() * 8 + 10 - this._intensity + "s";
       const top = Math.random() * 100 + "vh";
       const left = Math.random() * 100 + "vw";
-      const tx =
-        Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
-      const ty =
-        Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
+      const tx = Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
+      const ty = Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
 
       particlesHTML += `<div class="cyber-particle" style="
         top: ${top};
@@ -583,10 +556,10 @@ class HyperspaceManager {
  */
 export function initHyperspace(): void {
   // Single bailout point for non-browser environments
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
+  if (typeof window === "undefined" || typeof document === "undefined") {
     return;
   }
-  
+
   const hyperspaceManager = HyperspaceManager.getInstance();
   hyperspaceManager.initialize();
 }

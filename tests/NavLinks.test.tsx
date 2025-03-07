@@ -28,10 +28,7 @@ describe("NavLinks", () => {
     NAV_ITEMS.forEach((item) => {
       const link = screen.getByText(item);
       expect(link).toBeInTheDocument();
-      expect(link).toHaveAttribute(
-        "href",
-        expect.stringContaining(item.toLowerCase())
-      );
+      expect(link).toHaveAttribute("href", expect.stringContaining(item.toLowerCase()));
     });
   });
 

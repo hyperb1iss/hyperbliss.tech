@@ -18,11 +18,7 @@ export class FrustumCuller {
   }
 
   updateFrustum(projectionMatrix: mat4, viewMatrix: mat4): void {
-    const clipMatrix = mat4.multiply(
-      mat4.create(),
-      projectionMatrix,
-      viewMatrix
-    );
+    const clipMatrix = mat4.multiply(mat4.create(), projectionMatrix, viewMatrix);
 
     // Extract frustum planes
     this.extractPlane(clipMatrix, 0, this.planes[0]); // Left

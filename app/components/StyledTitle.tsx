@@ -10,11 +10,7 @@ const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
   font-family: var(--font-heading);
   position: relative;
   padding: 0.5rem;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 255, 255, 0.1),
-    rgba(255, 0, 255, 0.1)
-  );
+  background: linear-gradient(90deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
   border: 1px solid rgba(0, 255, 255, 0.2);
   border-radius: 12px;
   overflow: hidden;
@@ -41,7 +37,9 @@ const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
   }
 
   &:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), 0 0 40px rgba(255, 0, 255, 0.4);
+    box-shadow:
+      0 0 20px rgba(0, 255, 255, 0.6),
+      0 0 40px rgba(255, 0, 255, 0.4);
     border-color: #00ffff;
 
     &::before,

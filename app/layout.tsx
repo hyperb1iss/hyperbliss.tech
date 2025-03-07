@@ -21,11 +21,7 @@ export const metadata: Metadata = siteMetadata;
  * @param {React.ReactNode} children - Child components
  * @returns {JSX.Element} Rendered root layout
  */
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>

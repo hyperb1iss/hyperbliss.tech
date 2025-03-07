@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { initHyperspace } from '../lib/hyperspace';
+import { useEffect } from "react";
+import { initHyperspace } from "../lib/hyperspace";
 
 /**
  * HyperspaceLoader Component
@@ -14,10 +14,10 @@ export default function HyperspaceLoader() {
     try {
       initHyperspace();
     } catch (err) {
-      console.error('Failed to initialize hyperspace:', err);
+      console.error("Failed to initialize hyperspace:", err);
     }
   }, []);
 
   // This component doesn't render anything visible
   return null;
-} 
+}

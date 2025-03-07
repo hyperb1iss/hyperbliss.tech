@@ -179,7 +179,7 @@ const DownloadButton = styled.a`
 // Function to filter out props that shouldn't be forwarded to DOM elements
 const shouldForwardProp = (prop: string): boolean => {
   // List of props that should not be forwarded to DOM elements
-  const invalidProps = ['node'];
+  const invalidProps = ["node"];
   return !invalidProps.includes(prop);
 };
 

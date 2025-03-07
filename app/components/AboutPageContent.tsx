@@ -27,13 +27,17 @@ const ProfileImage = styled(motion.img)`
   filter: saturate(1.4) brightness(1.05);
 
   /* Neon Glow Effect */
-  box-shadow: 0 0 5px rgba(0, 255, 255, 0.6), 0 0 10px rgba(0, 255, 255, 0.5),
+  box-shadow:
+    0 0 5px rgba(0, 255, 255, 0.6),
+    0 0 10px rgba(0, 255, 255, 0.5),
     0 0 20px rgba(0, 255, 255, 0.4);
   border: 2px solid rgba(0, 255, 255, 0.2);
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(255, 0, 255, 0.7), 0 0 20px rgba(255, 0, 255, 0.5);
+    box-shadow:
+      0 0 10px rgba(255, 0, 255, 0.7),
+      0 0 20px rgba(255, 0, 255, 0.5);
     border-color: rgba(255, 0, 255, 0.5);
   }
 
@@ -124,11 +128,7 @@ const ContactSection = styled.div`
   margin-top: 4rem;
   padding: 2rem 0;
   border-top: 1px solid rgba(162, 89, 255, 0.1);
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(162, 89, 255, 0.03) 100%
-  );
+  background: linear-gradient(180deg, transparent 0%, rgba(162, 89, 255, 0.03) 100%);
   border-radius: 0 0 20px 20px;
 `;
 
@@ -151,11 +151,7 @@ const ContactReason = styled.div`
   height: 100%;
   min-height: 220px;
   padding: 2.5rem;
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.05) 0%,
-    rgba(0, 255, 255, 0.05) 100%
-  );
+  background: linear-gradient(135deg, rgba(162, 89, 255, 0.05) 0%, rgba(0, 255, 255, 0.05) 100%);
   border-radius: 2px;
   transition: all 0.4s ease-out;
   border: 1px solid rgba(0, 255, 255, 0.1);
@@ -171,11 +167,7 @@ const ContactReason = styled.div`
     right: 0;
     width: 30px;
     height: 30px;
-    background: linear-gradient(
-      45deg,
-      transparent 50%,
-      rgba(0, 255, 255, 0.1) 50%
-    );
+    background: linear-gradient(45deg, transparent 50%, rgba(0, 255, 255, 0.1) 50%);
     clip-path: polygon(100% 0, 0 0, 100% 100%);
   }
 
@@ -190,7 +182,9 @@ const ContactReason = styled.div`
       rgba(0, 255, 255, 0.1),
       rgba(162, 89, 255, 0.1)
     );
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: exclude;
     padding: 1px;
     border-radius: 2px;
@@ -200,7 +194,9 @@ const ContactReason = styled.div`
   &:hover {
     transform: translateY(-5px);
     border-color: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1), 0 0 40px rgba(0, 0, 0, 0.2),
+    box-shadow:
+      0 0 20px rgba(0, 255, 255, 0.1),
+      0 0 40px rgba(0, 0, 0, 0.2),
       inset 0 0 20px rgba(0, 255, 255, 0.05);
 
     &::before {
@@ -231,11 +227,7 @@ const ContactReason = styled.div`
       top: 50%;
       width: 4px;
       height: 70%;
-      background: linear-gradient(
-        to bottom,
-        var(--color-accent),
-        var(--color-secondary)
-      );
+      background: linear-gradient(to bottom, var(--color-accent), var(--color-secondary));
       transform: translateY(-50%);
       border-radius: 2px;
       box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
@@ -265,11 +257,7 @@ const ContactReason = styled.div`
 `;
 
 const GradientText = styled.span`
-  background: linear-gradient(
-    135deg,
-    var(--color-accent) 0%,
-    var(--color-secondary) 100%
-  );
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
@@ -303,11 +291,7 @@ const AboutPageContent: React.FC = () => {
   return (
     <PageLayout>
       <PageTitle>About Me</PageTitle>
-      <ContentWrapper
-        variants={contentVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <ContentWrapper variants={contentVariants} initial="hidden" animate="visible">
         <motion.div variants={itemVariants}>
           <ProfileImage
             src="/images/profile-image.jpg"
@@ -318,24 +302,21 @@ const AboutPageContent: React.FC = () => {
         <TextContent>
           <motion.div variants={itemVariants}>
             <Paragraph>
-              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and
-              I&apos;ve spent
+              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and I&apos;ve spent
               <GradientText> the last 25+ years </GradientText>
-              turning complex technical challenges into beautiful products. My
-              experience spans the entire technology stack—from embedded
-              systems, hardware bringup, and OS development to cloud services,
-              frontend, and AI.
+              turning complex technical challenges into beautiful products. My experience spans the
+              entire technology stack—from embedded systems, hardware bringup, and OS development to
+              cloud services, frontend, and AI.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              I&apos;ve successfully led both open-source and enterprise
-              projects, helping teams achieve technical excellence and
-              innovation. I&apos;m proficient in multiple programming languages,
-              and highly skilled with the use of modern AI developer tooling and
-              practices. I thrive in hands-on leadership roles, and am committed
-              to continuous learning and self improvement.
+              I&apos;ve successfully led both open-source and enterprise projects, helping teams
+              achieve technical excellence and innovation. I&apos;m proficient in multiple
+              programming languages, and highly skilled with the use of modern AI developer tooling
+              and practices. I thrive in hands-on leadership roles, and am committed to continuous
+              learning and self improvement.
             </Paragraph>
           </motion.div>
 
@@ -350,26 +331,20 @@ const AboutPageContent: React.FC = () => {
                 CyanogenMod
               </StyledLink>
               , now{" "}
-              <StyledLink
-                href="https://lineageos.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <StyledLink href="https://lineageos.org/" target="_blank" rel="noopener noreferrer">
                 LineageOS
               </StyledLink>
-              , which became the largest open-source Android distribution,
-              empowering millions of people to take control of their devices. I
-              also co-founded the company which was formed to support it&apos;s
-              development.
+              , which became the largest open-source Android distribution, empowering millions of
+              people to take control of their devices. I also co-founded the company which was
+              formed to support it&apos;s development.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              When I&apos;m not hacking on code or flashing devices, you&apos;ll
-              find me skating with my roller derby team, producing electronic
-              music, or creating and contributing to open-source projects. Check
-              out all my work on{" "}
+              When I&apos;m not hacking on code or flashing devices, you&apos;ll find me skating
+              with my roller derby team, producing electronic music, or creating and contributing to
+              open-source projects. Check out all my work on{" "}
               <StyledLink
                 href="https://github.com/hyperb1iss"
                 target="_blank"
@@ -395,9 +370,9 @@ const AboutPageContent: React.FC = () => {
           >
             <ContactSection>
               <Paragraph style={{ marginBottom: "1rem", opacity: 0.95 }}>
-                I&apos;m always excited to connect with fellow technologists,
-                creators, and innovators. You can reach me via email or using
-                any of the links below. Here&apos;s how we might work together:
+                I&apos;m always excited to connect with fellow technologists, creators, and
+                innovators. You can reach me via email or using any of the links below. Here&apos;s
+                how we might work together:
               </Paragraph>
 
               <ContactGrid>

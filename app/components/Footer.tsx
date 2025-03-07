@@ -29,7 +29,7 @@ const FooterContainer = styled.footer`
       }
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 50%;
         left: 50%;
@@ -69,7 +69,8 @@ const FooterText = styled.p`
   padding-bottom: 1rem;
   text-shadow: 0 0 3px var(--color-accent);
   letter-spacing: 1px;
-  &::before, &::after {
+  &::before,
+  &::after {
     content: "[ ";
     color: var(--color-secondary);
   }
@@ -92,7 +93,7 @@ const RSSLink = styled(Link)`
   }
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -122,13 +123,7 @@ const Footer: React.FC = () => {
     <FooterContainer>
       <div className="socials">
         {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-          <a
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-          >
+          <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
             <Icon />
           </a>
         ))}

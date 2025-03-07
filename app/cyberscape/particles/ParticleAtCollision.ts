@@ -34,8 +34,7 @@ export class ParticleAtCollision extends Particle {
     this.sparkleIntensity = Math.random();
     this.initialSpeed =
       Math.random() *
-        (this.config.particleAtCollisionMaxSpeed -
-          this.config.particleAtCollisionMinSpeed) +
+        (this.config.particleAtCollisionMaxSpeed - this.config.particleAtCollisionMinSpeed) +
       this.config.particleAtCollisionMinSpeed;
     this.direction = vec3.create();
     this.init(position, onExpire, color);
@@ -65,8 +64,7 @@ export class ParticleAtCollision extends Particle {
 
     this.size =
       Math.random() *
-        (this.config.particleAtCollisionSizeMax -
-          this.config.particleAtCollisionSizeMin) +
+        (this.config.particleAtCollisionSizeMax - this.config.particleAtCollisionSizeMin) +
       this.config.particleAtCollisionSizeMin;
     this.color = color || this.config.particleAtCollisionColor;
     this.lifespan = this.config.particleAtCollisionLifespan;
@@ -90,10 +88,7 @@ export class ParticleAtCollision extends Particle {
     // Update age and opacity
     this.age += 16; // Assuming 60 FPS
     if (this.age > this.lifespan - this.fadeOutDuration) {
-      this.opacity = Math.max(
-        0,
-        (this.lifespan - this.age) / this.fadeOutDuration
-      );
+      this.opacity = Math.max(0, (this.lifespan - this.age) / this.fadeOutDuration);
     }
 
     // Update sparkle intensity
@@ -170,25 +165,19 @@ export class ParticleAtCollision extends Particle {
   ): void {
     const config = CyberScapeConfig.getInstance();
     const MAX_DISTANCE = config.particleAtCollisionConnectionDistance;
-    const MAX_CONNECTIONS_PER_PARTICLE =
-      config.particleAtCollisionMaxConnectionsPerParticle;
+    const MAX_CONNECTIONS_PER_PARTICLE = config.particleAtCollisionMaxConnectionsPerParticle;
     const MAX_TOTAL_CONNECTIONS = config.particleAtCollisionMaxTotalConnections;
 
     let totalConnections = 0;
 
-    for (
-      let i = 0;
-      i < particles.length && totalConnections < MAX_TOTAL_CONNECTIONS;
-      i++
-    ) {
+    for (let i = 0; i < particles.length && totalConnections < MAX_TOTAL_CONNECTIONS; i++) {
       let connectionsForParticle = 0;
       const particleA = particles[i];
       const posA = VectorMath.project(particleA.position, width, height);
 
       for (
         let j = i + 1;
-        j < particles.length &&
-        connectionsForParticle < MAX_CONNECTIONS_PER_PARTICLE;
+        j < particles.length && connectionsForParticle < MAX_CONNECTIONS_PER_PARTICLE;
         j++
       ) {
         const particleB = particles[j];
@@ -199,22 +188,17 @@ export class ParticleAtCollision extends Particle {
           const posB = VectorMath.project(particleB.position, width, height);
 
           const baseOpacity =
-            (1 - distance / MAX_DISTANCE) *
-            Math.min(particleA.opacity, particleB.opacity);
+            (1 - distance / MAX_DISTANCE) * Math.min(particleA.opacity, particleB.opacity);
           const opacity =
-            baseOpacity *
-            (1 - Math.max(particleA.age, particleB.age) / particleA.lifespan);
+            baseOpacity * (1 - Math.max(particleA.age, particleB.age) / particleA.lifespan);
 
           // Generate a dynamic color for the connection
-          const hue =
-            (particleA.hue + particleB.hue) / 2 + Math.random() * 30 - 15;
+          const hue = (particleA.hue + particleB.hue) / 2 + Math.random() * 30 - 15;
           const saturation = 80 + Math.random() * 20;
           const lightness = 50 + Math.random() * 10;
 
           // Draw the main connection line
-          ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${
-            opacity * 0.5
-          })`;
+          ctx.strokeStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${opacity * 0.5})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
           ctx.moveTo(posA.x, posA.y);

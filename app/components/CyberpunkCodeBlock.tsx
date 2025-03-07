@@ -108,10 +108,7 @@ const cyberpunkTheme: CyberpunkTheme = {
   important: { color: "#f97e72", fontWeight: "bold" },
 };
 
-const CyberpunkCodeBlock: React.FC<CyberpunkCodeBlockProps> = ({
-  code,
-  language,
-}) => {
+const CyberpunkCodeBlock: React.FC<CyberpunkCodeBlockProps> = ({ code, language }) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const copyToClipboard = async () => {
@@ -133,16 +130,13 @@ const CyberpunkCodeBlock: React.FC<CyberpunkCodeBlockProps> = ({
           margin: 0,
           padding: "1rem",
           borderRadius: "0.5rem",
-          boxShadow:
-            "0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(255, 0, 255, 0.3)",
+          boxShadow: "0 0 10px rgba(0, 255, 255, 0.3), 0 0 20px rgba(255, 0, 255, 0.3)",
         }}
         showLineNumbers
       >
         {code}
       </SyntaxHighlighter>
-      <CopyButton onClick={copyToClipboard}>
-        {isCopied ? <FiCheck /> : <FiCopy />}
-      </CopyButton>
+      <CopyButton onClick={copyToClipboard}>{isCopied ? <FiCheck /> : <FiCopy />}</CopyButton>
     </CodeBlockWrapper>
   );
 };

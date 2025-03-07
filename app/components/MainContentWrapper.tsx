@@ -18,9 +18,7 @@ const StyledWrapper = styled(motion.div)`
  * @param {React.ReactNode} children - Child components
  * @returns {JSX.Element} Rendered content wrapper
  */
-const MainContentWrapper: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const MainContentWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isExpanded } = useHeaderContext();
 
   return (

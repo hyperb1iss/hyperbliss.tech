@@ -1,7 +1,4 @@
-import {
-  generateBlogMetadata,
-  generateProjectMetadata,
-} from "@/lib/generateMetadata";
+import { generateBlogMetadata, generateProjectMetadata } from "@/lib/generateMetadata";
 import type { ResolvedMetadata } from "next";
 
 describe("Metadata Generation", () => {
@@ -159,11 +156,7 @@ describe("Metadata Generation", () => {
     };
 
     it("should generate correct blog metadata", async () => {
-      const metadata = await generateBlogMetadata(
-        mockBlogFrontmatter,
-        "test-post",
-        mockParent()
-      );
+      const metadata = await generateBlogMetadata(mockBlogFrontmatter, "test-post", mockParent());
 
       // Test only the fields we care about
       expect(metadata).toMatchObject({
@@ -213,11 +206,7 @@ describe("Metadata Generation", () => {
     });
 
     it("should include OpenGraph images", async () => {
-      const metadata = await generateBlogMetadata(
-        mockBlogFrontmatter,
-        "test-post",
-        mockParent()
-      );
+      const metadata = await generateBlogMetadata(mockBlogFrontmatter, "test-post", mockParent());
 
       // Check if images exist and is an array
       expect(metadata.openGraph?.images).toBeDefined();

@@ -41,13 +41,17 @@ const MobileNavLinksContainer = styled.ul<{ open: boolean }>`
   border-left: 1px solid rgba(162, 89, 255, 0.4);
   opacity: ${(props) => (props.open ? 1 : 0)};
   transform: ${(props) => (props.open ? "translateX(0)" : "translateX(100%)")};
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
   pointer-events: ${(props) => (props.open ? "all" : "none")};
 
   li {
     padding: 1rem;
     text-align: center;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition:
+      background-color 0.3s ease,
+      transform 0.3s ease;
 
     &:hover {
       background-color: rgba(162, 89, 255, 0.2);
@@ -76,13 +80,19 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  text-shadow: 0 0 1px #000, 0 0 2px #000,
+  text-shadow:
+    0 0 1px #000,
+    0 0 2px #000,
     0 0 3px ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
 
   &:hover,
   &:focus {
     color: #00ffff;
-    text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #00ffff, 0 0 5px #00ffff,
+    text-shadow:
+      0 0 1px #000,
+      0 0 2px #000,
+      0 0 3px #00ffff,
+      0 0 5px #00ffff,
       0 0 7px #00ffff;
   }
 
@@ -132,10 +142,7 @@ interface MobileNavLinksProps {
  * @param {MobileNavLinksProps} props - Component props
  * @returns {JSX.Element} Rendered mobile navigation links
  */
-const MobileNavLinks: React.FC<MobileNavLinksProps> = ({
-  open,
-  setMenuOpen,
-}) => {
+const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) => {
   const pathname = usePathname();
   const animateAndNavigate = useAnimatedNavigation();
   const mobileMenuRef = useRef<HTMLUListElement>(null);

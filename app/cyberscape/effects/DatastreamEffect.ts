@@ -32,11 +32,7 @@ export class DatastreamEffect {
    * @param particlesArray - The array of active particles in the scene.
    * @param shapesArray - The array of active shapes in the scene.
    */
-  constructor(
-    particlePool: ParticlePool,
-    particlesArray: Particle[],
-    shapesArray: VectorShape[]
-  ) {
+  constructor(particlePool: ParticlePool, particlesArray: Particle[], shapesArray: VectorShape[]) {
     this.config = CyberScapeConfig.getInstance();
     this.particlePool = particlePool;
     this.particlesArray = particlesArray;
@@ -73,15 +69,7 @@ export class DatastreamEffect {
     vec3.set(this.centerPos, centerX, centerY, 0);
 
     // Draw each component of the datastream effect
-    this.drawExpandingCircles(
-      ctx,
-      width,
-      height,
-      centerX,
-      centerY,
-      intensity,
-      hue
-    );
+    this.drawExpandingCircles(ctx, width, height, centerX, centerY, intensity, hue);
     this.drawNoiseEffect(ctx, width, height, centerX, centerY, intensity, hue);
     this.emitDatastreamParticles(animationProgress);
     this.affectNearbyShapes(intensity);
@@ -139,16 +127,8 @@ export class DatastreamEffect {
     noiseCanvas.height = height;
     const noiseCtx = noiseCanvas.getContext("2d")!;
 
-    for (
-      let x = centerX - noiseRadius;
-      x < centerX + noiseRadius;
-      x += noiseSize
-    ) {
-      for (
-        let y = centerY - noiseRadius;
-        y < centerY + noiseRadius;
-        y += noiseSize
-      ) {
+    for (let x = centerX - noiseRadius; x < centerX + noiseRadius; x += noiseSize) {
+      for (let y = centerY - noiseRadius; y < centerY + noiseRadius; y += noiseSize) {
         const dx = x - centerX;
         const dy = y - centerY;
         const distanceSq = dx * dx + dy * dy;
@@ -174,12 +154,9 @@ export class DatastreamEffect {
         this.config.maxDatastreamParticles - this.explosionParticlesCount
       );
       for (let i = 0; i < particlesToEmit; i++) {
-        const particle = this.particlePool.getCollisionParticle(
-          vec3.clone(this.centerPos),
-          () => {
-            this.explosionParticlesCount--;
-          }
-        );
+        const particle = this.particlePool.getCollisionParticle(vec3.clone(this.centerPos), () => {
+          this.explosionParticlesCount--;
+        });
 
         particle.lifespan = this.config.datastreamParticleLifespan;
         particle.setFadeOutDuration(this.config.datastreamFadeOutDuration);
@@ -196,11 +173,7 @@ export class DatastreamEffect {
   private affectNearbyShapes(intensity: number) {
     for (const shape of this.shapesArray) {
       // Update rotation speed based on effect intensity
-      shape.rotationSpeed = vec3.fromValues(
-        intensity * 0.1,
-        intensity * 0.1,
-        intensity * 0.1
-      );
+      shape.rotationSpeed = vec3.fromValues(intensity * 0.1, intensity * 0.1, intensity * 0.1);
 
       // Calculate force vector from shape to effect center
       vec3.subtract(this.forceVector, this.centerPos, shape.position);
@@ -213,12 +186,7 @@ export class DatastreamEffect {
       const forceMagnitude = (intensity * 5) / (distance + 1);
 
       // Apply force to shape's velocity
-      vec3.scaleAndAdd(
-        shape.velocity,
-        shape.velocity,
-        this.forceVector,
-        forceMagnitude * 0.01
-      );
+      vec3.scaleAndAdd(shape.velocity, shape.velocity, this.forceVector, forceMagnitude * 0.01);
     }
   }
 

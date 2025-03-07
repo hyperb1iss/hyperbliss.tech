@@ -34,9 +34,7 @@ export class ColorManager {
    */
   public static getRandomCyberpunkHue(): number {
     const range =
-      this.CYBERPUNK_HUE_RANGES[
-        Math.floor(Math.random() * this.CYBERPUNK_HUE_RANGES.length)
-      ];
+      this.CYBERPUNK_HUE_RANGES[Math.floor(Math.random() * this.CYBERPUNK_HUE_RANGES.length)];
     return Math.random() * (range.end - range.start) + range.start;
   }
 
@@ -46,9 +44,7 @@ export class ColorManager {
    * @returns True if the hue is valid, false otherwise.
    */
   public static isValidCyberpunkHue(hue: number): boolean {
-    return this.CYBERPUNK_HUE_RANGES.some(
-      (range) => hue >= range.start && hue <= range.end
-    );
+    return this.CYBERPUNK_HUE_RANGES.some((range) => hue >= range.start && hue <= range.end);
   }
 
   /**
@@ -56,9 +52,7 @@ export class ColorManager {
    * @returns A random Cyberpunk color.
    */
   public static getRandomCyberpunkColor(): string {
-    return this.CYBERPUNK_COLORS[
-      Math.floor(Math.random() * this.CYBERPUNK_COLORS.length)
-    ];
+    return this.CYBERPUNK_COLORS[Math.floor(Math.random() * this.CYBERPUNK_COLORS.length)];
   }
 
   /**
@@ -66,9 +60,7 @@ export class ColorManager {
    * @param hex - The hexadecimal color string.
    * @returns An object containing r, g, b values, or null if invalid input.
    */
-  public static hexToRgb(
-    hex: string
-  ): { r: number; g: number; b: number } | null {
+  public static hexToRgb(hex: string): { r: number; g: number; b: number } | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
@@ -106,9 +98,7 @@ export class ColorManager {
   public static averageColors(colors: string[]): string {
     const rgbColors = colors
       .map((color) => this.hexToRgb(color))
-      .filter(
-        (color): color is { r: number; g: number; b: number } => color !== null
-      );
+      .filter((color): color is { r: number; g: number; b: number } => color !== null);
     const avgColor = rgbColors.reduce(
       (acc, color) => ({
         r: acc.r + color.r / rgbColors.length,
@@ -117,11 +107,7 @@ export class ColorManager {
       }),
       { r: 0, g: 0, b: 0 }
     );
-    return this.rgbToHex(
-      Math.round(avgColor.r),
-      Math.round(avgColor.g),
-      Math.round(avgColor.b)
-    );
+    return this.rgbToHex(Math.round(avgColor.r), Math.round(avgColor.g), Math.round(avgColor.b));
   }
 
   /**
@@ -131,11 +117,7 @@ export class ColorManager {
    * @param ratio - Blending ratio (0 to 1), where 0 is fully color1 and 1 is fully color2.
    * @returns The blended color in hex format.
    */
-  public static blendColors(
-    color1: string,
-    color2: string,
-    ratio: number
-  ): string {
+  public static blendColors(color1: string, color2: string, ratio: number): string {
     const rgb1 = this.hexToRgb(color1);
     const rgb2 = this.hexToRgb(color2);
     if (!rgb1 || !rgb2) return color1;
@@ -182,11 +164,7 @@ export class ColorManager {
    * @param b - Blue component (0-255).
    * @returns An array of [hue, saturation, lightness] in the range [0, 1].
    */
-  private static rgbToHsl(
-    r: number,
-    g: number,
-    b: number
-  ): [number, number, number] {
+  private static rgbToHsl(r: number, g: number, b: number): [number, number, number] {
     r /= 255;
     g /= 255;
     b /= 255;
@@ -225,11 +203,7 @@ export class ColorManager {
    * @param l - Lightness (0-1).
    * @returns An object with r, g, b components (0-255).
    */
-  private static hslToRgb(
-    h: number,
-    s: number,
-    l: number
-  ): { r: number; g: number; b: number } {
+  private static hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
     let r, g, b;
 
     if (s === 0) {

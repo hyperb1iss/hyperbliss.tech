@@ -3,4 +3,4 @@ interface Window {
   hyperbliss: {
     activate: () => string;
   };
-} 
+}

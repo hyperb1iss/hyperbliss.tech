@@ -34,9 +34,7 @@ interface ProjectsPageContentProps {
  * @param {ProjectsPageContentProps} props - The component props
  * @returns {JSX.Element} Rendered projects page
  */
-const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({
-  projects,
-}) => {
+const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({ projects }) => {
   return (
     <PageLayout>
       <PageTitle>Projects</PageTitle>

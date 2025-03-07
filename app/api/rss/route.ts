@@ -1,17 +1,12 @@
 // app/api/rss/route.ts
-import {
-    getAllMarkdownSlugs,
-    getMarkdownContent,
-    MarkdownFile
-} from "@/lib/markdown";
+import { getAllMarkdownSlugs, getMarkdownContent, MarkdownFile } from "@/lib/markdown";
 import { Feed } from "feed";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   const feed = new Feed({
     title: "Hyperbliss Blog",
-    description:
-      "Stefanie Jane's personal blog about tech, development, and more.",
+    description: "Stefanie Jane's personal blog about tech, development, and more.",
     id: "https://hyperbliss.tech/",
     link: "https://hyperbliss.tech/",
     language: "en",
@@ -32,9 +27,7 @@ export async function GET() {
 
   // Sort posts by date
   posts.sort(
-    (a, b) =>
-      new Date(b.frontmatter.date).getTime() -
-      new Date(a.frontmatter.date).getTime()
+    (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
   );
 
   posts.forEach((post) => {

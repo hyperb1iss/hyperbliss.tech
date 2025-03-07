@@ -13,10 +13,7 @@ const MobileMenu: React.FC = () => {
       const menuIcon = document.querySelector(".menu-icon");
       if (menuIcon) {
         const rect = menuIcon.getBoundingClientRect();
-        triggerCyberScapeAnimation(
-          rect.left + rect.width / 2,
-          rect.top + rect.height / 2
-        );
+        triggerCyberScapeAnimation(rect.left + rect.width / 2, rect.top + rect.height / 2);
       }
     }
   };

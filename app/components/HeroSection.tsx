@@ -59,11 +59,7 @@ interface Particle {
  * @param height - Height of the canvas.
  * @returns Array of Particle objects.
  */
-const createParticles = (
-  count: number,
-  width: number,
-  height: number
-): Particle[] => {
+const createParticles = (count: number, width: number, height: number): Particle[] => {
   return Array.from({ length: count }, () => ({
     x: Math.random() * width,
     y: Math.random() * height,
@@ -318,11 +314,10 @@ export default function HeroSection(): React.ReactElement {
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
         <Subtitle>
-          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted
-          software engineer and leader. I do everything from embedded systems to
-          cloud to mobile, all the way across the stack and back. Welcome to my
-          personal site! You&apos;ll find my blog, projects, and more about me
-          here.
+          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted software engineer and
+          leader. I do everything from embedded systems to cloud to mobile, all the way across the
+          stack and back. Welcome to my personal site! You&apos;ll find my blog, projects, and more
+          about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
@@ -336,11 +331,7 @@ export default function HeroSection(): React.ReactElement {
             </Tag>
           ))}
         </TagCloud>
-        <CTAButton
-          href="/about"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
+        <CTAButton href="/about" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <ButtonText>Learn More</ButtonText>
         </CTAButton>
       </ContentWrapper>

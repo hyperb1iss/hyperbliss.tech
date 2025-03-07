@@ -62,8 +62,7 @@ export class Particle {
     existingPositions.add(positionKey);
 
     this.size =
-      Math.random() *
-        (this.config.particleSizeMax - this.config.particleSizeMin) +
+      Math.random() * (this.config.particleSizeMax - this.config.particleSizeMin) +
       this.config.particleSizeMin;
 
     this.maxSpeed = this.config.particleMaxSpeed;
@@ -73,10 +72,8 @@ export class Particle {
     this.velocity = vec3.create();
     const angleXY = Math.random() * Math.PI * 2;
     const angleZ = Math.random() * Math.PI * 2;
-    const speedXY =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    const speedZ =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedXY = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedZ = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     vec3.set(
       this.velocity,
       Math.cos(angleXY) * speedXY,
@@ -149,18 +146,12 @@ export class Particle {
   ): void {
     if (!this.isVisible) return;
     if (isCursorOverCyberScape) {
-      vec3.set(
-        this.tempVector,
-        mouseX - this.position[0],
-        mouseY - this.position[1],
-        0
-      );
+      vec3.set(this.tempVector, mouseX - this.position[0], mouseY - this.position[1], 0);
       const distance = vec3.length(this.tempVector);
 
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
-          ((this.config.cursorInfluenceRadius - distance) /
-            this.config.cursorInfluenceRadius) *
+          ((this.config.cursorInfluenceRadius - distance) / this.config.cursorInfluenceRadius) *
           this.config.cursorForce;
         vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
         vec3.add(this.velocity, this.velocity, this.tempVector);
@@ -224,8 +215,7 @@ export class Particle {
 
     // Update visibility
     const pos = VectorMath.project(this.position, width, height);
-    this.isVisible =
-      pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height;
+    this.isVisible = pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height;
   }
 
   /**
@@ -274,10 +264,7 @@ export class Particle {
     const pos = VectorMath.project(this.position, width, height);
 
     // Calculate dynamic shadow blur based on position and proximity to cursor
-    const distanceToCursor = Math.hypot(
-      mouseX - this.position[0],
-      mouseY - this.position[1]
-    );
+    const distanceToCursor = Math.hypot(mouseX - this.position[0], mouseY - this.position[1]);
     const dynamicShadowBlur = 10 + (200 - Math.min(distanceToCursor, 200)) / 20;
 
     // Set the particle's color and prepare for dynamic glow effect
@@ -301,11 +288,7 @@ export class Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public reset(
-    existingPositions: Set<string>,
-    width: number,
-    height: number
-  ): void {
+  public reset(existingPositions: Set<string>, width: number, height: number): void {
     const currentTime = Date.now();
     if (currentTime - this.lastOffScreenTime < this.respawnCooldown) {
       // If the cooldown hasn't elapsed, don't reset the particle
@@ -329,10 +312,8 @@ export class Particle {
     // Reset velocity
     const angleXY = Math.random() * Math.PI * 2;
     const angleZ = Math.random() * Math.PI * 2;
-    const speedXY =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    const speedZ =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedXY = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedZ = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     vec3.set(
       this.velocity,
       Math.cos(angleXY) * speedXY,
@@ -357,8 +338,7 @@ export class Particle {
     const config = CyberScapeConfig.getInstance();
     if (this.lastConnectionTime === 0) {
       this.lastConnectionTime = currentTime;
-      this.connectionDelay =
-        Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
+      this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
       return true;
     }
 
@@ -366,8 +346,7 @@ export class Particle {
       return false;
     }
     this.lastConnectionTime = currentTime;
-    this.connectionDelay =
-      Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
+    this.connectionDelay = Math.random() * config.maxConnectionDelay + config.minConnectionDelay;
     return true;
   }
 
@@ -382,12 +361,7 @@ export class Particle {
   public isOutOfBounds(width: number, height: number): boolean {
     const pos = VectorMath.project(this.position, width, height);
     const buffer = 100; // Buffer zone to prevent immediate re-creation
-    return (
-      pos.x < -buffer ||
-      pos.x > width + buffer ||
-      pos.y < -buffer ||
-      pos.y > height + buffer
-    );
+    return pos.x < -buffer || pos.x > width + buffer || pos.y < -buffer || pos.y > height + buffer;
   }
 
   public setOffScreen(): void {

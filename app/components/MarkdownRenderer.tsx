@@ -38,7 +38,7 @@ interface CodeComponentProps {
 // Function to filter out props that shouldn't be forwarded to DOM elements
 const shouldForwardProp = (prop: string): boolean => {
   // List of props that should not be forwarded to DOM elements
-  const invalidProps = ['node'];
+  const invalidProps = ["node"];
   return !invalidProps.includes(prop);
 };
 
@@ -78,12 +78,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           hr: (props) => <StyledHr {...props} />,
 
           // Inline Code and Code Blocks
-          code: ({
-            inline,
-            className,
-            children,
-            ...props
-          }: CodeComponentProps) => {
+          code: ({ inline, className, children, ...props }: CodeComponentProps) => {
             if (inline) {
               return <StyledInlineCode {...props}>{children}</StyledInlineCode>;
             }

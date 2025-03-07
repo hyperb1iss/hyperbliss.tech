@@ -31,14 +31,9 @@ export class ForceHandler {
         vec3.subtract(tempVector, shapeB.position, shapeA.position);
         const distance = vec3.length(tempVector);
 
-        if (
-          distance > 0 &&
-          distance < ATTRACTION_RADIUS &&
-          distance > REPULSION_RADIUS
-        ) {
+        if (distance > 0 && distance < ATTRACTION_RADIUS && distance > REPULSION_RADIUS) {
           // Attraction
-          const forceMagnitude =
-            ATTRACTION_FORCE * (1 - distance / ATTRACTION_RADIUS);
+          const forceMagnitude = ATTRACTION_FORCE * (1 - distance / ATTRACTION_RADIUS);
           vec3.normalize(tempVector, tempVector);
           vec3.scale(tempVector, tempVector, forceMagnitude);
           shapeA.applyForce(tempVector);
@@ -46,8 +41,7 @@ export class ForceHandler {
           shapeB.applyForce(tempVector);
         } else if (distance > 0 && distance <= REPULSION_RADIUS) {
           // Repulsion
-          const forceMagnitude =
-            REPULSION_FORCE * (1 - distance / REPULSION_RADIUS);
+          const forceMagnitude = REPULSION_FORCE * (1 - distance / REPULSION_RADIUS);
           vec3.normalize(tempVector, tempVector);
           vec3.scale(tempVector, tempVector, forceMagnitude);
           shapeA.applyForce(vec3.negate(vec3.create(), tempVector));

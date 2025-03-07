@@ -1,9 +1,9 @@
 import { TECH_TAGS } from "@/lib/constants";
 import {
-    BlogFrontmatter,
-    generateBlogMetadata,
-    generateProjectMetadata,
-    ProjectFrontmatter,
+  BlogFrontmatter,
+  generateBlogMetadata,
+  generateProjectMetadata,
+  ProjectFrontmatter,
 } from "@/lib/generateMetadata";
 import { getAllMarkdownSlugs, getMarkdownContent } from "@/lib/markdown";
 import siteMetadata from "@/lib/metadata";
@@ -39,8 +39,7 @@ const createMinimalMetadata = (): ResolvedMetadata => ({
   publisher: "Test Publisher",
   robots: {
     basic: "index, follow",
-    googleBot:
-      "index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1",
+    googleBot: "index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1",
   },
   alternates: {
     canonical: { url: "https://hyperbliss.tech" },
@@ -160,10 +159,7 @@ async function getAllBlogMetadata() {
   const slugs = await getAllMarkdownSlugs("src/posts");
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>(
-        "src/posts",
-        slug
-      );
+      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>("src/posts", slug);
       const metadata = await generateBlogMetadata(
         frontmatter,
         slug,
@@ -184,10 +180,7 @@ async function getAllProjectMetadata() {
   const slugs = await getAllMarkdownSlugs("src/projects");
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>(
-        "src/projects",
-        slug
-      );
+      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>("src/projects", slug);
       const metadata = await generateProjectMetadata(
         frontmatter,
         slug,

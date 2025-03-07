@@ -4,7 +4,9 @@ const GlitchSpan = styled.span`
   display: inline-block;
   position: relative;
   color: #fff;
-  text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff;
+  text-shadow:
+    2px 2px #ff00ff,
+    -2px -2px #00ffff;
 
   &::before,
   &::after {

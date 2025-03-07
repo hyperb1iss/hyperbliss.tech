@@ -50,10 +50,7 @@ export class ParticleConnector {
 
         if (existingConnection) {
           const elapsed = timestamp - existingConnection.createdAt;
-          existingConnection.opacity = Math.min(
-            elapsed / existingConnection.duration,
-            1
-          );
+          existingConnection.opacity = Math.min(elapsed / existingConnection.duration, 1);
           newConnections.push(existingConnection);
         } else if (
           particleA.canCreateNewConnection(timestamp) &&
@@ -81,10 +78,8 @@ export class ParticleConnector {
     const obsoleteConnections = this.connections.filter((conn) => {
       const stillExists = newConnections.some(
         (newConn) =>
-          (newConn.particleA === conn.particleA &&
-            newConn.particleB === conn.particleB) ||
-          (newConn.particleA === conn.particleB &&
-            newConn.particleB === conn.particleA)
+          (newConn.particleA === conn.particleA && newConn.particleB === conn.particleB) ||
+          (newConn.particleA === conn.particleB && newConn.particleB === conn.particleA)
       );
       return !stillExists;
     });
@@ -102,11 +97,7 @@ export class ParticleConnector {
     });
   }
 
-  private drawConnections(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number
-  ) {
+  private drawConnections(ctx: CanvasRenderingContext2D, width: number, height: number) {
     this.connections.forEach((conn: Connection) => {
       const { particleA, particleB, opacity } = conn;
       if (opacity > 0) {
@@ -121,9 +112,7 @@ export class ParticleConnector {
           const blendedR = Math.floor((rgbA.r + rgbB.r) / 2);
           const blendedG = Math.floor((rgbA.g + rgbB.g) / 2);
           const blendedB = Math.floor((rgbA.b + rgbB.b) / 2);
-          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${
-            opacity * 0.7
-          })`;
+          connectionColor = `rgba(${blendedR}, ${blendedG}, ${blendedB}, ${opacity * 0.7})`;
         }
 
         ctx.strokeStyle = connectionColor;

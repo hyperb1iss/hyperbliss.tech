@@ -22,7 +22,8 @@ const CardWrapper = styled.div<{ $color: string }>`
   box-shadow: 0 0 10px ${(props) => `rgba(${props.$color}, 0.3)`};
 
   &:hover {
-    box-shadow: 0 0 20px ${(props) => `rgba(${props.$color}, 0.6)`},
+    box-shadow:
+      0 0 20px ${(props) => `rgba(${props.$color}, 0.6)`},
       0 0 40px ${(props) => `rgba(${props.$color}, 0.4)`};
     transform: translateY(-5px);
     border-color: ${(props) => `rgb(${props.$color})`};
@@ -218,10 +219,7 @@ export const Card: React.FC<CardProps> = ({
 
   const handleMainClick = (e: React.MouseEvent) => {
     // Prevent click if it's on a button or anchor
-    if (
-      e.target instanceof HTMLElement &&
-      (e.target.closest("button") || e.target.closest("a"))
-    ) {
+    if (e.target instanceof HTMLElement && (e.target.closest("button") || e.target.closest("a"))) {
       return;
     }
     window.location.href = link;

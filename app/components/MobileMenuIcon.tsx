@@ -48,10 +48,7 @@ interface MobileMenuIconProps {
  * @param {MobileMenuIconProps} props - Component props
  * @returns {JSX.Element} Rendered mobile menu icon
  */
-const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({
-  menuOpen,
-  toggleMenu,
-}) => {
+const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu }) => {
   const topLineVariants = {
     closed: { rotate: 0, translateY: 0 },
     open: { rotate: 45, translateY: 10 },

@@ -21,9 +21,7 @@ export default async function Home() {
 
   // Sort posts by date
   posts.sort(
-    (a, b) =>
-      new Date(b.frontmatter.date).getTime() -
-      new Date(a.frontmatter.date).getTime()
+    (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
   );
 
   // Take only the latest 5 posts for the sidebar

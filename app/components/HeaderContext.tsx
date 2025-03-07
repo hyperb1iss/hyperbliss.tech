@@ -38,9 +38,7 @@ export const useHeaderContext = () => {
  * @param {React.ReactNode} children - Child components
  * @returns {JSX.Element} Provider component
  */
-export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (

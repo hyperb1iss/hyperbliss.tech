@@ -92,11 +92,7 @@ export class Octree {
    * @param node - The current octree node.
    * @param depth - The current depth in the octree.
    */
-  private insertObject(
-    object: OctreeObject,
-    node: OctreeNode,
-    depth: number
-  ): void {
+  private insertObject(object: OctreeObject, node: OctreeNode, depth: number): void {
     if (!this.isInBounds(object.position, node.bounds)) {
       return;
     }
@@ -124,11 +120,7 @@ export class Octree {
    */
   private split(node: OctreeNode): void {
     const { min, max } = node.bounds;
-    const mid = vec3.scale(
-      vec3.create(),
-      vec3.add(vec3.create(), min, max),
-      0.5
-    );
+    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), min, max), 0.5);
 
     node.children = [
       new OctreeNode({
@@ -182,11 +174,7 @@ export class Octree {
    * @returns The index of the child node (0-7).
    */
   private getChildIndex(position: vec3, bounds: Bounds): number {
-    const mid = vec3.scale(
-      vec3.create(),
-      vec3.add(vec3.create(), bounds.min, bounds.max),
-      0.5
-    );
+    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), bounds.min, bounds.max), 0.5);
     let index = 0;
     if (position[0] > mid[0]) index |= 1;
     if (position[1] > mid[1]) index |= 2;
@@ -228,21 +216,13 @@ export class Octree {
    * @param queryBounds - The bounds to query.
    * @param result - The array to store the resulting objects.
    */
-  private queryNode(
-    node: OctreeNode,
-    queryBounds: Bounds,
-    result: OctreeObject[]
-  ): void {
+  private queryNode(node: OctreeNode, queryBounds: Bounds, result: OctreeObject[]): void {
     if (!this.intersectsBounds(node.bounds, queryBounds)) {
       return;
     }
 
     if (node.isLeaf) {
-      result.push(
-        ...node.objects.filter((obj) =>
-          this.isInBounds(obj.position, queryBounds)
-        )
-      );
+      result.push(...node.objects.filter((obj) => this.isInBounds(obj.position, queryBounds)));
     } else {
       for (const child of node.children) {
         this.queryNode(child, queryBounds, result);

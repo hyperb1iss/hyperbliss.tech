@@ -82,9 +82,7 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
     <FeaturedProjectsSectionWrapper>
       <StyledTitle>
         <TitleLink href="/projects">
-          <GlitchSpan data-text="Featured Projects">
-            Featured Projects
-          </GlitchSpan>
+          <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
         </TitleLink>
       </StyledTitle>
       <ProjectsGrid

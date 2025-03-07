@@ -57,10 +57,7 @@ const TitleLink = styled(Link)`
   }
 `;
 
-export default function LatestBlogPosts({
-  posts,
-  isMobile,
-}: LatestBlogPostsProps) {
+export default function LatestBlogPosts({ posts, isMobile }: LatestBlogPostsProps) {
   return (
     <SidebarContainer
       initial={{ opacity: 0 }}

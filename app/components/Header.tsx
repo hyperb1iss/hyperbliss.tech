@@ -5,10 +5,7 @@ import { motion } from "framer-motion";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
-import {
-  initializeCyberScape,
-  triggerCyberScapeAnimation,
-} from "../cyberscape/CyberScape";
+import { initializeCyberScape, triggerCyberScapeAnimation } from "../cyberscape/CyberScape";
 import { useHeaderContext } from "./HeaderContext";
 import Logo from "./Logo";
 import MobileMenuIcon from "./MobileMenuIcon";

@@ -69,8 +69,7 @@ export abstract class VectorShape {
     this.colorTransitionSpeed = 0.01;
 
     this.lifespan =
-      Math.random() *
-        (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
+      Math.random() * (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
       this.config.shapeLifespanMin;
     this.age = 0;
     this.fadeOutDuration = this.config.shapeFadeOutDuration;
@@ -78,9 +77,7 @@ export abstract class VectorShape {
     this.opacity = 0; // Start fully transparent
 
     this.glowIntensity =
-      Math.random() *
-        (this.config.shapeGlowIntensityMax -
-          this.config.shapeGlowIntensityMin) +
+      Math.random() * (this.config.shapeGlowIntensityMax - this.config.shapeGlowIntensityMin) +
       this.config.shapeGlowIntensityMin;
 
     this.scale = 1;
@@ -116,11 +113,7 @@ export abstract class VectorShape {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public reset(
-    existingPositions: Set<string>,
-    width: number,
-    height: number
-  ): void {
+  public reset(existingPositions: Set<string>, width: number, height: number): void {
     // Reset position
     let positionKey: string;
     do {
@@ -137,8 +130,7 @@ export abstract class VectorShape {
     // Reset lifecycle
     this.age = 0;
     this.lifespan =
-      Math.random() *
-        (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
+      Math.random() * (this.config.shapeLifespanMax - this.config.shapeLifespanMin) +
       this.config.shapeLifespanMin;
     this.isFadingOut = false;
     this.opacity = 0; // Start fully transparent
@@ -150,10 +142,8 @@ export abstract class VectorShape {
     // Reset velocity
     const angleXY = Math.random() * Math.PI * 2;
     const angleZ = Math.random() * Math.PI * 2;
-    const speedXY =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-    const speedZ =
-      Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedXY = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+    const speedZ = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
     vec3.set(
       this.velocity,
       Math.cos(angleXY) * speedXY,
@@ -172,9 +162,7 @@ export abstract class VectorShape {
 
     // Reset glow intensity
     this.glowIntensity =
-      Math.random() *
-        (this.config.shapeGlowIntensityMax -
-          this.config.shapeGlowIntensityMin) +
+      Math.random() * (this.config.shapeGlowIntensityMax - this.config.shapeGlowIntensityMin) +
       this.config.shapeGlowIntensityMin;
 
     // Reset scaling properties
@@ -218,18 +206,12 @@ export abstract class VectorShape {
     if (this.isExploded) return; // Do not update if exploded
 
     if (isCursorOverHeader) {
-      vec3.set(
-        this.tempVector,
-        mouseX - this.position[0],
-        mouseY - this.position[1],
-        0
-      );
+      vec3.set(this.tempVector, mouseX - this.position[0], mouseY - this.position[1], 0);
       const distance = vec3.length(this.tempVector);
 
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
-          ((this.config.cursorInfluenceRadius - distance) /
-            this.config.cursorInfluenceRadius) *
+          ((this.config.cursorInfluenceRadius - distance) / this.config.cursorInfluenceRadius) *
           this.config.cursorForce;
         vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force);
         vec3.add(this.velocity, this.velocity, this.tempVector);
@@ -258,14 +240,9 @@ export abstract class VectorShape {
     const wrapWidth = width + buffer * 2;
     const wrapHeight = height + buffer * 2;
 
-    this.position[0] =
-      ((this.position[0] + width / 2 + buffer) % wrapWidth) -
-      width / 2 -
-      buffer;
+    this.position[0] = ((this.position[0] + width / 2 + buffer) % wrapWidth) - width / 2 - buffer;
     this.position[1] =
-      ((this.position[1] + height / 2 + buffer) % wrapHeight) -
-      height / 2 -
-      buffer;
+      ((this.position[1] + height / 2 + buffer) % wrapHeight) - height / 2 - buffer;
     this.position[2] = ((this.position[2] + 300) % 600) - 300;
 
     // Ensure minimum and maximum speed
@@ -310,10 +287,7 @@ export abstract class VectorShape {
     }
 
     if (this.isFadingOut) {
-      this.opacity = Math.max(
-        0,
-        1 - (this.age - this.lifespan) / this.fadeOutDuration
-      );
+      this.opacity = Math.max(0, 1 - (this.age - this.lifespan) / this.fadeOutDuration);
     } else {
       // Fade in effect
       this.opacity = Math.min(1, this.age / 1000); // Fade in over 1 second
@@ -390,11 +364,7 @@ export abstract class VectorShape {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number
-  ): void {
+  public draw(ctx: CanvasRenderingContext2D, width: number, height: number): void {
     if (this.opacity > 0 && !this.isExploded) {
       const baseColor = ColorManager.hexToRgb(this.color);
       if (baseColor) {
@@ -406,12 +376,7 @@ export abstract class VectorShape {
         const pos = VectorMath.project(this.position, width, height);
 
         // Check if pos.x and pos.y are valid numbers
-        if (
-          !isNaN(pos.x) &&
-          !isNaN(pos.y) &&
-          isFinite(pos.x) &&
-          isFinite(pos.y)
-        ) {
+        if (!isNaN(pos.x) && !isNaN(pos.y) && isFinite(pos.x) && isFinite(pos.y)) {
           const gradient = ctx.createRadialGradient(
             pos.x,
             pos.y,
@@ -441,10 +406,7 @@ export abstract class VectorShape {
         // Draw the shape
         ctx.beginPath();
         this.edges.forEach(([start, end]) => {
-          const v1 = VectorMath.rotateVertex(
-            this.vertices[start],
-            this.rotation
-          );
+          const v1 = VectorMath.rotateVertex(this.vertices[start], this.rotation);
           const v2 = VectorMath.rotateVertex(this.vertices[end], this.rotation);
 
           // Apply scaling and translation to vertices
@@ -542,15 +504,8 @@ export abstract class VectorShape {
 
     for (let i = 0; i < particleCount; i++) {
       // Create a slightly varied color for each particle
-      const particleColor = ColorManager.shiftHue(
-        baseColor,
-        Math.random() * 30 - 15
-      );
-      const hexColor = ColorManager.rgbToHex(
-        particleColor.r,
-        particleColor.g,
-        particleColor.b
-      );
+      const particleColor = ColorManager.shiftHue(baseColor, Math.random() * 30 - 15);
+      const hexColor = ColorManager.rgbToHex(particleColor.r, particleColor.g, particleColor.b);
 
       // Create and emit the particle
       // Note: You'll need to implement a method to add these particles to your particle system
@@ -562,8 +517,7 @@ export abstract class VectorShape {
    * Emits a single explosion particle.
    * @param color - The color of the particle in hex format.
    */
-  private emitParticle(_color: string): void {
-  }
+  private emitParticle(_color: string): void {}
 
   /**
    * Applies a force to the shape, affecting its velocity.
@@ -588,9 +542,7 @@ export abstract class VectorShape {
    */
   public updateColorBasedOnNearby(nearbyShapes: VectorShape[]): void {
     if (nearbyShapes.length > 0) {
-      const averageColor = ColorManager.averageColors(
-        nearbyShapes.map((s) => s.color)
-      );
+      const averageColor = ColorManager.averageColors(nearbyShapes.map((s) => s.color));
       this.color = ColorManager.blendColors(this.color, averageColor, 0.1);
     }
   }
@@ -613,8 +565,7 @@ export abstract class VectorShape {
     const distance = this.distanceTo(other);
     if (distance < attractionRadius && distance > repulsionRadius) {
       // Attraction
-      const forceMagnitude =
-        attractionForce * (1 - distance / attractionRadius);
+      const forceMagnitude = attractionForce * (1 - distance / attractionRadius);
       vec3.subtract(this.tempVector, other.position, this.position);
       vec3.normalize(this.tempVector, this.tempVector);
       vec3.scale(this.tempVector, this.tempVector, forceMagnitude);

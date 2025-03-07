@@ -24,12 +24,7 @@ export class ChromaticAberrationEffect {
    * @param height - The height of the canvas.
    * @param offset - The pixel offset for the color channels.
    */
-  public apply(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    offset: number
-  ) {
+  public apply(ctx: CanvasRenderingContext2D, width: number, height: number, offset: number) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     const newImageData = ctx.createImageData(width, height);
@@ -39,14 +34,8 @@ export class ChromaticAberrationEffect {
       const yOffset = y * width;
       for (let x = 0; x < width; x++) {
         const i = (yOffset + x) << 2;
-        const redX = Math.max(
-          0,
-          Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5))
-        );
-        const blueX = Math.max(
-          0,
-          Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5))
-        );
+        const redX = Math.max(0, Math.min(width - 1, x - offset * (1 + Math.sin(y * 0.1) * 0.5)));
+        const blueX = Math.max(0, Math.min(width - 1, x + offset * (1 + Math.cos(y * 0.1) * 0.5)));
         const redI = (yOffset + redX) << 2;
         const blueI = (yOffset + blueX) << 2;
 

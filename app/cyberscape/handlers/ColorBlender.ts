@@ -55,15 +55,9 @@ export class ColorBlender {
         // Blend the current shape's color towards the average color
         const currentColor = ColorManager.hexToRgb(shapeA.color);
         if (currentColor) {
-          const blendedR = Math.round(
-            currentColor.r + (avgR - currentColor.r) * 0.05
-          );
-          const blendedG = Math.round(
-            currentColor.g + (avgG - currentColor.g) * 0.05
-          );
-          const blendedB = Math.round(
-            currentColor.b + (avgB - currentColor.b) * 0.05
-          );
+          const blendedR = Math.round(currentColor.r + (avgR - currentColor.r) * 0.05);
+          const blendedG = Math.round(currentColor.g + (avgG - currentColor.g) * 0.05);
+          const blendedB = Math.round(currentColor.b + (avgB - currentColor.b) * 0.05);
 
           shapeA.color = ColorManager.rgbToHex(blendedR, blendedG, blendedB);
         }

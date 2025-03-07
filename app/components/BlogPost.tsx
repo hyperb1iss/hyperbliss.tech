@@ -137,13 +137,7 @@ const Content = styled(motion.div)`
  * @param {BlogPostProps} props - The component props
  * @returns {JSX.Element} Rendered blog post
  */
-const BlogPost: React.FC<BlogPostProps> = ({
-  title,
-  date,
-  content,
-  author,
-  tags,
-}) => {
+const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags }) => {
   return (
     <Container>
       <Title

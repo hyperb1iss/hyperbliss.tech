@@ -9,4 +9,4 @@ export interface PageParams {
 export interface PageProps {
   params: Promise<PageParams>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-} 
+}

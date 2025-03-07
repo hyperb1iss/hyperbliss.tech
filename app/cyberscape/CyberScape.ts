@@ -88,11 +88,7 @@ export const initializeCyberScape = (
   let animationCenterY = 0;
 
   const glitchManager = new GlitchManager();
-  const datastreamEffect = new DatastreamEffect(
-    particlePool,
-    particlesArray,
-    shapesArray
-  );
+  const datastreamEffect = new DatastreamEffect(particlePool, particlesArray, shapesArray);
 
   const particleConnector = new ParticleConnector();
 
@@ -110,8 +106,7 @@ export const initializeCyberScape = (
    * Updates the canvas size based on the navigation element's dimensions and scales it for performance.
    */
   const updateCanvasSize = () => {
-    const { width: newWidth, height: newHeight } =
-      navElement.getBoundingClientRect();
+    const { width: newWidth, height: newHeight } = navElement.getBoundingClientRect();
 
     const screenSize = ScreenSizeManager.getScreenSize(newWidth, newHeight);
 
@@ -217,19 +212,10 @@ export const initializeCyberScape = (
 
     const existingPositions = new Set<string>();
     while (shapesArray.length < numberOfShapes) {
-      const shapeType = [
-        "cube",
-        "pyramid",
-        "tetrahedron",
-        "octahedron",
-        "dodecahedron",
-      ][shapesArray.length % 5];
-      const newShape = ShapeFactory.createShape(
-        shapeType,
-        existingPositions,
-        width,
-        height
-      );
+      const shapeType = ["cube", "pyramid", "tetrahedron", "octahedron", "dodecahedron"][
+        shapesArray.length % 5
+      ];
+      const newShape = ShapeFactory.createShape(shapeType, existingPositions, width, height);
 
       // Ensure shapes are initialized on-screen for all devices
       newShape.position[0] = Math.random() * width - width / 2;
@@ -303,11 +289,7 @@ export const initializeCyberScape = (
     }
 
     // Ensure all active particles are set to visible
-    for (
-      let i = 0;
-      i < Math.min(numberOfParticles, particlesArray.length);
-      i++
-    ) {
+    for (let i = 0; i < Math.min(numberOfParticles, particlesArray.length); i++) {
       particlesArray[i].isVisible = true;
     }
   };
@@ -407,12 +389,7 @@ export const initializeCyberScape = (
         0.1,
         1000
       );
-      const viewMatrix = mat4.lookAt(
-        mat4.create(),
-        [0, 0, 500],
-        [0, 0, 0],
-        [0, 1, 0]
-      );
+      const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, 500], [0, 0, 0], [0, 1, 0]);
       frustumCuller.updateFrustum(projectionMatrix, viewMatrix);
 
       // Adjust particle creation logic
@@ -421,10 +398,7 @@ export const initializeCyberScape = (
       const totalCreationChance = baseCreationChance + additionalChance;
 
       // Replace the existing particle creation logic with this new implementation
-      if (
-        activeParticles < numberOfParticles &&
-        Math.random() < totalCreationChance
-      ) {
+      if (activeParticles < numberOfParticles && Math.random() < totalCreationChance) {
         const particlesToAdd = Math.min(
           2 + Math.floor(recentlyExpiredParticles / 5),
           numberOfParticles - activeParticles
@@ -440,18 +414,9 @@ export const initializeCyberScape = (
           .fill(0)
           .map(() => Array(gridSize).fill(0));
         particlesArray.forEach((particle) => {
-          const cellX = Math.floor(
-            (particle.position[0] + width / 2) / cellWidth
-          );
-          const cellY = Math.floor(
-            (particle.position[1] + height / 2) / cellHeight
-          );
-          if (
-            cellX >= 0 &&
-            cellX < gridSize &&
-            cellY >= 0 &&
-            cellY < gridSize
-          ) {
+          const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth);
+          const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight);
+          if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
             particleGrid[cellY][cellX]++;
           }
         });
@@ -467,10 +432,8 @@ export const initializeCyberScape = (
           const newParticle = particlePool.getParticle(width, height);
 
           // Set position within the chosen cell
-          newParticle.position[0] =
-            cell.x * cellWidth + Math.random() * cellWidth - width / 2;
-          newParticle.position[1] =
-            cell.y * cellHeight + Math.random() * cellHeight - height / 2;
+          newParticle.position[0] = cell.x * cellWidth + Math.random() * cellWidth - width / 2;
+          newParticle.position[1] = cell.y * cellHeight + Math.random() * cellHeight - height / 2;
           newParticle.position[2] = Math.random() * 200 - 100;
 
           newParticle.setDelayedAppearance();
@@ -479,10 +442,7 @@ export const initializeCyberScape = (
           cell.count++; // Update the count for this cell
         }
 
-        recentlyExpiredParticles = Math.max(
-          0,
-          recentlyExpiredParticles - particlesToAdd
-        );
+        recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd);
       }
 
       // Add this function to prevent particle clustering
@@ -499,17 +459,11 @@ export const initializeCyberScape = (
         if (nearbyParticles.length > 20) {
           // Calculate the average position of nearby particles
           const avgPosition = vec3.create();
-          nearbyParticles.forEach((p) =>
-            vec3.add(avgPosition, avgPosition, p.position)
-          );
+          nearbyParticles.forEach((p) => vec3.add(avgPosition, avgPosition, p.position));
           vec3.scale(avgPosition, avgPosition, 1 / nearbyParticles.length);
 
           // Move the particle away from the cluster
-          const awayVector = vec3.sub(
-            vec3.create(),
-            particle.position,
-            avgPosition
-          );
+          const awayVector = vec3.sub(vec3.create(), particle.position, avgPosition);
           vec3.normalize(awayVector, awayVector);
           vec3.scale(awayVector, awayVector, 0.5); // Adjust this value to control the strength of repulsion
 
@@ -522,14 +476,7 @@ export const initializeCyberScape = (
       for (let i = particlesArray.length - 1; i >= 0; i--) {
         const particle = particlesArray[i];
         if (particle.isReady()) {
-          particle.update(
-            isCursorOverCyberScape,
-            mouseX,
-            mouseY,
-            width,
-            height,
-            shapesArray
-          );
+          particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray);
           preventClustering(particle); // Add this line to prevent clustering
           if (particle.isOutOfBounds(width, height)) {
             // Remove the particle if it's out of the viewport
@@ -552,13 +499,7 @@ export const initializeCyberScape = (
         const particle = collisionParticlesArray[i];
         if (particle.isReady()) {
           particle.update();
-          if (
-            !isWithinViewport(
-              particle.position[0],
-              particle.position[1],
-              particle.position[2]
-            )
-          ) {
+          if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
             // Remove the collision particle if it's out of the viewport
             particlePool.returnCollisionParticle(particle);
             collisionParticlesArray.splice(i, 1);
@@ -575,22 +516,9 @@ export const initializeCyberScape = (
       const existingPositions = new Set<string>();
       for (let i = shapesArray.length - 1; i >= 0; i--) {
         const shape = shapesArray[i];
-        shape.update(
-          isCursorOverCyberScape,
-          mouseX,
-          mouseY,
-          width,
-          height,
-          particlesArray
-        );
+        shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray);
         if (shape.opacity > 0 && !shape.isExploded) {
-          if (
-            !isWithinViewport(
-              shape.position[0],
-              shape.position[1],
-              shape.position[2]
-            )
-          ) {
+          if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
             // Reset the shape if it's out of the viewport
             shape.reset(existingPositions, width, height);
           } else {
@@ -621,9 +549,7 @@ export const initializeCyberScape = (
         const bounds = octree.getBounds();
         const allObjects = octree.query(bounds);
         CollisionHandler.handleCollisions(
-          allObjects.filter(
-            (obj): obj is VectorShape => obj instanceof VectorShape
-          ),
+          allObjects.filter((obj): obj is VectorShape => obj instanceof VectorShape),
           (shapeA: VectorShape, shapeB: VectorShape) => {
             const now = Date.now();
             if (
@@ -638,25 +564,19 @@ export const initializeCyberScape = (
             vec3.scale(collisionPos, collisionPos, 0.5);
 
             if (
-              collisionParticlesArray.length +
-                config.explosionParticlesToEmit <=
+              collisionParticlesArray.length + config.explosionParticlesToEmit <=
                 config.maxExplosionParticles &&
               explosionParticlesCount + config.explosionParticlesToEmit <=
                 config.maxExplosionParticles
             ) {
               for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-                const particle = particlePool.getCollisionParticle(
-                  vec3.clone(collisionPos),
-                  () => {
-                    explosionParticlesCount--;
-                    currentExplosions = Math.max(0, currentExplosions - 1);
-                    particlePool.returnCollisionParticle(particle);
-                  }
-                ) as ParticleAtCollision;
+                const particle = particlePool.getCollisionParticle(vec3.clone(collisionPos), () => {
+                  explosionParticlesCount--;
+                  currentExplosions = Math.max(0, currentExplosions - 1);
+                  particlePool.returnCollisionParticle(particle);
+                }) as ParticleAtCollision;
                 particle.lifespan = config.particleAtCollisionLifespan;
-                particle.setFadeOutDuration(
-                  config.particleAtCollisionFadeOutDuration
-                );
+                particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration);
                 collisionParticlesArray.push(particle);
                 explosionParticlesCount++;
               }
@@ -680,13 +600,7 @@ export const initializeCyberScape = (
       drawShapeConnections(ctx);
 
       // Connect regular particles with animation
-      particleConnector.connectParticles(
-        particlesArray,
-        ctx,
-        timestamp,
-        width,
-        height
-      );
+      particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height);
 
       // Remove expired regular particles
       for (let i = particlesArray.length - 1; i >= 0; i--) {
@@ -808,10 +722,7 @@ export const initializeCyberScape = (
  * @param limit - The time limit in milliseconds.
  * @returns A throttled version of the input function.
  */
-function throttle<T extends unknown[]>(
-  func: (...args: T) => void,
-  limit: number
-) {
+function throttle<T extends unknown[]>(func: (...args: T) => void, limit: number) {
   let inThrottle: boolean;
   return (...args: T) => {
     if (!inThrottle) {

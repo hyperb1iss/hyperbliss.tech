@@ -11,6 +11,5 @@ export default async function ResumePage() {
 
 export const metadata = {
   title: "Resume | Hyperbliss",
-  description:
-    "Professional resume of Stefanie Jane, full-stack developer and designer.",
+  description: "Professional resume of Stefanie Jane, full-stack developer and designer.",
 };

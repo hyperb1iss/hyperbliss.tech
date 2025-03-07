@@ -137,13 +137,15 @@ const LogoText = styled.span`
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
-  animation: ${animateGradient} 10s ease infinite,
+  animation:
+    ${animateGradient} 10s ease infinite,
     ${flicker} 8s step-end infinite,
     ${chromaticAberration} 3s ease-in-out infinite;
   transition: text-shadow 0.1s ease;
 
   &:hover {
-    animation: ${animateGradient} 10s ease infinite,
+    animation:
+      ${animateGradient} 10s ease infinite,
       ${shiftingGlow} 4s linear infinite;
   }
 
@@ -164,7 +166,9 @@ const LogoEmojis = styled.span`
   font-size: 1.8rem; // Baseline size (matches mobile view)
   margin: 0 0.5rem;
   flex-shrink: 0;
-  animation: ${sparkle} 3s ease-in-out infinite, ${shimmer} 5s linear infinite;
+  animation:
+    ${sparkle} 3s ease-in-out infinite,
+    ${shimmer} 5s linear infinite;
   display: inline-block;
   transition: transform 0.3s ease;
 

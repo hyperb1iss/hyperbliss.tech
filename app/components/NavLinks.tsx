@@ -51,13 +51,19 @@ const StyledNavLink = styled.a<{ $active: boolean }>`
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
-  text-shadow: 0 0 1px #000, 0 0 2px #000,
+  text-shadow:
+    0 0 1px #000,
+    0 0 2px #000,
     0 0 3px ${(props) => (props.$active ? "#00ffff" : "#ffffff")};
 
   &:hover,
   &:focus {
     color: #00ffff;
-    text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #00ffff, 0 0 5px #00ffff,
+    text-shadow:
+      0 0 1px #000,
+      0 0 2px #000,
+      0 0 3px #00ffff,
+      0 0 5px #00ffff,
       0 0 7px #00ffff;
   }
 

@@ -18,10 +18,7 @@ export class ParticlePool {
    * @param maxRegularPoolSize - Maximum number of regular particles in the pool.
    * @param maxCollisionPoolSize - Maximum number of collision particles in the pool.
    */
-  constructor(
-    maxRegularPoolSize: number = 500,
-    maxCollisionPoolSize: number = 100
-  ) {
+  constructor(maxRegularPoolSize: number = 500, maxCollisionPoolSize: number = 100) {
     this.maxRegularPoolSize = maxRegularPoolSize;
     this.maxCollisionPoolSize = maxCollisionPoolSize;
     this.regularPool = [];
@@ -34,9 +31,7 @@ export class ParticlePool {
    */
   private initializePools(): void {
     for (let i = 0; i < this.maxRegularPoolSize; i++) {
-      this.regularPool.push(
-        new Particle(new Set<string>(), window.innerWidth, window.innerHeight)
-      );
+      this.regularPool.push(new Particle(new Set<string>(), window.innerWidth, window.innerHeight));
     }
     for (let i = 0; i < this.maxCollisionPoolSize; i++) {
       this.collisionPool.push(new ParticleAtCollision(vec3.create(), () => {}));
@@ -65,10 +60,7 @@ export class ParticlePool {
    * @param onExpire - Callback function when the particle expires.
    * @returns A ParticleAtCollision instance.
    */
-  public getCollisionParticle(
-    position: vec3,
-    onExpire: () => void
-  ): ParticleAtCollision {
+  public getCollisionParticle(position: vec3, onExpire: () => void): ParticleAtCollision {
     if (this.collisionPool.length > 0) {
       const particle = this.collisionPool.pop()!;
       particle.init(vec3.clone(position), onExpire);

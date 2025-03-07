@@ -171,8 +171,6 @@ export class CyberScapeConfig {
    * @returns The number of shapes to display.
    */
   public getShapeCount(width: number): number {
-    return width <= this.mobileWidthThreshold
-      ? this.numberOfShapesMobile
-      : this.numberOfShapes;
+    return width <= this.mobileWidthThreshold ? this.numberOfShapesMobile : this.numberOfShapes;
   }
 }

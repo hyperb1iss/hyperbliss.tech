@@ -24,21 +24,14 @@ export class CRTEffect {
    * @param height - The height of the canvas.
    * @param intensity - The intensity of the effect (0-1).
    */
-  public apply(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    intensity: number
-  ) {
+  public apply(ctx: CanvasRenderingContext2D, width: number, height: number, intensity: number) {
     const imageData = ctx.getImageData(0, 0, width, height);
     const data = imageData.data;
     const halfWidth = width / 2;
     const halfHeight = height / 2;
 
     // Precalculate values for efficiency
-    const maxDistance = Math.sqrt(
-      halfWidth * halfWidth + halfHeight * halfHeight
-    );
+    const maxDistance = Math.sqrt(halfWidth * halfWidth + halfHeight * halfHeight);
     const bendFactor = 0.1 * intensity;
 
     // Add CRT screen curvature
