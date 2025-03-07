@@ -13,27 +13,42 @@ const compat = new FlatCompat({
     allConfig: js.configs.all
 });
 
-export default [
-    ...compat.extends("next/core-web-vitals", "plugin:@typescript-eslint/recommended"),
+const eslintConfig = [
+    // Base configuration for all files
+    ...compat.extends("next/core-web-vitals"),
+    
+    // Configuration for JavaScript files
     {
+        files: ["**/*.js", "**/*.mjs", "**/*.cjs"],
+        languageOptions: {
+            ecmaVersion: "latest",
+            sourceType: "module",
+        },
+    },
+    
+    // Configuration for TypeScript files
+    {
+        files: ["**/*.ts", "**/*.tsx"],
         plugins: {
             "@typescript-eslint": typescriptEslint,
         },
-
         languageOptions: {
             parser: tsParser,
             ecmaVersion: "latest",
             sourceType: "module",
-
             parserOptions: {
                 project: "./tsconfig.json",
             },
         },
-
         rules: {
             "@typescript-eslint/no-unused-vars": ["error", {
                 argsIgnorePattern: "^_",
             }],
         },
     },
+    
+    // Add TypeScript recommended rules for TypeScript files
+    ...compat.extends("plugin:@typescript-eslint/recommended"),
 ];
+
+export default eslintConfig;
