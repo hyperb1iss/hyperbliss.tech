@@ -1,0 +1,29 @@
+---
+description: Core architecture and structure definitions for hyperbliss.tech personal website and portfolio
+globs: /**/*
+alwaysApply: false
+---
+Core Project Architecture - hyperbliss.tech:
+
+Next.js-based personal website/portfolio showcasing projects, blog, and skills
+using TypeScript, Styled Components, and custom animations.
+
+Key Directories:
+- app/: Core application code with Next.js App Router structure
+  - components/: Reusable UI components
+  - cyberscape/: Custom interactive background animation
+  - hooks/: Custom React hooks
+  - lib/: Utility functions and helpers
+  - styles/: Global styles and theming
+- src/: Content files
+  - posts/: Blog content in Markdown
+  - projects/: Project showcase information
+- public/: Static assets and images
+- tests/: Test files using Jest and Testing Library
+
+Main Constraints:
+- Follow TypeScript best practices with proper typing
+- Maintain responsive design across all components
+- Ensure SEO optimization for all content pages
+- Enforce accessibility standards across all UI elements
+- Keep animations performant for all devices

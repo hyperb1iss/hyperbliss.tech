@@ -1,0 +1,51 @@
+---
+description: Defines the cyberpunk aesthetic, color schemes, typography, and visual style guidelines for hyperbliss.tech
+globs: /**/*.{tsx,ts,css,js,jsx}
+alwaysApply: false
+---
+ hyperbliss.tech Aesthetic Guidelines:
+
+Color Palette:
+- Primary: #a259ff (Neon purple) - Used for headings, accents, interactive elements
+- Secondary: #ff75d8 (Electric pink) - Used for hover states, secondary UI
+- Accent: #00fff0 (Cyber teal) - Used for highlighting, special text, logo
+- Background: #0a0a14 (Deep space) - Main background
+- Text: #e0e0e0 (Light gray) - Standard text
+- Muted: #a0a0a0 (Medium gray) - Secondary text
+- Glitch Pink: #ff00ff (Magenta) - Used for glitch effects, particles
+
+Typography:
+- Headings: Orbitron - Futuristic, uppercase, letter-spacing: 1.5px
+- Body: Rajdhani - Tech-inspired with good readability
+- Monospace: Space Mono - For code blocks and technical content
+- Logo: Noto Sans - Clean, modern appearance for branding
+
+Visual Effects:
+- Glow effects using text-shadow with primary/accent colors
+- Glitch animations on interactive elements (using position, clip-rect)
+- Particle animations with cyberpunk color scheme
+- Animated gradients transitioning between primary/secondary colors
+
+Interactive Elements:
+- Hover transitions with color shifts and subtle scaling (1.05)
+- Cursor-responsive animations (particles following/avoiding cursor)
+- Animated underlines using gradients
+- Glitch effects on click/tap events
+
+CyberScape Animation:
+- Particle colors: Purples (#a259ff), pinks (#ff75d8, #ff00ff), teals (#00fff0)
+- Geometric shapes with neon outlines
+- Glitch effects with controlled chaos (displacement, slices)
+- Connected particle networks simulating digital data streams
+
+UI Components:
+- Card elements with subtle translucency (rgba backgrounds)
+- Border effects using gradients between primary/secondary
+- Dark overlays with 0.8 opacity for content areas
+- Custom scrollbars with accent colors
+
+Responsive Adaptations:
+- Mobile: Reduced particle density, simpler animations
+- Desktop: Full visual effects with higher particle counts
+- Maintain typography hierarchy across breakpoints
+- Preserve neon color scheme regardless of device

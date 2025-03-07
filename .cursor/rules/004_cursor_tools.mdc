@@ -1,0 +1,16 @@
+---
+description: This folder contains tools and scripts to aid in workspace efforts
+globs: tools/**/*
+alwaysApply: false
+---
+ Development Tools for hyperbliss.tech:
+
+Organization:
+- All scripts must include usage documentation in comments
+- Scripts should accept CLI arguments with help text
+- Keep temporary files in /temp directory
+- Follow naming convention: category-action.js
+
+Execution:
+- Run scripts via npm: npm run tool [script-name]
+- Track script execution stats in .cursor/tools/stats/

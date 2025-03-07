@@ -1,0 +1,61 @@
+---
+description: Guidelines for creating and maintaining blog posts in the hyperbliss.tech website
+globs: src/posts/**/*.md
+alwaysApply: false
+---
+ Blog Post Structure for hyperbliss.tech:
+
+Location:
+- All blog posts must be placed in src/posts/ directory
+- Use date-prefixed filenames: YYYY.MM.DD_post-title.md
+- Filename becomes the URL slug: /blog/YYYY.MM.DD_post-title
+
+Frontmatter Requirements:
+- title: String - Descriptive title (can include emoji)
+  Example: "🎭 HyperShell: Unifying Windows and Linux"
+- date: String - ISO format or YYYY-MM-DD
+- author: String - Name of the author (default: "Stefanie Jane")
+- excerpt: String - Brief summary (1-3 sentences, 150-200 chars)
+- tags: String[] - 4-7 relevant topics as kebab-case
+
+Content Structure:
+1. Introduction (1-2 paragraphs)
+   - Set the tone and introduce the topic
+   - Can use either regular paragraphs or an H2 heading (## 🌟 Introduction)
+
+2. Main Content Sections (H2 headings)
+   - Use emoji prefixes for section headings
+   - Organize content in logical sections with H2 headings
+   - Use H3 for subsections 
+   - Keep paragraphs concise (3-5 sentences)
+
+3. Rich Content Elements:
+   - Code blocks with language specifiers (```language)
+   - Tables using markdown table syntax (| header | header |)
+   - Lists (both ordered and unordered)
+   - Blockquotes for emphasis or quotes
+   - Horizontal rules (---) to separate major sections
+
+4. Visual Elements:
+   - Use emoji to emphasize points
+   - Include "Pro Tips" or "Examples" with custom formatting
+   - Use bold and italic text for emphasis
+   - Use backticks for inline code or technical terms
+
+5. Conclusion (Optional)
+   - Summarize key takeaways
+   - Can use either regular paragraphs or an H2 heading
+
+Writing Style:
+- Conversational but authoritative tone
+- Technical accuracy with accessibility to various skill levels
+- Use first person when sharing personal experience
+- Use second person when providing instructions
+- Include questions to engage readers
+- Maintain cyberpunk/tech aesthetic in examples and references
+
+Length Guidelines:
+- Short-form: 800-1200 words
+- Medium-form: 1200-2000 words
+- Long-form: 2000-3000 words
+- Technical deep-dives can exceed 3000 words with proper sectioning

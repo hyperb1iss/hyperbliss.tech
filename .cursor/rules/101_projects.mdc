@@ -1,0 +1,61 @@
+---
+description: Guidelines for creating and maintaining project files in the hyperbliss.tech portfolio
+globs: src/projects/**/*.md
+alwaysApply: false
+---
+ Project File Structure for hyperbliss.tech:
+
+Location:
+- All project files must be placed in src/projects/ directory
+- Use kebab-case for filenames: project-name.md
+- Filename becomes the URL slug: /projects/project-name
+
+Frontmatter Requirements:
+- title: String - Include an emoji + descriptive title
+  Example: "🌠 ProjectName: A Brief Subtitle"
+- date: String - ISO format or YYYY-MM-DD
+- tags: String[] - 3-5 relevant technology tags
+- description: String - 1-2 sentences describing the project (150-200 chars)
+- github: String - Full URL to GitHub repository
+
+Optional Frontmatter:
+- author: String - Project creator/contributor
+- website: String - Live project URL
+- image: String - Feature image path (public/images/projects/*)
+- featured: Boolean - Whether to feature on home page
+
+Content Structure:
+1. Introduction (1-2 paragraphs)
+   - Overview of project purpose and significance
+   - No heading needed for this section
+
+2. Key Features (H2: ## ✨ Key Features)
+   - Bulleted list with emoji prefixes
+   - 5-10 concise feature descriptions
+   - Highlight unique aspects
+
+3. Technical Stack/Implementation (H2: ## 🛠️ Technical Stack)
+   - Subsections for core technologies, features
+   - Use H3 headings for subsections
+   - Include code snippets when relevant
+
+4. Implementation Details (Optional H2: ## 💫 Implementation Highlights)
+   - Dive deeper into specific technical aspects
+   - Use H3 headings for different components
+   - Explain architecture decisions
+
+5. Additional Sections (Optional)
+   - Getting Started/Installation
+   - Design Philosophy
+   - Future Plans
+   - Contributions
+
+Styling Guidelines:
+- Use emojis for section headings
+- Include code blocks with language specifiers
+- Keep paragraphs concise (3-5 sentences)
+- Maintain cyberpunk aesthetic in visuals/examples
+- Use syntax highlighting for code samples
+
+When creating projects, ingest all relevant provided documentation from the target project,
+ask clarifying questions, and create an engaging and beautiful project page.
