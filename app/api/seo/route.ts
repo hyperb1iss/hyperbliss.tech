@@ -150,6 +150,10 @@ const createMinimalMetadata = (): ResolvedMetadata => ({
   manifest: "/manifest.json",
   appLinks: {},
   facebook: {},
+  pagination: {
+    previous: null,
+    next: null,
+  },
 });
 
 /**
