@@ -1,12 +1,16 @@
 # 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/d390d310-af4e-4f14-92ae-3cf5e4846e7b/deploy-status)](https://app.netlify.com/sites/hyperb1iss/deploys)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Jest](https://img.shields.io/badge/Jest-29.7-red?logo=jest)](https://jestjs.io/)
-[![React](https://img.shields.io/badge/React-18.0-blue?logo=react)](https://reactjs.org/)
-[![Styled Components](https://img.shields.io/badge/Styled_Components-6.1-pink?logo=styled-components)](https://styled-components.com/)
-[![License](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+<div align="center">
+
+[![NETLIFY](https://img.shields.io/badge/NETLIFY-DEPLOYED-8a2be2?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/hyperb1iss/deploys)
+[![TYPESCRIPT](https://img.shields.io/badge/TYPESCRIPT-5.8-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![NEXT.JS](https://img.shields.io/badge/NEXT.JS-15.2-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![JEST](https://img.shields.io/badge/JEST-29.7-d11aff?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
+[![STYLED](https://img.shields.io/badge/STYLED-COMPONENTS-ff57e8?style=for-the-badge&logo=styled-components&logoColor=white)](https://styled-components.com/)
+[![REACT](https://img.shields.io/badge/REACT-19.0-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
+[![LICENSE](https://img.shields.io/badge/LICENSE-CC_BY--NC--SA-00fff0?style=for-the-badge)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+</div>
 
 Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane— resident software sorceress and pixel enchantress. 🔮👩‍💻⚡
 
@@ -38,15 +42,18 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Next.js 13+ with TypeScript
-- **Styling**: Styled Components
+- **Framework**: Next.js 15.2 with TypeScript 5.8
+- **Frontend**: React 19.0
+- **Styling**: Styled Components 6.1
 - **Routing**: Next.js App Router
-- **Content Management**: Markdown files with gray-matter and react-markdown
-- **Animations**: Framer Motion
-- **Icons**: React Icons
+- **Content Management**: Markdown files with gray-matter and react-markdown 10.1
+- **Animations**: Framer Motion 12.5
+- **Icons**: React Icons 5.5
 - **SEO**: Next SEO
 - **Analytics**: Google Analytics (via nextjs-google-analytics)
 - **Interactive Background**: CyberScape (custom animation)
+- **Testing**: Jest 29.7 with Testing Library React 16.2
+- **Linting & Formatting**: ESLint 9.22 and Prettier 3.5
 
 ## 🏗️ Project Structure
 
@@ -81,7 +88,7 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 │   ├── mocks/
 │   └── seo/
 ├── scripts/
-└── various config files (.eslintrc.json, next.config.mjs, etc.)
+└── various config files (.eslint.config.mjs, next.config.mjs, etc.)
 ```
 
 Key directories:
@@ -99,7 +106,7 @@ Key directories:
 
 ### Prerequisites
 
-- Node.js (v14 or later)
+- Node.js (v18 or later recommended)
 - npm or yarn
 
 ### Installation
@@ -144,21 +151,23 @@ Available test commands:
 
 ### Linting
 
-ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base.
+ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base with TypeScript support.
 
 Available lint commands:
 
 - `npm run lint` or `yarn lint`: Lint the app and tests directories
 - `npm run lint:fix` or `yarn lint:fix`: Automatically fix linting issues
+- `npm run format` or `yarn format`: Format code with Prettier
+- `npm run format:check` or `yarn format:check`: Check formatting with Prettier
 
 ### Test Setup
 
 The project uses the following testing libraries and configurations:
 
-- Jest with TypeScript support (ts-jest)
+- Jest with SWC for fast TypeScript transformation
 - React Testing Library for component testing
-- jest-environment-jsdom for DOM simulation
-- Custom test environment for canvas-related tests
+- Jest environment jsdom for DOM simulation
+- Custom test setup with path aliases for simplified imports
 
 Test files should be placed in the `tests/` directory with the `.test.ts` or `.test.tsx` extension.
 
@@ -261,7 +270,7 @@ Displays resume information from Markdown content.
 
 ## 🚀 Deployment
 
-The site is configured for deployment on Netlify:
+The site is configured for deployment on Netlify with a standalone output mode:
 
 1. Connect your GitHub repository to Netlify.
 2. Set the build command to `npm run build` or `yarn build`.
