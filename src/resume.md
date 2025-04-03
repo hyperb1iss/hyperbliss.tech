@@ -18,7 +18,7 @@ Let's build something amazing together!
 
 ### Technical Expertise
 
-[Android OS](https://www.android.com/) | [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) | Firmware | [BSP](https://en.wikipedia.org/wiki/Board_support_package) | [Cloud Services](https://aws.amazon.com/)
+[Android OS](https://www.android.com/) | [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) | Firmware | [BSP](https://en.wikipedia.org/wiki/Board_support_package) | [Cloud Services](https://aws.amazon.com/) | AI/ML |
 Embedded Systems | Software Architecture | Infrastructure | [Linux Kernel](https://www.kernel.org/)
 Device Drivers | [Android Apps](https://developer.android.com/guide)
 

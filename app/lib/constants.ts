@@ -1,14 +1,17 @@
 // app/lib/constants.ts
 
 export const TECH_TAGS = [
+  "AI/ML",
   "Android",
   "AWS",
+  "Backend",
   "BSP",
   "C/C++",
   "Cloud Services",
   "DevOps",
   "Embedded Systems",
   "Firmware",
+  "Frontend",
   "Full Stack",
   "Golang",
   "Hardware Bringup",
