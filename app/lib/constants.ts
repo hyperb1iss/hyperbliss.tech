@@ -22,6 +22,7 @@ export const TECH_TAGS = [
   "Kotlin",
   "Linux Kernel",
   "Mobile Development",
+  "Node.js",
   "Open Source",
   "Prototyping",
   "Python",
@@ -30,4 +31,5 @@ export const TECH_TAGS = [
   "Rust",
   "System Architecture",
   "Team Leadership",
+  "TypeScript",
 ];
