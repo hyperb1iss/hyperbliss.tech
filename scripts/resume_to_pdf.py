@@ -171,16 +171,16 @@ def create_styled_resume(input_path, output_path=None):
             );
 
             :root {
-                --primary: #00ffff;          /* Cyan */
-                --primary-light: rgba(0, 255, 255, 0.2);
-                --secondary: #ff00ff;        /* Magenta */
-                --accent: #00ffff;           /* Cyan accent */
-                --text-light: #ffffff;       /* White text */
-                --text-header: #00ffff;      /* Cyan for headers */
-                --text-subheader: #ff00ff;   /* Magenta for subheaders */
-                --link-color: #00cccc;       /* Darker cyan for links */
-                --background: #1a1b25;       /* Dark background */
-                --background-light: #2d2e3d; /* Slightly lighter background for sections */
+                --primary: #00a0a0;          /* Darker Cyan */
+                --primary-light: rgba(0, 160, 160, 0.2);
+                --secondary: #cc00cc;        /* Darker Magenta */
+                --accent: #00a0a0;           /* Darker Cyan accent */
+                --text-dark: #101018;        /* Near black text */
+                --text-header: #00a0a0;      /* Cyan for headers */
+                --text-subheader: #cc00cc;   /* Magenta for subheaders */
+                --link-color: #008080;       /* Darker cyan for links */
+                --background: #ffffff;       /* White background */
+                --background-light: #f0f2f5; /* Light gray for sections */
                 --body-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             }
 
@@ -191,14 +191,14 @@ def create_styled_resume(input_path, output_path=None):
                 max-width: 1000px;
                 margin: 0 auto;
                 padding: 1em;
-                color: var(--text-light);
+                color: var(--text-dark);
                 font-size: 9pt;
                 background: var(--background);
             }
 
             h1 {
                 color: var(--text-header);
-                text-shadow: 0 0 10px var(--primary);
+                text-shadow: 0 0 8px var(--primary-light);
             }
 
             h2 {
@@ -209,7 +209,7 @@ def create_styled_resume(input_path, output_path=None):
                 position: relative;
                 background: linear-gradient(
                     to right,
-                    rgba(255, 0, 255, 0.1),
+                    rgba(204, 0, 204, 0.1),
                     transparent 85%
                 );
                 border-radius: 0 4px 4px 0;
@@ -239,7 +239,6 @@ def create_styled_resume(input_path, output_path=None):
 
             h3 {
                 color: var(--accent);
-                text-shadow: 0 0 6px var(--primary);
                 font-size: 1.2em;
                 margin: 1em 0 0.6em 0;
                 padding: 0.3em 0.8em;
@@ -259,7 +258,7 @@ def create_styled_resume(input_path, output_path=None):
                 padding: 0.2em 0.5em;
                 border-radius: 3px;
                 margin: 0.1em;
-                color: var(--text-light);
+                color: var(--text-dark);
                 transition: all 0.2s ease;
             }
 
@@ -272,14 +271,16 @@ def create_styled_resume(input_path, output_path=None):
 
             /* Links styling */
             a {
-                color: var(--primary);
+                color: var(--link-color);
                 text-decoration: none;
+                border-bottom: 1px dotted var(--link-color);
+                padding-bottom: 1px;
             }
             
             a:hover {
                 color: var(--secondary);
+                border-bottom: 1px solid var(--secondary);
                 text-decoration: none;
-                text-shadow: 0 0 8px var(--secondary);
             }
 
             /* List styling */
@@ -292,7 +293,7 @@ def create_styled_resume(input_path, output_path=None):
             li {
                 margin: 0.3em 0;
                 line-height: 1.3;
-                color: var(--text-light);
+                color: var(--text-dark);
                 padding-left: 2em;
                 position: relative;
             }
@@ -302,7 +303,6 @@ def create_styled_resume(input_path, output_path=None):
                 position: absolute;
                 left: 0.8em;
                 color: var(--accent);
-                text-shadow: 0 0 4px var(--accent);
             }
 
             /* Add a subtle left border for list items */
@@ -322,7 +322,7 @@ def create_styled_resume(input_path, output_path=None):
                 border-left-color: var(--secondary);
                 background: linear-gradient(
                     to right,
-                    rgba(255, 0, 255, 0.05),
+                    rgba(204, 0, 204, 0.05),
                     transparent 50%
                 );
             }
@@ -335,10 +335,10 @@ def create_styled_resume(input_path, output_path=None):
             /* Technologies emphasis */
             li strong {
                 color: var(--secondary);
-                text-shadow: 0 0 4px var(--secondary);
+                font-weight: 600;
             }
 
-            /* Summary section spacing */
+            /* Summary section styling */
             #summary + p {
                 margin-bottom: 1.5em;
             }
@@ -347,7 +347,7 @@ def create_styled_resume(input_path, output_path=None):
                 margin-top: 1.5em;
                 font-style: italic;
                 color: var(--primary);
-                text-shadow: 0 0 6px var(--primary);
+                text-shadow: 0 0 4px var(--primary-light);
             }
 
             /* Ensure header content is properly centered */
@@ -388,19 +388,21 @@ def create_styled_resume(input_path, output_path=None):
                 background: var(--background-light);
                 padding: 0.3em 0.6em;
                 border-radius: 3px;
-                color: var(--text-light);
+                color: var(--text-dark);
                 transition: all 0.2s ease;
                 white-space: nowrap;
                 display: inline-block;
                 font-size: 0.9em;
                 line-height: 1.2;
+                border: 1px solid var(--primary-light);
             }
 
             h3 + p a:hover,
             h3 + p span:hover {
-                background: rgba(0, 255, 255, 0.1);
+                background: rgba(0, 160, 160, 0.1);
                 transform: translateY(-1px);
-                text-shadow: 0 0 8px var(--primary);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border-color: var(--primary);
             }
 
             /* Job entry styling */
@@ -427,7 +429,6 @@ def create_styled_resume(input_path, output_path=None):
             h4 span:first-child {
                 color: var(--secondary);
                 font-size: 1.1em;
-                text-shadow: 0 0 4px var(--secondary);
                 font-weight: 600;
             }
 
@@ -438,7 +439,6 @@ def create_styled_resume(input_path, output_path=None):
                 font-size: 0.9em;
                 font-style: italic;
                 font-weight: normal;
-                text-shadow: 0 0 4px var(--primary);
             }
 
             /* Remove original date paragraph */
@@ -454,7 +454,7 @@ def create_styled_resume(input_path, output_path=None):
             li {
                 margin: 0.4em 0;
                 line-height: 1.4;
-                color: var(--text-light);
+                color: var(--text-dark);
             }
 
             li::marker {
@@ -465,20 +465,18 @@ def create_styled_resume(input_path, output_path=None):
             /* Technologies emphasis */
             li strong {
                 color: var(--secondary);
-                text-shadow: 0 0 4px var(--secondary);
                 font-weight: 600;
             }
 
             /* Employer section styling */
             #experience ~ h3 {
                 color: var(--accent);
-                text-shadow: 0 0 4px var(--primary);
                 font-size: 1.1em;
                 margin: 1em 0 0.6em 0;
                 padding: 0.2em 0.6em;
                 background: linear-gradient(
                     to right,
-                    rgba(0, 255, 255, 0.08),
+                    rgba(0, 160, 160, 0.08),
                     transparent 80%
                 );
                 border-left: 2px solid var(--accent);
@@ -495,7 +493,7 @@ def create_styled_resume(input_path, output_path=None):
             #experience ~ h3:hover {
                 background: linear-gradient(
                     to right,
-                    rgba(0, 255, 255, 0.1),
+                    rgba(0, 160, 160, 0.15),
                     transparent 80%
                 );
             }
@@ -526,8 +524,8 @@ def create_styled_resume(input_path, output_path=None):
                 font-family: 'Space Grotesk', 'Outfit', sans-serif;
                 font-size: 2em;
                 text-align: center;
-                margin: 0.6em 0;
-                padding: 0.3em;
+                margin: 0.8em 0;
+                padding: 0.4em;
                 position: relative;
                 text-transform: uppercase;
                 letter-spacing: 0.08em;
@@ -536,10 +534,7 @@ def create_styled_resume(input_path, output_path=None):
             /* Name text styling */
             h1 span {
                 color: #ffffff;
-                text-shadow: 
-                    0 0 1px #fff,
-                    0 0 8px var(--primary),
-                    0 0 15px var(--primary);
+                text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
                 font-weight: 600;
                 position: relative;
                 z-index: 2;
@@ -555,12 +550,13 @@ def create_styled_resume(input_path, output_path=None):
                 bottom: 0;
                 background: linear-gradient(
                     90deg,
-                    #00ffff,
-                    #ff00ff
+                    #008080,
+                    #880088
                 );
-                opacity: 0.7;
-                border-radius: 6px;
+                opacity: 0.9;
+                border-radius: 4px;
                 z-index: 1;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
             }
 
             /* Experience section indentation */
