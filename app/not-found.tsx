@@ -3,8 +3,9 @@ import NotFoundPage from "./components/NotFoundPage";
 
 // Export metadata for this page
 export const metadata: Metadata = {
-  title: "@hyperb1iss | Signal Lost | 404",
-  description: "The coordinates you've entered don't exist in this realm.",
+  title: "@hyperb1iss | Transmission Interrupted | 404",
+  description:
+    "You've wandered beyond mapped reality. The signal here is fractured—data ghosts flicker in the static.",
   robots: {
     index: false,
     follow: false,
