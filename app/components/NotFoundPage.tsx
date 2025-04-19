@@ -123,6 +123,36 @@ const GlitchSubtitle = styled(motion.h2)`
   }
 `;
 
+// Random message selector for 404 page
+const LOST_MESSAGE_VARIANTS = [
+  "Want to retrace your steps or explore uncharted code?",
+  "Fancy hacking a new path through this digital wasteland?",
+  "Care to recalibrate your coordinates or dive into new networks?",
+  "Ready to decode a different reality or return to base?",
+  "System suggests retracing your datastream or scanning new sectors.",
+  "Feel like jacking back into the mainframe or glitching elsewhere?",
+  "Need to reboot your journey or dive into unexplored subroutines?",
+  "Time to realign your neural pathways or discover new connections?",
+  "Prefer to reset your signal or venture into different frequencies?",
+  "Shall we reconstruct your path or decode new possibilities?",
+  "Want to reload your previous instance or spawn in a new dimension?",
+  "Navigate back to your origin point or explore alternate matrices?",
+  "Yearning to restore your last checkpoint or hack into fresh terrain?",
+  "Seeking to reconfigure your destination or phase into new domains?",
+];
+
+// Random lost message hook
+const useRandomLostMessage = () => {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * LOST_MESSAGE_VARIANTS.length);
+    setMessage(LOST_MESSAGE_VARIANTS[randomIndex]);
+  }, []);
+
+  return message;
+};
+
 const GlitchText = styled(motion.p)`
   font-size: 1.8rem;
   max-width: 60rem;
@@ -268,6 +298,7 @@ const CyanSpan = styled.span`
 export default function NotFoundPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
+  const randomLostMessage = useRandomLostMessage();
 
   useEffect(() => {
     if (!canvasRef.current || isCanvasLoaded) return;
@@ -564,14 +595,14 @@ export default function NotFoundPage() {
             transition={{ duration: 0.8, delay: 0.8 }}
             style={{ filter: "contrast(1.1) brightness(1.05)" }}
           >
-            <NeonGlitchSpan data-text="The coordinates you&apos;ve entered">
+            <NeonGlitchSpan data-text="The coordinates you've entered">
               The coordinates you&apos;ve entered
             </NeonGlitchSpan>{" "}
             don&apos;t exist in this realm.
             <br />
             <VioletSpan>Reality may have been altered</VioletSpan>, or{" "}
             <CyanSpan>signal fragmented</CyanSpan>.<br />
-            Want to retrace your steps or explore uncharted code?
+            {randomLostMessage}
           </GlitchText>
           <ButtonContainer>
             <StyledLink href="/">
