@@ -7,7 +7,7 @@ import styled from "styled-components";
  * StyledAnchor component
  * A simple styled anchor without extra padding or background.
  */
-const StyledAnchor = styled.a`
+const StyledAnchor = styled(Link)`
   text-decoration: none;
   color: inherit;
 `;
@@ -16,7 +16,7 @@ const StyledAnchor = styled.a`
  * StyledLinkProps interface
  * Extends the default anchor props with a required href and children.
  */
-type StyledLinkProps = React.ComponentPropsWithoutRef<typeof StyledAnchor> & {
+type StyledLinkProps = React.ComponentPropsWithoutRef<typeof Link> & {
   href: string;
   children: React.ReactNode;
 };
@@ -30,11 +30,9 @@ type StyledLinkProps = React.ComponentPropsWithoutRef<typeof StyledAnchor> & {
 const StyledLink = React.forwardRef<HTMLAnchorElement, StyledLinkProps>(
   ({ href, children, ...props }, ref) => {
     return (
-      <Link href={href} legacyBehavior passHref>
-        <StyledAnchor ref={ref} {...props}>
-          {children}
-        </StyledAnchor>
-      </Link>
+      <StyledAnchor href={href} ref={ref} {...props}>
+        {children}
+      </StyledAnchor>
     );
   }
 );
