@@ -2,6 +2,15 @@
 import { getAllMarkdownSlugs } from "../lib/markdown";
 
 /**
+ * Ensures a URL ends with a trailing slash
+ * @param {string} url - The URL to check and possibly modify
+ * @returns {string} - URL with trailing slash
+ */
+function ensureTrailingSlash(url: string): string {
+  return url.endsWith("/") ? url : `${url}/`;
+}
+
+/**
  * Generates the sitemap.xml content
  * @returns {Promise<Response>} The sitemap response
  */
@@ -16,7 +25,7 @@ export async function GET(): Promise<Response> {
 
   // Generate URLs for blog posts
   const blogUrls = blogSlugs.map((slug) => ({
-    url: `${baseUrl}/blog/${slug}`,
+    url: ensureTrailingSlash(`${baseUrl}/blog/${slug}`),
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.7,
@@ -24,7 +33,7 @@ export async function GET(): Promise<Response> {
 
   // Generate URLs for projects
   const projectUrls = projectSlugs.map((slug) => ({
-    url: `${baseUrl}/projects/${slug}`,
+    url: ensureTrailingSlash(`${baseUrl}/projects/${slug}`),
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: 0.8,
@@ -33,25 +42,25 @@ export async function GET(): Promise<Response> {
   // Static pages
   const staticPages = [
     {
-      url: baseUrl,
+      url: ensureTrailingSlash(baseUrl),
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/about`,
+      url: ensureTrailingSlash(`${baseUrl}/about`),
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/blog`,
+      url: ensureTrailingSlash(`${baseUrl}/blog`),
       lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/projects`,
+      url: ensureTrailingSlash(`${baseUrl}/projects`),
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.9,

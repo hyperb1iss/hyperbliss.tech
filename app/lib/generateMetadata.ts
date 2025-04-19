@@ -19,6 +19,15 @@ const DEFAULT_OG_IMAGE = {
 };
 
 /**
+ * Ensures a URL ends with a trailing slash
+ * @param {string} url - The URL to check and possibly modify
+ * @returns {string} - URL with trailing slash
+ */
+function ensureTrailingSlash(url: string): string {
+  return url.endsWith("/") ? url : `${url}/`;
+}
+
+/**
  * Base interface for all frontmatter data
  */
 interface BaseFrontmatter extends Record<string, unknown> {
@@ -65,7 +74,7 @@ function createOpenGraph(
   return {
     title,
     description,
-    url,
+    url: ensureTrailingSlash(url),
     siteName: SITE_NAME,
     locale: DEFAULT_LOCALE,
     type: "article",
@@ -149,6 +158,9 @@ export async function generateBlogMetadata(
         "max-snippet": -1,
       },
     },
+    alternates: {
+      canonical: ensureTrailingSlash(url),
+    },
   };
 
   return {
@@ -198,6 +210,9 @@ export async function generateProjectMetadata(
         "max-image-preview": "large",
         "max-snippet": -1,
       },
+    },
+    alternates: {
+      canonical: ensureTrailingSlash(url),
     },
   };
 

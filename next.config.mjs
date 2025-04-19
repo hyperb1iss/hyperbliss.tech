@@ -9,6 +9,9 @@ const nextConfig = {
   compress: true,
   reactStrictMode: true,
   
+  // Ensure consistent URL format (with or without trailing slashes)
+  trailingSlash: true,
+  
   // Environment variables for analytics
   env: {
     GA_MEASUREMENT_ID: "G-2R4MW5X5SE",
@@ -24,6 +27,14 @@ const nextConfig = {
           {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
           },
         ],
       },
