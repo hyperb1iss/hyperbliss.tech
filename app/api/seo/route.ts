@@ -116,6 +116,9 @@ const createMinimalMetadata = (): ResolvedMetadata => ({
       },
     ],
   },
+  pinterest: {
+    richPin: "true",
+  },
   verification: {
     google: null,
     yahoo: null,
