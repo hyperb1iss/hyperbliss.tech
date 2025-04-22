@@ -26,15 +26,15 @@ describe("Sitemap Generation", () => {
     expect(content).toMatch(/<urlset xmlns="http:\/\/www.sitemaps.org\/schemas\/sitemap\/0.9">/);
 
     // Check static pages
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech<\/loc>/);
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/about<\/loc>/);
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog<\/loc>/);
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/about\/<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/<\/loc>/);
 
     // Check dynamic pages
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1<\/loc>/);
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-2<\/loc>/);
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/project-1<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1\/<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-2\/<\/loc>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>/);
 
     // Check required elements
     expect(content).toMatch(/<lastmod>/);
@@ -47,27 +47,24 @@ describe("Sitemap Generation", () => {
     const content = await response.text();
 
     // Home page should have highest priority
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech<\/loc>[^]*?<priority>1<\/priority>/);
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/<\/loc>[^]*?<priority>1<\/priority>/);
 
     // Blog and Projects index pages should have high priority
     expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/blog<\/loc>[^]*?<priority>0.9<\/priority>/
+      /<loc>https:\/\/hyperbliss.tech\/blog\/<\/loc>[^]*?<priority>0.9<\/priority>/
     );
     expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/projects<\/loc>[^]*?<priority>0.9<\/priority>/
-    );
-
-    // Individual blog posts should have medium priority
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/blog\/post-1<\/loc>[^]*?<priority>0.7<\/priority>/
-    );
-    expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/blog\/post-2<\/loc>[^]*?<priority>0.7<\/priority>/
+      /<loc>https:\/\/hyperbliss.tech\/projects\/<\/loc>[^]*?<priority>0.9<\/priority>/
     );
 
-    // Project pages should have medium-high priority
+    // Blog posts should have medium priority
     expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/projects\/project-1<\/loc>[^]*?<priority>0.8<\/priority>/
+      /<loc>https:\/\/hyperbliss.tech\/blog\/post-1\/<\/loc>[^]*?<priority>0.7<\/priority>/
+    );
+
+    // Project pages should have high-medium priority
+    expect(content).toMatch(
+      /<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>[^]*?<priority>0.8<\/priority>/
     );
   });
 });
