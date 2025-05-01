@@ -3,7 +3,68 @@ description: Defines the cyberpunk aesthetic, color schemes, typography, and vis
 globs: /**/*.{tsx,ts,css,js,jsx}
 alwaysApply: false
 ---
- hyperbliss.tech Aesthetic Guidelines:
+# 🎨 Visual Aesthetic Guidelines
+
+## ✨ Design Philosophy
+
+The `hyperbliss.tech` experience blends cyberpunk sensibilities with cosmic wonder, creating interfaces that feel simultaneously futuristic and enchanted. The visual language channels a digital witch's sanctuary — where cutting-edge technology interfaces with magical ambiance.
+
+Core principles:
+- **Ethereal Depth** - Layers with subtle transparency and glow
+- **Responsive Magic** - Elements that adapt and transform
+- **Interactive Enchantment** - Satisfying, slightly supernatural interactions
+- **Magical Contrast** - Rich darks with vibrant accent colors
+- **Navigational Flow** - Intuitive, guided journeys through content
+- **Typographic Harmony** - Balancing futuristic with readable
+
+## 🌈 Color Palette
+
+### Primary Colors
+
+| Color Name    | Hex Value | RGB Value            | Usage                                  |
+|---------------|-----------|----------------------|----------------------------------------|
+| Cosmic Purple | `#a259ff` | `rgb(162, 89, 255)`  | Primary brand color, headings, accents |
+| Neon Pink     | `#ff75d8` | `rgb(255, 117, 216)` | Secondary highlights, interactive      |
+| Digital Cyan  | `#00fff0` | `rgb(0, 255, 240)`   | Tertiary accents, links, glowing      |
+| Void Black    | `#0a0a14` | `rgb(10, 10, 20)`    | Backgrounds, containers               |
+| Starlight     | `#e0e0e0` | `rgb(224, 224, 224)` | Body text, subtle elements            |
+
+### Effect Treatments
+
+- **Gradients**: Linear gradients combining primary colors
+- **Glows**: Box and text shadows using primary colors
+- **Transparency**: Subtle opacity for depth and layering
+- **Hover Effects**: Color shifts and subtle transformations
+
+## 🔮 Typography System
+
+### Font Families
+
+- **Headings**: `"Orbitron", sans-serif` - Futuristic, sharp, technical
+- **Body**: `"Rajdhani", sans-serif` - Clean, readable with techno character
+- **Monospace**: `"Space Mono", monospace` - For code blocks and technical content
+- **Logo**: `"Noto Sans", sans-serif` - Clean base for stylized logo text
+
+### Type Treatments
+
+- **Headings**: Uppercase with letter spacing 1.5-2px and glow effects
+- **Body Text**: Regular case with line height 1.6 and subtle shadow enhancement
+- **Special Effects**: Gradient text, glitch effects, sparkling animations
+
+## 💫 Special Effects
+
+- **Glow Effects**: Text and box shadows creating neon-like illumination
+- **Gradient Text**: Background clip for color fills across text elements
+- **Corner Accents**: Cyberpunk-inspired angular accents
+- **Glitch Animation**: Controlled distortion for emphasis
+- **Sparkle Effects**: Subtle particle animations for magical emphasis
+
+## 🖥️ Responsive Design
+
+- Breakpoints: 480px (sm), 768px (md), 1200px (lg), 1600px (xl)
+- Fluid typography using clamp() for seamless text scaling
+- Adapts layouts from multi-column to single-column
+- Adjusts animation complexity based on device capabilities
 
 Color Palette:
 - Primary: #a259ff (Neon purple) - Used for headings, accents, interactive elements

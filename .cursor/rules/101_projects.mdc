@@ -3,59 +3,70 @@ description: Guidelines for creating and maintaining project files in the hyperb
 globs: src/projects/**/*.md
 alwaysApply: false
 ---
- Project File Structure for hyperbliss.tech:
+# 🚀 Project Structure Guidelines
 
-Location:
-- All project files must be placed in src/projects/ directory
-- Use kebab-case for filenames: project-name.md
-- Filename becomes the URL slug: /projects/project-name
+## 📂 Organization
 
-Frontmatter Requirements:
-- title: String - Include an emoji + descriptive title
-  Example: "🌠 ProjectName: A Brief Subtitle"
-- date: String - ISO format or YYYY-MM-DD
-- tags: String[] - 3-5 relevant technology tags
-- description: String - 1-2 sentences describing the project (150-200 chars)
-- github: String - Full URL to GitHub repository
+Projects on hyperbliss.tech are stored as Markdown files in the `src/projects/` directory. Each project has its own file with frontmatter metadata and content description.
 
-Optional Frontmatter:
-- author: String - Project creator/contributor
-- website: String - Live project URL
-- image: String - Feature image path (public/images/projects/*)
-- featured: Boolean - Whether to feature on home page
+## 📝 File Structure
 
-Content Structure:
-1. Introduction (1-2 paragraphs)
-   - Overview of project purpose and significance
-   - No heading needed for this section
+Projects follow this naming convention:
+- Lowercase with hyphens (e.g., `project-name.md`)
+- Should match the intended URL slug
 
-2. Key Features (H2: ## ✨ Key Features)
-   - Bulleted list with emoji prefixes
-   - 5-10 concise feature descriptions
-   - Highlight unique aspects
+## 🔍 Frontmatter Schema
 
-3. Technical Stack/Implementation (H2: ## 🛠️ Technical Stack)
-   - Subsections for core technologies, features
-   - Use H3 headings for subsections
-   - Include code snippets when relevant
+Each project file requires these frontmatter fields:
 
-4. Implementation Details (Optional H2: ## 💫 Implementation Highlights)
-   - Dive deeper into specific technical aspects
-   - Use H3 headings for different components
-   - Explain architecture decisions
+```md
+---
+title: "Project Title"
+description: "Short description displayed in cards and previews"
+date: "YYYY-MM-DD"
+technologies: ["Tech1", "Tech2", "Tech3"]
+featured: true|false
+cover: "/images/projects/project-name-cover.jpg"
+repository: "https://github.com/username/repo" (optional)
+live: "https://example.com" (optional)
+---
+```
 
-5. Additional Sections (Optional)
-   - Getting Started/Installation
-   - Design Philosophy
-   - Future Plans
-   - Contributions
+### Required Fields:
+- `title`: Display name of the project
+- `description`: Brief summary (1-2 sentences)
+- `date`: Completion or last major update date
+- `technologies`: Array of technologies/tools used
+- `featured`: Boolean for highlighting on homepage
+- `cover`: Path to cover image (stored in `public/images/projects/`)
 
-Styling Guidelines:
-- Use emojis for section headings
-- Include code blocks with language specifiers
-- Keep paragraphs concise (3-5 sentences)
-- Maintain cyberpunk aesthetic in visuals/examples
-- Use syntax highlighting for code samples
+### Optional Fields:
+- `repository`: URL to source code repository
+- `live`: URL to live/demo version
+- `video`: URL to demo video
+- `awards`: Array of awards or recognition
 
-When creating projects, ingest all relevant provided documentation from the target project,
-ask clarifying questions, and create an engaging and beautiful project page.
+## 📸 Images
+
+- Cover images should be 1200×675px (16:9 ratio)
+- Additional images referenced in content should be placed in `public/images/projects/[project-name]/`
+- Use WebP format when possible for better performance
+- All images must have alt text for accessibility
+
+## 📊 Content Structure
+
+Project content should follow this structure:
+
+1. **Introduction**: Brief overview of the project
+2. **Problem Statement**: What issue or need the project addresses
+3. **Solution**: How the project solves the problem
+4. **Technical Details**: Key architectural decisions and technologies
+5. **Challenges**: Interesting problems solved during development
+6. **Outcome**: Results, metrics, or benefits of the project
+
+## 🔮 Display Components
+
+Projects are displayed using these components:
+- `ProjectList.tsx`: Grid layout of project cards on the projects page
+- `ProjectCard.tsx`: Individual project preview card
+- `ProjectDetail.tsx`: Full project view with all content and images

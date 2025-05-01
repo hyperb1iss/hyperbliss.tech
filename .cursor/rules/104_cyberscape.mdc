@@ -1,0 +1,112 @@
+---
+description: 
+globs: app/cyberscape/**
+alwaysApply: false
+---
+# 🌠 CyberScape Animation System
+
+## ✨ Overview
+
+CyberScape is a custom-built, interactive background animation that brings the cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive environment that reacts to user interactions and adds depth to the overall user experience.
+
+## 🔮 Key Features
+
+- **Interactive Particles**: A field of glowing particles that respond to cursor movements
+- **Vector Shapes**: 3D wireframe shapes (cubes, pyramids, stars) floating in space
+- **Dynamic Connections**: Lines connecting nearby particles to create a network effect
+- **Glitch Effects**: Occasional glitch animations for an authentic cyberpunk feel
+- **Responsive Design**: Adapts to different screen sizes and device capabilities
+
+## 🏗️ Architecture
+
+The CyberScape system is modular and organized in the `app/cyberscape/` directory:
+
+```
+app/cyberscape/
+├── index.ts               # Main entry point with initialization
+├── CyberScape.ts          # Core controller class
+├── shapes/                # Vector shape implementations
+│   ├── VectorShape.ts     # Base shape class
+│   ├── Cube.ts            # 3D cube implementation
+│   ├── Pyramid.ts         # 3D pyramid implementation
+│   └── Star.ts            # 3D star implementation
+├── particles/             # Particle system
+│   ├── Particle.ts        # Particle class definition
+│   └── ParticleSystem.ts  # Particle system manager
+├── effects/               # Visual effects
+│   ├── glitchEffects.ts   # Glitch animation effects
+│   └── shaderEffects.ts   # Post-processing effects
+├── handlers/              # Event and interaction handlers
+│   ├── mouseHandler.ts    # Mouse/touch interaction handler
+│   └── resizeHandler.ts   # Responsive canvas sizing
+└── utils/                 # Utility functions
+    ├── colors.ts          # Color generation and manipulation
+    ├── math.ts            # Vector math and calculations
+    └── performance.ts     # Performance optimization utilities
+```
+
+## 🧠 Core Logic Flow
+
+1. **Initialization**:
+   - `initializeCyberScape()` sets up the canvas and WebGL context
+   - Creates and configures particle system and shapes
+   - Attaches event listeners
+
+2. **Animation Loop**:
+   - Continuous `requestAnimationFrame` loop
+   - Updates particle positions and connections
+   - Rotates and transforms vector shapes
+   - Applies visual effects
+   - Renders the scene
+
+3. **Interaction Handling**:
+   - Mouse movements trigger attraction/repulsion of nearby particles
+   - Scroll position affects the overall animation speed
+   - Touch events are translated to equivalent mouse interactions
+
+## 🎨 Visual Effects
+
+### Particles
+- Glow with variable opacity based on proximity
+- Color transitions using the site's color palette
+- Scale with distance from cursor
+
+### Vector Shapes
+- Wireframe rendering with perspective transformation
+- Slow rotation on multiple axes
+- Occasional random speed bursts
+
+### Glitch Effects
+- Chromatic aberration during glitch moments
+- Scanline effects
+- Random displacements
+- Color channel shifting
+
+## ⚡ Performance Optimization
+
+- Throttled event listeners to prevent performance bottlenecks
+- Dynamic particle count based on device performance
+- Skips frames when FPS drops below threshold
+- Uses hardware acceleration where available
+- Reduces detail on mobile devices
+
+## 🔧 Customization API
+
+The CyberScape system provides configuration options through the `CyberScapeOptions` interface:
+
+```typescript
+interface CyberScapeOptions {
+  particleCount: number;       // Number of particles
+  particleSize: number;        // Size of particles
+  connectionDistance: number;  // Max distance for particle connections
+  shapes: ShapeType[];         // Array of shape types to create
+  glitchFrequency: number;     // Frequency of glitch effects (0-1)
+  colorScheme: ColorScheme;    // Primary colors for the animation
+  interactivity: boolean;      // Enable/disable mouse interaction
+}
+```
+
+## 🧩 Integration
+
+CyberScape is typically attached to the main layout component and positioned as a background element with z-index control.
+

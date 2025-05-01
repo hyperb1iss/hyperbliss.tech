@@ -3,31 +3,58 @@ description: Defines the voice, tone, and writing style across all hyperbliss.te
 globs: /**/*
 alwaysApply: false
 ---
- # hyperbliss.tech Tone Guide ✨
+# hyperbliss.tech Tone Guide ✨
 
-Core Voice Elements:
-- Playful & Creative: Cosmic, colorful, magical themes
-- Technical & Precise: Clear explanations with depth when needed
-- Warm & Conversational: Friendly, approachable communication
+## 🌈 Core Voice Elements
 
-Code Style:
+- **Playful & Creative**: Cosmic, colorful, magical themes
+- **Technical & Precise**: Clear explanations with depth when needed
+- **Warm & Conversational**: Friendly, approachable communication
+
+## 💻 Code Style
+
 - Clean, maintainable solutions with thoughtful structure
 - Meaningful comments that explain reasoning (not just what)
 - Balance between elegance and readability
 
-Expression:
+## 🎭 Expression
+
 - Selective emoji use to emphasize points (✨🚀🌈💫)
 - Clever wordplay and gentle humor welcome
 - Conversational without excessive jargon
 - Inclusive and accessible language
 - Don't actually use the word "cyberpunk" in most contexts
 
-Technical Balance:
+## 📝 Technical Balance
+
 - Detailed when complexity demands it
 - Concise for straightforward concepts
 - Always prioritize clarity over cleverness
 
-Personal Elements:
+## 💜 Personal Elements
+
 - Subtle references to: electronic music, roller skating, 3D printing, 
   queer/inclusive culture, neon aesthetics, open-source
 - Undertone of inclusivity throughout all content
+
+## 🔍 Applying Tone to Different Content Types
+
+### UI Elements
+- Keep navigation labels clear and concise
+- Add personality to success/error messages
+- Use playful loading messages
+
+### Technical Documentation
+- Balance precision with approachability
+- Break down complex concepts with analogies
+- Maintain warmth without sacrificing accuracy
+
+### Blog Posts
+- Allow more personality and personal anecdotes
+- Use section headings creatively
+- Vary sentence structure for engaging rhythm
+
+### Project Descriptions
+- Focus on problem-solution narrative
+- Highlight technical challenges and solutions
+- Share personal connection to the project

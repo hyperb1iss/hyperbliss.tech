@@ -3,27 +3,54 @@ description: Core architecture and structure definitions for hyperbliss.tech per
 globs: /**/*
 alwaysApply: false
 ---
-Core Project Architecture - hyperbliss.tech:
+# hyperbliss.tech Project Architecture ✨
 
-Next.js-based personal website/portfolio showcasing projects, blog, and skills
-using TypeScript, Styled Components, and custom animations.
+## 🌠 Overview
 
-Key Directories:
-- app/: Core application code with Next.js App Router structure
-  - components/: Reusable UI components
-  - cyberscape/: Custom interactive background animation
-  - hooks/: Custom React hooks
-  - lib/: Utility functions and helpers
-  - styles/: Global styles and theming
-- src/: Content files
-  - posts/: Blog content in Markdown
-  - projects/: Project showcase information
-- public/: Static assets and images
-- tests/: Test files using Jest and Testing Library
+Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* 🌠) showcasing projects, blog posts, and technical skills. Built with TypeScript, Styled Components, and custom animations including an interactive CyberScape background.
 
-Main Constraints:
-- Follow TypeScript best practices with proper typing
-- Maintain responsive design across all components
-- Ensure SEO optimization for all content pages
-- Enforce accessibility standards across all UI elements
-- Keep animations performant for all devices
+## 🏗️ Key Directories
+
+- `app/`: Core application code with Next.js App Router structure
+  - `(transition)/`: Route groups with transitions for main pages
+  - `components/`: Reusable UI components
+  - `cyberscape/`: Custom interactive background animation
+  - `hooks/`: Custom React hooks
+  - `lib/`: Utility functions and helpers
+  - `styles/`: Global styles and theming
+  - `api/`: API routes including RSS generation
+- `src/`: Content files
+  - `posts/`: Blog content in Markdown
+  - `projects/`: Project showcase information
+  - `resume.md`: Resume content
+- `public/`: Static assets and images
+- `tests/`: Test files using Jest and Testing Library
+- `scripts/`: Utility scripts
+- `docs/`: Documentation including style guide
+
+## 💻 Technology Stack
+
+- **Framework**: Next.js 15.3.1
+- **Language**: TypeScript 5.8
+- **Styling**: Styled Components 6.1
+- **State Management**: React built-in hooks
+- **Content**: Markdown with gray-matter and react-markdown
+- **Animations**: Framer Motion 12.7
+- **Testing**: Jest 29.7 with Testing Library React 16.3
+
+## ⚡ Development Workflow
+
+- `npm run dev`: Start development server
+- `npm run build`: Build for production
+- `npm run test`: Run tests
+- `npm run lint`: Lint code
+- `npm run format`: Format code with Prettier
+
+## 🔐 Constraints
+
+- TypeScript best practices with proper typing
+- Responsive design across all components
+- SEO optimization for all content pages
+- Accessibility standards across UI elements
+- Performance optimization for animations
+- Creative Commons BY-NC-SA 4.0 license compliance

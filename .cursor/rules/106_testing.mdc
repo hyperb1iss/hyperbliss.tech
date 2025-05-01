@@ -1,0 +1,227 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 🧪 Testing Guidelines
+
+## 🏗️ Testing Structure
+
+Tests are organized in the `tests/` directory, mirroring the structure of the codebase:
+
+```
+tests/
+├── components/       # Component tests
+│   ├── layout/       # Layout component tests
+│   ├── shared/       # Shared component tests
+│   └── ...
+├── hooks/            # Custom hooks tests
+├── utils/            # Utility function tests
+├── pages/            # Page tests
+├── seo/              # SEO-specific tests
+├── mocks/            # Mock data and test helpers
+│   ├── handlers.ts   # MSW API mocks
+│   ├── server.ts     # MSW server setup
+│   └── data/         # Mock data objects
+└── setup/            # Test setup files
+    └── setup.ts      # Jest setup
+```
+
+## 🛠️ Testing Stack
+
+- **Jest**: Test runner and assertion library
+- **React Testing Library**: Component testing
+- **@testing-library/user-event**: User interaction simulation
+- **Jest-DOM**: DOM testing utilities
+- **msw** (Mock Service Worker): API mocking
+- **@testing-library/jest-dom**: DOM matchers
+
+## 🔍 Testing Patterns
+
+### Component Tests
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import Button from "../../app/components/shared/Button";
+
+describe("Button Component", () => {
+  it("renders with correct text", () => {
+    render(<Button label="Test Button" onClick={() => {}} />);
+    expect(screen.getByText("Test Button")).toBeInTheDocument();
+  });
+
+  it("calls onClick handler when clicked", async () => {
+    const user = userEvent.setup();
+    const handleClick = jest.fn();
+    
+    render(<Button label="Click Me" onClick={handleClick} />);
+    
+    await user.click(screen.getByText("Click Me"));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("applies correct styling based on variant", () => {
+    const { rerender } = render(
+      <Button label="Primary" onClick={() => {}} variant="primary" />
+    );
+    
+    const primaryButton = screen.getByText("Primary");
+    expect(primaryButton).toHaveStyle(`background-color: var(--color-primary)`);
+    
+    rerender(<Button label="Primary" onClick={() => {}} variant="secondary" />);
+    expect(primaryButton).toHaveStyle(`background-color: transparent`);
+  });
+});
+```
+
+### Hook Tests
+
+```tsx
+import { renderHook, act } from "@testing-library/react";
+import useCounter from "../../app/hooks/useCounter";
+
+describe("useCounter Hook", () => {
+  it("initializes with default value", () => {
+    const { result } = renderHook(() => useCounter());
+    expect(result.current.count).toBe(0);
+  });
+
+  it("initializes with custom value", () => {
+    const { result } = renderHook(() => useCounter(10));
+    expect(result.current.count).toBe(10);
+  });
+
+  it("increments counter", () => {
+    const { result } = renderHook(() => useCounter());
+    
+    act(() => {
+      result.current.increment();
+    });
+    
+    expect(result.current.count).toBe(1);
+  });
+
+  it("decrements counter", () => {
+    const { result } = renderHook(() => useCounter(5));
+    
+    act(() => {
+      result.current.decrement();
+    });
+    
+    expect(result.current.count).toBe(4);
+  });
+});
+```
+
+### Page Tests
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import HomePage from "../../app/page";
+
+// Mock components as needed
+jest.mock("../../app/components/layout/Header", () => {
+  return function MockHeader() {
+    return <div data-testid="mock-header">Header</div>;
+  };
+});
+
+describe("HomePage", () => {
+  it("renders main sections", () => {
+    render(<HomePage />);
+    
+    expect(screen.getByTestId("mock-header")).toBeInTheDocument();
+    expect(screen.getByText(/welcome to hyperbliss/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /explore projects/i })).toBeInTheDocument();
+  });
+});
+```
+
+### API Mocking
+
+```tsx
+// tests/mocks/handlers.ts
+import { rest } from "msw";
+
+export const handlers = [
+  rest.get("https://api.example.com/projects", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json([
+        {
+          id: "1",
+          title: "Project 1",
+          description: "Description",
+        },
+        {
+          id: "2",
+          title: "Project 2",
+          description: "Description",
+        },
+      ])
+    );
+  }),
+];
+
+// tests/mocks/server.ts
+import { setupServer } from "msw/node";
+import { handlers } from "./handlers";
+
+export const server = setupServer(...handlers);
+```
+
+## 🎯 Test Coverage Targets
+
+- Components: 80%+ coverage
+- Hooks: 90%+ coverage
+- Utility functions: 95%+ coverage
+- Pages: 70%+ coverage
+
+Focus on testing:
+1. Component rendering
+2. User interactions
+3. State changes
+4. Edge cases
+5. Accessibility
+
+## 🚫 What Not to Test
+
+- Implementation details (use component behavior testing instead)
+- Third-party libraries
+- Constant files or static configurations
+- CSS in Styled Components (test the function, not the styles)
+
+## ♿ Accessibility Testing
+
+```tsx
+import { render } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
+import Button from "../../app/components/shared/Button";
+
+expect.extend(toHaveNoViolations);
+
+describe("Button Accessibility", () => {
+  it("should not have accessibility violations", async () => {
+    const { container } = render(
+      <Button label="Accessible Button" onClick={() => {}} />
+    );
+    
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+```
+
+## 🧠 Testing Best Practices
+
+1. Test behavior, not implementation
+2. Use meaningful test descriptions
+3. Avoid test interdependence
+4. Follow the Arrange-Act-Assert pattern
+5. Use data-testid attributes sparingly
+6. Test for both success and error cases
+7. Prefer user-centric testing queries (getByRole, getByText)
+8. Mock external dependencies
+9. Run tests in CI/CD pipeline
+

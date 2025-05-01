@@ -3,59 +3,93 @@ description: Guidelines for creating and maintaining blog posts in the hyperblis
 globs: src/posts/**/*.md
 alwaysApply: false
 ---
- Blog Post Structure for hyperbliss.tech:
+# 📝 Blog Content Guidelines
 
-Location:
-- All blog posts must be placed in src/posts/ directory
-- Use date-prefixed filenames: YYYY.MM.DD_post-title.md
-- Filename becomes the URL slug: /blog/YYYY.MM.DD_post-title
+## 📂 Organization
 
-Frontmatter Requirements:
-- title: String - Descriptive title (can include emoji)
-  Example: "🎭 HyperShell: Unifying Windows and Linux"
-- date: String - ISO format or YYYY-MM-DD
-- author: String - Name of the author (default: "Stefanie Jane")
-- excerpt: String - Brief summary (1-3 sentences, 150-200 chars)
-- tags: String[] - 4-7 relevant topics as kebab-case
+Blog posts are stored as Markdown files in the `src/posts/` directory. Each post has its own file with frontmatter metadata and content.
 
-Content Structure:
-1. Introduction (1-2 paragraphs)
-   - Set the tone and introduce the topic
-   - Can use either regular paragraphs or an H2 heading (## 🌟 Introduction)
+## 📝 File Structure
 
-2. Main Content Sections (H2 headings)
-   - Use emoji prefixes for section headings
-   - Organize content in logical sections with H2 headings
-   - Use H3 for subsections 
-   - Keep paragraphs concise (3-5 sentences)
+Blog posts follow this naming convention:
+- `YYYY-MM-DD-post-title.md` - Files begin with the publication date
+- Lowercase with hyphens for the title portion
+- Should match the intended URL slug (minus the date part)
 
-3. Rich Content Elements:
-   - Code blocks with language specifiers (```language)
-   - Tables using markdown table syntax (| header | header |)
-   - Lists (both ordered and unordered)
-   - Blockquotes for emphasis or quotes
-   - Horizontal rules (---) to separate major sections
+## 🔍 Frontmatter Schema
 
-4. Visual Elements:
-   - Use emoji to emphasize points
-   - Include "Pro Tips" or "Examples" with custom formatting
-   - Use bold and italic text for emphasis
-   - Use backticks for inline code or technical terms
+Each blog post requires these frontmatter fields:
 
-5. Conclusion (Optional)
-   - Summarize key takeaways
-   - Can use either regular paragraphs or an H2 heading
+```md
+---
+title: "Post Title"
+description: "Brief description for previews and SEO"
+date: "YYYY-MM-DD"
+tags: ["tag1", "tag2", "tag3"]
+featured: true|false
+cover: "/images/blog/post-title-cover.jpg"
+---
+```
 
-Writing Style:
-- Conversational but authoritative tone
-- Technical accuracy with accessibility to various skill levels
-- Use first person when sharing personal experience
-- Use second person when providing instructions
-- Include questions to engage readers
-- Maintain cyberpunk/tech aesthetic in examples and references
+### Required Fields:
+- `title`: Display title of the post
+- `description`: Brief summary for cards and meta description
+- `date`: Publication date (YYYY-MM-DD)
+- `tags`: Array of relevant topic tags
+- `cover`: Path to cover image (stored in `public/images/blog/`)
 
-Length Guidelines:
-- Short-form: 800-1200 words
-- Medium-form: 1200-2000 words
-- Long-form: 2000-3000 words
-- Technical deep-dives can exceed 3000 words with proper sectioning
+### Optional Fields:
+- `featured`: Boolean for highlighting on homepage
+- `author`: If different from site owner
+- `updated`: Date of last significant update
+- `readingTime`: Manual override for read time (auto-calculated by default)
+
+## 🌈 Content Guidelines
+
+### Formatting
+
+- Use heading levels appropriately (H2 for major sections, H3 for subsections)
+- Keep paragraphs concise and focused (3-5 sentences)
+- Use code blocks with language specifiers for syntax highlighting
+- Include visual breaks between major sections (horizontal rules or spacing)
+
+### Content Style
+
+- Technical content should be precise but approachable
+- Include code examples for technical tutorials
+- Add explanation for complex concepts
+- Use personal anecdotes where relevant
+- Maintain the site's playful, warm, technical voice
+
+### Media
+
+- Use images to illustrate complex concepts
+- Store post images in `public/images/blog/[post-slug]/`
+- Include diagrams for technical explanations when helpful
+- Add alt text to all images for accessibility
+- Optimize images for web (WebP format preferred)
+
+## 💫 Rich Content Features
+
+Blog posts support:
+- Syntax highlighted code blocks with Prism.js
+- Mathematics with KaTeX
+- Embedded tweets and videos
+- Github Flavored Markdown (tables, strikethrough, etc.)
+- Custom React components via MDX
+
+## 🔍 SEO Optimization
+
+Each blog post automatically generates:
+- OpenGraph meta tags from frontmatter
+- Twitter card data
+- Structured data for Google
+- An entry in the site's RSS feed
+
+## 📊 Display Components
+
+Blog posts are displayed using these components:
+- `BlogList.tsx`: Grid layout of post cards on the blog page
+- `BlogCard.tsx`: Individual post preview card
+- `BlogPostContent.tsx`: Full post view with content
+- `TagList.tsx`: Displays and filters posts by tag

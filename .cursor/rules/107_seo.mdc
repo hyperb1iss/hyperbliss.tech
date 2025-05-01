@@ -1,0 +1,279 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 🔍 SEO Guidelines
+
+## 🏗️ Architecture
+
+SEO is implemented throughout the website using Next.js best practices and the `next-seo` package. The architecture follows these patterns:
+
+```
+app/
+├── layout.tsx        # Root metadata configuration
+├── lib/
+│   └── seo.ts        # SEO utility functions and defaults
+├── components/
+│   └── seo/          # SEO-specific components
+│       ├── Metadata.tsx         # Page-specific metadata
+│       ├── JsonLd.tsx           # Structured data component
+│       └── OpenGraphImage.tsx   # OG image generation
+└── api/
+    └── rss/
+        └── route.ts  # RSS feed generation
+```
+
+## 📋 Metadata Configuration
+
+The `layout.tsx` file contains the base metadata configuration:
+
+```tsx
+import type { Metadata } from 'next';
+import { siteConfig } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.title}`,
+  },
+  description: siteConfig.description,
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  metadataBase: new URL(siteConfig.url),
+  alternates: {
+    canonical: '/',
+    types: {
+      'application/rss+xml': [
+        { url: 'rss.xml', title: 'RSS Feed for hyperbliss.tech' },
+      ],
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteConfig.url,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: siteConfig.title,
+    images: [
+      {
+        url: `${siteConfig.url}/images/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.title,
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    creator: '@hyperbliss',
+    images: [`${siteConfig.url}/images/og-image.jpg`],
+  },
+};
+```
+
+## 🧩 SEO Component Usage
+
+Page-specific metadata is added to each page component:
+
+```tsx
+// Page component with metadata
+import type { Metadata } from 'next';
+import { siteConfig } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'Projects',
+  description: 'Explore my portfolio of web development and design projects.',
+  openGraph: {
+    title: 'Projects | hyperbliss.tech',
+    description: 'Explore my portfolio of web development and design projects.',
+    url: `${siteConfig.url}/projects`,
+    type: 'website',
+  },
+};
+
+export default function ProjectsPage() {
+  return (
+    // Page content
+  );
+}
+```
+
+## 🧠 Structured Data
+
+JSON-LD structured data is added for rich search results:
+
+```tsx
+// JSON-LD component for BlogPost
+import { BlogPosting } from 'schema-dts';
+import { JsonLd } from '@/components/seo/JsonLd';
+
+interface BlogJsonLdProps {
+  title: string;
+  description: string;
+  date: string;
+  lastUpdated?: string;
+  url: string;
+  authorName: string;
+  images?: string[];
+  tags?: string[];
+}
+
+export function BlogJsonLd({
+  title,
+  description,
+  date,
+  lastUpdated,
+  url,
+  authorName,
+  images = [],
+  tags = [],
+}: BlogJsonLdProps) {
+  const jsonLd: BlogPosting = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: title,
+    description: description,
+    datePublished: date,
+    dateModified: lastUpdated || date,
+    author: {
+      '@type': 'Person',
+      name: authorName,
+    },
+    image: images,
+    url: url,
+    keywords: tags.join(', '),
+    publisher: {
+      '@type': 'Person',
+      name: authorName,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': url,
+    },
+  };
+
+  return <JsonLd data={jsonLd} />;
+}
+```
+
+## 📱 Mobile Optimization
+
+Mobile optimization includes:
+
+```tsx
+// In layout.tsx
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+<meta name="theme-color" content="#0a0a14" />
+```
+
+## 📊 Analytics Integration
+
+Google Analytics is implemented using the `nextjs-google-analytics` package:
+
+```tsx
+// In app/providers.tsx
+import { GoogleAnalytics } from 'nextjs-google-analytics';
+
+export function Providers({ children }) {
+  return (
+    <>
+      <GoogleAnalytics trackPageViews />
+      {children}
+    </>
+  );
+}
+```
+
+## 🔄 Dynamic Content
+
+For dynamic content like blog posts, SEO metadata is generated from the content:
+
+```tsx
+// In app/blog/[slug]/page.tsx
+import { getPostBySlug, getAllPosts } from '@/lib/posts';
+import { BlogJsonLd } from '@/components/seo/BlogJsonLd';
+import { siteConfig } from '@/lib/seo';
+
+export async function generateMetadata({ params }) {
+  const post = getPostBySlug(params.slug);
+  
+  return {
+    title: post.title,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: 'article',
+      publishedTime: post.date,
+      authors: [siteConfig.author],
+      tags: post.tags,
+      images: [
+        post.cover 
+          ? { url: post.cover, width: 1200, height: 630, alt: post.title }
+          : { url: `${siteConfig.url}/images/og-image.jpg`, width: 1200, height: 630, alt: post.title }
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+    },
+  };
+}
+
+export default function BlogPost({ params }) {
+  const post = getPostBySlug(params.slug);
+  const postUrl = `${siteConfig.url}/blog/${params.slug}`;
+  
+  return (
+    <>
+      <BlogJsonLd
+        title={post.title}
+        description={post.description}
+        date={post.date}
+        url={postUrl}
+        authorName={siteConfig.author}
+        images={post.cover ? [post.cover] : []}
+        tags={post.tags}
+      />
+      {/* Post content */}
+    </>
+  );
+}
+```
+
+## 📚 SEO Best Practices
+
+1. **Semantic HTML**:
+   - Use proper heading hierarchy (h1 → h6)
+   - Use semantic elements (article, section, nav)
+   - Include descriptive alt text for images
+
+2. **Performance**:
+   - Optimize images with WebP format
+   - Implement lazy loading
+   - Ensure fast page load times (<3 seconds)
+   - Focus on Core Web Vitals metrics
+
+3. **Content Strategy**:
+   - Use descriptive page titles (60-70 characters)
+   - Write compelling meta descriptions (150-160 characters)
+   - Include target keywords naturally in content
+   - Create regular high-quality blog content
+
+4. **Technical SEO**:
+   - Implement proper canonical URLs
+   - Use proper heading structure
+   - Generate and submit sitemaps
+   - Create descriptive URLs
+
