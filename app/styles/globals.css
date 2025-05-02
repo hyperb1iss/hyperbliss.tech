@@ -18,6 +18,17 @@
   --color-secondary: #ff75d8; /* Secondary color */
   --color-accent: #00fff0;
   --color-muted: #a0a0a0;
+
+  /* Code block theme colors */
+  --color-code-background: #1a1a2e;
+  --color-code-text: #f0f0f0;
+  --color-code-comment: #4a9fb1;
+  --color-code-punctuation: var(--color-code-text);
+  --color-code-property: #f92aad; /* property, tag, boolean, number, constant, symbol, deleted */
+  --color-code-selector: #36f9f6; /* selector, attr-name, string, char, builtin, inserted */
+  --color-code-operator: #ff7edb; /* operator, entity, url, variable */
+  --color-code-function: #fede5d; /* atrule, attr-value, function, class-name */
+  --color-code-keyword: #f97e72; /* keyword, regex, important */
 }
 
 /* Reset and base styles */

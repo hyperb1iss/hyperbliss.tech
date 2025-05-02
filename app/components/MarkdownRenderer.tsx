@@ -1,7 +1,7 @@
 // app/components/MarkdownRenderer.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
@@ -74,48 +74,52 @@ const CopyButton = styled.button`
 // Renamed to CodeBlockPreWrapper and changed tag to pre
 const CodeBlockPreWrapper = styled.pre`
   position: relative;
-  margin: 0.5em 0; // Replicates margin from original pre style
 
   &:hover ${CopyButton} {
     opacity: 1;
   }
 
   /* Apply cyberpunk theme styles directly to THIS pre element */
-  background: #1a1a2e !important;
-  color: #f0f0f0 !important;
-  padding: 1em !important;
-  border-radius: 0.5rem !important;
-  overflow: auto !important;
-  font-family: var(--font-mono) !important; /* Explicitly use CSS variable */
-  font-size: 1.2rem !important; /* Use explicit rem unit for consistency */
-  line-height: 1.4 !important;
+  /* Use CSS Variables, remove !important from colors */
+  background: var(--color-code-background) !important; /* Keep important for base override */
+  color: var(--color-code-text) !important; /* Keep important for base override */
+  padding: 1em !important; /* Keep important for layout */
+  border-radius: 0.5rem !important; /* Keep important for layout */
+  overflow: auto !important; /* Keep important for layout */
+  font-family: var(--font-mono) !important; /* Keep important for base override */
+  font-size: 1.2rem !important; /* Keep important for layout */
+  line-height: 1.4 !important; /* Keep important for layout */
   box-shadow:
     0 0 10px rgba(0, 255, 255, 0.3),
-    0 0 20px rgba(255, 0, 255, 0.3) !important;
+    0 0 20px rgba(255, 0, 255, 0.3);
   margin: 0.5em 0 !important; // Keep original margin logic
-  white-space: pre-wrap !important;
-  word-spacing: normal !important;
-  word-break: normal !important;
-  word-wrap: normal !important;
+  white-space: pre-wrap !important; /* Keep important for layout */
+  word-spacing: normal !important; /* Keep important for layout */
+  word-break: normal !important; /* Keep important for layout */
+  word-wrap: normal !important; /* Keep important for layout */
 
-  /* Target code tag inside for specific adjustments if needed */
+  /* Target code tag inside */
   code {
-    font-family: var(--font-mono) !important; /* Explicitly use CSS variable here too */
-    background: none !important; /* Ensure code tag itself isn't styled */
-    padding: 0 !important;
-    margin: 0 !important;
-    display: block; /* Ensure code takes block space within pre */
-    color: inherit; /* Inherit color */
+    font-family: inherit; /* Use inherit now that pre is explicitly set */
+    background: none;
+    padding: 0;
+    margin: 0;
+    display: block;
+    color: inherit;
+    white-space: inherit; /* Inherit wrap setting */
+    word-spacing: inherit;
+    word-break: inherit;
+    word-wrap: inherit;
 
-    /* Theme colors for highlight spans within code */
+    /* Theme colors for highlight spans within code - Use CSS variables, remove !important */
     .hljs-comment,
     .hljs-prolog,
     .hljs-doctype,
     .hljs-cdata {
-      color: #4a9fb1 !important;
+      color: var(--color-code-comment);
     }
     .hljs-punctuation {
-      color: #f0f0f0 !important;
+      color: var(--color-code-punctuation);
     }
     .hljs-property,
     .hljs-tag,
@@ -124,7 +128,7 @@ const CodeBlockPreWrapper = styled.pre`
     .hljs-constant,
     .hljs-symbol,
     .hljs-deleted {
-      color: #f92aad !important;
+      color: var(--color-code-property);
     }
     .hljs-selector,
     .hljs-attr-name,
@@ -132,7 +136,7 @@ const CodeBlockPreWrapper = styled.pre`
     .hljs-char,
     .hljs-builtin,
     .hljs-inserted {
-      color: #36f9f6 !important;
+      color: var(--color-code-selector);
     }
     .hljs-operator,
     .hljs-entity,
@@ -140,65 +144,84 @@ const CodeBlockPreWrapper = styled.pre`
     .language-css .hljs-string,
     .style .hljs-string,
     .hljs-variable {
-      color: #ff7edb !important;
+      color: var(--color-code-operator);
     }
     .hljs-atrule,
     .hljs-attr-value,
     .hljs-function,
     .hljs-class-name {
-      color: #fede5d !important;
+      color: var(--color-code-function);
     }
     .hljs-keyword,
     .hljs-regex,
     .hljs-important {
-      color: #f97e72 !important;
+      color: var(--color-code-keyword);
     }
     .hljs-important {
-      font-weight: bold !important;
+      font-weight: bold;
     }
   }
 `;
 
 // --- New Component for Pre Block Logic ---
-// Use React.ComponentProps to get standard <pre> attributes and add our specific node prop
 interface PreWithCopyProps extends React.ComponentProps<"pre"> {
-  node?: Element; // Type the node prop correctly
+  node?: Element;
   children?: React.ReactNode;
 }
 
 const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) => {
+  // State for clipboard API availability and copy status
+  const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isCopying, setIsCopying] = useState(false);
+
+  // Check for Clipboard API on mount
+  useEffect(() => {
+    setIsClipboardApiAvailable(!!navigator.clipboard?.writeText);
+  }, []);
+
   // Extract code content for copy button
   let codeContent = "";
   if (node && node.type === "element") {
     codeContent = toString(node);
   } else {
-    // Fallback for unexpected node types
-    console.warn("Could not extract code content accurately for copy button.");
+    // Fallback logic without warning
     codeContent = React.Children.toArray(children)
       .map((child) => String(child))
       .join("");
   }
-  // Simple cleanup
   codeContent = codeContent.replace(/\n$/, "");
 
-  const [isCopied, setIsCopied] = useState(false);
   const copyToClipboard = async () => {
+    if (!isClipboardApiAvailable || isCopying) return;
+
+    setIsCopying(true);
+    setIsCopied(false); // Reset copied state
     try {
       await navigator.clipboard.writeText(codeContent);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
+      // Optionally: set an error state here to show feedback
+    } finally {
+      setIsCopying(false);
+      // Reset copied check icon after a delay
+      if (isCopied) {
+        setTimeout(() => setIsCopied(false), 2000);
+      }
     }
   };
 
-  // Render our styled <pre> wrapper, passing original children (the <code> tag)
-  // Pass original pre props (like className if any) down using ...rest
   return (
     <CodeBlockPreWrapper {...rest}>
       {children}
-      {/* This should render the <code...> element processed by rehype-highlight */}
-      <CopyButton onClick={copyToClipboard}>{isCopied ? <FiCheck /> : <FiCopy />}</CopyButton>
+      <CopyButton
+        onClick={copyToClipboard}
+        disabled={!isClipboardApiAvailable || isCopying}
+        title={isClipboardApiAvailable ? "Copy code" : "Clipboard API not available"}
+      >
+        {isCopying ? "..." : isCopied ? <FiCheck /> : <FiCopy />}
+      </CopyButton>
     </CodeBlockPreWrapper>
   );
 };
