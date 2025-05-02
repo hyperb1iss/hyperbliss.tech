@@ -77,11 +77,6 @@ const siteMetadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
-  },
   twitter: {
     card: "summary_large_image",
     site: "@hyperb1iss",

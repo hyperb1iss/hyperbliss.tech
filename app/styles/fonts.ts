@@ -1,27 +1,49 @@
-import { Inter, Fira_Code } from "next/font/google";
+import { Orbitron, Rajdhani, Space_Mono, Noto_Sans } from "next/font/google";
 
-// Define fonts with optimized loading
-export const inter = Inter({
+// Define Orbitron font
+export const orbitron = Orbitron({
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-orbitron", // CSS variable name
 });
 
-export const firaCode = Fira_Code({
+// Define Rajdhani font
+export const rajdhani = Rajdhani({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
   display: "swap",
-  variable: "--font-fira-code",
-  weight: ["400", "500", "700"],
+  variable: "--font-rajdhani", // CSS variable name
+});
+
+// Define Space Mono font
+export const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400"], // Assuming default weight is 400
+  display: "swap",
+  variable: "--font-space-mono", // CSS variable name
+});
+
+// Define Noto Sans font for the logo
+export const notoSans = Noto_Sans({
+  subsets: ["latin"],
+  weight: ["400"], // Assuming default weight is 400
+  display: "swap",
+  variable: "--font-noto-sans", // CSS variable name
 });
 
 // CSS variables to use in styled-components
 export const fontVariables = {
-  inter: inter.variable,
-  firaCode: firaCode.variable,
+  orbitron: orbitron.variable,
+  rajdhani: rajdhani.variable,
+  spaceMono: spaceMono.variable,
+  notoSans: notoSans.variable,
 };
 
 // Class names to add to elements
 export const fontClassNames = {
-  inter: inter.className,
-  firaCode: firaCode.className,
+  orbitron: orbitron.className,
+  rajdhani: rajdhani.className,
+  spaceMono: spaceMono.className,
+  notoSans: notoSans.className,
 };

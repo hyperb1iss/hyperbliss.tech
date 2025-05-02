@@ -9,7 +9,7 @@ import siteMetadata from "./lib/metadata";
 import StyledComponentsRegistry from "./lib/registry";
 import HyperspaceLoader from "./components/HyperspaceLoader";
 import ClientComponents from "./components/ClientComponents";
-import "./styles/fonts.css";
+import { orbitron, rajdhani, spaceMono, notoSans } from "./styles/fonts";
 import "./styles/globals.css";
 
 export const metadata: Metadata = siteMetadata;
@@ -23,7 +23,10 @@ export const metadata: Metadata = siteMetadata;
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable} ${notoSans.variable}`}
+    >
       <body>
         <StyledComponentsRegistry>
           <HeaderProvider>
