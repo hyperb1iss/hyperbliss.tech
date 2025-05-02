@@ -7,8 +7,8 @@ import { HeaderProvider } from "./components/HeaderContext";
 import GlobalLayout from "./components/GlobalLayout";
 import siteMetadata from "./lib/metadata";
 import StyledComponentsRegistry from "./lib/registry";
-import ClientComponents from "./components/ClientComponents";
 import HyperspaceLoader from "./components/HyperspaceLoader";
+import ClientComponents from "./components/ClientComponents";
 import "./styles/fonts.css";
 import "./styles/globals.css";
 

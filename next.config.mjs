@@ -17,6 +17,20 @@ const nextConfig = {
     GA_MEASUREMENT_ID: "G-2R4MW5X5SE",
     GA_DEBUG_MODE: process.env.NODE_ENV === "development" ? "true" : "false", 
   },
+
+  // Image optimization configuration
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      // Add patterns for any remote images
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+  },
   
   // Configure headers for security and privacy
   async headers() {
