@@ -20,6 +20,7 @@
     "analyze:keep": "node scripts/analyze-bundle.mjs --keep"
   },
   "dependencies": {
+    "@types/three": "^0.178.0",
     "feed": "^4.2.2",
     "framer-motion": "12.7.4",
     "gl-matrix": "^3.4.3",
@@ -37,7 +38,8 @@
     "rehype-raw": "^7.0.0",
     "remark": "^15.0.1",
     "remark-gfm": "4.0.1",
-    "styled-components": "6.1.17"
+    "styled-components": "6.1.17",
+    "three": "^0.178.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
