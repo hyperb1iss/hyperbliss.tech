@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { TECH_TAGS } from '../lib/constants'
 import { useHeaderContext } from './HeaderContext'
+import { usePageLoad } from './PageLoadOrchestrator'
 import SparklingName from './SparklingName'
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
@@ -297,19 +298,20 @@ const tags = TECH_TAGS
  */
 export default function HeroSection(): React.ReactElement {
   const { isExpanded } = useHeaderContext()
+  const { isInitialLoad } = usePageLoad()
 
   return (
     <HeroSectionWrapper $isHeaderExpanded={isExpanded}>
       <AnimatedBackground />
       <ContentWrapper
         animate={{ opacity: 1, y: 0 }}
-        initial={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        initial={{ opacity: isInitialLoad ? 0 : 1, y: isInitialLoad ? 20 : 0 }}
+        transition={{ duration: isInitialLoad ? 0.5 : 0, ease: 'easeOut' }}
       >
         <Title
           animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: -20 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+          initial={{ opacity: isInitialLoad ? 0 : 1, y: isInitialLoad ? -20 : 0 }}
+          transition={{ delay: isInitialLoad ? 0.1 : 0, duration: isInitialLoad ? 0.5 : 0 }}
         >
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
@@ -322,9 +324,9 @@ export default function HeroSection(): React.ReactElement {
           {tags.map((tag, index) => (
             <Tag
               animate={{ opacity: 1, scale: 1 }}
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: isInitialLoad ? 0 : 1, scale: isInitialLoad ? 0.8 : 1 }}
               key={tag}
-              transition={{ delay: 0.1 + index * 0.03, duration: 0.5 }}
+              transition={{ delay: isInitialLoad ? 0.3 + index * 0.02 : 0, duration: isInitialLoad ? 0.3 : 0 }}
             >
               {tag}
             </Tag>

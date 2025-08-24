@@ -7,6 +7,7 @@ import Header from './components/Header'
 import { HeaderProvider } from './components/HeaderContext'
 import HeaderFade from './components/HeaderFade'
 import HyperspaceLoader from './components/HyperspaceLoader'
+import { PageLoadProvider } from './components/PageLoadOrchestrator'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import StyledComponentsRegistry from './lib/registry'
@@ -33,15 +34,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <StyledComponentsRegistry>
-          <HeaderProvider>
-            <ClientComponents />
-            <Header />
-            <HeaderFade />
-            <HyperspaceLoader />
-            <GlobalLayout>
-              <AnimatePresence mode="wait">{children}</AnimatePresence>
-            </GlobalLayout>
-          </HeaderProvider>
+          <PageLoadProvider>
+            <HeaderProvider>
+              <ClientComponents />
+              <Header />
+              <HeaderFade />
+              <HyperspaceLoader />
+              <GlobalLayout>
+                <AnimatePresence mode="wait">{children}</AnimatePresence>
+              </GlobalLayout>
+            </HeaderProvider>
+          </PageLoadProvider>
         </StyledComponentsRegistry>
       </body>
     </html>

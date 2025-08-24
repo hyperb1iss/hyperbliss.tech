@@ -6,6 +6,7 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import Card from './Card'
 import GlitchSpan from './GlitchSpan'
+import { usePageLoad } from './PageLoadOrchestrator'
 import StyledTitle from './StyledTitle'
 
 interface BlogPost {
@@ -58,9 +59,19 @@ const TitleLink = styled(Link)`
 `
 
 export default function LatestBlogPosts({ posts, isMobile }: LatestBlogPostsProps) {
+  const { isInitialLoad } = usePageLoad()
+
   return (
-    <SidebarContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
-      <StyledTitle>
+    <SidebarContainer
+      animate={{ opacity: 1 }}
+      initial={{ opacity: isInitialLoad ? 0 : 1 }}
+      transition={{ delay: isInitialLoad ? 0.7 : 0, duration: isInitialLoad ? 0.5 : 0, ease: 'easeOut' }}
+    >
+      <StyledTitle
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: isInitialLoad ? 0 : 1, y: isInitialLoad ? -10 : 0 }}
+        transition={{ delay: isInitialLoad ? 0.8 : 0, duration: isInitialLoad ? 0.4 : 0 }}
+      >
         <TitleLink href="/blog">
           <GlitchSpan data-text="Latest Posts">Latest Posts</GlitchSpan>
         </TitleLink>

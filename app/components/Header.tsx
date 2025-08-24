@@ -11,6 +11,7 @@ import Logo from './Logo'
 import MobileMenuIcon from './MobileMenuIcon'
 import MobileNavLinks from './MobileNavLinks'
 import NavLinks from './NavLinks'
+import { usePageLoad } from './PageLoadOrchestrator'
 
 /**
  * Styled components for the header
@@ -41,7 +42,7 @@ const NavContent = styled.div`
   overflow: hidden;
 `
 
-const Canvas = styled.canvas`
+const Canvas = styled(motion.canvas)`
   position: absolute;
   top: 0;
   left: 0;
@@ -87,6 +88,7 @@ const Header: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const navRef = useRef<HTMLElement>(null)
   const { isExpanded, setIsExpanded } = useHeaderContext()
+  const { isInitialLoad } = usePageLoad()
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
@@ -177,7 +179,12 @@ const Header: React.FC = () => {
 
   return (
     <Nav $isExpanded={isExpanded} ref={navRef}>
-      <Canvas ref={canvasRef} />
+      <Canvas
+        animate={{ opacity: 1 }}
+        initial={{ opacity: isInitialLoad ? 0 : 1 }}
+        ref={canvasRef}
+        transition={{ delay: isInitialLoad ? 0.2 : 0, duration: isInitialLoad ? 0.8 : 0 }}
+      />
       <NavContent>
         <Logo />
         <NavLinks />

@@ -6,9 +6,10 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import Card from './Card'
 import GlitchSpan from './GlitchSpan'
+import { usePageLoad } from './PageLoadOrchestrator'
 import StyledTitle from './StyledTitle'
 
-const FeaturedProjectsSectionWrapper = styled.section`
+const FeaturedProjectsSectionWrapper = styled(motion.section)`
   padding: 4rem 16px;
   position: relative;
   overflow: hidden;
@@ -75,10 +76,19 @@ function getHashedProjects(projects: Project[], count: number): Project[] {
 
 export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
   const displayedProjects = getHashedProjects(projects, 6)
+  const { isInitialLoad } = usePageLoad()
 
   return (
-    <FeaturedProjectsSectionWrapper>
-      <StyledTitle>
+    <FeaturedProjectsSectionWrapper
+      animate={{ opacity: 1 }}
+      initial={{ opacity: isInitialLoad ? 0 : 1 }}
+      transition={{ delay: isInitialLoad ? 0.4 : 0, duration: isInitialLoad ? 0.5 : 0 }}
+    >
+      <StyledTitle
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: isInitialLoad ? 0 : 1, y: isInitialLoad ? -10 : 0 }}
+        transition={{ delay: isInitialLoad ? 0.5 : 0, duration: isInitialLoad ? 0.4 : 0 }}
+      >
         <TitleLink href="/projects">
           <GlitchSpan data-text="Featured Projects">Featured Projects</GlitchSpan>
         </TitleLink>
@@ -91,7 +101,8 @@ export default function FeaturedProjects({ projects }: FeaturedProjectsProps) {
           visible: {
             opacity: 1,
             transition: {
-              staggerChildren: 0.1,
+              delayChildren: isInitialLoad ? 0.6 : 0,
+              staggerChildren: isInitialLoad ? 0.05 : 0,
             },
           },
         }}
