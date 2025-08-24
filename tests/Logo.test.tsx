@@ -5,8 +5,8 @@ import userEvent from '@testing-library/user-event'
 import Logo from '@/components/Logo'
 
 // Mock the useAnimatedNavigation hook
-jest.mock('@/hooks/useAnimatedNavigation', () => ({
-  useAnimatedNavigation: () => jest.fn(),
+vi.mock('@/hooks/useAnimatedNavigation', () => ({
+  useAnimatedNavigation: () => vi.fn(),
 }))
 
 describe('Logo', () => {

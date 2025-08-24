@@ -75,7 +75,6 @@ const siteMetadata: Metadata = {
     'indie dev blog',
     ...Array.from(TECH_TAGS),
   ],
-  manifest: '/site.webmanifest',
   metadataBase: new URL(BASE_URL),
   openGraph: {
     description: SITE_DESCRIPTION,

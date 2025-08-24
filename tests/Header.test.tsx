@@ -4,13 +4,13 @@ import { render, screen } from '@testing-library/react'
 import Header from '@/components/Header'
 
 // Mock the HeaderContext
-jest.mock('@/components/HeaderContext', () => ({
-  useHeaderContext: () => ({ isExpanded: false, setIsExpanded: jest.fn() }),
+vi.mock('@/components/HeaderContext', () => ({
+  useHeaderContext: () => ({ isExpanded: false, setIsExpanded: vi.fn() }),
 }))
 
 // Mock the useAnimatedNavigation hook
-jest.mock('@/hooks/useAnimatedNavigation', () => ({
-  useAnimatedNavigation: () => jest.fn(),
+vi.mock('@/hooks/useAnimatedNavigation', () => ({
+  useAnimatedNavigation: () => vi.fn(),
 }))
 
 describe('Header', () => {
@@ -43,15 +43,15 @@ describe('Header', () => {
 
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
-      value: jest.fn().mockImplementation((query) => ({
-        addEventListener: jest.fn(),
-        addListener: jest.fn(), // Deprecated
-        dispatchEvent: jest.fn(),
+      value: vi.fn().mockImplementation((query) => ({
+        addEventListener: vi.fn(),
+        addListener: vi.fn(), // Deprecated
+        dispatchEvent: vi.fn(),
         matches: false,
         media: query,
         onchange: null,
-        removeEventListener: jest.fn(),
-        removeListener: jest.fn(), // Deprecated
+        removeEventListener: vi.fn(),
+        removeListener: vi.fn(), // Deprecated
       })),
       writable: true,
     })

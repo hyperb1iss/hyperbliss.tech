@@ -2,14 +2,14 @@ import { getAllMarkdownSlugs } from '@/lib/markdown'
 import { GET } from '@/sitemap.xml/route'
 
 // Mock the markdown functions
-jest.mock('@/lib/markdown', () => ({
-  getAllMarkdownSlugs: jest.fn(),
+vi.mock('@/lib/markdown', () => ({
+  getAllMarkdownSlugs: vi.fn(),
 }))
 
 describe('Sitemap Generation', () => {
   beforeEach(() => {
     // Mock return values for getAllMarkdownSlugs
-    ;(getAllMarkdownSlugs as jest.Mock)
+    ;(getAllMarkdownSlugs as unknown as { mockResolvedValueOnce: (v: string[]) => unknown })
       .mockResolvedValueOnce(['post-1', 'post-2']) // Blog posts
       .mockResolvedValueOnce(['project-1']) // Projects
   })
@@ -47,18 +47,18 @@ describe('Sitemap Generation', () => {
     const content = await response.text()
 
     // Home page should have highest priority
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/<\/loc>[^]*?<priority>1<\/priority>/)
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/<\/loc>[\s\S]*?<priority>1<\/priority>/)
 
     // Blog and Projects index pages should have high priority
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/<\/loc>[^]*?<priority>0.9<\/priority>/)
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/<\/loc>[^]*?<priority>0.9<\/priority>/)
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/<\/loc>[\s\S]*?<priority>0.9<\/priority>/)
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/<\/loc>[\s\S]*?<priority>0.9<\/priority>/)
 
     // Blog posts should have medium priority
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1\/<\/loc>[^]*?<priority>0.7<\/priority>/)
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1\/<\/loc>[\s\S]*?<priority>0.7<\/priority>/)
 
     // Project pages should have high-medium priority
     expect(content).toMatch(
-      /<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>[^]*?<priority>0.8<\/priority>/,
+      /<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>[\s\S]*?<priority>0.8<\/priority>/,
     )
   })
 })

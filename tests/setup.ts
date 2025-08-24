@@ -1,5 +1,5 @@
 // tests/setup.ts
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom/vitest'
 
 class ResizeObserverMock implements ResizeObserver {
   observe(): void {}

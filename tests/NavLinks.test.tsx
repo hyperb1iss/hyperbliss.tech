@@ -6,14 +6,14 @@ import NavLinks from '@/components/NavLinks'
 import { NAV_ITEMS } from '@/lib/navigation'
 
 // Mock the usePathname hook
-const mockUsePathname = jest.fn()
-jest.mock('next/navigation', () => ({
+const mockUsePathname = vi.fn()
+vi.mock('next/navigation', () => ({
   usePathname: () => mockUsePathname(),
 }))
 
 // Mock the useAnimatedNavigation hook
-jest.mock('@/hooks/useAnimatedNavigation', () => ({
-  useAnimatedNavigation: () => jest.fn(),
+vi.mock('@/hooks/useAnimatedNavigation', () => ({
+  useAnimatedNavigation: () => vi.fn(),
 }))
 
 describe('NavLinks', () => {
