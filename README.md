@@ -12,22 +12,33 @@
 
 </div>
 
-Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic sanctuary crafted by Stefanie Jane— resident software sorceress and pixel enchantress. 🔮👩‍💻⚡
+Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic
+sanctuary crafted by Stefanie Jane— resident software sorceress and pixel
+enchantress. 🔮👩‍💻⚡
 
 ## 🌌 Vision
 
-In the vast expanse of the internet, hyperbliss.tech stands as a beacon—a fusion of technology and creativity. This digital portfolio serves as a testament to the art of web development, a gallery of innovative projects, and a hub for nerds, ADHD catgirls, and magical creatures.
+In the vast expanse of the internet, hyperbliss.tech stands as a beacon—a fusion
+of technology and creativity. This digital portfolio serves as a testament to
+the art of web development, a gallery of innovative projects, and a hub for
+nerds, ADHD catgirls, and magical creatures.
 
 Here, you'll find:
 
-- 🕸️ Intricately crafted code, weaving responsive designs that adapt to any device
+- 🕸️ Intricately crafted code, weaving responsive designs that adapt to any
+  device
 - 📜 Insightful blog posts, exploring the ever-evolving digital landscape
 - 🔧 Innovative projects that push the boundaries of web technology
 - 🌟 Interfaces that come alive with smooth, ethereal animations
 - 🔍 Optimized pathways ensuring discoverability across the web
 - 📊 Analytics to understand and enhance user experiences
 
-Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technology witch. Her expertise spans the entire software stack, from crafting captivating user interfaces with front-end sorcery, to conjuring scalable infrastructure, and the arcane arts of embedded systems and operating systems. With an alchemical blend of technical prowess and artistic vision, she creates holistic software experiences that are as beautiful as they are powerful.
+Stefanie Jane, the architect of this digital sanctum, is a multi-faceted
+technology witch. Her expertise spans the entire software stack, from crafting
+captivating user interfaces with front-end sorcery, to conjuring scalable
+infrastructure, and the arcane arts of embedded systems and operating systems.
+With an alchemical blend of technical prowess and artistic vision, she creates
+holistic software experiences that are as beautiful as they are powerful.
 
 ## ✨ Features
 
@@ -46,7 +57,8 @@ Stefanie Jane, the architect of this digital sanctum, is a multi-faceted technol
 - **Frontend**: React 19.0
 - **Styling**: Styled Components 6.1
 - **Routing**: Next.js App Router
-- **Content Management**: Markdown files with gray-matter and react-markdown 10.1
+- **Content Management**: Markdown files with gray-matter and react-markdown
+  10.1
 - **Animations**: Framer Motion 12.5
 - **Icons**: React Icons 5.5
 - **SEO**: Next SEO
@@ -134,13 +146,15 @@ Key directories:
    yarn dev
    ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see
+   the result.
 
 ## 🧪 Testing and Linting
 
 ### Testing
 
-The project uses Jest and React Testing Library for testing. Tests are located in the `tests/` directory.
+The project uses Jest and React Testing Library for testing. Tests are located
+in the `tests/` directory.
 
 Available test commands:
 
@@ -151,7 +165,8 @@ Available test commands:
 
 ### Linting
 
-ESLint is configured for code quality and consistency. The project uses the Next.js ESLint configuration as a base with TypeScript support.
+ESLint is configured for code quality and consistency. The project uses the
+Next.js ESLint configuration as a base with TypeScript support.
 
 Available lint commands:
 
@@ -169,34 +184,44 @@ The project uses the following testing libraries and configurations:
 - Jest environment jsdom for DOM simulation
 - Custom test setup with path aliases for simplified imports
 
-Test files should be placed in the `tests/` directory with the `.test.ts` or `.test.tsx` extension.
+Test files should be placed in the `tests/` directory with the `.test.ts` or
+`.test.tsx` extension.
 
 ## 🌠 CyberScape: Immersive Interactive Background
 
-CyberScape is a custom-built, interactive background animation that brings the cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive environment that reacts to user interactions and adds depth to the overall user experience.
+CyberScape is a custom-built, interactive background animation that brings the
+cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive
+environment that reacts to user interactions and adds depth to the overall user
+experience.
 
 ### Key Features of CyberScape
 
-- **Interactive Particles**: A field of glowing particles that respond to cursor movements.
-- **Vector Shapes**: 3D wireframe shapes (cubes, pyramids, stars) floating in space.
-- **Dynamic Connections**: Lines connecting nearby particles to create a network effect.
-- **Glitch Effects**: Occasional glitch animations for an authentic cyberpunk feel.
-- **Responsive Design**: Adapts to different screen sizes and device capabilities.
+- **Interactive Particles**: A field of glowing particles that respond to cursor
+  movements.
+- **Vector Shapes**: 3D wireframe shapes (cubes, pyramids, stars) floating in
+  space.
+- **Dynamic Connections**: Lines connecting nearby particles to create a network
+  effect.
+- **Glitch Effects**: Occasional glitch animations for an authentic cyberpunk
+  feel.
+- **Responsive Design**: Adapts to different screen sizes and device
+  capabilities.
 
 ### How CyberScape Works
 
-1. **Initialization**: The `initializeCyberScape` function sets up the canvas and initializes particles and shapes.
+1. **Initialization**: The `initializeCyberScape` function sets up the canvas
+   and initializes particles and shapes.
 
 2. **Animation Loop**: A continuous loop updates and renders all elements:
-
    - Particles and shapes move and rotate.
    - Connections between particles are calculated and drawn.
    - Glitch effects are randomly applied.
 
-3. **User Interaction**: The animation responds to mouse movements when the cursor is over the header area.
+3. **User Interaction**: The animation responds to mouse movements when the
+   cursor is over the header area.
 
-4. **Performance Optimization**: Various techniques are used to ensure smooth performance:
-
+4. **Performance Optimization**: Various techniques are used to ensure smooth
+   performance:
    - Throttled event listeners.
    - Efficient rendering techniques.
    - Adjusting the number of elements based on screen size.
@@ -214,11 +239,14 @@ CyberScape is a custom-built, interactive background animation that brings the c
 - `CyberScapeUtils.ts`: Utility functions for colors, projections, and more.
 - `glitchEffects.ts`: Implements various glitch and distortion effects.
 
-CyberScape exemplifies the fusion of art and technology, creating an engaging and visually stunning backdrop for the hyperbliss.tech experience.
+CyberScape exemplifies the fusion of art and technology, creating an engaging
+and visually stunning backdrop for the hyperbliss.tech experience.
 
 ## 🎨 Styling
 
-The project uses Styled Components for styling, with global styles and variables defined in `src/app/styles/globals.css`. The color scheme focuses on purple hues with complementary colors:
+The project uses Styled Components for styling, with global styles and variables
+defined in `src/app/styles/globals.css`. The color scheme focuses on purple hues
+with complementary colors:
 
 - Primary: `#a259ff`
 - Secondary: `#ff75d8`
@@ -228,11 +256,15 @@ The project uses Styled Components for styling, with global styles and variables
 
 ## 📝 Content Management
 
-Blog posts and project descriptions are managed through Markdown files located in the `src/posts/` and `src/projects/` directories respectively. Each Markdown file includes frontmatter for metadata.
+Blog posts and project descriptions are managed through Markdown files located
+in the `src/posts/` and `src/projects/` directories respectively. Each Markdown
+file includes frontmatter for metadata.
 
 ## 🔍 SEO and Analytics
 
-SEO is managed through Next SEO, with configurations in `src/app/lib/next-seo.config.ts`. Google Analytics is integrated using `nextjs-google-analytics`.
+SEO is managed through Next SEO, with configurations in
+`src/app/lib/next-seo.config.ts`. Google Analytics is integrated using
+`nextjs-google-analytics`.
 
 ## 🌟 Key Components
 
@@ -281,11 +313,14 @@ Netlify will automatically deploy the site on push to the main branch.
 
 ## 🧙‍♀️ Join The Coven
 
-Contributions, issues, and feature requests are welcome! Check out the [issues page](https://github.com/hyperb1iss/hyperbliss.tech/issues) to join the quest.
+Contributions, issues, and feature requests are welcome! Check out the
+[issues page](https://github.com/hyperb1iss/hyperbliss.tech/issues) to join the
+quest.
 
 ## 📜 License
 
-This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 You are free to:
 
@@ -294,11 +329,14 @@ You are free to:
 
 Under the following terms:
 
-- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+- **Attribution** — You must give appropriate credit, provide a link to the
+  license, and indicate if changes were made.
 - **NonCommercial** — You may not use the material for commercial purposes.
-- **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+- **ShareAlike** — If you remix, transform, or build upon the material, you must
+  distribute your contributions under the same license as the original.
 
-For the full text of this license, see the [complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+For the full text of this license, see the
+[complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 
 ---
 

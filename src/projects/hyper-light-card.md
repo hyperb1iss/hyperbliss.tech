@@ -1,13 +1,17 @@
 ---
-title: "🌟 Hyper Light Card"
-description: "A beautifully designed custom card for controlling SignalRGB in Home Assistant"
+title: '🌟 Hyper Light Card'
+description:
+  'A beautifully designed custom card for controlling SignalRGB in Home
+  Assistant'
 date: 2024-09-25
-tags: ["home-assistant", "custom-card", "signalrgb", "smart-home"]
-image: "/images/hyper-light-card-preview.jpg"
-github: "https://github.com/hyperb1iss/hyper-light-card"
+tags: ['home-assistant', 'custom-card', 'signalrgb', 'smart-home']
+image: '/images/hyper-light-card-preview.jpg'
+github: 'https://github.com/hyperb1iss/hyper-light-card'
 ---
 
-Elevate your Home Assistant dashboard with the Hyper Light Card – a stunningly beautiful and highly functional custom card designed specifically for controlling SignalRGB through Home Assistant.
+Elevate your Home Assistant dashboard with the Hyper Light Card – a stunningly
+beautiful and highly functional custom card designed specifically for
+controlling SignalRGB through Home Assistant.
 
 ![Hyper Light Card Preview](/images/hyper-light-card-preview.jpg)
 
@@ -48,8 +52,14 @@ Elevate your Home Assistant dashboard with the Hyper Light Card – a stunningly
 
 ## 🎨 Customization
 
-The Hyper Light Card automatically adapts its color scheme based on the current SignalRGB effect, ensuring a cohesive and visually appealing dashboard. The card uses an advanced color extraction algorithm to determine the most suitable background, text, and accent colors for optimal readability and aesthetic appeal.
+The Hyper Light Card automatically adapts its color scheme based on the current
+SignalRGB effect, ensuring a cohesive and visually appealing dashboard. The card
+uses an advanced color extraction algorithm to determine the most suitable
+background, text, and accent colors for optimal readability and aesthetic
+appeal.
 
 ## 🚀 Performance
 
-Hyper Light Card is built with performance in mind. It uses efficient rendering techniques and optimized state management to ensure smooth interactions, even on less powerful devices.
+Hyper Light Card is built with performance in mind. It uses efficient rendering
+techniques and optimized state management to ensure smooth interactions, even on
+less powerful devices.

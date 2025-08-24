@@ -1,17 +1,22 @@
 ---
-title: "🌈 signalrgb-python: Python Interface for SignalRGB Pro"
+title: '🌈 signalrgb-python: Python Interface for SignalRGB Pro'
 date: 2024-09-25
-tags: ["Python", "SignalRGB", "API", "CLI", "RGB", "Lighting"]
-category: "Projects"
-description: "A Python library and CLI tool for programmatic control of SignalRGB Pro lighting systems. Integrate RGB control into your applications with ease."
-github: "https://github.com/hyperb1iss/signalrgb-python"
+tags: ['Python', 'SignalRGB', 'API', 'CLI', 'RGB', 'Lighting']
+category: 'Projects'
+description:
+  'A Python library and CLI tool for programmatic control of SignalRGB Pro
+  lighting systems. Integrate RGB control into your applications with ease.'
+github: 'https://github.com/hyperb1iss/signalrgb-python'
 ---
 
 ![signalrgb-python hero image](/images/signalrgb-python-hero.jpg)
 
 ## 🚀 Programmatic RGB Control
 
-signalrgb-python provides a Python interface for SignalRGB Pro, enabling programmatic control of your RGB lighting ecosystem. Whether you're building automation tools, creating ambient notifications, or integrating lighting effects into your applications, this library offers a clean and intuitive API.
+signalrgb-python provides a Python interface for SignalRGB Pro, enabling
+programmatic control of your RGB lighting ecosystem. Whether you're building
+automation tools, creating ambient notifications, or integrating lighting
+effects into your applications, this library offers a clean and intuitive API.
 
 ## ✨ Key Features
 
@@ -25,7 +30,8 @@ signalrgb-python provides a Python interface for SignalRGB Pro, enabling program
 
 ## 🛠️ Developer-Focused Design
 
-The library provides a straightforward interface for controlling SignalRGB Pro, with comprehensive documentation and type hints throughout the codebase.
+The library provides a straightforward interface for controlling SignalRGB Pro,
+with comprehensive documentation and type hints throughout the codebase.
 
 ```python
 from signalrgb import SignalRGBClient
@@ -81,9 +87,9 @@ Install via pip:
 pip install signalrgb
 ```
 
-For detailed usage instructions and API documentation, visit our [documentation](https://hyperb1iss.github.io/signalrgb-python/).
+For detailed usage instructions and API documentation, visit our
+[documentation](https://hyperb1iss.github.io/signalrgb-python/).
 
 ---
 
-*signalrgb-python is an independent project and is not officially associated with SignalRGB. For official SignalRGB support and information, please visit [signalrgb.com](https://www.signalrgb.com).*
--
+## _signalrgb-python is an independent project and is not officially associated with SignalRGB. For official SignalRGB support and information, please visit [signalrgb.com](https://www.signalrgb.com)._

@@ -10,9 +10,15 @@
 
 ## ⋆｡˚ 🌠 ⋆｡˚☽˚｡⋆ 𝙄𝙣𝙩𝙧𝙤𝙙𝙪𝙘𝙩𝙞𝙤𝙣 ⋆｡˚☽˚｡⋆ 🌠 ⋆｡˚
 
-Welcome to the `hyperbliss.tech` style guide — a portal into our digital dreamscape where code meets cosmic energy. This document serves as the definitive reference for maintaining consistency across our digital universe, ensuring every pixel pulses with the same ethereal energy.
+Welcome to the `hyperbliss.tech` style guide — a portal into our digital
+dreamscape where code meets cosmic energy. This document serves as the
+definitive reference for maintaining consistency across our digital universe,
+ensuring every pixel pulses with the same ethereal energy.
 
-Our aesthetic channels the essence of a digital witch's sanctuary — a space where cutting-edge technology interfaces with magical ambiance. We blend cyberpunk sensibilities with cosmic wonder, creating interfaces that feel simultaneously futuristic and enchanted.
+Our aesthetic channels the essence of a digital witch's sanctuary — a space
+where cutting-edge technology interfaces with magical ambiance. We blend
+cyberpunk sensibilities with cosmic wonder, creating interfaces that feel
+simultaneously futuristic and enchanted.
 
 ## ⚡ 𝘿𝙚𝙨𝙞𝙜𝙣 𝙋𝙝𝙞𝙡𝙤𝙨𝙤𝙥𝙝𝙮 ⚡
 
@@ -27,13 +33,16 @@ We create interfaces that:
 
 - **Glow with purpose** — Every element emits light with intention
 - **Flow like stardust** — Animations move with cosmic elegance
-- **Respond like magic** — Interactions feel satisfying and slightly supernatural
-- **Balance complexity** — Intricate enough to intrigue, clear enough to navigate
+- **Respond like magic** — Interactions feel satisfying and slightly
+  supernatural
+- **Balance complexity** — Intricate enough to intrigue, clear enough to
+  navigate
 - **Evoke wonder** — Each visit should feel like entering a digital sanctuary
 
 ## 🎨 𝘾𝙤𝙡𝙤𝙧 𝙋𝙖𝙡𝙚𝙩𝙩𝙚 🎨
 
-Our color palette draws from the cosmic spectrum — ethereal purples, electric pinks, and digital cyans set against the void of space.
+Our color palette draws from the cosmic spectrum — ethereal purples, electric
+pinks, and digital cyans set against the void of space.
 
 ### 𝙋𝙧𝙞𝙢𝙖𝙧𝙮 𝘾𝙤𝙡𝙤𝙧𝙨
 
@@ -51,7 +60,11 @@ Gradients should follow these patterns:
 
 ```css
 /* Standard Gradient */
-background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+background: linear-gradient(
+  135deg,
+  var(--color-primary),
+  var(--color-secondary)
+);
 
 /* Cosmic Gradient (Logo) */
 background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
@@ -67,39 +80,42 @@ box-shadow:
 ### 𝘾𝙤𝙡𝙤𝙧 𝙐𝙨𝙖𝙜𝙚 𝙂𝙪𝙞𝙙𝙚𝙡𝙞𝙣𝙚𝙨
 
 - **Text Hierarchy**:
-
   - Headings: Cosmic Purple (`#a259ff`)
   - Subheadings: Neon Pink (`#ff75d8`)
   - Body: Starlight (`#e0e0e0`)
   - Links: Digital Cyan (`#00fff0`)
 
 - **Interactive Elements**:
-
   - Default: Digital Cyan (`#00fff0`)
   - Hover: Neon Pink (`#ff75d8`)
   - Active/Selected: Cosmic Purple (`#a259ff`)
 
 - **Backgrounds**:
   - Primary: Void Black (`#0a0a14`)
-  - Cards/Containers: Slightly lighter black with transparency (`rgba(255, 255, 255, 0.025)`)
+  - Cards/Containers: Slightly lighter black with transparency
+    (`rgba(255, 255, 255, 0.025)`)
   - Highlights: Gradients of primary colors
 
 ## 🔮 𝙏𝙮𝙥𝙤𝙜𝙧𝙖𝙥𝙝𝙮 𝙎𝙮𝙨𝙩𝙚𝙢 🔮
 
-Typography in `hyperbliss.tech` is designed to enhance readability while maintaining our cosmic aesthetic. We use a combination of futuristic display fonts and clean sans-serif typefaces.
+Typography in `hyperbliss.tech` is designed to enhance readability while
+maintaining our cosmic aesthetic. We use a combination of futuristic display
+fonts and clean sans-serif typefaces.
 
 ### 𝙁𝙤𝙣𝙩 𝙁𝙖𝙢𝙞𝙡𝙞𝙚𝙨
 
 ```css
---font-heading: "Orbitron", sans-serif; /* Futuristic, sharp, technical */
---font-body: "Rajdhani", sans-serif; /* Clean, readable with techno character */
---font-mono: "Space Mono", monospace; /* For code blocks and technical content */
---font-logo: "Noto Sans", sans-serif; /* Clean base for stylized logo text */
+--font-heading: 'Orbitron', sans-serif; /* Futuristic, sharp, technical */
+--font-body: 'Rajdhani', sans-serif; /* Clean, readable with techno character */
+--font-mono:
+  'Space Mono', monospace; /* For code blocks and technical content */
+--font-logo: 'Noto Sans', sans-serif; /* Clean base for stylized logo text */
 ```
 
 ### 𝙏𝙮𝙥𝙚 𝙎𝙘𝙖𝙡𝙚
 
-We implement responsive typography using `clamp()` to ensure text remains proportional across devices:
+We implement responsive typography using `clamp()` to ensure text remains
+proportional across devices:
 
 ```css
 /* Example type scale */
@@ -120,16 +136,15 @@ p {
 ### 𝙏𝙮𝙥𝙚 𝙏𝙧𝙚𝙖𝙩𝙢𝙚𝙣𝙩𝙨
 
 - **Headings**:
-
   - Uppercase treatment
   - Letter spacing: 1.5-2px
   - Text shadow for glow effect: `text-shadow: 0 0 20px var(--color-primary);`
 
 - **Body Text**:
-
   - Regular case
   - Line height: 1.6
-  - Text shadow for subtle enhancement: `text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);`
+  - Text shadow for subtle enhancement:
+    `text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);`
 
 - **Special Text Effects**:
   - Gradient text: Uses background clip for color fills
@@ -138,7 +153,8 @@ p {
 
 ## ✨ 𝘾𝙤𝙢𝙥𝙤𝙣𝙚𝙣𝙩 𝙎𝙩𝙮𝙡𝙚𝙨 ✨
 
-Our component library features consistent styling patterns that should be followed for all new components.
+Our component library features consistent styling patterns that should be
+followed for all new components.
 
 ### 𝘾𝙖𝙧𝙙𝙨
 
@@ -185,7 +201,7 @@ With before pseudo-element for fill effect:
 
 ```css
 &::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -255,7 +271,8 @@ outline: none;
 
 ## 🌟 𝘼𝙣𝙞𝙢𝙖𝙩𝙞𝙤𝙣 𝙋𝙧𝙞𝙣𝙘𝙞𝙥𝙡𝙚𝙨 🌟
 
-Animations in `hyperbliss.tech` create a sense of magical interactivity. We use Framer Motion for most animations, with these guidelines:
+Animations in `hyperbliss.tech` create a sense of magical interactivity. We use
+Framer Motion for most animations, with these guidelines:
 
 ### 𝘼𝙣𝙞𝙢𝙖𝙩𝙞𝙤𝙣 𝙏𝙮𝙥𝙚𝙨
 
@@ -293,18 +310,16 @@ Animations in `hyperbliss.tech` create a sense of magical interactivity. We use 
 Our site features several signature animation effects:
 
 1. **Glitch Effect**
-
    - Used for emphasizing words or creating cyberpunk atmosphere
    - Implemented via the `GlitchSpan` component
 
 2. **Sparkling Name**
-
    - Used for name emphasis and magical highlighting
    - Implemented via the `SparklingName` component
 
 3. **Logo Animation**
-
-   - Multiple effects including gradient cycling, flicker, and chromatic aberration
+   - Multiple effects including gradient cycling, flicker, and chromatic
+     aberration
    - Creates a distinctive, memorable brand presence
 
 4. **CyberScape Background**
@@ -451,13 +466,17 @@ animation: gradientShift 5s ease infinite;
 ```css
 /* Cyberpunk corner accent */
 &::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   right: 0;
   width: 30px;
   height: 30px;
-  background: linear-gradient(45deg, transparent 50%, rgba(0, 255, 255, 0.1) 50%);
+  background: linear-gradient(
+    45deg,
+    transparent 50%,
+    rgba(0, 255, 255, 0.1) 50%
+  );
   clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 ```
@@ -470,7 +489,7 @@ When implementing new components, use these patterns:
 
 ```jsx
 // Importing styled-components
-import styled from "styled-components";
+import styled from 'styled-components'
 
 // Base component with props
 const MyComponent =
@@ -485,7 +504,7 @@ const MyComponent =
     color: ${(props) => `rgb(${props.$color})`};
     transform: translateY(-2px);
   }
-`;
+`
 
 // Responsive adjustments
 const ResponsiveComponent = styled.div`
@@ -495,14 +514,14 @@ const ResponsiveComponent = styled.div`
   @media (min-width: 768px) {
     width: 85%;
   }
-`;
+`
 ```
 
 ### 𝘼𝙣𝙞𝙢𝙖𝙩𝙞𝙤𝙣 𝙄𝙢𝙥𝙡𝙚𝙢𝙚𝙣𝙩𝙖𝙩𝙞𝙤𝙣
 
 ```jsx
 // Using Framer Motion
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
 
 // Animation variants
 const containerVariants = {
@@ -513,7 +532,7 @@ const containerVariants = {
       staggerChildren: 0.3,
     },
   },
-};
+}
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -524,18 +543,19 @@ const itemVariants = {
       duration: 0.5,
     },
   },
-};
+}
 
 // Implementation
-<motion.div variants={containerVariants} initial="hidden" animate="visible">
+;<motion.div variants={containerVariants} initial="hidden" animate="visible">
   <motion.h1 variants={itemVariants}>Animated Title</motion.h1>
   <motion.p variants={itemVariants}>Animated paragraph</motion.p>
-</motion.div>;
+</motion.div>
 ```
 
 ## 🧙‍♀️ 𝙏𝙤𝙣𝙚 & 𝙑𝙤𝙞𝙘𝙚 𝙂𝙪𝙞𝙙𝙚 🧙‍♀️
 
-The voice of `hyperbliss.tech` reflects Stefanie Jane's multifaceted personality: technical, magical, and warmly approachable.
+The voice of `hyperbliss.tech` reflects Stefanie Jane's multifaceted
+personality: technical, magical, and warmly approachable.
 
 ### 𝙏𝙤𝙣𝙚 𝘼𝙩𝙩𝙧𝙞𝙗𝙪𝙩𝙚𝙨
 
@@ -584,24 +604,26 @@ We use React Icons, primarily from the `Fa` and `Io` collections. Icons should:
 ### 𝙉𝙖𝙢𝙞𝙣𝙜 𝘾𝙤𝙣𝙫𝙚𝙣𝙩𝙞𝙤𝙣𝙨
 
 - **Component Files**: PascalCase (e.g., `GlitchSpan.tsx`)
-- **Styled Components**: PascalCase with descriptive names (e.g., `StyledButton`)
+- **Styled Components**: PascalCase with descriptive names (e.g.,
+  `StyledButton`)
 - **CSS Variables**: kebab-case (e.g., `--color-primary`)
-- **Props**: camelCase, with `$` prefix for styled-component props (e.g., `$color`)
+- **Props**: camelCase, with `$` prefix for styled-component props (e.g.,
+  `$color`)
 
 ### 𝙎𝙩𝙮𝙡𝙚𝙙 𝘾𝙤𝙢𝙥𝙤𝙣𝙚𝙣𝙩𝙨 𝙋𝙖𝙩𝙩𝙚𝙧𝙣
 
 ```jsx
 // Component structure
-import styled from "styled-components";
+import styled from 'styled-components'
 
 // Base components
 const ComponentWrapper = styled.div`
   /* Base styles */
-`;
+`
 
 const ComponentTitle = styled.h2`
   /* Title styles */
-`;
+`
 
 // Component implementation
 const MyComponent = ({ title, children }) => {
@@ -610,10 +632,10 @@ const MyComponent = ({ title, children }) => {
       <ComponentTitle>{title}</ComponentTitle>
       {children}
     </ComponentWrapper>
-  );
-};
+  )
+}
 
-export default MyComponent;
+export default MyComponent
 ```
 
 ### 𝙍𝙚𝙨𝙥𝙤𝙣𝙨𝙞𝙫𝙚 𝙋𝙖𝙩𝙩𝙚𝙧𝙣𝙨
@@ -627,7 +649,7 @@ const Title = styled.h1`
   @media (max-width: 768px) {
     margin-bottom: 1rem;
   }
-`;
+`
 
 // Responsive containers
 const Container = styled.div`
@@ -643,14 +665,18 @@ const Container = styled.div`
     width: 95%;
     padding: 1rem;
   }
-`;
+`
 ```
 
 ## ✧･ﾟ: ✧･ﾟ 𝙁𝙞𝙣𝙖𝙡 𝙉𝙤𝙩𝙚𝙨 ･ﾟ✧:･ﾟ✧
 
-This style guide is a living document that will evolve alongside `hyperbliss.tech`. As new components and patterns emerge, they should be documented here for consistency and reference.
+This style guide is a living document that will evolve alongside
+`hyperbliss.tech`. As new components and patterns emerge, they should be
+documented here for consistency and reference.
 
-Remember that while aesthetics are important, usability and accessibility should never be compromised. Our cosmic digital realm should be navigable and enjoyable for everyone, regardless of their abilities or devices.
+Remember that while aesthetics are important, usability and accessibility should
+never be compromised. Our cosmic digital realm should be navigable and enjoyable
+for everyone, regardless of their abilities or devices.
 
 <div align="center">
 
