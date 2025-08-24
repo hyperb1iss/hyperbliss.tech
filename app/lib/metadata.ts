@@ -25,6 +25,16 @@ const DEFAULT_OG_IMAGE = {
  */
 const siteMetadata: Metadata = {
   metadataBase: new URL(BASE_URL),
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    other: [{ rel: "mask-icon", url: "/safari-pinned-tab.svg", color: "#5bbad5" }],
+  },
+  manifest: "/site.webmanifest",
   title: {
     default: SITE_TITLE,
     template: "%s | Hyperbliss",
@@ -55,8 +65,14 @@ const siteMetadata: Metadata = {
     "indie dev blog",
     ...Array.from(TECH_TAGS),
   ],
-  authors: [{ name: AUTHOR_NAME }],
+  authors: [{ name: AUTHOR_NAME, url: BASE_URL }],
   creator: AUTHOR_NAME,
+  publisher: AUTHOR_NAME,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: "website",
     locale: OG_LOCALE,
@@ -69,9 +85,11 @@ const siteMetadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
@@ -79,13 +97,22 @@ const siteMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     site: "@hyperb1iss",
     creator: "@hyperb1iss",
     images: [DEFAULT_OG_IMAGE],
   },
   alternates: {
     canonical: `${BASE_URL}/`,
+    languages: {
+      "en-US": `${BASE_URL}/`,
+    },
+    types: {
+      "application/rss+xml": `${BASE_URL}/api/rss`,
+    },
   },
+  category: "technology",
 };
 
 export default siteMetadata;
