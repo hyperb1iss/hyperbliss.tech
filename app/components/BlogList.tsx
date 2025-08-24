@@ -2,10 +2,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import BlogCard from './BlogCard'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
-import SilkCard from './SilkCard'
 
 const PostList = styled(motion.div)`
   display: grid;
@@ -39,6 +40,21 @@ interface BlogListProps {
 }
 
 export default function BlogList({ posts }: BlogListProps) {
+  // Force re-render on mount to ensure styles are applied
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <PageLayout>
+        <PageTitle>Blog</PageTitle>
+      </PageLayout>
+    )
+  }
+
   return (
     <PageLayout>
       <PageTitle>Blog</PageTitle>
@@ -56,37 +72,19 @@ export default function BlogList({ posts }: BlogListProps) {
           },
         }}
       >
-        {posts.map(({ slug, frontmatter }, index) => {
-          // Map blog titles to emojis or use default
-          const blogIcons: { [key: string]: string } = {
-            'HyperShell': '🐚',
-            'CyberScape': '🌌',
-            'Creative Coding': '🎨',
-            'Designing for Emotion': '💖',
-          }
-          
-          const icon = Object.keys(blogIcons).find(key => 
-            frontmatter.title.includes(key)
-          ) ? blogIcons[Object.keys(blogIcons).find(key => 
-            frontmatter.title.includes(key)
-          )!] : '📝'
-          
-          return (
-            <SilkCard
-              description={frontmatter.excerpt}
-              icon={icon}
-              index={index}
-              key={slug}
-              link={`/blog/${slug}`}
-              linkText="Read Post"
-              meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
-                frontmatter.author ? `• ${frontmatter.author}` : ''
-              }`}
-              tags={frontmatter.tags}
-              title={frontmatter.title}
-            />
-          )
-        })}
+        {posts.map(({ slug, frontmatter }, index) => (
+          <BlogCard
+            author={frontmatter.author}
+            date={frontmatter.date}
+            description={frontmatter.excerpt}
+            index={index}
+            key={slug}
+            link={`/blog/${slug}`}
+            linkText="Read Post"
+            tags={frontmatter.tags}
+            title={frontmatter.title}
+          />
+        ))}
       </PostList>
     </PageLayout>
   )

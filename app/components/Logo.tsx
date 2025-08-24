@@ -25,7 +25,7 @@ const animateGradient = keyframes`
 `
 
 // Flicker keyframe animation
-const flicker = keyframes`
+const _flicker = keyframes`
   0%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%, 45%, 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95%, 100% {
     opacity: 1;
     text-shadow: 
@@ -311,7 +311,7 @@ const LogoEmojis = styled.span`
   }
 `
 
-const GlowingEmoji = styled(LogoEmojis)`
+const _GlowingEmoji = styled(LogoEmojis)`
   animation: ${chromaticAberration} 3s ease-in-out infinite;
   transition: text-shadow 0.3s ease;
   display: inline-block;
@@ -364,13 +364,7 @@ const Logo: React.FC = () => {
     <LogoContainer>
       <LogoLink href="/" onClick={handleNavigation} ref={logoRef}>
         <LogoWrapper>
-          <LogoImage 
-            src="/images/logo.png" 
-            alt="hyperbliss" 
-            width={350}
-            height={70}
-            priority
-          />
+          <LogoImage alt="hyperbliss" height={70} priority={true} src="/images/logo.png" width={350} />
           <TechnologiesText>technologies</TechnologiesText>
         </LogoWrapper>
       </LogoLink>

@@ -37,6 +37,9 @@ interface ProjectListProps {
 }
 
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
+  // Remove mounted state - let SSR handle initial render properly
+  // The StyledComponentsRegistry at root level handles hydration
+
   return (
     <ProjectsGrid
       animate="visible"

@@ -7,7 +7,7 @@ const MainContentWrapper = styled(motion.main)`
   width: 100%;
   max-width: var(--container-xl);
   margin: 0 auto;
-  padding: var(--space-24) var(--space-8) var(--space-16);
+  padding: var(--space-24) var(--space-12) var(--space-16);
   min-height: 100vh;
   position: relative;
   background: transparent;

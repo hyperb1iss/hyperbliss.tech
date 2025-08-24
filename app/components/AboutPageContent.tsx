@@ -232,9 +232,18 @@ const SkillChip = styled(motion.div)`
 
 const AboutPageContent: React.FC = () => {
   const skills = [
-    'React', 'TypeScript', 'Node.js', 'Python', 
-    'AWS', 'Docker', 'Kubernetes', 'GraphQL',
-    'Android', 'Rust', 'AI/ML', 'WebGL'
+    'React',
+    'TypeScript',
+    'Node.js',
+    'Python',
+    'AWS',
+    'Docker',
+    'Kubernetes',
+    'GraphQL',
+    'Android',
+    'Rust',
+    'AI/ML',
+    'WebGL',
   ]
 
   return (
@@ -254,52 +263,50 @@ const AboutPageContent: React.FC = () => {
         />
         <TextContent>
           <Paragraph>
-            Welcome! I'm <SparklingName name="Stefanie Jane" />, a full-stack engineer and creative technologist 
-            passionate about building extraordinary digital experiences. With over two decades in tech, I've journeyed 
+            Welcome! I'm <SparklingName name="Stefanie Jane" />, a full-stack engineer and creative technologist
+            passionate about building extraordinary digital experiences. With over two decades in tech, I've journeyed
             from kernel hacking to cloud architecture, always seeking the perfect fusion of art and code.
           </Paragraph>
           <Paragraph>
-            My expertise spans the entire technology stack—from embedded systems and Android OS development to 
-            modern web frameworks and AI/ML applications. I've led teams at companies like T-Mobile and Microsoft, 
-            pioneered open-source innovations, and consistently pushed the boundaries of what's possible in software.
+            My expertise spans the entire technology stack—from embedded systems and Android OS development to modern
+            web frameworks and AI/ML applications. I've led teams at companies like T-Mobile and Microsoft, pioneered
+            open-source innovations, and consistently pushed the boundaries of what's possible in software.
           </Paragraph>
           <Paragraph>
-            Beyond code, I'm a music producer, hardware tinkerer, and perpetual learner. I believe the best 
-            technology emerges at the intersection of diverse disciplines. Whether I'm crafting elegant algorithms, 
-            designing intuitive interfaces, or composing electronic music, I bring creativity and precision to 
-            everything I create.
+            Beyond code, I'm a music producer, hardware tinkerer, and perpetual learner. I believe the best technology
+            emerges at the intersection of diverse disciplines. Whether I'm crafting elegant algorithms, designing
+            intuitive interfaces, or composing electronic music, I bring creativity and precision to everything I
+            create.
           </Paragraph>
           <Paragraph>
-            Currently, I'm focused on building next-generation AI-powered applications and exploring the frontiers 
-            of human-computer interaction. I'm always excited to collaborate on projects that challenge conventions 
-            and create meaningful impact.
+            Currently, I'm focused on building next-generation AI-powered applications and exploring the frontiers of
+            human-computer interaction. I'm always excited to collaborate on projects that challenge conventions and
+            create meaningful impact.
           </Paragraph>
           <Paragraph>
             Want to build something amazing together? Feel free to reach out via{' '}
             <StyledLink href="mailto:stef@hyperbliss.tech">email</StyledLink> or connect on{' '}
-            <StyledLink href="https://linkedin.com/in/hyperb1iss" target="_blank" rel="noopener noreferrer">
+            <StyledLink href="https://linkedin.com/in/hyperb1iss" rel="noopener noreferrer" target="_blank">
               LinkedIn
-            </StyledLink>. You can also explore my open-source work on{' '}
-            <StyledLink href="https://github.com/hyperb1iss" target="_blank" rel="noopener noreferrer">
+            </StyledLink>
+            . You can also explore my open-source work on{' '}
+            <StyledLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">
               GitHub
-            </StyledLink>.
+            </StyledLink>
+            .
           </Paragraph>
         </TextContent>
-        
-        <SkillsSection
-          animate={{ opacity: 1 }}
-          initial={{ opacity: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        >
+
+        <SkillsSection animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
           <SectionTitle>Core Technologies</SectionTitle>
           <SkillGrid>
             {skills.map((skill, index) => (
               <SkillChip
-                key={skill}
-                whileHover={{ scale: 1.05 }}
-                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                key={skill}
                 transition={{ delay: 0.5 + index * 0.05 }}
+                whileHover={{ scale: 1.05 }}
               >
                 {skill}
               </SkillChip>

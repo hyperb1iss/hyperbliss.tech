@@ -6,7 +6,13 @@ import Link from 'next/link'
 import { FaArrowRight, FaGithub } from 'react-icons/fa6'
 import styled from 'styled-components'
 
-const CardWrapper = styled(motion.div)`
+const CardWrapper = styled(motion.div)
+  .attrs({
+    'data-component': 'silk-card-v2',
+  })
+  .withConfig({
+    shouldForwardProp: (prop) => !['$isHovered', '$mouseX', '$mouseY'].includes(prop),
+  })`
   background: linear-gradient(
     135deg,
     rgba(162, 89, 255, 0.12) 0%,
@@ -114,9 +120,7 @@ const CardTitle = styled.h3`
   background: linear-gradient(
     90deg,
     #ff75d8 0%,
-    #e0aaff 25%,
-    #d946ef 50%,
-    #e0aaff 75%,
+    #e0aaff 50%,
     #ff75d8 100%
   );
   background-size: 200% 100%;
@@ -129,17 +133,11 @@ const CardTitle = styled.h3`
   z-index: 1;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  filter: drop-shadow(0 0 15px rgba(255, 117, 216, 0.5))
-          drop-shadow(0 0 25px rgba(224, 170, 255, 0.25));
-  transition: all var(--duration-fast) var(--ease-silk);
-  animation: warmGlow 4s ease-in-out infinite;
-  
-  @keyframes warmGlow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
+  filter: drop-shadow(0 0 8px rgba(255, 117, 216, 0.3));
+  transition: all var(--duration-normal) var(--ease-silk);
   
   ${CardWrapper}:hover & {
+    background-position: 100% 50%;
     filter: drop-shadow(0 0 20px rgba(255, 117, 216, 0.7))
             drop-shadow(0 0 35px rgba(217, 70, 239, 0.4));
   }
@@ -339,6 +337,68 @@ interface SilkCardProps {
 }
 
 export const SilkCard: React.FC<SilkCardProps> = ({
+  title,
+  description,
+  link,
+  tags,
+  meta,
+  linkText = 'Learn More',
+  githubLink,
+  index = 0,
+  className,
+  style,
+}) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    e.currentTarget.style.setProperty('--mouse-x', `${x}%`)
+    e.currentTarget.style.setProperty('--mouse-y', `${y}%`)
+  }
+
+  return (
+    <CardWrapper
+      animate={{ opacity: 1, y: 0 }}
+      className={className}
+      initial={{ opacity: 0, y: 20 }}
+      onMouseMove={handleMouseMove}
+      style={style}
+      transition={{
+        delay: index * 0.1,
+        duration: 0.6,
+        ease: [0.23, 1, 0.32, 1],
+      }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <CardContent>
+        <CardTitle>{title}</CardTitle>
+        {meta && <CardMeta>{meta}</CardMeta>}
+        <CardDescription>{description}</CardDescription>
+        {tags && tags.length > 0 && (
+          <TagsContainer>
+            {tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </TagsContainer>
+        )}
+      </CardContent>
+      <CardFooter>
+        <CardLink href={link}>
+          {linkText} <FaArrowRight />
+        </CardLink>
+        {githubLink && (
+          <GithubLink href={githubLink} onClick={(e) => e.stopPropagation()} rel="noopener noreferrer" target="_blank">
+            <FaGithub />
+          </GithubLink>
+        )}
+      </CardFooter>
+    </CardWrapper>
+  )
+}
+
+// Keep the original component definition for backwards compatibility
+const _OriginalSilkCard: React.FC<SilkCardProps> = ({
   title,
   description,
   link,

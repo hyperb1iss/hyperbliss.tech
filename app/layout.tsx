@@ -2,6 +2,7 @@
 import { Metadata } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
+import StyledComponentsRegistry from './lib/registry'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
 import { notoSans, orbitron, rajdhani, spaceMono } from './styles/fonts'
 import './styles/globals.css'
@@ -12,6 +13,7 @@ export const metadata: Metadata = siteMetadata
  * RootLayout component
  * The main layout component that wraps the entire application.
  * Provides global context, headers, and scripts.
+ * CRITICAL: StyledComponentsRegistry must wrap the entire app for SSR
  * @param {React.ReactNode} children - Child components
  * @returns {JSX.Element} Rendered root layout
  */
@@ -23,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <StructuredData data={structuredData} />
       </head>
-      <body>{children}</body>
+      <body>
+        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+      </body>
     </html>
   )
 }

@@ -8,6 +8,8 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 /**
  * StyledComponentsRegistry component
  * Provides server-side rendering support for styled-components
+ * CRITICAL: Must be at root level to capture all styled-components
+ * Fixes hydration issues and ensures proper style loading during navigation
  * @param children - The child components to be wrapped
  * @returns A component with styled-components server-side rendering support
  */
@@ -22,7 +24,19 @@ export default function StyledComponentsRegistry({ children }: { children: React
     return <>{styles}</>
   })
 
-  if (typeof window !== 'undefined') return <>{children}</>
+  if (typeof window !== 'undefined') {
+    return <>{children}</>
+  }
 
-  return <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>{children}</StyleSheetManager>
+  return (
+    <StyleSheetManager
+      sheet={styledComponentsStyleSheet.instance}
+      shouldForwardProp={(prop) => {
+        // Filter out internal props and transient props (starting with $)
+        return !prop.startsWith('$') && !['as', 'theme', 'forwardedAs'].includes(prop) && !prop.startsWith('data-') // Allow data attributes
+      }}
+    >
+      {children}
+    </StyleSheetManager>
+  )
 }

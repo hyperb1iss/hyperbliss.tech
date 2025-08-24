@@ -3,9 +3,9 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import { FiDownload, FiMail, FiGithub, FiLinkedin, FiGlobe, FiLink } from 'react-icons/fi'
+import { FiDownload } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
-import styled, { StyleSheetManager, keyframes } from 'styled-components'
+import styled, { keyframes, StyleSheetManager } from 'styled-components'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 
@@ -383,9 +383,9 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
       <ResumeContainer
         animate={{ opacity: 1, y: 0 }}
         initial={{ opacity: 0, y: 20 }}
-        transition={{ 
+        transition={{
           duration: 0.6,
-          ease: [0.23, 1, 0.32, 1]
+          ease: [0.23, 1, 0.32, 1],
         }}
       >
         <MarkdownWrapper>
@@ -394,12 +394,12 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
           </StyleSheetManager>
         </MarkdownWrapper>
       </ResumeContainer>
-      
+
       <DownloadButton
-        href="/resume.pdf"
-        download={true}
-        title="Download Resume as PDF"
         aria-label="Download Resume as PDF"
+        download={true}
+        href="/resume.pdf"
+        title="Download Resume as PDF"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
