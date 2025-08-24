@@ -585,7 +585,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
   // Parse the resume markdown
   const resumeData = useMemo(() => parseResume(content), [content])
 
-  const { name, tagline, contact, summary, skills, experience, projects, speaking, awards, interests } = resumeData
+  const { name, tagline, contact, summary, skills, experience, projects, speaking, awards } = resumeData
 
   // Filter out empty skill categories
   const displaySkills = Object.entries(skills).filter(([_, items]) => items.length > 0)

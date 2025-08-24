@@ -51,14 +51,17 @@ const BackgroundGradient = styled(motion.div)`
 `
 
 const ContentContainer = styled(motion.div)`
-  max-width: var(--container-xl);
-  margin: 0 auto;
   width: 100%;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 0 var(--space-6);
+  
+  @media (max-width: 768px) {
+    padding: 0 var(--space-4);
+  }
 `
 
 const Title = styled(motion.h1)`

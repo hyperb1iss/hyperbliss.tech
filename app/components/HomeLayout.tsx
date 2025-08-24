@@ -8,46 +8,44 @@ import HeroSectionSilk from './HeroSectionSilk'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
 
 const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto; /* Center the content */
   width: 100%;
-  padding: 0 16px; /* Use consistent padding */
+`
 
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: flex-start;
-    max-width: 1200px; /* Set a max-width to prevent content from stretching */
-  }
-
-  @media (min-width: 1400px) {
-    max-width: 1366px;
+const DesktopLayout = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 `
 
 const MainContent = styled.main`
-  flex: 1 1 0%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; /* Allow flex item to shrink */
+  min-width: 0;
 `
 
-const SidebarWrapper = styled.div`
-  flex: 0 1 300px; /* Sidebar has an initial width of 300px but can shrink */
-  margin-top: 2rem;
-  min-width: 200px; /* Prevent sidebar from becoming too narrow */
-
-  @media (min-width: 768px) {
-    margin-top: 0;
-    margin-left: 2rem; /* Space between main content and sidebar */
+const SidebarWrapper = styled.aside`
+  flex: 0 0 350px;
+  padding: 2rem;
+  position: sticky;
+  top: 100px;
+  align-self: flex-start;
+  
+  @media (max-width: 1200px) {
+    flex: 0 0 300px;
   }
-
-  @media (max-width: 1024px) {
-    flex-basis: 250px; /* Adjust sidebar width on smaller desktops */
-  }
-
-  @media (min-width: 1400px) {
-    flex-basis: 350px; /* Increase sidebar width on larger screens */
+  
+  @media (max-width: 768px) {
+    position: relative;
+    top: auto;
+    flex: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
 `
 
@@ -95,6 +93,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
   return (
     <ContentWrapper>
       {isMobile ? (
+        // Mobile layout: Stack everything vertically
         <>
           <HeroSectionSilk />
           <SidebarWrapper>
@@ -103,7 +102,8 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           <FeaturedProjectsSectionSilk projects={projects} />
         </>
       ) : (
-        <>
+        // Desktop layout: Hero & Projects on left, Sidebar on right
+        <DesktopLayout>
           <MainContent>
             <HeroSectionSilk />
             <FeaturedProjectsSectionSilk projects={projects} />
@@ -111,7 +111,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
           <SidebarWrapper>
             <LatestBlogPostsSilk isMobile={isMobile} posts={latestPosts} />
           </SidebarWrapper>
-        </>
+        </DesktopLayout>
       )}
     </ContentWrapper>
   )

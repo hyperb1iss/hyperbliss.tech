@@ -78,14 +78,16 @@ const CardWrapper = styled(motion.div)`
     transform: translateY(-8px) scale(1.02);
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.12) 0%,
-      rgba(30, 41, 59, 0.55) 40%,
-      rgba(0, 255, 240, 0.08) 100%
+      rgba(255, 117, 216, 0.15) 0%,
+      rgba(217, 70, 239, 0.12) 25%,
+      rgba(30, 41, 59, 0.55) 50%,
+      rgba(236, 72, 153, 0.1) 75%,
+      rgba(255, 117, 216, 0.12) 100%
     );
     box-shadow: 
-      0 10px 40px rgba(139, 92, 246, 0.3),
-      0 20px 60px rgba(0, 255, 240, 0.15),
-      inset 0 0 30px rgba(224, 170, 255, 0.08);
+      0 10px 40px rgba(255, 117, 216, 0.35),
+      0 20px 60px rgba(217, 70, 239, 0.25),
+      inset 0 0 30px rgba(236, 72, 153, 0.1);
     
     &::before {
       opacity: 0.7;
@@ -180,28 +182,29 @@ const TagsContainer = styled.div`
 const Tag = styled.span`
   background: linear-gradient(
     135deg,
-    rgba(139, 92, 246, 0.15),
-    rgba(0, 255, 240, 0.1)
+    rgba(255, 117, 216, 0.15),
+    rgba(217, 70, 239, 0.1)
   );
-  color: #8b5cf6;
+  color: #ff75d8;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
   font-size: 1.2rem;
   font-weight: var(--font-medium);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(255, 117, 216, 0.3);
+  backdrop-filter: blur(8px);
   transition: all var(--duration-fast) var(--ease-silk);
-  text-shadow: 0 0 6px rgba(139, 92, 246, 0.4);
+  text-shadow: 0 0 8px rgba(255, 117, 216, 0.5);
   
   &:hover {
-    border-color: rgba(0, 255, 240, 0.5);
-    color: #00fff0;
     background: linear-gradient(
       135deg,
-      rgba(0, 255, 240, 0.2),
-      rgba(224, 170, 255, 0.15)
+      rgba(236, 72, 153, 0.25),
+      rgba(255, 117, 216, 0.2)
     );
-    text-shadow: 0 0 8px rgba(0, 255, 240, 0.6);
-    transform: scale(1.1);
+    border-color: #ff75d8;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255, 117, 216, 0.8);
+    transform: scale(1.05) translateY(-2px);
   }
 `
 
@@ -219,22 +222,26 @@ const CardButton = styled.div`
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: var(--font-semibold);
-  color: #00fff0;
+  color: #1e1b2e;
   text-decoration: none;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all var(--duration-fast) var(--ease-silk);
+  transition: all var(--duration-normal) var(--ease-silk);
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(0, 255, 240, 0.08),
-    rgba(139, 92, 246, 0.05)
+    #ff75d8,
+    #ec4899
   );
-  border: 1px solid rgba(0, 255, 240, 0.25);
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
+  border: none;
+  box-shadow: 
+    0 4px 15px rgba(255, 117, 216, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  overflow: hidden;
   
   &::before {
     content: '';
@@ -242,22 +249,23 @@ const CardButton = styled.div`
     inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(224, 170, 255, 0.15)
+      #d946ef,
+      #ff75d8
     );
     border-radius: var(--radius-md);
     opacity: 0;
-    transition: opacity var(--duration-fast) var(--ease-silk);
+    transition: opacity var(--duration-normal) var(--ease-silk);
   }
   
   &:hover {
-    transform: translateX(4px);
-    color: var(--silk-circuit-cyan);
-    border-color: rgba(0, 255, 240, 0.4);
-    box-shadow: 0 0 15px rgba(0, 255, 240, 0.3);
+    transform: translateX(4px) scale(1.02);
+    box-shadow: 
+      0 6px 25px rgba(255, 117, 216, 0.6),
+      0 0 40px rgba(217, 70, 239, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
     
     &::before {
-      opacity: 1;
+      opacity: 0.3;
     }
     
     svg {
@@ -266,7 +274,9 @@ const CardButton = styled.div`
   }
   
   svg {
-    transition: transform var(--duration-fast) var(--ease-silk);
+    transition: transform var(--duration-normal) var(--ease-silk);
+    position: relative;
+    z-index: 1;
   }
 `
 

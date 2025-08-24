@@ -4,8 +4,8 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import styled from 'styled-components'
+import BlogCard from './BlogCard'
 import { usePageLoad } from './PageLoadOrchestrator'
-import SilkCard from './SilkCard'
 
 interface BlogPost {
   slug: string
@@ -162,7 +162,7 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
     },
   }
 
-  const formatDate = (dateString: string) => {
+  const _formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('en-US', {
       day: 'numeric',
@@ -199,14 +199,13 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
         {posts.length > 0 ? (
           posts.map((post, index) => (
             <motion.div key={post.slug} variants={itemVariants}>
-              <SilkCard
-                description={post.frontmatter.excerpt}
+              <BlogCard
+                author={post.frontmatter.author}
+                date={post.frontmatter.date}
+                excerpt={post.frontmatter.excerpt}
                 index={index}
                 link={`/blog/${post.slug}`}
-                linkText="Read Post"
-                meta={`${formatDate(post.frontmatter.date)}${
-                  post.frontmatter.author ? ` • ${post.frontmatter.author}` : ''
-                }`}
+                slug={post.slug}
                 tags={post.frontmatter.tags}
                 title={post.frontmatter.title}
               />

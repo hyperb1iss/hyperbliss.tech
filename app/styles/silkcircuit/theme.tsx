@@ -163,11 +163,13 @@ export function ThemeToggle() {
   const icons = {
     dark: (
       <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="20">
+        <title>Dark mode icon</title>
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
       </svg>
     ),
     light: (
       <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="20">
+        <title>Light mode icon</title>
         <circle cx="12" cy="12" r="5" />
         <line x1="12" x2="12" y1="1" y2="3" />
         <line x1="12" x2="12" y1="21" y2="23" />
@@ -181,6 +183,7 @@ export function ThemeToggle() {
     ),
     system: (
       <svg fill="none" height="20" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="20">
+        <title>System mode icon</title>
         <rect height="14" rx="2" ry="2" width="20" x="2" y="3" />
         <line x1="8" x2="16" y1="21" y2="21" />
         <line x1="12" x2="12" y1="17" y2="21" />
@@ -205,6 +208,7 @@ export function ThemeToggle() {
         padding: 'var(--space-2)',
         transition: 'all var(--duration-fast) var(--ease-silk)',
       }}
+      type="button"
     >
       {icons[mode === 'system' ? 'system' : effectiveMode]}
     </button>

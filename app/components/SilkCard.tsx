@@ -21,11 +21,11 @@ const CardWrapper = styled(motion.div)
   })`
   background: linear-gradient(
     135deg,
-    rgba(162, 89, 255, 0.12) 0%,
-    rgba(139, 92, 246, 0.08) 20%,
+    rgba(0, 255, 240, 0.12) 0%,
+    rgba(0, 229, 255, 0.08) 20%,
     rgba(30, 25, 45, 0.6) 50%,
-    rgba(217, 70, 239, 0.08) 80%,
-    rgba(255, 117, 216, 0.12) 100%
+    rgba(38, 198, 218, 0.08) 80%,
+    rgba(0, 172, 193, 0.12) 100%
   );
   backdrop-filter: blur(20px) saturate(1.3);
   border: 2px solid transparent;
@@ -42,10 +42,10 @@ const CardWrapper = styled(motion.div)
   transition: all var(--duration-normal) var(--ease-silk);
   cursor: pointer;
   box-shadow: 
-    0 0 20px rgba(217, 70, 239, 0.2),
-    0 0 40px rgba(162, 89, 255, 0.15),
-    0 0 15px rgba(255, 117, 216, 0.18),
-    inset 0 0 20px rgba(139, 92, 246, 0.08);
+    0 0 20px rgba(0, 255, 240, 0.2),
+    0 0 40px rgba(0, 229, 255, 0.15),
+    0 0 15px rgba(38, 198, 218, 0.18),
+    inset 0 0 20px rgba(0, 172, 193, 0.08);
   
   &::before {
     content: '';
@@ -55,12 +55,12 @@ const CardWrapper = styled(motion.div)
     padding: 2px;
     background: linear-gradient(
       135deg,
-      #d946ef,
-      #a855f7,
       #00fff0,
-      #ff75d8,
-      #ec4899,
-      #e0aaff
+      #00e5ff,
+      #26c6da,
+      #00acc1,
+      #0097a7,
+      #00bcd4
     );
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -97,17 +97,17 @@ const CardWrapper = styled(motion.div)
     transform: translateY(-8px) scale(1.02);
     background: linear-gradient(
       135deg,
-      rgba(217, 70, 239, 0.18) 0%,
-      rgba(168, 85, 247, 0.12) 25%,
+      rgba(0, 255, 240, 0.18) 0%,
+      rgba(0, 229, 255, 0.12) 25%,
       rgba(30, 25, 45, 0.65) 50%,
-      rgba(224, 170, 255, 0.1) 75%,
-      rgba(255, 117, 216, 0.18) 100%
+      rgba(38, 198, 218, 0.1) 75%,
+      rgba(0, 172, 193, 0.18) 100%
     );
     box-shadow: 
-      0 10px 40px rgba(217, 70, 239, 0.35),
-      0 20px 60px rgba(168, 85, 247, 0.25),
-      0 5px 25px rgba(224, 170, 255, 0.2),
-      inset 0 0 30px rgba(255, 117, 216, 0.12);
+      0 10px 40px rgba(0, 255, 240, 0.35),
+      0 20px 60px rgba(0, 229, 255, 0.25),
+      0 5px 25px rgba(38, 198, 218, 0.2),
+      inset 0 0 30px rgba(0, 172, 193, 0.12);
     
     &::before {
       opacity: 1;
@@ -126,7 +126,8 @@ const CardTitle = styled.h3`
   background: linear-gradient(
     90deg,
     #ff75d8 0%,
-    #e0aaff 50%,
+    #00fff0 33%,
+    #d946ef 66%,
     #ff75d8 100%
   );
   background-size: 200% 100%;
@@ -139,13 +140,13 @@ const CardTitle = styled.h3`
   z-index: 1;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  filter: drop-shadow(0 0 8px rgba(255, 117, 216, 0.3));
+  filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.3));
   transition: all var(--duration-normal) var(--ease-silk);
   
   ${CardWrapper}:hover & {
     background-position: 100% 50%;
-    filter: drop-shadow(0 0 20px rgba(255, 117, 216, 0.7))
-            drop-shadow(0 0 35px rgba(217, 70, 239, 0.4));
+    filter: drop-shadow(0 0 20px rgba(0, 255, 240, 0.7))
+            drop-shadow(0 0 35px rgba(0, 229, 255, 0.4));
   }
 `
 
@@ -153,20 +154,20 @@ const CardMeta = styled.div`
   font-family: var(--font-mono);
   font-size: 1.3rem;
   font-weight: var(--font-semibold);
-  color: var(--silk-quantum-purple);
+  color: var(--silk-circuit-cyan);
   margin-bottom: var(--space-4);
   padding: var(--space-2) var(--space-3);
   background: linear-gradient(
     90deg,
-    rgba(162, 89, 255, 0.2),
-    rgba(162, 89, 255, 0.1)
+    rgba(0, 255, 240, 0.2),
+    rgba(0, 255, 240, 0.1)
   );
-  border-left: 3px solid var(--silk-quantum-purple);
+  border-left: 3px solid var(--silk-circuit-cyan);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   display: inline-block;
   position: relative;
   z-index: 1;
-  text-shadow: 0 0 10px rgba(162, 89, 255, 0.5);
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
 `
 
 const CardDescription = styled.p`
@@ -194,7 +195,7 @@ const Tag = styled.span`
   background: linear-gradient(
     135deg,
     rgba(0, 255, 240, 0.15),
-    rgba(224, 170, 255, 0.1)
+    rgba(0, 172, 193, 0.1)
   );
   color: #00fff0;
   padding: var(--space-2) var(--space-3);
@@ -202,19 +203,20 @@ const Tag = styled.span`
   font-size: 1.2rem;
   font-weight: var(--font-medium);
   border: 1px solid rgba(0, 255, 240, 0.3);
+  backdrop-filter: blur(8px);
   transition: all var(--duration-fast) var(--ease-silk);
   text-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
   
   &:hover {
-    border-color: #e0aaff;
-    color: #e0aaff;
     background: linear-gradient(
       135deg,
-      rgba(224, 170, 255, 0.25),
-      rgba(217, 70, 239, 0.15)
+      rgba(0, 229, 255, 0.25),
+      rgba(0, 255, 240, 0.2)
     );
-    text-shadow: 0 0 10px rgba(224, 170, 255, 0.8);
-    transform: scale(1.1);
+    border-color: #00fff0;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(0, 255, 240, 0.8);
+    transform: scale(1.05) translateY(-2px);
   }
 `
 
@@ -232,22 +234,26 @@ const CardButton = styled.div`
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: var(--font-semibold);
-  color: #e0aaff;
+  color: #003d4d;
   text-decoration: none;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  transition: all var(--duration-fast) var(--ease-silk);
+  transition: all var(--duration-normal) var(--ease-silk);
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(224, 170, 255, 0.1),
-    rgba(217, 70, 239, 0.05)
+    #00fff0,
+    #00acc1
   );
-  border: 1px solid rgba(224, 170, 255, 0.3);
-  text-shadow: 0 0 10px rgba(224, 170, 255, 0.8);
+  border: none;
+  box-shadow: 
+    0 4px 15px rgba(0, 255, 240, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+  overflow: hidden;
   
   &::before {
     content: '';
@@ -255,24 +261,23 @@ const CardButton = styled.div`
     inset: 0;
     background: linear-gradient(
       135deg,
-      rgba(0, 255, 240, 0.3),
-      rgba(162, 89, 255, 0.3)
+      #00acc1,
+      #00fff0
     );
     border-radius: var(--radius-md);
     opacity: 0;
-    transition: opacity var(--duration-fast) var(--ease-silk);
+    transition: opacity var(--duration-normal) var(--ease-silk);
   }
   
   &:hover {
-    transform: translateX(4px);
-    color: var(--silk-white);
-    border-color: var(--silk-circuit-cyan);
+    transform: translateX(4px) scale(1.02);
     box-shadow: 
-      0 0 20px rgba(0, 255, 240, 0.6),
-      inset 0 0 20px rgba(0, 255, 240, 0.2);
+      0 6px 25px rgba(0, 255, 240, 0.6),
+      0 0 40px rgba(0, 172, 193, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
     
     &::before {
-      opacity: 1;
+      opacity: 0.3;
     }
     
     svg {
@@ -281,46 +286,58 @@ const CardButton = styled.div`
   }
   
   svg {
-    transition: transform var(--duration-fast) var(--ease-silk);
+    transition: transform var(--duration-normal) var(--ease-silk);
+    position: relative;
+    z-index: 1;
   }
 `
 
 const GithubLink = styled.button`
-  color: var(--text-secondary);
+  color: #003d4d;
   font-size: var(--text-lg);
   padding: var(--space-2);
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--duration-fast) var(--ease-silk);
+  transition: all var(--duration-normal) var(--ease-silk);
   position: relative;
-  background: rgba(162, 89, 255, 0.1);
-  border: 1px solid rgba(162, 89, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    #00fff0,
+    #00e5ff
+  );
+  border: none;
   cursor: pointer;
   outline: none;
+  box-shadow: 0 2px 10px rgba(0, 255, 240, 0.4);
+  overflow: hidden;
   
   &::before {
     content: '';
     position: absolute;
-    inset: -4px;
-    background: radial-gradient(
-      circle,
-      rgba(162, 89, 255, 0.4),
-      transparent 70%
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      #00acc1,
+      #00fff0
     );
     border-radius: var(--radius-full);
     opacity: 0;
-    transition: opacity var(--duration-fast) var(--ease-silk);
+    transition: opacity var(--duration-normal) var(--ease-silk);
   }
   
   &:hover {
-    color: var(--silk-quantum-purple);
-    transform: scale(1.2) rotate(360deg);
-    box-shadow: 0 0 20px rgba(162, 89, 255, 0.6);
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 4px 20px rgba(0, 255, 240, 0.6);
     
     &::before {
-      opacity: 1;
+      opacity: 0.3;
+    }
+    
+    svg {
+      position: relative;
+      z-index: 1;
     }
   }
 `
