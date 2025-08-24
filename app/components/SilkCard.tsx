@@ -7,10 +7,18 @@ import { FaArrowRight, FaGithub } from 'react-icons/fa6'
 import styled from 'styled-components'
 
 const CardWrapper = styled(motion.div)`
-  background: var(--surface-glass);
-  backdrop-filter: blur(var(--blur-lg));
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(162, 89, 255, 0.12) 0%,
+    rgba(139, 92, 246, 0.08) 20%,
+    rgba(30, 25, 45, 0.6) 50%,
+    rgba(217, 70, 239, 0.08) 80%,
+    rgba(255, 117, 216, 0.12) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.3);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--radius-xl);
   padding: var(--space-10);
   position: relative;
   overflow: hidden;
@@ -21,8 +29,42 @@ const CardWrapper = styled(motion.div)`
   justify-content: space-between;
   transition: all var(--duration-normal) var(--ease-silk);
   cursor: pointer;
+  box-shadow: 
+    0 0 20px rgba(217, 70, 239, 0.2),
+    0 0 40px rgba(162, 89, 255, 0.15),
+    0 0 15px rgba(255, 117, 216, 0.18),
+    inset 0 0 20px rgba(139, 92, 246, 0.08);
   
   &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      #d946ef,
+      #a855f7,
+      #00fff0,
+      #ff75d8,
+      #ec4899,
+      #e0aaff
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.6;
+    transition: opacity var(--duration-normal) var(--ease-silk);
+    background-size: 200% 200%;
+    animation: borderFlow 8s ease infinite;
+  }
+  
+  @keyframes borderFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  &::after {
     content: '';
     position: absolute;
     top: 0;
@@ -31,7 +73,7 @@ const CardWrapper = styled(motion.div)`
     bottom: 0;
     background: radial-gradient(
       circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      var(--silk-quantum-purple-alpha-10) 0%,
+      rgba(255, 255, 255, 0.1) 0%,
       transparent 50%
     );
     opacity: 0;
@@ -40,43 +82,87 @@ const CardWrapper = styled(motion.div)`
   }
 
   &:hover {
-    transform: translateY(-4px);
-    border-color: var(--silk-quantum-purple);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-8px) scale(1.02);
+    background: linear-gradient(
+      135deg,
+      rgba(217, 70, 239, 0.18) 0%,
+      rgba(168, 85, 247, 0.12) 25%,
+      rgba(30, 25, 45, 0.65) 50%,
+      rgba(224, 170, 255, 0.1) 75%,
+      rgba(255, 117, 216, 0.18) 100%
+    );
+    box-shadow: 
+      0 10px 40px rgba(217, 70, 239, 0.35),
+      0 20px 60px rgba(168, 85, 247, 0.25),
+      0 5px 25px rgba(224, 170, 255, 0.2),
+      inset 0 0 30px rgba(255, 117, 216, 0.12);
     
     &::before {
+      opacity: 1;
+    }
+    
+    &::after {
       opacity: 1;
     }
   }
 `
 
 const CardTitle = styled.h3`
-  font-family: var(--font-display);
+  font-family: 'Audiowide', var(--font-display);
   font-size: var(--text-fluid-xl);
   font-weight: var(--font-bold);
-  color: var(--text-primary);
+  background: linear-gradient(
+    90deg,
+    #ff75d8 0%,
+    #e0aaff 25%,
+    #d946ef 50%,
+    #e0aaff 75%,
+    #ff75d8 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin-bottom: var(--space-3);
   line-height: var(--leading-tight);
   position: relative;
   z-index: 1;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 15px rgba(162, 89, 255, 0.4);
+  letter-spacing: 0.08em;
+  filter: drop-shadow(0 0 15px rgba(255, 117, 216, 0.5))
+          drop-shadow(0 0 25px rgba(224, 170, 255, 0.25));
+  transition: all var(--duration-fast) var(--ease-silk);
+  animation: warmGlow 4s ease-in-out infinite;
+  
+  @keyframes warmGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  ${CardWrapper}:hover & {
+    filter: drop-shadow(0 0 20px rgba(255, 117, 216, 0.7))
+            drop-shadow(0 0 35px rgba(217, 70, 239, 0.4));
+  }
 `
 
 const CardMeta = styled.div`
-  font-family: var(--font-body);
-  font-size: 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
   font-weight: var(--font-semibold);
-  color: var(--silk-circuit-cyan);
+  color: var(--silk-quantum-purple);
   margin-bottom: var(--space-4);
   padding: var(--space-2) var(--space-3);
-  background: var(--silk-circuit-cyan-alpha-10);
-  border-left: 2px solid var(--silk-circuit-cyan);
+  background: linear-gradient(
+    90deg,
+    rgba(162, 89, 255, 0.2),
+    rgba(162, 89, 255, 0.1)
+  );
+  border-left: 3px solid var(--silk-quantum-purple);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   display: inline-block;
   position: relative;
   z-index: 1;
+  text-shadow: 0 0 10px rgba(162, 89, 255, 0.5);
 `
 
 const CardDescription = styled.p`
@@ -88,6 +174,7 @@ const CardDescription = styled.p`
   flex-grow: 1;
   position: relative;
   z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 `
 
 const TagsContainer = styled.div`
@@ -100,19 +187,30 @@ const TagsContainer = styled.div`
 `
 
 const Tag = styled.span`
-  background: var(--surface-overlay);
-  color: var(--text-secondary);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 240, 0.15),
+    rgba(224, 170, 255, 0.1)
+  );
+  color: #00fff0;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: var(--font-medium);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(0, 255, 240, 0.3);
   transition: all var(--duration-fast) var(--ease-silk);
+  text-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
   
   &:hover {
-    border-color: var(--silk-plasma-pink);
-    color: var(--silk-plasma-pink);
-    background: var(--silk-plasma-pink-alpha-10);
+    border-color: #e0aaff;
+    color: #e0aaff;
+    background: linear-gradient(
+      135deg,
+      rgba(224, 170, 255, 0.25),
+      rgba(217, 70, 239, 0.15)
+    );
+    text-shadow: 0 0 10px rgba(224, 170, 255, 0.8);
+    transform: scale(1.1);
   }
 `
 
@@ -130,7 +228,7 @@ const CardLink = styled(Link)`
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: var(--font-semibold);
-  color: var(--silk-quantum-purple);
+  color: #e0aaff;
   text-decoration: none;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
@@ -139,12 +237,23 @@ const CardLink = styled(Link)`
   gap: var(--space-2);
   transition: all var(--duration-fast) var(--ease-silk);
   position: relative;
+  background: linear-gradient(
+    135deg,
+    rgba(224, 170, 255, 0.1),
+    rgba(217, 70, 239, 0.05)
+  );
+  border: 1px solid rgba(224, 170, 255, 0.3);
+  text-shadow: 0 0 10px rgba(224, 170, 255, 0.8);
   
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--silk-quantum-purple-alpha-10);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 255, 240, 0.3),
+      rgba(162, 89, 255, 0.3)
+    );
     border-radius: var(--radius-md);
     opacity: 0;
     transition: opacity var(--duration-fast) var(--ease-silk);
@@ -152,6 +261,11 @@ const CardLink = styled(Link)`
   
   &:hover {
     transform: translateX(4px);
+    color: var(--silk-white);
+    border-color: var(--silk-circuit-cyan);
+    box-shadow: 
+      0 0 20px rgba(0, 255, 240, 0.6),
+      inset 0 0 20px rgba(0, 255, 240, 0.2);
     
     &::before {
       opacity: 1;
@@ -177,20 +291,27 @@ const GithubLink = styled.a`
   justify-content: center;
   transition: all var(--duration-fast) var(--ease-silk);
   position: relative;
+  background: rgba(162, 89, 255, 0.1);
+  border: 1px solid rgba(162, 89, 255, 0.3);
   
   &::before {
     content: '';
     position: absolute;
     inset: -4px;
-    background: var(--silk-circuit-cyan-alpha-10);
+    background: radial-gradient(
+      circle,
+      rgba(162, 89, 255, 0.4),
+      transparent 70%
+    );
     border-radius: var(--radius-full);
     opacity: 0;
     transition: opacity var(--duration-fast) var(--ease-silk);
   }
   
   &:hover {
-    color: var(--silk-circuit-cyan);
-    transform: scale(1.1) rotate(10deg);
+    color: var(--silk-quantum-purple);
+    transform: scale(1.2) rotate(360deg);
+    box-shadow: 0 0 20px rgba(162, 89, 255, 0.6);
     
     &::before {
       opacity: 1;
@@ -245,8 +366,8 @@ export const SilkCard: React.FC<SilkCardProps> = ({
       onMouseMove={handleMouseMove}
       style={style}
       transition={{
-        delay: index * 0.05,
-        duration: 0.5,
+        delay: index * 0.1,
+        duration: 0.6,
         ease: [0.23, 1, 0.32, 1],
       }}
       whileHover={{ scale: 1.02 }}

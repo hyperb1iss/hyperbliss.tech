@@ -62,7 +62,7 @@ const ContentContainer = styled(motion.div)`
 `
 
 const Title = styled(motion.h1)`
-  font-family: var(--font-display);
+  font-family: 'Audiowide', var(--font-display);
   font-size: var(--text-fluid-5xl);
   font-weight: var(--font-black);
   line-height: var(--leading-tight);
@@ -392,27 +392,29 @@ export default function HeroSectionSilk() {
         </TagCloud>
 
         <CTASection variants={itemVariants}>
-          <SilkButton
-            $size="lg"
-            $variant="primary"
-            as={Link}
-            href="/projects"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            View Projects
-          </SilkButton>
+          <Link href="/projects" style={{ textDecoration: 'none' }}>
+            <SilkButton
+              $size="lg"
+              $variant="primary"
+              as={motion.div}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              View Projects
+            </SilkButton>
+          </Link>
 
-          <SilkButton
-            $size="lg"
-            $variant="secondary"
-            as={Link}
-            href="/about"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Learn More
-          </SilkButton>
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <SilkButton
+              $size="lg"
+              $variant="secondary"
+              as={motion.div}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Learn More
+            </SilkButton>
+          </Link>
         </CTASection>
       </ContentContainer>
 

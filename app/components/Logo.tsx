@@ -1,6 +1,7 @@
 // app/components/Logo.tsx
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
 import { keyframes, styled } from 'styled-components'
@@ -129,36 +130,153 @@ const shimmer = keyframes`
  * Styled components for the Logo
  */
 
-const LogoText = styled.span`
-  font-family: var(--font-logo);
-  font-size: 2.6rem; // Baseline size (matches mobile view)
-  background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
-  background-size: 800% 800%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation:
-    ${animateGradient} 10s ease infinite,
-    ${flicker} 8s step-end infinite,
-    ${chromaticAberration} 3s ease-in-out infinite;
-  transition: text-shadow 0.1s ease;
-
-  &:hover {
-    animation:
-      ${animateGradient} 10s ease infinite,
-      ${shiftingGlow} 4s linear infinite;
+// Subtle glow animation for the logo
+const subtleGlow = keyframes`
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(162, 89, 255, 0.4));
   }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(0, 255, 240, 0.5));
+  }
+`
+
+const LogoWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 1.5rem;
+  overflow: visible;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+    
+    img {
+      filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.8));
+    }
+    
+    span {
+      filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.8));
+      transform: translateX(5px);
+    }
+  }
+`
+
+const LogoImage = styled(Image)`
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  animation: ${subtleGlow} 3s ease-in-out infinite;
+  transition: all 0.3s ease;
 
   @media (max-width: 768px) {
-    font-size: 2.6rem;
-  }
-
-  @media (min-width: 769px) {
-    font-size: calc(2.2rem + 0.8vw); // Increased base size for desktop
+    height: 50px;
   }
 
   @media (min-width: 1200px) {
-    font-size: calc(2.4rem + 0.8vw); // Further increase for very large screens
+    height: 80px;
+  }
+`
+
+// Technologies text animations
+const glitchText = keyframes`
+  0%, 100% {
+    text-shadow: 
+      0 0 2px rgba(0, 255, 240, 0.8),
+      -1px 0 rgba(255, 0, 255, 0.5),
+      1px 0 rgba(0, 255, 240, 0.5);
+  }
+  25% {
+    text-shadow: 
+      0 0 2px rgba(162, 89, 255, 0.8),
+      -2px 0 rgba(0, 255, 240, 0.5),
+      2px 0 rgba(255, 117, 216, 0.5);
+  }
+  50% {
+    text-shadow: 
+      0 0 2px rgba(255, 117, 216, 0.8),
+      -1px 0 rgba(162, 89, 255, 0.5),
+      1px 0 rgba(0, 255, 240, 0.5);
+  }
+  75% {
+    text-shadow: 
+      0 0 2px rgba(0, 255, 240, 0.8),
+      -2px 0 rgba(255, 117, 216, 0.5),
+      1px 0 rgba(162, 89, 255, 0.5);
+  }
+`
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+    letter-spacing: 0.5em;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    letter-spacing: 0.15em;
+  }
+`
+
+const scanline = keyframes`
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 10px;
+  }
+`
+
+const TechnologiesText = styled.span`
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 600;
+  background: linear-gradient(
+    90deg,
+    var(--silk-circuit-cyan),
+    var(--silk-quantum-purple),
+    var(--silk-plasma-pink),
+    var(--silk-circuit-cyan)
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  position: relative;
+  white-space: nowrap;
+  animation: 
+    ${slideIn} 0.8s ease-out 0.3s both,
+    ${glitchText} 4s ease-in-out infinite,
+    ${animateGradient} 6s linear infinite;
+  align-self: flex-end;
+  margin-bottom: 0.8rem;
+  
+  &::before {
+    content: 'technologies';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 255, 240, 0.03) 50%,
+      transparent 100%
+    );
+    background-size: 100% 5px;
+    animation: ${scanline} 8s linear infinite;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    display: none; // Hide on mobile for space
   }
 `
 
@@ -208,7 +326,12 @@ const LogoContainer = styled.div`
   align-items: center;
   height: 100%;
   margin-right: auto;
-  overflow: hidden;
+  overflow: visible;
+  padding-left: 2rem;
+  
+  @media (max-width: 768px) {
+    padding-left: 1rem;
+  }
 `
 
 const LogoLink = styled(Link)`
@@ -218,8 +341,9 @@ const LogoLink = styled(Link)`
   cursor: pointer;
   position: relative;
   height: 100%;
-  overflow: hidden;
+  overflow: visible;
   white-space: nowrap;
+  padding: 0.5rem;
 `
 
 /**
@@ -239,12 +363,16 @@ const Logo: React.FC = () => {
   return (
     <LogoContainer>
       <LogoLink href="/" onClick={handleNavigation} ref={logoRef}>
-        <LogoEmojis>🌠</LogoEmojis>
-        <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
-        <LogoEmojis>✨</LogoEmojis>
-        {['⎊', '⨳', '✵', '⊹'].map((emoji, index) => (
-          <GlowingEmoji key={index}>{emoji}</GlowingEmoji>
-        ))}
+        <LogoWrapper>
+          <LogoImage 
+            src="/images/logo.png" 
+            alt="hyperbliss" 
+            width={350}
+            height={70}
+            priority
+          />
+          <TechnologiesText>technologies</TechnologiesText>
+        </LogoWrapper>
       </LogoLink>
     </LogoContainer>
   )

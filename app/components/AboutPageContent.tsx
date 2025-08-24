@@ -1,407 +1,311 @@
 // app/components/AboutPageContent.tsx
+'use client'
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 import SparklingName from './SparklingName'
 
+// Animations
+const floatAnimation = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`
+
+const glowShift = keyframes`
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(162, 89, 255, 0.4),
+      0 0 40px rgba(162, 89, 255, 0.2),
+      inset 0 0 20px rgba(162, 89, 255, 0.1);
+  }
+  33% {
+    box-shadow:
+      0 0 20px rgba(0, 255, 240, 0.4),
+      0 0 40px rgba(0, 255, 240, 0.2),
+      inset 0 0 20px rgba(0, 255, 240, 0.1);
+  }
+  66% {
+    box-shadow:
+      0 0 20px rgba(255, 117, 216, 0.4),
+      0 0 40px rgba(255, 117, 216, 0.2),
+      inset 0 0 20px rgba(255, 117, 216, 0.1);
+  }
+`
+
 const ContentWrapper = styled(motion.div)`
   display: block;
-  width: 100%;
-  margin-top: 2rem;
-  padding: 0 2rem;
-  max-width: 1200px;
-  margin: 2rem auto;
+  width: 90%;
+  max-width: 1000px;
+  margin: var(--space-8) auto;
+  padding: var(--space-10);
+  background: var(--surface-glass);
+  backdrop-filter: blur(var(--blur-lg));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+      circle at center,
+      rgba(162, 89, 255, 0.05) 0%,
+      transparent 70%
+    );
+    animation: ${floatAnimation} 20s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    width: 95%;
+    padding: var(--space-6);
+  }
 `
 
 const ProfileImage = styled(motion.img)`
   float: left;
-  width: clamp(200px, 18vw, 300px);
+  width: clamp(200px, 25vw, 280px);
   height: auto;
-  border-radius: 50% / 40%;
-  margin: 0 3rem 2rem 0;
-  transition: all 0.3s ease-in-out;
+  border-radius: var(--radius-xl);
+  margin: 0 var(--space-8) var(--space-6) 0;
+  transition: all var(--duration-normal) var(--ease-silk);
   position: relative;
-  filter: saturate(1.4) brightness(1.05);
-
-  /* Neon Glow Effect */
-  box-shadow:
-    0 0 5px rgba(0, 255, 255, 0.6),
-    0 0 10px rgba(0, 255, 255, 0.5),
-    0 0 20px rgba(0, 255, 255, 0.4);
-  border: 2px solid rgba(0, 255, 255, 0.2);
+  filter: saturate(1.2) brightness(1.1);
+  border: 2px solid var(--silk-quantum-purple);
+  animation: ${glowShift} 6s ease-in-out infinite;
 
   &:hover {
-    transform: scale(1.05);
-    box-shadow:
-      0 0 10px rgba(255, 0, 255, 0.7),
-      0 0 20px rgba(255, 0, 255, 0.5);
-    border-color: rgba(255, 0, 255, 0.5);
+    transform: scale(1.05) rotate(2deg);
+    border-color: var(--silk-plasma-pink);
   }
 
   @media (max-width: 768px) {
     float: none;
-    margin: 0 auto 2rem auto;
-    width: 80%;
-    max-width: 300px;
+    margin: 0 auto var(--space-6) auto;
+    width: 70%;
+    max-width: 250px;
     display: block;
   }
 `
 
 const TextContent = styled(motion.div)`
   width: 100%;
-  text-align: justify;
-
-  @media (max-width: 768px) {
-    width: 100%;
-    text-align: left;
-  }
+  position: relative;
+  z-index: 1;
 `
 
 const Paragraph = styled.p`
-  font-size: clamp(1.4rem, 1.8vw, 1.8rem);
-  line-height: 1.5;
-  color: var(--color-text);
-  margin-bottom: 2.5rem;
-  opacity: 0.9;
-  transition: all 0.3s ease;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.01em;
+  font-family: var(--font-body);
+  font-size: var(--text-fluid-base);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  transition: all var(--duration-fast) var(--ease-silk);
+  letter-spacing: 0.02em;
 
   &:hover {
-    opacity: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    color: var(--text-primary);
   }
 
   &:first-of-type {
-    margin-top: 0;
-    font-size: clamp(1.6rem, 2vw, 2rem);
-    letter-spacing: 0.02em;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.95);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.4rem;
+    font-size: var(--text-fluid-lg);
+    font-weight: var(--font-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--space-8);
+    
+    &::first-letter {
+      font-size: 3em;
+      font-weight: var(--font-bold);
+      float: left;
+      margin: 0.1em 0.1em 0 0;
+      line-height: 0.8;
+      background: linear-gradient(
+        135deg,
+        var(--silk-quantum-purple) 0%,
+        var(--silk-circuit-cyan) 100%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   }
 `
 
 const StyledLink = styled.a`
-  color: var(--color-accent);
+  color: var(--silk-circuit-cyan);
   text-decoration: none;
-  font-weight: bold;
-  transition: all 0.3s ease;
+  font-weight: var(--font-semibold);
+  transition: all var(--duration-fast) var(--ease-silk);
   position: relative;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
   padding: 0 0.2em;
-  white-space: nowrap;
 
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(162, 89, 255, 0.1);
-    left: 0;
-    top: 0;
-    border-radius: 4px;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s ease;
-    z-index: -1;
-  }
-
-  &:hover {
-    color: var(--color-secondary);
-    text-shadow: 0 0 15px rgba(255, 117, 216, 0.4);
-
-    &::before {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
-  }
-`
-
-const ContactSection = styled.div`
-  margin-top: 4rem;
-  padding: 2rem 0;
-  border-top: 1px solid rgba(162, 89, 255, 0.1);
-  background: linear-gradient(180deg, transparent 0%, rgba(162, 89, 255, 0.03) 100%);
-  border-radius: 0 0 20px 20px;
-`
-
-const ContactGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-  padding: 0 1rem;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-
-  @media (min-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-`
-
-const ContactReason = styled.div`
-  height: 100%;
-  min-height: 220px;
-  padding: 2.5rem;
-  background: linear-gradient(135deg, rgba(162, 89, 255, 0.05) 0%, rgba(0, 255, 255, 0.05) 100%);
-  border-radius: 2px;
-  transition: all 0.4s ease-out;
-  border: 1px solid rgba(0, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(5px);
-
-  /* Cyberpunk corner accent */
   &::after {
-    content: "";
+    content: '';
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(45deg, transparent 50%, rgba(0, 255, 255, 0.1) 50%);
-    clip-path: polygon(100% 0, 0 0, 100% 100%);
-  }
-
-  /* Glowing border effect */
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
     background: linear-gradient(
-      135deg,
-      transparent 40%,
-      rgba(0, 255, 255, 0.1),
-      rgba(162, 89, 255, 0.1)
+      90deg,
+      var(--silk-circuit-cyan) 0%,
+      var(--silk-plasma-pink) 100%
     );
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    padding: 1px;
-    border-radius: 2px;
-    pointer-events: none;
+    transition: width var(--duration-normal) var(--ease-silk);
   }
 
   &:hover {
-    transform: translateY(-5px);
-    border-color: rgba(0, 255, 255, 0.2);
-    box-shadow:
-      0 0 20px rgba(0, 255, 255, 0.1),
-      0 0 40px rgba(0, 0, 0, 0.2),
-      inset 0 0 20px rgba(0, 255, 255, 0.05);
-
-    &::before {
-      background: linear-gradient(
-        135deg,
-        transparent 40%,
-        rgba(0, 255, 255, 0.2),
-        rgba(162, 89, 255, 0.2)
-      );
+    color: var(--silk-plasma-pink);
+    
+    &::after {
+      width: 100%;
     }
-  }
-
-  h3 {
-    color: var(--color-accent);
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    letter-spacing: 0.02em;
-    padding-left: 15px;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 4px;
-      height: 70%;
-      background: linear-gradient(to bottom, var(--color-accent), var(--color-secondary));
-      transform: translateY(-50%);
-      border-radius: 2px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    }
-  }
-
-  &:hover h3 {
-    transform: translateX(5px);
-    color: var(--color-secondary);
-  }
-
-  p {
-    font-size: 1.6rem;
-    margin: 0;
-    line-height: 1.6;
-    opacity: 0.9;
-    position: relative;
-    z-index: 2;
-    text-align: left;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  }
-
-  @media (max-width: 768px) {
-    min-height: auto;
-    height: auto;
   }
 `
 
-const GradientText = styled.span`
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-secondary) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  text-shadow: none;
-  filter: brightness(1.2);
-  padding: 0 0.2em;
+const SkillsSection = styled(motion.div)`
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border-subtle);
 `
 
-const contentVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.3,
-    },
-  },
-}
+const SectionTitle = styled.h3`
+  font-family: 'Audiowide', var(--font-heading);
+  font-size: var(--text-fluid-2xl);
+  font-weight: var(--font-bold);
+  color: var(--silk-circuit-cyan);
+  margin-bottom: var(--space-6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 1.2em;
+    background: linear-gradient(
+      180deg,
+      var(--silk-circuit-cyan) 0%,
+      var(--silk-quantum-purple) 100%
+    );
+  }
+`
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.5,
-    },
-    y: 0,
-  },
-}
+const SkillGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+`
+
+const SkillChip = styled(motion.div)`
+  padding: var(--space-2) var(--space-3);
+  background: rgba(162, 89, 255, 0.1);
+  border: 1px solid rgba(162, 89, 255, 0.3);
+  border-radius: var(--radius-full);
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: var(--font-medium);
+  transition: all var(--duration-fast) var(--ease-silk);
+  cursor: default;
+  
+  &:hover {
+    background: rgba(255, 117, 216, 0.15);
+    border-color: var(--silk-plasma-pink);
+    transform: translateY(-2px) scale(1.05);
+  }
+`
 
 const AboutPageContent: React.FC = () => {
+  const skills = [
+    'React', 'TypeScript', 'Node.js', 'Python', 
+    'AWS', 'Docker', 'Kubernetes', 'GraphQL',
+    'Android', 'Rust', 'AI/ML', 'WebGL'
+  ]
+
   return (
     <PageLayout>
-      <PageTitle>About Me</PageTitle>
-      <ContentWrapper animate="visible" initial="hidden" variants={contentVariants}>
-        <motion.div variants={itemVariants}>
-          <ProfileImage
-            alt="Profile image of Stefanie Jane"
-            src="/images/profile-image.jpg"
-            whileHover={{ scale: 1.05 }}
-          />
-        </motion.div>
+      <PageTitle>About</PageTitle>
+      <ContentWrapper
+        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+      >
+        <ProfileImage
+          alt="Stefanie Jane"
+          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          src="/images/profile.jpg"
+          transition={{ delay: 0.2, duration: 0.5 }}
+        />
         <TextContent>
-          <motion.div variants={itemVariants}>
-            <Paragraph>
-              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and I&apos;ve spent
-              <GradientText> the last 25+ years </GradientText>
-              turning complex technical challenges into beautiful products. My experience spans the entire technology
-              stack—from embedded systems, hardware bringup, and OS development to cloud services, frontend, and AI.
-            </Paragraph>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Paragraph>
-              I&apos;ve successfully led both open-source and enterprise projects, helping teams achieve technical
-              excellence and innovation. I&apos;m proficient in multiple programming languages, and highly skilled with
-              the use of modern AI developer tooling and practices. I thrive in hands-on leadership roles, and am
-              committed to continuous learning and self improvement.
-            </Paragraph>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Paragraph>
-              You might know me as the creator of{' '}
-              <StyledLink href="https://en.wikipedia.org/wiki/CyanogenMod" rel="noopener noreferrer" target="_blank">
-                CyanogenMod
-              </StyledLink>
-              , now{' '}
-              <StyledLink href="https://lineageos.org/" rel="noopener noreferrer" target="_blank">
-                LineageOS
-              </StyledLink>
-              , which became the largest open-source Android distribution, empowering millions of people to take control
-              of their devices. I also co-founded the company which was formed to support it&apos;s development.
-            </Paragraph>
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <Paragraph>
-              When I&apos;m not hacking on code or flashing devices, you&apos;ll find me skating with my roller derby
-              team, producing electronic music, or creating and contributing to open-source projects. Check out all my
-              work on{' '}
-              <StyledLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">
-                GitHub
-              </StyledLink>
-              .
-            </Paragraph>
-          </motion.div>
-
-          <motion.div
-            variants={{
-              ...itemVariants,
-              visible: {
-                ...itemVariants.visible,
-                transition: {
-                  duration: 0.7,
-                  ease: 'easeOut',
-                },
-              },
-            }}
-          >
-            <ContactSection>
-              <Paragraph style={{ marginBottom: '1rem', opacity: 0.95 }}>
-                I&apos;m always excited to connect with fellow technologists, creators, and innovators. You can reach me
-                via email or using any of the links below. Here&apos;s how we might work together:
-              </Paragraph>
-
-              <ContactGrid>
-                {[
-                  {
-                    description:
-                      "Need help building or customizing a device, getting a BSP in shape, building a mobile app, or integrating AI? Let's discuss your technical challenges.",
-                    title: 'Technical Consultation',
-                  },
-                  {
-                    description:
-                      "Looking for a keynote speaker or technical presenter? I'd love to share insights at your next event.",
-                    title: 'Speaking Engagements',
-                  },
-                  {
-                    description:
-                      "Have an interesting project or idea and need help building it? I'm always open to exploring new opportunities and partnerships.",
-                    title: 'Collaboration',
-                  },
-                  {
-                    description:
-                      "Seeking guidance in technology leadership or system design? Let's connect and grow together.",
-                    title: 'Mentorship',
-                  },
-                ].map((item, index) => (
-                  <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    initial={{ opacity: 0, y: 20 }}
-                    key={item.title}
-                    transition={{ delay: 0.2 + index * 0.1 }}
-                  >
-                    <ContactReason>
-                      <h3>{item.title}</h3>
-                      <p>{item.description}</p>
-                    </ContactReason>
-                  </motion.div>
-                ))}
-              </ContactGrid>
-            </ContactSection>
-          </motion.div>
+          <Paragraph>
+            Welcome! I'm <SparklingName name="Stefanie Jane" />, a full-stack engineer and creative technologist 
+            passionate about building extraordinary digital experiences. With over two decades in tech, I've journeyed 
+            from kernel hacking to cloud architecture, always seeking the perfect fusion of art and code.
+          </Paragraph>
+          <Paragraph>
+            My expertise spans the entire technology stack—from embedded systems and Android OS development to 
+            modern web frameworks and AI/ML applications. I've led teams at companies like T-Mobile and Microsoft, 
+            pioneered open-source innovations, and consistently pushed the boundaries of what's possible in software.
+          </Paragraph>
+          <Paragraph>
+            Beyond code, I'm a music producer, hardware tinkerer, and perpetual learner. I believe the best 
+            technology emerges at the intersection of diverse disciplines. Whether I'm crafting elegant algorithms, 
+            designing intuitive interfaces, or composing electronic music, I bring creativity and precision to 
+            everything I create.
+          </Paragraph>
+          <Paragraph>
+            Currently, I'm focused on building next-generation AI-powered applications and exploring the frontiers 
+            of human-computer interaction. I'm always excited to collaborate on projects that challenge conventions 
+            and create meaningful impact.
+          </Paragraph>
+          <Paragraph>
+            Want to build something amazing together? Feel free to reach out via{' '}
+            <StyledLink href="mailto:stef@hyperbliss.tech">email</StyledLink> or connect on{' '}
+            <StyledLink href="https://linkedin.com/in/hyperb1iss" target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </StyledLink>. You can also explore my open-source work on{' '}
+            <StyledLink href="https://github.com/hyperb1iss" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </StyledLink>.
+          </Paragraph>
         </TextContent>
+        
+        <SkillsSection
+          animate={{ opacity: 1 }}
+          initial={{ opacity: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <SectionTitle>Core Technologies</SectionTitle>
+          <SkillGrid>
+            {skills.map((skill, index) => (
+              <SkillChip
+                key={skill}
+                whileHover={{ scale: 1.05 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + index * 0.05 }}
+              >
+                {skill}
+              </SkillChip>
+            ))}
+          </SkillGrid>
+        </SkillsSection>
       </ContentWrapper>
     </PageLayout>
   )

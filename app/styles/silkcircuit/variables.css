@@ -8,10 +8,10 @@
      Color System
      ═══════════════════════════════════════════════════════════════ */
 
-  /* Core Spectrum */
+  /* Core Spectrum - Dark Femme */
   --silk-quantum-purple: #a259ff;
-  --silk-quantum-indigo: #6366f1;
-  --silk-quantum-violet: #8b5cf6;
+  --silk-quantum-indigo: #8b5cf6;
+  --silk-quantum-violet: #a78bfa;
 
   --silk-plasma-pink: #ff75d8;
   --silk-plasma-magenta: #ec4899;
@@ -20,6 +20,11 @@
   --silk-circuit-cyan: #00fff0;
   --silk-circuit-teal: #14b8a6;
   --silk-circuit-sky: #0ea5e9;
+  
+  /* Soft Pastels */
+  --silk-lavender: #e0aaff;
+  --silk-lilac: #c77dff;
+  --silk-periwinkle: #9d4edd;
 
   /* Foundation */
   --silk-void-black: #0a0a14;
@@ -211,10 +216,13 @@
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 
-  /* Glow Effects */
-  --glow-purple: 0 0 20px rgba(162, 89, 255, 0.3);
-  --glow-cyan: 0 0 20px rgba(0, 255, 240, 0.3);
-  --glow-pink: 0 0 20px rgba(255, 117, 216, 0.3);
+  /* Glow Effects - Soft Femme with Accents */
+  --glow-purple: 0 0 30px rgba(162, 89, 255, 0.4);
+  --glow-cyan: 0 0 30px rgba(224, 170, 255, 0.4);
+  --glow-pink: 0 0 30px rgba(255, 117, 216, 0.4);
+  --glow-yellow: 0 0 25px rgba(251, 191, 36, 0.3);
+  --glow-orange: 0 0 25px rgba(249, 115, 22, 0.3);
+  --glow-green: 0 0 25px rgba(52, 211, 153, 0.3);
 
   /* Border Radius */
   --radius-sm: 0.125rem;

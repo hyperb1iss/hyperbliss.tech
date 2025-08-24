@@ -56,20 +56,37 @@ export default function BlogList({ posts }: BlogListProps) {
           },
         }}
       >
-        {posts.map(({ slug, frontmatter }, index) => (
-          <SilkCard
-            description={frontmatter.excerpt}
-            index={index}
-            key={slug}
-            link={`/blog/${slug}`}
-            linkText="Read Post"
-            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
-              frontmatter.author ? `• ${frontmatter.author}` : ''
-            }`}
-            tags={frontmatter.tags}
-            title={frontmatter.title}
-          />
-        ))}
+        {posts.map(({ slug, frontmatter }, index) => {
+          // Map blog titles to emojis or use default
+          const blogIcons: { [key: string]: string } = {
+            'HyperShell': '🐚',
+            'CyberScape': '🌌',
+            'Creative Coding': '🎨',
+            'Designing for Emotion': '💖',
+          }
+          
+          const icon = Object.keys(blogIcons).find(key => 
+            frontmatter.title.includes(key)
+          ) ? blogIcons[Object.keys(blogIcons).find(key => 
+            frontmatter.title.includes(key)
+          )!] : '📝'
+          
+          return (
+            <SilkCard
+              description={frontmatter.excerpt}
+              icon={icon}
+              index={index}
+              key={slug}
+              link={`/blog/${slug}`}
+              linkText="Read Post"
+              meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
+                frontmatter.author ? `• ${frontmatter.author}` : ''
+              }`}
+              tags={frontmatter.tags}
+              title={frontmatter.title}
+            />
+          )
+        })}
       </PostList>
     </PageLayout>
   )
