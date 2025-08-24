@@ -6,6 +6,12 @@ import Link from 'next/link'
 import { FaArrowRight, FaGithub } from 'react-icons/fa6'
 import styled from 'styled-components'
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  display: block;
+  width: 100%;
+`
+
 const CardWrapper = styled(motion.div)
   .attrs({
     'data-component': 'silk-card-v2',
@@ -222,7 +228,7 @@ const CardFooter = styled.div`
   z-index: 1;
 `
 
-const CardLink = styled(Link)`
+const CardButton = styled.div`
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: var(--font-semibold);
@@ -357,43 +363,54 @@ export const SilkCard: React.FC<SilkCardProps> = ({
   }
 
   return (
-    <CardWrapper
-      animate={{ opacity: 1, y: 0 }}
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      onMouseMove={handleMouseMove}
-      style={style}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.6,
-        ease: [0.23, 1, 0.32, 1],
-      }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <CardContent>
-        <CardTitle>{title}</CardTitle>
-        {meta && <CardMeta>{meta}</CardMeta>}
-        <CardDescription>{description}</CardDescription>
-        {tags && tags.length > 0 && (
-          <TagsContainer>
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
-          </TagsContainer>
-        )}
-      </CardContent>
-      <CardFooter>
-        <CardLink href={link}>
-          {linkText} <FaArrowRight />
-        </CardLink>
-        {githubLink && (
-          <GithubLink href={githubLink} onClick={(e) => e.stopPropagation()} rel="noopener noreferrer" target="_blank">
-            <FaGithub />
-          </GithubLink>
-        )}
-      </CardFooter>
-    </CardWrapper>
+    <StyledLink href={link}>
+      <CardWrapper
+        animate={{ opacity: 1, y: 0 }}
+        className={className}
+        initial={{ opacity: 0, y: 20 }}
+        onMouseMove={handleMouseMove}
+        style={style}
+        transition={{
+          delay: index * 0.1,
+          duration: 0.6,
+          ease: [0.23, 1, 0.32, 1],
+        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <CardContent>
+          <CardTitle>{title}</CardTitle>
+          {meta && <CardMeta>{meta}</CardMeta>}
+          <CardDescription>{description}</CardDescription>
+          {tags && tags.length > 0 && (
+            <TagsContainer>
+              {tags.map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </TagsContainer>
+          )}
+        </CardContent>
+        <CardFooter>
+          <CardButton>
+            {linkText} <FaArrowRight />
+          </CardButton>
+          {githubLink && (
+            <GithubLink
+              href={githubLink}
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                window.open(githubLink, '_blank')
+              }}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <FaGithub />
+            </GithubLink>
+          )}
+        </CardFooter>
+      </CardWrapper>
+    </StyledLink>
   )
 }
 
@@ -419,43 +436,54 @@ const _OriginalSilkCard: React.FC<SilkCardProps> = ({
   }
 
   return (
-    <CardWrapper
-      animate={{ opacity: 1, y: 0 }}
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      onMouseMove={handleMouseMove}
-      style={style}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.6,
-        ease: [0.23, 1, 0.32, 1],
-      }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <CardContent>
-        <CardTitle>{title}</CardTitle>
-        {meta && <CardMeta>{meta}</CardMeta>}
-        <CardDescription>{description}</CardDescription>
-        {tags && tags.length > 0 && (
-          <TagsContainer>
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
-          </TagsContainer>
-        )}
-      </CardContent>
-      <CardFooter>
-        <CardLink href={link}>
-          {linkText} <FaArrowRight />
-        </CardLink>
-        {githubLink && (
-          <GithubLink href={githubLink} onClick={(e) => e.stopPropagation()} rel="noopener noreferrer" target="_blank">
-            <FaGithub />
-          </GithubLink>
-        )}
-      </CardFooter>
-    </CardWrapper>
+    <StyledLink href={link}>
+      <CardWrapper
+        animate={{ opacity: 1, y: 0 }}
+        className={className}
+        initial={{ opacity: 0, y: 20 }}
+        onMouseMove={handleMouseMove}
+        style={style}
+        transition={{
+          delay: index * 0.1,
+          duration: 0.6,
+          ease: [0.23, 1, 0.32, 1],
+        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <CardContent>
+          <CardTitle>{title}</CardTitle>
+          {meta && <CardMeta>{meta}</CardMeta>}
+          <CardDescription>{description}</CardDescription>
+          {tags && tags.length > 0 && (
+            <TagsContainer>
+              {tags.map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </TagsContainer>
+          )}
+        </CardContent>
+        <CardFooter>
+          <CardButton>
+            {linkText} <FaArrowRight />
+          </CardButton>
+          {githubLink && (
+            <GithubLink
+              href={githubLink}
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                window.open(githubLink, '_blank')
+              }}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <FaGithub />
+            </GithubLink>
+          )}
+        </CardFooter>
+      </CardWrapper>
+    </StyledLink>
   )
 }
 

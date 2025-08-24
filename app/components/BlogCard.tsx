@@ -6,6 +6,12 @@ import Link from 'next/link'
 import { FaArrowRight, FaCalendar, FaUser } from 'react-icons/fa6'
 import styled from 'styled-components'
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  display: block;
+  width: 100%;
+`
+
 const CardWrapper = styled(motion.div)`
   background: linear-gradient(
     135deg,
@@ -209,7 +215,7 @@ const CardFooter = styled.div`
   z-index: 1;
 `
 
-const CardLink = styled(Link)`
+const CardButton = styled.div`
   font-family: var(--font-body);
   font-size: 1.5rem;
   font-weight: var(--font-semibold);
@@ -304,53 +310,55 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   }
 
   return (
-    <CardWrapper
-      animate={{ opacity: 1, y: 0 }}
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      onMouseMove={handleMouseMove}
-      style={style}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.6,
-        ease: [0.23, 1, 0.32, 1],
-      }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      <CardContent>
-        <CardTitle>{title}</CardTitle>
-        {(date || author) && (
-          <CardMeta>
-            {date && (
-              <span>
-                <FaCalendar />
-                {new Date(date).toLocaleDateString()}
-              </span>
-            )}
-            {author && (
-              <span>
-                <FaUser />
-                {author}
-              </span>
-            )}
-          </CardMeta>
-        )}
-        <CardDescription>{description}</CardDescription>
-        {tags && tags.length > 0 && (
-          <TagsContainer>
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
-          </TagsContainer>
-        )}
-      </CardContent>
-      <CardFooter>
-        <CardLink href={link}>
-          {linkText} <FaArrowRight />
-        </CardLink>
-      </CardFooter>
-    </CardWrapper>
+    <StyledLink href={link}>
+      <CardWrapper
+        animate={{ opacity: 1, y: 0 }}
+        className={className}
+        initial={{ opacity: 0, y: 20 }}
+        onMouseMove={handleMouseMove}
+        style={style}
+        transition={{
+          delay: index * 0.1,
+          duration: 0.6,
+          ease: [0.23, 1, 0.32, 1],
+        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+      >
+        <CardContent>
+          <CardTitle>{title}</CardTitle>
+          {(date || author) && (
+            <CardMeta>
+              {date && (
+                <span>
+                  <FaCalendar />
+                  {new Date(date).toLocaleDateString()}
+                </span>
+              )}
+              {author && (
+                <span>
+                  <FaUser />
+                  {author}
+                </span>
+              )}
+            </CardMeta>
+          )}
+          <CardDescription>{description}</CardDescription>
+          {tags && tags.length > 0 && (
+            <TagsContainer>
+              {tags.map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </TagsContainer>
+          )}
+        </CardContent>
+        <CardFooter>
+          <CardButton>
+            {linkText} <FaArrowRight />
+          </CardButton>
+        </CardFooter>
+      </CardWrapper>
+    </StyledLink>
   )
 }
 
