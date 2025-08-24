@@ -1,35 +1,15 @@
 /* app/styles/globals.css */
 
 /**
- * Global styles and CSS variables for the application
+ * Global styles integrated with SilkCircuit Design System
  */
 
-:root {
-  /* Font family variables */
-  --font-heading: var(--font-orbitron), sans-serif;
-  --font-body: var(--font-rajdhani), sans-serif;
-  --font-mono: var(--font-space-mono), monospace;
-  --font-logo: var(--font-noto-sans), sans-serif;
+/* Import SilkCircuit Design System */
+@import "./silkcircuit/variables.css";
+@import "./silkcircuit/utilities.css";
 
-  /* Color scheme variables */
-  --color-background: #0a0a14;
-  --color-text: #e0e0e0;
-  --color-primary: #a259ff; /* Prominent purple */
-  --color-secondary: #ff75d8; /* Secondary color */
-  --color-accent: #00fff0;
-  --color-muted: #a0a0a0;
-
-  /* Code block theme colors */
-  --color-code-background: #1a1a2e;
-  --color-code-text: #f0f0f0;
-  --color-code-comment: #4a9fb1;
-  --color-code-punctuation: var(--color-code-text);
-  --color-code-property: #f92aad; /* property, tag, boolean, number, constant, symbol, deleted */
-  --color-code-selector: #36f9f6; /* selector, attr-name, string, char, builtin, inserted */
-  --color-code-operator: #ff7edb; /* operator, entity, url, variable */
-  --color-code-function: #fede5d; /* atrule, attr-value, function, class-name */
-  --color-code-keyword: #f97e72; /* keyword, regex, important */
-}
+/* Import Inter Variable font */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 /* Reset and base styles */
 *,
@@ -47,7 +27,8 @@ body {
 }
 
 html {
-  font-size: 62.5%; /* Sets 1rem to 10px */
+  font-size: 62.5%; /* Sets 1rem to 10px for easier calculations */
+  scroll-behavior: smooth;
 }
 
 body {
@@ -55,23 +36,24 @@ body {
   flex-direction: column;
   min-height: 100vh;
   font-family: var(--font-body);
-  font-size: 1.6rem;
-  color: var(--color-text);
-  background-color: var(--color-background);
-  /* Use image-set for optimized background formats */
-  background-image: image-set(
-    url("/images/background.avif") type("image/avif"),
-    url("/images/background.webp") type("image/webp"),
-    url("/images/background.jpg") type("image/jpeg")
-  );
+  font-size: 1.6rem; /* 16px */
+  line-height: var(--leading-relaxed);
+  color: var(--text-primary);
+  background-color: var(--silk-void-black);
+
+  /* Use the new background image */
+  background-image: url("/images/background2.png");
   background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
+
   overflow-x: hidden;
   position: relative;
   z-index: 0;
 }
 
-/* Dark overlay for background image */
+/* Subtle overlay for better text readability */
 body::before {
   content: "";
   position: fixed;
@@ -79,11 +61,12 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%);
   z-index: -1;
+  pointer-events: none;
 }
 
-/* Typography styles */
+/* Typography styles with SilkCircuit */
 h1,
 h2,
 h3,
@@ -91,90 +74,305 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading);
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 1rem;
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  letter-spacing: var(--tracking-tight);
 }
 
 h1 {
-  font-size: 4.8rem;
-}
-h2 {
-  font-size: 3.6rem;
-}
-h3 {
-  font-size: 2.4rem;
+  font-size: var(--text-fluid-5xl);
+  font-weight: var(--font-black);
 }
 
+h2 {
+  font-size: var(--text-fluid-4xl);
+  font-weight: var(--font-bold);
+}
+
+h3 {
+  font-size: var(--text-fluid-3xl);
+  font-weight: var(--font-semibold);
+}
+
+h4 {
+  font-size: var(--text-fluid-2xl);
+}
+
+h5 {
+  font-size: var(--text-fluid-xl);
+}
+
+h6 {
+  font-size: var(--text-fluid-lg);
+}
+
+/* Link styles */
 a {
-  color: var(--color-accent);
+  color: var(--silk-circuit-cyan);
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all var(--duration-fast) var(--ease-silk);
+  position: relative;
 }
 
 a:hover {
-  color: var(--color-secondary);
+  color: var(--silk-circuit-teal);
 }
 
+a:focus-visible {
+  outline: 2px solid var(--silk-quantum-purple);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Paragraph styles */
 p {
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
 }
 
-/* Utility classes */
+/* Code styles */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: var(--space-1) var(--space-2);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--silk-circuit-cyan);
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  margin-bottom: var(--space-6);
+}
+
+pre code {
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-size: inherit;
+}
+
+/* Selection styles */
+::selection {
+  background: rgba(162, 89, 255, 0.3);
+  color: var(--silk-white);
+}
+
+::-moz-selection {
+  background: rgba(162, 89, 255, 0.3);
+  color: var(--silk-white);
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-base);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--silk-steel-700);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--surface-base);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--silk-steel-600);
+}
+
+/* Focus visible utilities */
+.focus-visible:focus-visible {
+  outline: 2px solid var(--silk-quantum-purple);
+  outline-offset: 2px;
+}
+
+/* Utility classes - SilkCircuit enhanced */
 .glow {
-  color: var(--color-primary);
-  text-shadow:
-    0 0 5px var(--color-primary),
-    0 0 10px var(--color-primary);
+  color: var(--silk-quantum-purple);
+  text-shadow: var(--glow-purple);
 }
 
 .page-exit {
   opacity: 0;
   transform: translateY(-20px);
   transition:
-    opacity 0.5s ease,
-    transform 0.5s ease;
+    opacity var(--duration-slow) var(--ease-silk),
+    transform var(--duration-slow) var(--ease-silk);
 }
 
-/* Logo styling */
+/* Logo styling - SilkCircuit evolution */
 .logo {
-  font-family: "Orbitron", sans-serif;
+  font-family: var(--font-display);
   font-size: 3.6rem;
-  color: #00fff0;
-  text-shadow:
-    0 0 10px rgba(0, 255, 255, 0.8),
-    0 0 20px rgba(0, 255, 255, 0.6),
-    0 0 40px rgba(0, 255, 255, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  transition: all 0.3s ease;
+  font-weight: var(--font-bold);
+  color: var(--silk-circuit-cyan);
+  text-shadow: var(--glow-cyan);
+  letter-spacing: var(--tracking-wider);
+  transition: all var(--duration-normal) var(--ease-silk);
   display: inline-block;
   text-decoration: none;
 }
 
 .logo:hover {
-  color: #ff00ff;
-  text-shadow:
-    0 0 15px rgba(255, 0, 255, 0.8),
-    0 0 30px rgba(255, 0, 255, 0.6),
-    0 0 50px rgba(255, 0, 255, 0.4);
-  transform: scale(1.05);
+  color: var(--silk-quantum-purple);
+  text-shadow: var(--glow-purple);
+  transform: scale(1.05) translateY(-1px);
+}
+
+/* Container utilities */
+.container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* Section spacing */
+section {
+  padding: var(--space-16) 0;
+}
+
+/* Card base styles */
+.card {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: all var(--duration-normal) var(--ease-silk);
+}
+
+.card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Button base styles */
+button {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-silk);
+}
+
+/* Input base styles */
+input,
+textarea,
+select {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  transition: all var(--duration-fast) var(--ease-silk);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--silk-quantum-purple);
+  box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.1);
 }
 
 /* Responsive Typography */
 @media (max-width: 768px) {
-  h1 {
-    font-size: 3.6rem;
+  html {
+    font-size: 55%; /* Slightly smaller base for mobile */
   }
-  h2 {
-    font-size: 2.8rem;
-  }
-  h3 {
-    font-size: 2rem;
-  }
+
   body {
     font-size: 1.4rem;
+  }
+
+  section {
+    padding: var(--space-12) 0;
+  }
+
+  .container {
+    padding: 0 var(--space-4);
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--duration-normal) var(--ease-silk) forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn var(--duration-normal) var(--ease-silk) forwards;
+}
+
+/* Accessibility utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  :root {
+    --silk-quantum-purple: #b366ff;
+    --silk-circuit-cyan: #33ffff;
+    --silk-plasma-pink: #ff99e6;
   }
 }

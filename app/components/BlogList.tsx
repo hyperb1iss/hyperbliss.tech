@@ -3,17 +3,23 @@
 
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
-import Card from './Card'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
+import SilkCard from './SilkCard'
 
 const PostList = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: var(--space-10);
+  padding: var(--space-12) 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
 
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   }
 `
 
@@ -51,14 +57,12 @@ export default function BlogList({ posts }: BlogListProps) {
         }}
       >
         {posts.map(({ slug, frontmatter }, index) => (
-          <Card
-            color="255, 0, 255"
+          <SilkCard
             description={frontmatter.excerpt}
             index={index}
             key={slug}
             link={`/blog/${slug}`}
-            linkColor="0, 255, 255"
-            linkText="Read More"
+            linkText="Read Post"
             meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
               frontmatter.author ? `• ${frontmatter.author}` : ''
             }`}

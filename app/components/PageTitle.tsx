@@ -3,14 +3,24 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 
 const TitleWrapper = styled(motion.h1)`
-  font-size: 4rem;
-  color: var(--color-primary);
+  font-family: var(--font-display);
+  font-size: var(--text-fluid-4xl);
+  font-weight: var(--font-black);
   text-align: center;
-  margin-bottom: 2rem;
-  text-shadow: 0 0 5px var(--color-primary);
+  margin-bottom: var(--space-12);
+  line-height: var(--leading-tight);
+  background: linear-gradient(
+    135deg,
+    var(--silk-quantum-purple) 0%,
+    var(--silk-circuit-cyan) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
 
   @media (max-width: 768px) {
-    font-size: 3.6rem;
+    font-size: var(--text-fluid-3xl);
   }
 `
 

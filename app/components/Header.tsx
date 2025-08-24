@@ -37,7 +37,7 @@ const NavContent = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 100%;
+  padding: 0 2rem;
   height: 100%;
   overflow: hidden;
 `

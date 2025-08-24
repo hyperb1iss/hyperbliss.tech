@@ -10,8 +10,6 @@
 import { CyberScapeConfig } from '../CyberScapeConfig'
 
 export class CRTEffect {
-  private config: CyberScapeConfig
-
   constructor() {
     this.config = CyberScapeConfig.getInstance()
   }

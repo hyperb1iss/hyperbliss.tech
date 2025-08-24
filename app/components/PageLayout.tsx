@@ -4,18 +4,20 @@ import styled from 'styled-components'
 
 const MainContentWrapper = styled(motion.main)`
   flex: 1;
-  width: 75%;
-  max-width: 1400px;
+  width: 100%;
+  max-width: var(--container-xl);
   margin: 0 auto;
-  padding: 8rem 2rem 4rem;
+  padding: var(--space-24) var(--space-8) var(--space-16);
+  min-height: 100vh;
+  position: relative;
+  background: transparent;
 
   @media (max-width: 1200px) {
-    width: 85%;
+    padding: var(--space-20) var(--space-6) var(--space-12);
   }
 
   @media (max-width: 768px) {
-    width: 90%;
-    padding: 8rem 2rem 2rem;
+    padding: var(--space-16) var(--space-4) var(--space-8);
   }
 `
 

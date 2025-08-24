@@ -1,16 +1,7 @@
 // app/layout.tsx
-import { AnimatePresence } from 'framer-motion'
 import { Metadata } from 'next'
-import ClientComponents from './components/ClientComponents'
-import GlobalLayout from './components/GlobalLayout'
-import Header from './components/Header'
-import { HeaderProvider } from './components/HeaderContext'
-import HeaderFade from './components/HeaderFade'
-import HyperspaceLoader from './components/HyperspaceLoader'
-import { PageLoadProvider } from './components/PageLoadOrchestrator'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
-import StyledComponentsRegistry from './lib/registry'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
 import { notoSans, orbitron, rajdhani, spaceMono } from './styles/fonts'
 import './styles/globals.css'
@@ -32,21 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <StructuredData data={structuredData} />
       </head>
-      <body>
-        <StyledComponentsRegistry>
-          <PageLoadProvider>
-            <HeaderProvider>
-              <ClientComponents />
-              <Header />
-              <HeaderFade />
-              <HyperspaceLoader />
-              <GlobalLayout>
-                <AnimatePresence mode="wait">{children}</AnimatePresence>
-              </GlobalLayout>
-            </HeaderProvider>
-          </PageLoadProvider>
-        </StyledComponentsRegistry>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

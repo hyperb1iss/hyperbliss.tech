@@ -3,9 +3,9 @@
 
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import FeaturedProjectsSection from './FeaturedProjectsSection'
-import HeroSection from './HeroSection'
-import LatestBlogPosts from './LatestBlogPosts'
+import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
+import HeroSectionSilk from './HeroSectionSilk'
+import LatestBlogPostsSilk from './LatestBlogPostsSilk'
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -96,20 +96,20 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
     <ContentWrapper>
       {isMobile ? (
         <>
-          <HeroSection />
+          <HeroSectionSilk />
           <SidebarWrapper>
-            <LatestBlogPosts isMobile={isMobile} posts={latestPosts} />
+            <LatestBlogPostsSilk isMobile={isMobile} posts={latestPosts} />
           </SidebarWrapper>
-          <FeaturedProjectsSection projects={projects} />
+          <FeaturedProjectsSectionSilk projects={projects} />
         </>
       ) : (
         <>
           <MainContent>
-            <HeroSection />
-            <FeaturedProjectsSection projects={projects} />
+            <HeroSectionSilk />
+            <FeaturedProjectsSectionSilk projects={projects} />
           </MainContent>
           <SidebarWrapper>
-            <LatestBlogPosts isMobile={isMobile} posts={latestPosts} />
+            <LatestBlogPostsSilk isMobile={isMobile} posts={latestPosts} />
           </SidebarWrapper>
         </>
       )}

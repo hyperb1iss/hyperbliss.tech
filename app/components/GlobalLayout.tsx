@@ -21,6 +21,8 @@ const LayoutContainer = styled.div<{ $isHeaderExpanded: boolean }>`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: transparent;
+  color: var(--text-primary);
 
   @media (max-width: 768px) {
     padding-top: ${(props) => (props.$isHeaderExpanded ? '180px' : '80px')};

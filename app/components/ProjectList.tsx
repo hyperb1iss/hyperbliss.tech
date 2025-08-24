@@ -3,15 +3,21 @@
 
 import { motion } from 'framer-motion'
 import styled from 'styled-components'
-import Card from './Card'
+import SilkCard from './SilkCard'
 
 const ProjectsGrid = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: var(--space-10);
+  padding: var(--space-12) 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
 
   @media (min-width: 1600px) {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   }
 `
 
@@ -47,15 +53,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
       }}
     >
       {projects.map((project, index) => (
-        <Card
-          color="0, 255, 255"
+        <SilkCard
           description={project.frontmatter.description}
           githubLink={project.frontmatter.github}
           index={index}
           key={project.slug}
           link={`/projects/${project.slug}`}
-          linkColor="255, 0, 255"
-          linkText="Learn More"
+          linkText="Explore Project"
           meta={project.frontmatter.author ? `Author: ${project.frontmatter.author}` : undefined}
           tags={project.frontmatter.tags}
           title={project.frontmatter.title}
