@@ -3,10 +3,10 @@
  */
 
 export interface PageParams {
-  [key: string]: string | string[] | undefined;
+  [key: string]: string | string[] | undefined
 }
 
 export interface PageProps {
-  params: Promise<PageParams>;
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<PageParams>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }

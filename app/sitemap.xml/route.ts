@@ -1,5 +1,5 @@
 // app/sitemap.xml/route.ts
-import { getAllMarkdownSlugs } from "../lib/markdown";
+import { getAllMarkdownSlugs } from '../lib/markdown'
 
 /**
  * Ensures a URL ends with a trailing slash
@@ -7,7 +7,7 @@ import { getAllMarkdownSlugs } from "../lib/markdown";
  * @returns {string} - URL with trailing slash
  */
 function ensureTrailingSlash(url: string): string {
-  return url.endsWith("/") ? url : `${url}/`;
+  return url.endsWith('/') ? url : `${url}/`
 }
 
 /**
@@ -15,59 +15,59 @@ function ensureTrailingSlash(url: string): string {
  * @returns {Promise<Response>} The sitemap response
  */
 export async function GET(): Promise<Response> {
-  const baseUrl = "https://hyperbliss.tech";
+  const baseUrl = 'https://hyperbliss.tech'
 
   // Get all blog posts and projects
   const [blogSlugs, projectSlugs] = await Promise.all([
-    getAllMarkdownSlugs("src/posts"),
-    getAllMarkdownSlugs("src/projects"),
-  ]);
+    getAllMarkdownSlugs('src/posts'),
+    getAllMarkdownSlugs('src/projects'),
+  ])
 
   // Generate URLs for blog posts
   const blogUrls = blogSlugs.map((slug) => ({
-    url: ensureTrailingSlash(`${baseUrl}/blog/${slug}`),
+    changeFrequency: 'weekly' as const,
     lastModified: new Date(),
-    changeFrequency: "weekly" as const,
     priority: 0.7,
-  }));
+    url: ensureTrailingSlash(`${baseUrl}/blog/${slug}`),
+  }))
 
   // Generate URLs for projects
   const projectUrls = projectSlugs.map((slug) => ({
-    url: ensureTrailingSlash(`${baseUrl}/projects/${slug}`),
+    changeFrequency: 'monthly' as const,
     lastModified: new Date(),
-    changeFrequency: "monthly" as const,
     priority: 0.8,
-  }));
+    url: ensureTrailingSlash(`${baseUrl}/projects/${slug}`),
+  }))
 
   // Static pages
   const staticPages = [
     {
-      url: ensureTrailingSlash(baseUrl),
+      changeFrequency: 'daily' as const,
       lastModified: new Date(),
-      changeFrequency: "daily" as const,
       priority: 1.0,
+      url: ensureTrailingSlash(baseUrl),
     },
     {
-      url: ensureTrailingSlash(`${baseUrl}/about`),
+      changeFrequency: 'weekly' as const,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
       priority: 0.8,
+      url: ensureTrailingSlash(`${baseUrl}/about`),
     },
     {
+      changeFrequency: 'daily' as const,
+      lastModified: new Date(),
+      priority: 0.9,
       url: ensureTrailingSlash(`${baseUrl}/blog`),
-      lastModified: new Date(),
-      changeFrequency: "daily" as const,
-      priority: 0.9,
     },
     {
-      url: ensureTrailingSlash(`${baseUrl}/projects`),
+      changeFrequency: 'weekly' as const,
       lastModified: new Date(),
-      changeFrequency: "weekly" as const,
       priority: 0.9,
+      url: ensureTrailingSlash(`${baseUrl}/projects`),
     },
-  ];
+  ]
 
-  const sitemap = [...staticPages, ...blogUrls, ...projectUrls];
+  const sitemap = [...staticPages, ...blogUrls, ...projectUrls]
 
   // Convert the sitemap array to XML string
   return new Response(
@@ -82,14 +82,14 @@ export async function GET(): Promise<Response> {
           <changefreq>${entry.changeFrequency}</changefreq>
           <priority>${entry.priority}</priority>
         </url>
-      `
+      `,
         )
-        .join("")}
+        .join('')}
     </urlset>`,
     {
       headers: {
-        "Content-Type": "application/xml",
+        'Content-Type': 'application/xml',
       },
-    }
-  );
+    },
+  )
 }

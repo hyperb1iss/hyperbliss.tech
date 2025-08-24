@@ -1,36 +1,34 @@
-import type { Config } from "jest";
+import type { Config } from 'jest'
 
 const config: Config = {
-  testEnvironment: "jsdom",
+  moduleDirectories: ['node_modules', 'app', 'tests'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/app/$1',
+  },
+  roots: ['<rootDir>/tests', '<rootDir>/app'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
+  testEnvironment: 'jsdom',
+  testMatch: ['<rootDir>/tests/**/*.test.ts', '<rootDir>/tests/**/*.test.tsx'],
   transform: {
-    "^.+\\.(ts|tsx)$": [
-      "@swc/jest",
+    '^.+\\.(ts|tsx)$': [
+      '@swc/jest',
       {
         jsc: {
           parser: {
-            syntax: "typescript",
+            syntax: 'typescript',
             tsx: true,
           },
           transform: {
             react: {
-              runtime: "automatic",
+              runtime: 'automatic',
             },
           },
         },
       },
     ],
   },
-  moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/app/$1",
-  },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  roots: ["<rootDir>/tests", "<rootDir>/app"],
-  testMatch: ["<rootDir>/tests/**/*.test.ts", "<rootDir>/tests/**/*.test.tsx"],
-  moduleDirectories: ["node_modules", "app", "tests"],
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
-  transformIgnorePatterns: [
-    "/node_modules/(?!(@testing-library|react-icons|next|framer-motion)/)",
-  ],
-};
+  transformIgnorePatterns: ['/node_modules/(?!(@testing-library|react-icons|next|framer-motion)/)'],
+}
 
-export default config;
+export default config

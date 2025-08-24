@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { FaRss } from "react-icons/fa6";
-import { SOCIAL_LINKS } from "../lib/socials";
+import Link from 'next/link'
+import { FaRss } from 'react-icons/fa6'
+import { SOCIAL_LINKS } from '../lib/socials'
 
 /**
  * StaticFooter component
@@ -9,17 +9,17 @@ import { SOCIAL_LINKS } from "../lib/socials";
  * @returns {JSX.Element} Rendered footer
  */
 export default function StaticFooter() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="footer-container">
       <div className="socials">
         {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-          <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+          <a aria-label={label} href={href} key={label} rel="noopener noreferrer" target="_blank">
             <Icon />
           </a>
         ))}
-        <Link href="/api/rss" aria-label="RSS Feed" className="rss-link">
+        <Link aria-label="RSS Feed" className="rss-link" href="/api/rss">
           <FaRss />
         </Link>
       </div>
@@ -27,7 +27,7 @@ export default function StaticFooter() {
         &copy; {currentYear} <span className="sparkle-name">Stefanie Jane</span> 🌠
       </p>
 
-      <style jsx>{`
+      <style jsx={true}>{`
         .footer-container {
           background-color: rgba(0, 0, 0, 0.95);
           padding-top: 2rem;
@@ -89,5 +89,5 @@ export default function StaticFooter() {
         }
       `}</style>
     </footer>
-  );
+  )
 }

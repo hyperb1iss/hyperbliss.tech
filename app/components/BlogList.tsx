@@ -1,11 +1,11 @@
 // app/components/BlogList.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import Card from "./Card";
-import PageLayout from "./PageLayout";
-import PageTitle from "./PageTitle";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
+import Card from './Card'
+import PageLayout from './PageLayout'
+import PageTitle from './PageTitle'
 
 const PostList = styled(motion.div)`
   display: grid;
@@ -15,21 +15,21 @@ const PostList = styled(motion.div)`
   @media (min-width: 1600px) {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
-`;
+`
 
 interface Post {
-  slug: string;
+  slug: string
   frontmatter: {
-    title: string;
-    date: string;
-    excerpt: string;
-    author?: string;
-    tags?: string[];
-  };
+    title: string
+    date: string
+    excerpt: string
+    author?: string
+    tags?: string[]
+  }
 }
 
 interface BlogListProps {
-  posts: Post[];
+  posts: Post[]
 }
 
 export default function BlogList({ posts }: BlogListProps) {
@@ -37,9 +37,10 @@ export default function BlogList({ posts }: BlogListProps) {
     <PageLayout>
       <PageTitle>Blog</PageTitle>
       <PostList
-        initial="hidden"
         animate="visible"
+        initial="hidden"
         variants={{
+          hidden: { opacity: 0 },
           visible: {
             opacity: 1,
             transition: {
@@ -47,26 +48,25 @@ export default function BlogList({ posts }: BlogListProps) {
               staggerChildren: 0.15,
             },
           },
-          hidden: { opacity: 0 },
         }}
       >
         {posts.map(({ slug, frontmatter }, index) => (
           <Card
-            key={slug}
-            title={frontmatter.title}
-            description={frontmatter.excerpt}
-            link={`/blog/${slug}`}
             color="255, 0, 255"
-            linkColor="0, 255, 255"
-            tags={frontmatter.tags}
-            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
-              frontmatter.author ? `• ${frontmatter.author}` : ""
-            }`}
-            linkText="Read More"
+            description={frontmatter.excerpt}
             index={index}
+            key={slug}
+            link={`/blog/${slug}`}
+            linkColor="0, 255, 255"
+            linkText="Read More"
+            meta={`${new Date(frontmatter.date).toLocaleDateString()} ${
+              frontmatter.author ? `• ${frontmatter.author}` : ''
+            }`}
+            tags={frontmatter.tags}
+            title={frontmatter.title}
           />
         ))}
       </PostList>
     </PageLayout>
-  );
+  )
 }

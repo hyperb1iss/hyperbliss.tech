@@ -1,6 +1,6 @@
 // app/components/PageTitle.tsx
-import { motion } from "framer-motion";
-import styled from "styled-components";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
 
 const TitleWrapper = styled(motion.h1)`
   font-size: 4rem;
@@ -12,10 +12,10 @@ const TitleWrapper = styled(motion.h1)`
   @media (max-width: 768px) {
     font-size: 3.6rem;
   }
-`;
+`
 
 interface PageTitleProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 /**
@@ -27,13 +27,13 @@ interface PageTitleProps {
 const PageTitle: React.FC<PageTitleProps> = ({ children }) => {
   return (
     <TitleWrapper
-      initial={{ opacity: 0, y: -40 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      initial={{ opacity: 0, y: -40 }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       {children}
     </TitleWrapper>
-  );
-};
+  )
+}
 
-export default PageTitle;
+export default PageTitle

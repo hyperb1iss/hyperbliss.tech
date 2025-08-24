@@ -1,13 +1,13 @@
 // app/components/ResumePageContent.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import React from "react";
-import { FiDownload } from "react-icons/fi";
-import ReactMarkdown from "react-markdown";
-import styled, { StyleSheetManager } from "styled-components";
-import PageLayout from "./PageLayout";
-import PageTitle from "./PageTitle";
+import { motion } from 'framer-motion'
+import React from 'react'
+import { FiDownload } from 'react-icons/fi'
+import ReactMarkdown from 'react-markdown'
+import styled, { StyleSheetManager } from 'styled-components'
+import PageLayout from './PageLayout'
+import PageTitle from './PageTitle'
 
 // Styled components for resume content
 const ResumeContainer = styled(motion.div)`
@@ -27,7 +27,7 @@ const ResumeContainer = styled(motion.div)`
     padding: 2rem 1.5rem;
     border-radius: 8px;
   }
-`;
+`
 
 // Instead of styling ReactMarkdown directly, create a wrapper div
 const MarkdownWrapper = styled.div`
@@ -120,7 +120,7 @@ const MarkdownWrapper = styled.div`
   strong {
     color: var(--color-secondary);
   }
-`;
+`
 
 // Styled component for the download button
 const DownloadButton = styled.a`
@@ -174,18 +174,18 @@ const DownloadButton = styled.a`
       height: 1.4rem;
     }
   }
-`;
+`
 
 // Function to filter out props that shouldn't be forwarded to DOM elements
 const shouldForwardProp = (prop: string): boolean => {
   // List of props that should not be forwarded to DOM elements
-  const invalidProps = ["node"];
-  return !invalidProps.includes(prop);
-};
+  const invalidProps = ['node']
+  return !invalidProps.includes(prop)
+}
 
 // Interface for ResumePageContent component props
 interface ResumePageContentProps {
-  content: string;
+  content: string
 }
 
 /**
@@ -199,15 +199,11 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
   return (
     <PageLayout>
       <PageTitle>Resume</PageTitle>
-      <ResumeContainer
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <ResumeContainer animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 20 }} transition={{ duration: 0.5 }}>
         <DownloadButton
-          href="/resume.pdf"
-          download
           aria-label="Download Resume as PDF"
+          download={true}
+          href="/resume.pdf"
           title="Download Resume as PDF"
         >
           <FiDownload />
@@ -219,7 +215,7 @@ const ResumePageContent: React.FC<ResumePageContentProps> = ({ content }) => {
         </MarkdownWrapper>
       </ResumeContainer>
     </PageLayout>
-  );
-};
+  )
+}
 
-export default ResumePageContent;
+export default ResumePageContent

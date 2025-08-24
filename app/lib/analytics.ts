@@ -1,4 +1,4 @@
-import { event } from "nextjs-google-analytics";
+import { event } from 'nextjs-google-analytics'
 
 /**
  * Analytics utility for tracking various user interactions
@@ -6,10 +6,10 @@ import { event } from "nextjs-google-analytics";
  */
 
 interface EventOptions {
-  category?: string;
-  label?: string;
-  value?: number;
-  [key: string]: string | number | boolean | undefined;
+  category?: string
+  label?: string
+  value?: number
+  [key: string]: string | number | boolean | undefined
 }
 
 /**
@@ -18,11 +18,11 @@ interface EventOptions {
  * @param destination The destination page
  */
 export const trackNavigation = (source: string, destination: string) => {
-  event("navigation", {
-    source_page: source,
+  event('navigation', {
     destination_page: destination,
-  });
-};
+    source_page: source,
+  })
+}
 
 /**
  * Track external link clicks
@@ -30,11 +30,11 @@ export const trackNavigation = (source: string, destination: string) => {
  * @param linkText The text of the link
  */
 export const trackExternalLink = (url: string, linkText: string) => {
-  event("external_link", {
+  event('external_link', {
     external_url: url,
     link_text: linkText,
-  });
-};
+  })
+}
 
 /**
  * Track project interactions
@@ -46,8 +46,8 @@ export const trackProjectEvent = (action: string, projectId: string, options?: E
   event(`project_${action}`, {
     project_id: projectId,
     ...options,
-  });
-};
+  })
+}
 
 /**
  * Track blog post interactions
@@ -59,8 +59,8 @@ export const trackBlogEvent = (action: string, postId: string, options?: EventOp
   event(`blog_${action}`, {
     post_id: postId,
     ...options,
-  });
-};
+  })
+}
 
 /**
  * Track user engagement events
@@ -70,8 +70,8 @@ export const trackBlogEvent = (action: string, postId: string, options?: EventOp
 export const trackEngagement = (action: string, options?: EventOptions) => {
   event(`engagement_${action}`, {
     ...options,
-  });
-};
+  })
+}
 
 /**
  * Track CyberScape interactions
@@ -81,8 +81,8 @@ export const trackEngagement = (action: string, options?: EventOptions) => {
 export const trackCyberScapeEvent = (action: string, options?: EventOptions) => {
   event(`cyberscape_${action}`, {
     ...options,
-  });
-};
+  })
+}
 
 // Re-export the raw event function for custom event tracking
-export { event };
+export { event }

@@ -1,306 +1,293 @@
-import { generateBlogMetadata, generateProjectMetadata } from "@/lib/generateMetadata";
-import type { ResolvedMetadata } from "next";
+import type { ResolvedMetadata } from 'next'
+import { generateBlogMetadata, generateProjectMetadata } from '@/lib/generateMetadata'
 
-describe("Metadata Generation", () => {
+describe('Metadata Generation', () => {
   // Create a properly typed mock that satisfies ResolvingMetadata
   const mockParent = () =>
     Promise.resolve({
-      metadataBase: new URL("https://hyperbliss.tech"),
-      title: {
-        absolute: "Test Title",
-        template: "%s | Test",
-        default: "Test Title",
-      },
-      description: "Test Description",
-      applicationName: "Hyperbliss",
-      authors: [{ name: "Test Author", url: "https://hyperbliss.tech" }],
-      generator: "Next.js",
-      keywords: ["test"],
-      referrer: "origin-when-cross-origin" as const,
-      themeColor: [
-        { color: "#000000", media: "(prefers-color-scheme: dark)" },
-        { color: "#ffffff", media: "(prefers-color-scheme: light)" },
-      ],
-      colorScheme: "dark" as const,
-      viewport: "width=device-width, initial-scale=1",
-      creator: "Test Creator",
-      publisher: "Test Publisher",
-      robots: {
-        basic: "index, follow",
-        googleBot:
-          "index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1",
-      },
+      abstract: '',
       alternates: {
-        canonical: { url: "https://hyperbliss.tech" },
+        canonical: { url: 'https://hyperbliss.tech' },
         languages: {
-          "en-US": [
+          'en-US': [
             {
-              url: "https://hyperbliss.tech",
-              hrefLang: "en-US",
+              hrefLang: 'en-US',
+              url: 'https://hyperbliss.tech',
             },
           ],
         },
         media: {
-          "only screen and (max-width: 600px)": [
+          'only screen and (max-width: 600px)': [
             {
-              url: "https://m.hyperbliss.tech",
-              media: "only screen and (max-width: 600px)",
+              media: 'only screen and (max-width: 600px)',
+              url: 'https://m.hyperbliss.tech',
             },
           ],
         },
         types: {
-          "application/rss+xml": [
+          'application/rss+xml': [
             {
-              url: "https://hyperbliss.tech/feed.xml",
-              type: "application/rss+xml",
+              type: 'application/rss+xml',
+              url: 'https://hyperbliss.tech/feed.xml',
             },
           ],
         },
       },
+      appLinks: {},
+      appleWebApp: {
+        capable: true,
+        startupImage: [],
+        statusBarStyle: 'default' as const,
+        title: undefined,
+      },
+      applicationName: 'Hyperbliss',
+      archives: [],
+      assets: [],
+      authors: [{ name: 'Test Author', url: 'https://hyperbliss.tech' }],
+      bookmarks: [],
+      category: '',
+      classification: '',
+      colorScheme: 'dark' as const,
+      creator: 'Test Creator',
+      description: 'Test Description',
+      facebook: {},
+      formatDetection: {
+        address: false,
+        date: false,
+        email: false,
+        telephone: true,
+        url: false,
+      },
+      generator: 'Next.js',
       icons: {
-        icon: [{ url: "/favicon.ico" }],
-        shortcut: [{ url: "/favicon-16x16.png" }],
-        apple: [{ url: "/apple-touch-icon.png" }],
+        apple: [{ url: '/apple-touch-icon.png' }],
+        icon: [{ url: '/favicon.ico' }],
         other: [
           {
-            rel: "mask-icon",
-            url: "/safari-pinned-tab.svg",
+            rel: 'mask-icon',
+            url: '/safari-pinned-tab.svg',
           },
         ],
+        shortcut: [{ url: '/favicon-16x16.png' }],
       },
+      itunes: {
+        appArgument: 'myapp://123',
+        appId: 'myApp123',
+      },
+      keywords: ['test'],
+      manifest: '/manifest.json',
+      metadataBase: new URL('https://hyperbliss.tech'),
       openGraph: {
-        type: "website",
-        determiner: "auto",
-        title: {
-          absolute: "Test Title",
-          template: "%s | Test",
-          default: "Test Title",
-        },
-        description: "Test Description",
-        siteName: "Hyperbliss",
-        locale: "en_US",
-        url: "https://hyperbliss.tech",
-        countryName: "United States",
-        emails: ["contact@hyperbliss.tech"],
-        phoneNumbers: [],
+        audio: [],
+        countryName: 'United States',
+        description: 'Test Description',
+        determiner: 'auto',
+        emails: ['contact@hyperbliss.tech'],
         faxNumbers: [],
         images: [],
-        audio: [],
-        videos: [],
+        locale: 'en_US',
+        phoneNumbers: [],
+        siteName: 'Hyperbliss',
+        title: {
+          absolute: 'Test Title',
+          default: 'Test Title',
+          template: '%s | Test',
+        },
         ttl: 0,
+        type: 'website',
+        url: 'https://hyperbliss.tech',
+        videos: [],
+      },
+      other: {},
+      pagination: {
+        next: null,
+        previous: null,
+      },
+      pinterest: null,
+      publisher: 'Test Publisher',
+      referrer: 'origin-when-cross-origin' as const,
+      robots: {
+        basic: 'index, follow',
+        googleBot: 'index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1',
+      },
+      themeColor: [
+        { color: '#000000', media: '(prefers-color-scheme: dark)' },
+        { color: '#ffffff', media: '(prefers-color-scheme: light)' },
+      ],
+      title: {
+        absolute: 'Test Title',
+        default: 'Test Title',
+        template: '%s | Test',
       },
       twitter: {
-        card: "summary_large_image",
-        site: "@hyperb1iss",
-        siteId: "1234567890",
-        creator: "@hyperb1iss",
-        creatorId: "1234567890",
-        title: {
-          absolute: "Test Title",
-          template: "%s | Test",
-          default: "Test Title",
-        },
-        description: "Test Description",
+        card: 'summary_large_image',
+        creator: '@hyperb1iss',
+        creatorId: '1234567890',
+        description: 'Test Description',
         images: [
           {
-            url: "https://hyperbliss.tech/og-image.jpg",
-            alt: "Test Title",
-            width: 1200,
+            alt: 'Test Title',
             height: 630,
+            url: 'https://hyperbliss.tech/og-image.jpg',
+            width: 1200,
           },
         ],
+        site: '@hyperb1iss',
+        siteId: '1234567890',
+        title: {
+          absolute: 'Test Title',
+          default: 'Test Title',
+          template: '%s | Test',
+        },
       },
       verification: {
         google: null,
-        yahoo: null,
-        yandex: null,
         me: null,
         other: {},
+        yahoo: null,
+        yandex: null,
       },
-      appleWebApp: {
-        capable: true,
-        title: undefined,
-        startupImage: [],
-        statusBarStyle: "default" as const,
-      },
-      formatDetection: {
-        telephone: true,
-        date: false,
-        address: false,
-        email: false,
-        url: false,
-      },
-      abstract: "",
-      archives: [],
-      assets: [],
-      bookmarks: [],
-      category: "",
-      classification: "",
-      other: {},
-      itunes: {
-        appId: "myApp123",
-        appArgument: "myapp://123",
-      },
-      manifest: "/manifest.json",
-      appLinks: {},
-      facebook: {},
-      pinterest: null,
-      pagination: {
-        previous: null,
-        next: null,
-      },
-    }) as Promise<ResolvedMetadata>;
+      viewport: 'width=device-width, initial-scale=1',
+    }) as Promise<ResolvedMetadata>
 
-  describe("Blog Metadata", () => {
+  describe('Blog Metadata', () => {
     const mockBlogFrontmatter = {
-      title: "Test Blog Post",
-      excerpt: "This is a test blog post",
-      date: "2024-03-20",
-      author: "Test Author",
-      tags: ["test", "blog"],
-    };
+      author: 'Test Author',
+      date: '2024-03-20',
+      excerpt: 'This is a test blog post',
+      tags: ['test', 'blog'],
+      title: 'Test Blog Post',
+    }
 
-    it("should generate correct blog metadata", async () => {
-      const metadata = await generateBlogMetadata(mockBlogFrontmatter, "test-post", mockParent());
+    it('should generate correct blog metadata', async () => {
+      const metadata = await generateBlogMetadata(mockBlogFrontmatter, 'test-post', mockParent())
 
       // Test only the fields we care about
       expect(metadata).toMatchObject({
-        metadataBase: new URL("https://hyperbliss.tech"),
-        title: "Test Blog Post",
-        description: "This is a test blog post",
-        authors: [{ name: "Test Author" }],
-        keywords: ["test", "blog"],
-      });
+        authors: [{ name: 'Test Author' }],
+        description: 'This is a test blog post',
+        keywords: ['test', 'blog'],
+        metadataBase: new URL('https://hyperbliss.tech'),
+        title: 'Test Blog Post',
+      })
 
       // Test OpenGraph separately
       expect(metadata.openGraph).toMatchObject({
-        type: "article",
-        title: "Test Blog Post",
-        description: "This is a test blog post",
-        url: "https://hyperbliss.tech/blog/test-post/",
-        siteName: "Hyperbliss",
-        locale: "en_US",
-        publishedTime: "2024-03-20",
-        authors: ["Test Author"],
-        tags: ["test", "blog"],
-      });
+        authors: ['Test Author'],
+        description: 'This is a test blog post',
+        locale: 'en_US',
+        publishedTime: '2024-03-20',
+        siteName: 'Hyperbliss',
+        tags: ['test', 'blog'],
+        title: 'Test Blog Post',
+        type: 'article',
+        url: 'https://hyperbliss.tech/blog/test-post/',
+      })
 
       // Test Twitter metadata separately
       expect(metadata.twitter).toMatchObject({
-        card: "summary_large_image",
-        title: "Test Blog Post",
-        description: "This is a test blog post",
-        creator: "@hyperb1iss",
-        site: "@hyperb1iss",
-      });
-    });
+        card: 'summary_large_image',
+        creator: '@hyperb1iss',
+        description: 'This is a test blog post',
+        site: '@hyperb1iss',
+        title: 'Test Blog Post',
+      })
+    })
 
-    it("should use default author when not provided", async () => {
+    it('should use default author when not provided', async () => {
       const frontmatterWithoutAuthor = {
         ...mockBlogFrontmatter,
         author: undefined,
-      };
+      }
 
-      const metadata = await generateBlogMetadata(
-        frontmatterWithoutAuthor,
-        "test-post",
-        mockParent()
-      );
+      const metadata = await generateBlogMetadata(frontmatterWithoutAuthor, 'test-post', mockParent())
 
-      expect(metadata.authors).toEqual([{ name: "Stefanie Jane" }]);
-    });
+      expect(metadata.authors).toEqual([{ name: 'Stefanie Jane' }])
+    })
 
-    it("should include OpenGraph images", async () => {
-      const metadata = await generateBlogMetadata(mockBlogFrontmatter, "test-post", mockParent());
+    it('should include OpenGraph images', async () => {
+      const metadata = await generateBlogMetadata(mockBlogFrontmatter, 'test-post', mockParent())
 
       // Check if images exist and is an array
-      expect(metadata.openGraph?.images).toBeDefined();
-      const ogImages = metadata.openGraph?.images;
-      expect(Array.isArray(ogImages)).toBe(true);
+      expect(metadata.openGraph?.images).toBeDefined()
+      const ogImages = metadata.openGraph?.images
+      expect(Array.isArray(ogImages)).toBe(true)
 
       // Type guard to ensure we're working with an array
       if (Array.isArray(ogImages)) {
         expect(ogImages[0]).toMatchObject({
-          url: expect.stringContaining("hyperbliss.tech"),
-          width: 1200,
-          height: 630,
           alt: expect.any(String),
-        });
+          height: 630,
+          url: expect.stringContaining('hyperbliss.tech'),
+          width: 1200,
+        })
       }
 
       // Check Twitter images
-      const twitterImages = metadata.twitter?.images;
-      expect(Array.isArray(twitterImages)).toBe(true);
+      const twitterImages = metadata.twitter?.images
+      expect(Array.isArray(twitterImages)).toBe(true)
 
       // Type guard for Twitter images
       if (Array.isArray(twitterImages)) {
         expect(twitterImages[0]).toMatchObject({
-          url: expect.stringContaining("hyperbliss.tech"),
           alt: expect.any(String),
-        });
+          url: expect.stringContaining('hyperbliss.tech'),
+        })
       }
-    });
-  });
+    })
+  })
 
-  describe("Project Metadata", () => {
+  describe('Project Metadata', () => {
     const mockProjectFrontmatter = {
-      title: "Test Project",
-      description: "This is a test project",
-      github: "https://github.com/test/project",
-      author: "Test Author",
-      tags: ["test", "project"],
-    };
+      author: 'Test Author',
+      description: 'This is a test project',
+      github: 'https://github.com/test/project',
+      tags: ['test', 'project'],
+      title: 'Test Project',
+    }
 
-    it("should generate correct project metadata", async () => {
-      const metadata = await generateProjectMetadata(
-        mockProjectFrontmatter,
-        "test-project",
-        mockParent()
-      );
+    it('should generate correct project metadata', async () => {
+      const metadata = await generateProjectMetadata(mockProjectFrontmatter, 'test-project', mockParent())
 
       expect(metadata).toMatchObject({
-        metadataBase: new URL("https://hyperbliss.tech"),
-        title: "Test Project",
-        description: "This is a test project",
-        authors: [{ name: "Test Author" }],
-        keywords: ["test", "project"],
-      });
+        authors: [{ name: 'Test Author' }],
+        description: 'This is a test project',
+        keywords: ['test', 'project'],
+        metadataBase: new URL('https://hyperbliss.tech'),
+        title: 'Test Project',
+      })
 
       expect(metadata.openGraph).toMatchObject({
-        type: "article",
-        title: "Test Project",
-        description: "This is a test project",
-        url: "https://hyperbliss.tech/projects/test-project/",
-        siteName: "Hyperbliss",
-        locale: "en_US",
-        authors: ["Test Author"],
-        tags: ["test", "project"],
-      });
+        authors: ['Test Author'],
+        description: 'This is a test project',
+        locale: 'en_US',
+        siteName: 'Hyperbliss',
+        tags: ['test', 'project'],
+        title: 'Test Project',
+        type: 'article',
+        url: 'https://hyperbliss.tech/projects/test-project/',
+      })
 
       expect(metadata.twitter).toMatchObject({
-        card: "summary_large_image",
-        title: "Test Project",
-        description: "This is a test project",
-        creator: "@hyperb1iss",
-        site: "@hyperb1iss",
-      });
-    });
+        card: 'summary_large_image',
+        creator: '@hyperb1iss',
+        description: 'This is a test project',
+        site: '@hyperb1iss',
+        title: 'Test Project',
+      })
+    })
 
-    it("should handle missing optional fields", async () => {
+    it('should handle missing optional fields', async () => {
       const minimalFrontmatter = {
-        title: "Minimal Project",
-        description: "Minimal description",
-        github: "https://github.com/test/minimal",
-      };
+        description: 'Minimal description',
+        github: 'https://github.com/test/minimal',
+        title: 'Minimal Project',
+      }
 
-      const metadata = await generateProjectMetadata(
-        minimalFrontmatter,
-        "minimal-project",
-        mockParent()
-      );
+      const metadata = await generateProjectMetadata(minimalFrontmatter, 'minimal-project', mockParent())
 
-      expect(metadata.authors).toEqual([{ name: "Stefanie Jane" }]);
-      expect(metadata.keywords).toBeUndefined();
-    });
-  });
-});
+      expect(metadata.authors).toEqual([{ name: 'Stefanie Jane' }])
+      expect(metadata.keywords).toBeUndefined()
+    })
+  })
+})

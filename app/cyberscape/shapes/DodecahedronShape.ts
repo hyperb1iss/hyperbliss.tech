@@ -1,7 +1,7 @@
 // app/cyberscape/shapes/DodecahedronShape.ts
 
-import { vec3 } from "gl-matrix";
-import { VectorShape } from "./VectorShape";
+import { vec3 } from 'gl-matrix'
+import { VectorShape } from './VectorShape'
 
 /**
  * The `DodecahedronShape` class represents a dodecahedron in the CyberScape animation.
@@ -9,20 +9,20 @@ import { VectorShape } from "./VectorShape";
  */
 export class DodecahedronShape extends VectorShape {
   constructor(existingPositions: Set<string>, width: number, height: number) {
-    super();
-    this.radius = 30 * 0.9;
-    this.initializeShape();
-    this.reset(existingPositions, width, height);
+    super()
+    this.radius = 30 * 0.9
+    this.initializeShape()
+    this.reset(existingPositions, width, height)
   }
 
   /**
    * Initializes the dodecahedron's vertices and edges.
    */
   protected initializeShape(): void {
-    const size = 30;
-    const phi = (1 + Math.sqrt(5)) / 2; // Golden ratio
-    const a = size * 0.35;
-    const b = (size * 0.35) / phi;
+    const size = 30
+    const phi = (1 + Math.sqrt(5)) / 2 // Golden ratio
+    const a = size * 0.35
+    const b = (size * 0.35) / phi
     this.vertices = [
       vec3.fromValues(a, a, a),
       vec3.fromValues(a, a, -a),
@@ -44,7 +44,7 @@ export class DodecahedronShape extends VectorShape {
       vec3.fromValues(phi * a, 0, -b),
       vec3.fromValues(-phi * a, 0, b),
       vec3.fromValues(-phi * a, 0, -b),
-    ];
+    ]
     this.edges = [
       [0, 8],
       [0, 12],
@@ -76,6 +76,6 @@ export class DodecahedronShape extends VectorShape {
       [13, 15],
       [16, 17],
       [18, 19],
-    ];
+    ]
   }
 }

@@ -1,37 +1,37 @@
 // app/cyberscape/utils/Octree.ts
 
-import { vec3 } from "gl-matrix";
+import { vec3 } from 'gl-matrix'
 
 /**
  * Represents the bounds of an octree node or query area.
  */
 export interface Bounds {
-  min: vec3;
-  max: vec3;
+  min: vec3
+  max: vec3
 }
 
 /**
  * Represents an object that can be inserted into the octree.
  */
 export interface OctreeObject {
-  position: vec3;
-  radius: number;
+  position: vec3
+  radius: number
 }
 
 /**
  * Represents a node in the octree.
  */
 class OctreeNode {
-  bounds: Bounds;
-  objects: OctreeObject[];
-  children: OctreeNode[];
-  isLeaf: boolean;
+  bounds: Bounds
+  objects: OctreeObject[]
+  children: OctreeNode[]
+  isLeaf: boolean
 
   constructor(bounds: Bounds) {
-    this.bounds = bounds;
-    this.objects = [];
-    this.children = [];
-    this.isLeaf = true;
+    this.bounds = bounds
+    this.objects = []
+    this.children = []
+    this.isLeaf = true
   }
 }
 
@@ -39,9 +39,9 @@ class OctreeNode {
  * Octree class for efficient spatial partitioning and querying.
  */
 export class Octree {
-  private root: OctreeNode;
-  private maxObjects: number;
-  private maxDepth: number;
+  private root: OctreeNode
+  private maxObjects: number
+  private maxDepth: number
 
   /**
    * Creates a new Octree instance.
@@ -49,17 +49,17 @@ export class Octree {
    * @param maxObjects - Maximum number of objects per node before splitting.
    * @param maxDepth - Maximum depth of the octree.
    */
-  constructor(bounds: Bounds, maxObjects: number = 8, maxDepth: number = 8) {
-    this.root = new OctreeNode(bounds);
-    this.maxObjects = maxObjects;
-    this.maxDepth = maxDepth;
+  constructor(bounds: Bounds, maxObjects = 8, maxDepth = 8) {
+    this.root = new OctreeNode(bounds)
+    this.maxObjects = maxObjects
+    this.maxDepth = maxDepth
   }
 
   /**
    * Clears all objects from the octree.
    */
   clear(): void {
-    this.root = new OctreeNode(this.root.bounds);
+    this.root = new OctreeNode(this.root.bounds)
   }
 
   /**
@@ -67,7 +67,7 @@ export class Octree {
    * @param bounds - The new bounds for the octree.
    */
   public updateBounds(bounds: Bounds): void {
-    this.root.bounds = bounds;
+    this.root.bounds = bounds
   }
 
   /**
@@ -75,7 +75,7 @@ export class Octree {
    * @returns The current bounds of the octree.
    */
   public getBounds(): Bounds {
-    return this.root.bounds;
+    return this.root.bounds
   }
 
   /**
@@ -83,7 +83,7 @@ export class Octree {
    * @param object - The object to insert.
    */
   insert(object: OctreeObject): void {
-    this.insertObject(object, this.root, 0);
+    this.insertObject(object, this.root, 0)
   }
 
   /**
@@ -94,23 +94,23 @@ export class Octree {
    */
   private insertObject(object: OctreeObject, node: OctreeNode, depth: number): void {
     if (!this.isInBounds(object.position, node.bounds)) {
-      return;
+      return
     }
 
     if (node.isLeaf && node.objects.length < this.maxObjects) {
-      node.objects.push(object);
-      return;
+      node.objects.push(object)
+      return
     }
 
     if (node.isLeaf && depth < this.maxDepth) {
-      this.split(node);
+      this.split(node)
     }
 
     if (!node.isLeaf) {
-      const childIndex = this.getChildIndex(object.position, node.bounds);
-      this.insertObject(object, node.children[childIndex], depth + 1);
+      const childIndex = this.getChildIndex(object.position, node.bounds)
+      this.insertObject(object, node.children[childIndex], depth + 1)
     } else {
-      node.objects.push(object);
+      node.objects.push(object)
     }
   }
 
@@ -119,52 +119,52 @@ export class Octree {
    * @param node - The node to split.
    */
   private split(node: OctreeNode): void {
-    const { min, max } = node.bounds;
-    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), min, max), 0.5);
+    const { min, max } = node.bounds
+    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), min, max), 0.5)
 
     node.children = [
       new OctreeNode({
-        min: [min[0], min[1], min[2]],
         max: [mid[0], mid[1], mid[2]],
+        min: [min[0], min[1], min[2]],
       }),
       new OctreeNode({
-        min: [mid[0], min[1], min[2]],
         max: [max[0], mid[1], mid[2]],
+        min: [mid[0], min[1], min[2]],
       }),
       new OctreeNode({
-        min: [min[0], mid[1], min[2]],
         max: [mid[0], max[1], mid[2]],
+        min: [min[0], mid[1], min[2]],
       }),
       new OctreeNode({
-        min: [mid[0], mid[1], min[2]],
         max: [max[0], max[1], mid[2]],
+        min: [mid[0], mid[1], min[2]],
       }),
       new OctreeNode({
-        min: [min[0], min[1], mid[2]],
         max: [mid[0], mid[1], max[2]],
+        min: [min[0], min[1], mid[2]],
       }),
       new OctreeNode({
-        min: [mid[0], min[1], mid[2]],
         max: [max[0], mid[1], max[2]],
+        min: [mid[0], min[1], mid[2]],
       }),
       new OctreeNode({
-        min: [min[0], mid[1], mid[2]],
         max: [mid[0], max[1], max[2]],
+        min: [min[0], mid[1], mid[2]],
       }),
       new OctreeNode({
-        min: [mid[0], mid[1], mid[2]],
         max: [max[0], max[1], max[2]],
+        min: [mid[0], mid[1], mid[2]],
       }),
-    ];
+    ]
 
-    node.isLeaf = false;
+    node.isLeaf = false
 
     for (const object of node.objects) {
-      const childIndex = this.getChildIndex(object.position, node.bounds);
-      node.children[childIndex].objects.push(object);
+      const childIndex = this.getChildIndex(object.position, node.bounds)
+      node.children[childIndex].objects.push(object)
     }
 
-    node.objects = [];
+    node.objects = []
   }
 
   /**
@@ -174,12 +174,12 @@ export class Octree {
    * @returns The index of the child node (0-7).
    */
   private getChildIndex(position: vec3, bounds: Bounds): number {
-    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), bounds.min, bounds.max), 0.5);
-    let index = 0;
-    if (position[0] > mid[0]) index |= 1;
-    if (position[1] > mid[1]) index |= 2;
-    if (position[2] > mid[2]) index |= 4;
-    return index;
+    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), bounds.min, bounds.max), 0.5)
+    let index = 0
+    if (position[0] > mid[0]) index |= 1
+    if (position[1] > mid[1]) index |= 2
+    if (position[2] > mid[2]) index |= 4
+    return index
   }
 
   /**
@@ -196,7 +196,7 @@ export class Octree {
       position[1] <= bounds.max[1] &&
       position[2] >= bounds.min[2] &&
       position[2] <= bounds.max[2]
-    );
+    )
   }
 
   /**
@@ -205,9 +205,9 @@ export class Octree {
    * @returns An array of objects within the query bounds.
    */
   query(bounds: Bounds): OctreeObject[] {
-    const result: OctreeObject[] = [];
-    this.queryNode(this.root, bounds, result);
-    return result;
+    const result: OctreeObject[] = []
+    this.queryNode(this.root, bounds, result)
+    return result
   }
 
   /**
@@ -218,14 +218,14 @@ export class Octree {
    */
   private queryNode(node: OctreeNode, queryBounds: Bounds, result: OctreeObject[]): void {
     if (!this.intersectsBounds(node.bounds, queryBounds)) {
-      return;
+      return
     }
 
     if (node.isLeaf) {
-      result.push(...node.objects.filter((obj) => this.isInBounds(obj.position, queryBounds)));
+      result.push(...node.objects.filter((obj) => this.isInBounds(obj.position, queryBounds)))
     } else {
       for (const child of node.children) {
-        this.queryNode(child, queryBounds, result);
+        this.queryNode(child, queryBounds, result)
       }
     }
   }
@@ -244,6 +244,6 @@ export class Octree {
       a.max[1] >= b.min[1] &&
       a.min[2] <= b.max[2] &&
       a.max[2] >= b.min[2]
-    );
+    )
   }
 }

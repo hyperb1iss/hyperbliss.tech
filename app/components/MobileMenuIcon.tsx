@@ -1,8 +1,8 @@
 // app/components/MobileMenuIcon.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { styled } from "styled-components";
+import { motion } from 'framer-motion'
+import { styled } from 'styled-components'
 
 /**
  * Styled component for the mobile menu icon container.
@@ -21,7 +21,7 @@ const MobileMenuIconContainer = styled(motion.div)`
     flex-direction: column;
     justify-content: space-around;
   }
-`;
+`
 
 /**
  * Styled component for the menu lines.
@@ -32,14 +32,14 @@ const MenuLine = styled(motion.span)`
   background-color: var(--color-accent);
   border-radius: 4px;
   box-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
-`;
+`
 
 /**
  * Props interface for MobileMenuIcon component.
  */
 interface MobileMenuIconProps {
-  menuOpen: boolean;
-  toggleMenu: () => void;
+  menuOpen: boolean
+  toggleMenu: () => void
 }
 
 /**
@@ -52,44 +52,32 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
   const topLineVariants = {
     closed: { rotate: 0, translateY: 0 },
     open: { rotate: 45, translateY: 10 },
-  };
+  }
 
   const middleLineVariants = {
     closed: { opacity: 1 },
     open: { opacity: 0 },
-  };
+  }
 
   const bottomLineVariants = {
     closed: { rotate: 0, translateY: 0 },
     open: { rotate: -45, translateY: -10 },
-  };
+  }
 
   return (
     <MobileMenuIconContainer
-      onClick={toggleMenu}
+      aria-label="Toggle menu"
       className="mobile-menu-icon"
+      onClick={toggleMenu}
+      role="button"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      aria-label="Toggle menu"
-      role="button"
     >
-      <MenuLine
-        variants={topLineVariants}
-        animate={menuOpen ? "open" : "closed"}
-        transition={{ duration: 0.3 }}
-      />
-      <MenuLine
-        variants={middleLineVariants}
-        animate={menuOpen ? "open" : "closed"}
-        transition={{ duration: 0.3 }}
-      />
-      <MenuLine
-        variants={bottomLineVariants}
-        animate={menuOpen ? "open" : "closed"}
-        transition={{ duration: 0.3 }}
-      />
+      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={topLineVariants} />
+      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={middleLineVariants} />
+      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={bottomLineVariants} />
     </MobileMenuIconContainer>
-  );
-};
+  )
+}
 
-export default MobileMenuIcon;
+export default MobileMenuIcon

@@ -1,16 +1,16 @@
 // app/components/Header.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { debounce } from "lodash";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { styled } from "styled-components";
-import { initializeCyberScape, triggerCyberScapeAnimation } from "../cyberscape/CyberScape";
-import { useHeaderContext } from "./HeaderContext";
-import Logo from "./Logo";
-import MobileMenuIcon from "./MobileMenuIcon";
-import MobileNavLinks from "./MobileNavLinks";
-import NavLinks from "./NavLinks";
+import { motion } from 'framer-motion'
+import { debounce } from 'lodash'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { styled } from 'styled-components'
+import { initializeCyberScape, triggerCyberScapeAnimation } from '../cyberscape/CyberScape'
+import { useHeaderContext } from './HeaderContext'
+import Logo from './Logo'
+import MobileMenuIcon from './MobileMenuIcon'
+import MobileNavLinks from './MobileNavLinks'
+import NavLinks from './NavLinks'
 
 /**
  * Styled components for the header
@@ -21,7 +21,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   width: 100%;
   background-color: rgba(0, 0, 0, 0.9);
   padding: 1rem;
-  height: ${(props) => (props.$isExpanded ? "200px" : "100px")};
+  height: ${(props) => (props.$isExpanded ? '200px' : '100px')};
   transition: height 0.3s ease;
   z-index: 1000;
   overflow: hidden;
@@ -29,7 +29,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   justify-content: center;
   align-items: center;
   -webkit-tap-highlight-color: transparent;
-`;
+`
 
 const NavContent = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ const NavContent = styled.div`
   max-width: 100%;
   height: 100%;
   overflow: hidden;
-`;
+`
 
 const Canvas = styled.canvas`
   position: absolute;
@@ -49,7 +49,7 @@ const Canvas = styled.canvas`
   height: 100%; // Ensures the canvas scales to the full height
   pointer-events: none;
   z-index: -1;
-`;
+`
 
 const ChevronIcon = styled(motion.div)`
   position: absolute;
@@ -70,12 +70,12 @@ const ChevronIcon = styled(motion.div)`
     width: 100%;
     height: 100%;
   }
-`;
+`
 
 const chevronVariants = {
   collapsed: { rotate: 0 },
   expanded: { rotate: 180 },
-};
+}
 
 /**
  * Header component
@@ -83,99 +83,99 @@ const chevronVariants = {
  * @returns {JSX.Element} Rendered header
  */
 const Header: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const navRef = useRef<HTMLElement>(null);
-  const { isExpanded, setIsExpanded } = useHeaderContext();
+  const [menuOpen, setMenuOpen] = useState(false)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const navRef = useRef<HTMLElement>(null)
+  const { isExpanded, setIsExpanded } = useHeaderContext()
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
-    let cleanupCanvas: () => void = () => {};
+    let cleanupCanvas: () => void = () => {}
     if (canvasRef.current && navRef.current) {
       cleanupCanvas = initializeCyberScape(
         canvasRef.current,
         navRef.current as unknown as HTMLAnchorElement,
-        navRef.current as HTMLElement
-      );
+        navRef.current as HTMLElement,
+      )
     }
 
     // Cleanup on unmount
     return () => {
-      if (cleanupCanvas) cleanupCanvas();
-    };
-  }, []);
+      if (cleanupCanvas) cleanupCanvas()
+    }
+  }, [])
 
   // Optimized handler for triggering CyberScape animation
   const handleHeaderInteraction = useCallback(() => {
     const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
-      const rect = canvasRef.current?.getBoundingClientRect();
+      const rect = canvasRef.current?.getBoundingClientRect()
       if (rect) {
-        let x, y;
+        let x, y
         if (event instanceof MouseEvent) {
-          x = event.clientX - rect.left;
-          y = event.clientY - rect.top;
+          x = event.clientX - rect.left
+          y = event.clientY - rect.top
         } else if (event instanceof TouchEvent) {
-          x = event.touches[0].clientX - rect.left;
-          y = event.touches[0].clientY - rect.top;
+          x = event.touches[0].clientX - rect.left
+          y = event.touches[0].clientY - rect.top
         }
         if (x !== undefined && y !== undefined) {
-          triggerCyberScapeAnimation(x, y);
+          triggerCyberScapeAnimation(x, y)
         }
       }
-    }, 100);
+    }, 100)
 
     const interactionHandler = (event: MouseEvent | TouchEvent) => {
-      debouncedTrigger(event);
-    };
+      debouncedTrigger(event)
+    }
 
     // Attach the cancel method to the interactionHandler
-    interactionHandler.cancel = debouncedTrigger.cancel;
+    interactionHandler.cancel = debouncedTrigger.cancel
 
-    return interactionHandler;
-  }, [canvasRef]);
+    return interactionHandler
+  }, [canvasRef])
 
   // Attach the interaction event listeners to the header for CyberScape
   useEffect(() => {
-    const navElement = navRef.current;
-    const interactionHandler = handleHeaderInteraction();
+    const navElement = navRef.current
+    const interactionHandler = handleHeaderInteraction()
     if (navElement) {
-      navElement.addEventListener("click", interactionHandler);
-      navElement.addEventListener("touchstart", interactionHandler, {
+      navElement.addEventListener('click', interactionHandler)
+      navElement.addEventListener('touchstart', interactionHandler, {
         passive: true,
-      });
+      })
     }
     return () => {
       if (navElement) {
-        navElement.removeEventListener("click", interactionHandler);
-        navElement.removeEventListener("touchstart", interactionHandler);
+        navElement.removeEventListener('click', interactionHandler)
+        navElement.removeEventListener('touchstart', interactionHandler)
       }
-      interactionHandler.cancel();
-    };
-  }, [handleHeaderInteraction]);
+      interactionHandler.cancel()
+    }
+  }, [handleHeaderInteraction])
 
   // Function to trigger CyberScape animation when menu is opened
   const triggerMenuAnimation = useCallback(() => {
     if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect();
-      const x = rect.right - 20; // 20px from the right edge
-      const y = rect.top + 50; // Middle of the header height
-      triggerCyberScapeAnimation(x, y);
+      const rect = canvasRef.current.getBoundingClientRect()
+      const x = rect.right - 20 // 20px from the right edge
+      const y = rect.top + 50 // Middle of the header height
+      triggerCyberScapeAnimation(x, y)
     }
-  }, []);
+  }, [])
 
   // Handler for toggling menu
   const toggleMenu = useCallback(() => {
-    setMenuOpen((prev) => !prev);
-    triggerMenuAnimation();
-  }, [triggerMenuAnimation]);
+    setMenuOpen((prev) => !prev)
+    triggerMenuAnimation()
+  }, [triggerMenuAnimation])
 
   // Handler for toggling header expansion
   const toggleExpansion = () => {
-    setIsExpanded(!isExpanded);
-  };
+    setIsExpanded(!isExpanded)
+  }
 
   return (
-    <Nav ref={navRef} $isExpanded={isExpanded}>
+    <Nav $isExpanded={isExpanded} ref={navRef}>
       <Canvas ref={canvasRef} />
       <NavContent>
         <Logo />
@@ -185,26 +185,26 @@ const Header: React.FC = () => {
       {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} setMenuOpen={setMenuOpen} />
       <ChevronIcon
-        onClick={toggleExpansion}
+        animate={isExpanded ? 'expanded' : 'collapsed'}
         initial="collapsed"
-        animate={isExpanded ? "expanded" : "collapsed"}
+        onClick={toggleExpansion}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
         variants={chevronVariants}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <polyline points="6 9 12 15 18 9"></polyline>
+          <polyline points="6 9 12 15 18 9" />
         </svg>
       </ChevronIcon>
     </Nav>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

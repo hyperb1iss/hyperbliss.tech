@@ -1,37 +1,37 @@
 // app/components/LatestBlogPosts.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import styled from "styled-components";
-import Card from "./Card";
-import GlitchSpan from "./GlitchSpan";
-import StyledTitle from "./StyledTitle";
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import styled from 'styled-components'
+import Card from './Card'
+import GlitchSpan from './GlitchSpan'
+import StyledTitle from './StyledTitle'
 
 interface BlogPost {
-  slug: string;
+  slug: string
   frontmatter: {
-    title: string;
-    excerpt: string;
-    date: string;
-    author?: string;
-    tags: string[];
-  };
+    title: string
+    excerpt: string
+    date: string
+    author?: string
+    tags: string[]
+  }
 }
 
 interface LatestBlogPostsProps {
-  posts: BlogPost[];
-  isMobile: boolean;
+  posts: BlogPost[]
+  isMobile: boolean
 }
 
 const SidebarContainer = styled(motion.div)`
   width: 100%;
   padding: 8rem 16px 2rem; /* Apply horizontal padding here */
   overflow-y: auto;
-`;
+`
 
 const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
-  display: ${(props) => (props.$isMobile ? "grid" : "flex")};
+  display: ${(props) => (props.$isMobile ? 'grid' : 'flex')};
   flex-direction: column;
   ${(props) =>
     props.$isMobile &&
@@ -46,7 +46,7 @@ const SidebarContent = styled(motion.div)<{ $isMobile: boolean }>`
   @media (max-width: 768px) {
     gap: 1rem;
   }
-`;
+`
 
 const TitleLink = styled(Link)`
   text-decoration: none;
@@ -55,15 +55,11 @@ const TitleLink = styled(Link)`
   &:hover {
     cursor: pointer;
   }
-`;
+`
 
 export default function LatestBlogPosts({ posts, isMobile }: LatestBlogPostsProps) {
   return (
-    <SidebarContainer
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
+    <SidebarContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.8, ease: 'easeOut' }}>
       <StyledTitle>
         <TitleLink href="/blog">
           <GlitchSpan data-text="Latest Posts">Latest Posts</GlitchSpan>
@@ -73,18 +69,18 @@ export default function LatestBlogPosts({ posts, isMobile }: LatestBlogPostsProp
         {posts.length > 0 ? (
           posts.map((post, index) => (
             <Card
-              key={post.slug}
-              title={post.frontmatter.title}
-              description={post.frontmatter.excerpt}
-              link={`/blog/${post.slug}`}
-              color="255, 0, 255"
-              linkColor="0, 255, 255"
-              tags={post.frontmatter.tags}
-              meta={`${new Date(post.frontmatter.date).toLocaleDateString()} ${
-                post.frontmatter.author ? `• ${post.frontmatter.author}` : ""
-              }`}
-              index={index}
               className="blog-post-card"
+              color="255, 0, 255"
+              description={post.frontmatter.excerpt}
+              index={index}
+              key={post.slug}
+              link={`/blog/${post.slug}`}
+              linkColor="0, 255, 255"
+              meta={`${new Date(post.frontmatter.date).toLocaleDateString()} ${
+                post.frontmatter.author ? `• ${post.frontmatter.author}` : ''
+              }`}
+              tags={post.frontmatter.tags}
+              title={post.frontmatter.title}
             />
           ))
         ) : (
@@ -92,5 +88,5 @@ export default function LatestBlogPosts({ posts, isMobile }: LatestBlogPostsProp
         )}
       </SidebarContent>
     </SidebarContainer>
-  );
+  )
 }

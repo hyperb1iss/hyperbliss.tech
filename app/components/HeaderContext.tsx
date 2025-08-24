@@ -1,22 +1,22 @@
 // app/components/HeaderContext.tsx
-"use client";
+'use client'
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react'
 
 /**
  * Interface for HeaderContext
  * Provides state management for the header's expanded state.
  */
 interface HeaderContextType {
-  isExpanded: boolean;
-  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  isExpanded: boolean
+  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
  * HeaderContext
  * React context for managing the header's expanded state.
  */
-const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
+const HeaderContext = createContext<HeaderContextType | undefined>(undefined)
 
 /**
  * useHeaderContext hook
@@ -25,12 +25,12 @@ const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
  * @throws Error if used outside of HeaderProvider
  */
 export const useHeaderContext = () => {
-  const context = useContext(HeaderContext);
+  const context = useContext(HeaderContext)
   if (context === undefined) {
-    throw new Error("useHeaderContext must be used within a HeaderProvider");
+    throw new Error('useHeaderContext must be used within a HeaderProvider')
   }
-  return context;
-};
+  return context
+}
 
 /**
  * HeaderProvider component
@@ -39,11 +39,7 @@ export const useHeaderContext = () => {
  * @returns {JSX.Element} Provider component
  */
 export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false)
 
-  return (
-    <HeaderContext.Provider value={{ isExpanded, setIsExpanded }}>
-      {children}
-    </HeaderContext.Provider>
-  );
-};
+  return <HeaderContext.Provider value={{ isExpanded, setIsExpanded }}>{children}</HeaderContext.Provider>
+}

@@ -1,20 +1,20 @@
 // app/layout.tsx
-import { AnimatePresence } from "framer-motion";
-import { Metadata } from "next";
-import Header from "./components/Header";
-import HeaderFade from "./components/HeaderFade";
-import { HeaderProvider } from "./components/HeaderContext";
-import GlobalLayout from "./components/GlobalLayout";
-import siteMetadata from "./lib/metadata";
-import StyledComponentsRegistry from "./lib/registry";
-import HyperspaceLoader from "./components/HyperspaceLoader";
-import ClientComponents from "./components/ClientComponents";
-import StructuredData from "./components/StructuredData";
-import { generatePersonSchema, generateWebsiteSchema } from "./lib/structuredData";
-import { orbitron, rajdhani, spaceMono, notoSans } from "./styles/fonts";
-import "./styles/globals.css";
+import { AnimatePresence } from 'framer-motion'
+import { Metadata } from 'next'
+import ClientComponents from './components/ClientComponents'
+import GlobalLayout from './components/GlobalLayout'
+import Header from './components/Header'
+import { HeaderProvider } from './components/HeaderContext'
+import HeaderFade from './components/HeaderFade'
+import HyperspaceLoader from './components/HyperspaceLoader'
+import StructuredData from './components/StructuredData'
+import siteMetadata from './lib/metadata'
+import StyledComponentsRegistry from './lib/registry'
+import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
+import { notoSans, orbitron, rajdhani, spaceMono } from './styles/fonts'
+import './styles/globals.css'
 
-export const metadata: Metadata = siteMetadata;
+export const metadata: Metadata = siteMetadata
 
 /**
  * RootLayout component
@@ -24,13 +24,10 @@ export const metadata: Metadata = siteMetadata;
  * @returns {JSX.Element} Rendered root layout
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const structuredData = [generateWebsiteSchema(), generatePersonSchema()];
+  const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
 
   return (
-    <html
-      lang="en"
-      className={`${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable} ${notoSans.variable}`}
-    >
+    <html className={`${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable} ${notoSans.variable}`} lang="en">
       <head>
         <StructuredData data={structuredData} />
       </head>
@@ -48,5 +45,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </StyledComponentsRegistry>
       </body>
     </html>
-  );
+  )
 }

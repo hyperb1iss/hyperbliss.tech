@@ -1,6 +1,6 @@
 // app/components/PageLayout.tsx
-import { motion } from "framer-motion";
-import styled from "styled-components";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
 
 const MainContentWrapper = styled(motion.main)`
   flex: 1;
@@ -17,10 +17,10 @@ const MainContentWrapper = styled(motion.main)`
     width: 90%;
     padding: 8rem 2rem 2rem;
   }
-`;
+`
 
 interface PageLayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 /**
@@ -33,13 +33,13 @@ interface PageLayoutProps {
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
     <MainContentWrapper
-      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.6, ease: 'easeInOut' }}
     >
       {children}
     </MainContentWrapper>
-  );
-};
+  )
+}
 
-export default PageLayout;
+export default PageLayout

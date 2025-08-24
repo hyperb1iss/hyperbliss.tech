@@ -1,9 +1,9 @@
 // app/components/Analytics.tsx
-"use client";
+'use client'
 
-import { GoogleAnalytics, usePageViews, event } from "nextjs-google-analytics";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useSearchParams } from 'next/navigation'
+import { event, GoogleAnalytics, usePageViews } from 'nextjs-google-analytics'
+import { useEffect } from 'react'
 
 /**
  * Analytics component
@@ -12,36 +12,36 @@ import { useEffect } from "react";
  * @returns {JSX.Element} Google Analytics component
  */
 export default function Analytics() {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   // Enable basic page view tracking
   usePageViews({
     ignoreHashChange: true,
-  });
+  })
 
   // Track when URL parameters change
   useEffect(() => {
     if (searchParams && searchParams.toString()) {
-      const params = Object.fromEntries(searchParams.entries());
+      const params = Object.fromEntries(searchParams.entries())
 
       // Track search parameters as custom event
-      event("search_params", {
-        params_json: JSON.stringify(params),
+      event('search_params', {
         page_path: pathname,
-      });
+        params_json: JSON.stringify(params),
+      })
     }
-  }, [searchParams, pathname]);
+  }, [searchParams, pathname])
 
   return (
     <GoogleAnalytics
-      trackPageViews
+      debugMode={process.env.GA_DEBUG_MODE === 'true'}
       gaMeasurementId={process.env.GA_MEASUREMENT_ID}
       strategy="lazyOnload"
-      debugMode={process.env.GA_DEBUG_MODE === "true"}
+      trackPageViews={true}
     />
-  );
+  )
 }
 
 // Exporting the event function for custom event tracking throughout the app
-export { event as trackEvent };
+export { event as trackEvent }

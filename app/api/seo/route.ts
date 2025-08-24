@@ -1,204 +1,196 @@
-import { TECH_TAGS } from "@/lib/constants";
+import { ResolvedMetadata } from 'next'
+import { NextResponse } from 'next/server'
+import { TECH_TAGS } from '@/lib/constants'
 import {
   BlogFrontmatter,
   generateBlogMetadata,
   generateProjectMetadata,
   ProjectFrontmatter,
-} from "@/lib/generateMetadata";
-import { getAllMarkdownSlugs, getMarkdownContent } from "@/lib/markdown";
-import siteMetadata from "@/lib/metadata";
-import { SOCIAL_LINKS } from "@/lib/socials";
-import { ResolvedMetadata } from "next";
-import { NextResponse } from "next/server";
+} from '@/lib/generateMetadata'
+import { getAllMarkdownSlugs, getMarkdownContent } from '@/lib/markdown'
+import siteMetadata from '@/lib/metadata'
+import { SOCIAL_LINKS } from '@/lib/socials'
 
-const isDevelopment = process.env.NODE_ENV === "development";
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 /**
  * Creates a minimal resolved metadata object for parent resolution
  * Based on the test mock structure
  */
 const createMinimalMetadata = (): ResolvedMetadata => ({
-  metadataBase: new URL("https://hyperbliss.tech"),
-  title: {
-    absolute: "Test Title",
-    template: "%s | Test",
-  },
-  description: "Test Description",
-  applicationName: "Hyperbliss",
-  authors: [{ name: "Test Author", url: "https://hyperbliss.tech" }],
-  generator: "Next.js",
-  keywords: ["test"],
-  referrer: "origin-when-cross-origin",
-  themeColor: [
-    { color: "#000000", media: "(prefers-color-scheme: dark)" },
-    { color: "#ffffff", media: "(prefers-color-scheme: light)" },
-  ],
-  colorScheme: "dark",
-  viewport: "width=device-width, initial-scale=1",
-  creator: "Test Creator",
-  publisher: "Test Publisher",
-  robots: {
-    basic: "index, follow",
-    googleBot: "index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1",
-  },
+  abstract: '',
   alternates: {
-    canonical: { url: "https://hyperbliss.tech" },
+    canonical: { url: 'https://hyperbliss.tech' },
     languages: {
-      "en-US": [
+      'en-US': [
         {
-          url: "https://hyperbliss.tech",
+          url: 'https://hyperbliss.tech',
         },
       ],
     },
     media: {
-      "only screen and (max-width: 600px)": [
+      'only screen and (max-width: 600px)': [
         {
-          url: "https://m.hyperbliss.tech",
+          url: 'https://m.hyperbliss.tech',
         },
       ],
     },
     types: {
-      "application/rss+xml": [
+      'application/rss+xml': [
         {
-          url: "https://hyperbliss.tech/feed.xml",
+          url: 'https://hyperbliss.tech/feed.xml',
         },
       ],
     },
   },
+  appLinks: {},
+  appleWebApp: {
+    capable: true,
+    startupImage: [],
+    statusBarStyle: 'default',
+    title: undefined,
+  },
+  applicationName: 'Hyperbliss',
+  archives: [],
+  assets: [],
+  authors: [{ name: 'Test Author', url: 'https://hyperbliss.tech' }],
+  bookmarks: [],
+  category: '',
+  classification: '',
+  colorScheme: 'dark',
+  creator: 'Test Creator',
+  description: 'Test Description',
+  facebook: {},
+  formatDetection: {
+    address: false,
+    date: false,
+    email: false,
+    telephone: true,
+    url: false,
+  },
+  generator: 'Next.js',
   icons: {
-    icon: [{ url: "/favicon.ico" }],
-    shortcut: [{ url: "/favicon-16x16.png" }],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    apple: [{ url: '/apple-touch-icon.png' }],
+    icon: [{ url: '/favicon.ico' }],
     other: [
       {
-        rel: "mask-icon",
-        url: "/safari-pinned-tab.svg",
+        rel: 'mask-icon',
+        url: '/safari-pinned-tab.svg',
       },
     ],
+    shortcut: [{ url: '/favicon-16x16.png' }],
   },
+  itunes: {
+    appArgument: 'myapp://123',
+    appId: 'myApp123',
+  },
+  keywords: ['test'],
+  manifest: '/manifest.json',
+  metadataBase: new URL('https://hyperbliss.tech'),
   openGraph: {
-    type: "website",
-    determiner: "auto",
-    title: {
-      absolute: "Test Title",
-      template: "%s | Test",
-    },
-    description: "Test Description",
-    siteName: "Hyperbliss",
-    locale: "en_US",
-    url: "https://hyperbliss.tech",
-    countryName: "United States",
-    emails: ["contact@hyperbliss.tech"],
-    phoneNumbers: [],
+    audio: [],
+    countryName: 'United States',
+    description: 'Test Description',
+    determiner: 'auto',
+    emails: ['contact@hyperbliss.tech'],
     faxNumbers: [],
     images: [],
-    audio: [],
-    videos: [],
-    ttl: 0,
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@hyperb1iss",
-    siteId: "1234567890",
-    creator: "@hyperb1iss",
-    creatorId: "1234567890",
+    locale: 'en_US',
+    phoneNumbers: [],
+    siteName: 'Hyperbliss',
     title: {
-      absolute: "Test Title",
-      template: "%s | Test",
+      absolute: 'Test Title',
+      template: '%s | Test',
     },
-    description: "Test Description",
-    images: [
-      {
-        url: "https://hyperbliss.tech/og-image.jpg",
-        alt: "Test Title",
-        width: 1200,
-        height: 630,
-      },
-    ],
+    ttl: 0,
+    type: 'website',
+    url: 'https://hyperbliss.tech',
+    videos: [],
+  },
+  other: {},
+  pagination: {
+    next: null,
+    previous: null,
   },
   pinterest: {
-    richPin: "true",
+    richPin: 'true',
+  },
+  publisher: 'Test Publisher',
+  referrer: 'origin-when-cross-origin',
+  robots: {
+    basic: 'index, follow',
+    googleBot: 'index, follow, max-video-preview: -1, max-image-preview: large, max-snippet: -1',
+  },
+  themeColor: [
+    { color: '#000000', media: '(prefers-color-scheme: dark)' },
+    { color: '#ffffff', media: '(prefers-color-scheme: light)' },
+  ],
+  title: {
+    absolute: 'Test Title',
+    template: '%s | Test',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@hyperb1iss',
+    creatorId: '1234567890',
+    description: 'Test Description',
+    images: [
+      {
+        alt: 'Test Title',
+        height: 630,
+        url: 'https://hyperbliss.tech/og-image.jpg',
+        width: 1200,
+      },
+    ],
+    site: '@hyperb1iss',
+    siteId: '1234567890',
+    title: {
+      absolute: 'Test Title',
+      template: '%s | Test',
+    },
   },
   verification: {
     google: null,
-    yahoo: null,
-    yandex: null,
     me: null,
     other: {},
+    yahoo: null,
+    yandex: null,
   },
-  appleWebApp: {
-    capable: true,
-    title: undefined,
-    startupImage: [],
-    statusBarStyle: "default",
-  },
-  formatDetection: {
-    telephone: true,
-    date: false,
-    address: false,
-    email: false,
-    url: false,
-  },
-  abstract: "",
-  archives: [],
-  assets: [],
-  bookmarks: [],
-  category: "",
-  classification: "",
-  other: {},
-  itunes: {
-    appId: "myApp123",
-    appArgument: "myapp://123",
-  },
-  manifest: "/manifest.json",
-  appLinks: {},
-  facebook: {},
-  pagination: {
-    previous: null,
-    next: null,
-  },
-});
+  viewport: 'width=device-width, initial-scale=1',
+})
 
 /**
  * Fetches metadata for all blog posts
  */
 async function getAllBlogMetadata() {
-  const slugs = await getAllMarkdownSlugs("src/posts");
+  const slugs = await getAllMarkdownSlugs('src/posts')
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>("src/posts", slug);
-      const metadata = await generateBlogMetadata(
-        frontmatter,
-        slug,
-        Promise.resolve(createMinimalMetadata())
-      );
+      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>('src/posts', slug)
+      const metadata = await generateBlogMetadata(frontmatter, slug, Promise.resolve(createMinimalMetadata()))
       return {
-        slug,
         metadata,
-      };
-    })
-  );
+        slug,
+      }
+    }),
+  )
 }
 
 /**
  * Fetches metadata for all project pages
  */
 async function getAllProjectMetadata() {
-  const slugs = await getAllMarkdownSlugs("src/projects");
+  const slugs = await getAllMarkdownSlugs('src/projects')
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>("src/projects", slug);
-      const metadata = await generateProjectMetadata(
-        frontmatter,
-        slug,
-        Promise.resolve(createMinimalMetadata())
-      );
+      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('src/projects', slug)
+      const metadata = await generateProjectMetadata(frontmatter, slug, Promise.resolve(createMinimalMetadata()))
       return {
-        slug,
         metadata,
-      };
-    })
-  );
+        slug,
+      }
+    }),
+  )
 }
 
 /**
@@ -209,35 +201,29 @@ async function getAllProjectMetadata() {
 export async function GET() {
   // Return 404 if not in development mode
   if (!isDevelopment) {
-    return NextResponse.json(
-      { error: "This endpoint is only available in development mode" },
-      { status: 404 }
-    );
+    return NextResponse.json({ error: 'This endpoint is only available in development mode' }, { status: 404 })
   }
 
-  const [blogMetadata, projectMetadata] = await Promise.all([
-    getAllBlogMetadata(),
-    getAllProjectMetadata(),
-  ]);
+  const [blogMetadata, projectMetadata] = await Promise.all([getAllBlogMetadata(), getAllProjectMetadata()])
 
   const seoData = {
-    siteMetadata,
-    techTags: Array.from(TECH_TAGS),
-    socialLinks: SOCIAL_LINKS.map(({ href, label }) => ({ href, label })),
     pages: {
       blog: blogMetadata,
       projects: projectMetadata,
     },
     robots: {
-      sitemap: "https://hyperbliss.tech/sitemap.xml",
-      rss: "https://hyperbliss.tech/api/rss",
+      rss: 'https://hyperbliss.tech/api/rss',
+      sitemap: 'https://hyperbliss.tech/sitemap.xml',
     },
-  };
+    siteMetadata,
+    socialLinks: SOCIAL_LINKS.map(({ href, label }) => ({ href, label })),
+    techTags: Array.from(TECH_TAGS),
+  }
 
   return NextResponse.json(seoData, {
     headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store", // Disable caching in development
+      'Cache-Control': 'no-store', // Disable caching in development
+      'Content-Type': 'application/json',
     },
-  });
+  })
 }

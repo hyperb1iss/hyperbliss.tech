@@ -1,11 +1,11 @@
 // app/components/Footer.tsx
-"use client";
+'use client'
 
-import styled from "styled-components";
-import { SOCIAL_LINKS } from "../lib/socials";
-import { FaRss } from "react-icons/fa6";
-import Link from "next/link";
-import { SparklingName } from "./SparklingName";
+import Link from 'next/link'
+import { FaRss } from 'react-icons/fa6'
+import styled from 'styled-components'
+import { SOCIAL_LINKS } from '../lib/socials'
+import { SparklingName } from './SparklingName'
 
 const FooterContainer = styled.footer`
   background-color: rgba(0, 0, 0, 0.95);
@@ -60,7 +60,7 @@ const FooterContainer = styled.footer`
       opacity: 0.4;
     }
   }
-`;
+`
 
 const FooterText = styled.p`
   font-size: 1.6rem;
@@ -78,7 +78,7 @@ const FooterText = styled.p`
   &::after {
     content: " ]";
   }
-`;
+`
 
 const RSSLink = styled(Link)`
   margin: 0 1rem;
@@ -111,7 +111,7 @@ const RSSLink = styled(Link)`
     opacity: 0.3;
     animation: pulseGlow 2s infinite alternate;
   }
-`;
+`
 
 /**
  * Footer component
@@ -123,11 +123,11 @@ const Footer: React.FC = () => {
     <FooterContainer>
       <div className="socials">
         {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-          <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+          <a aria-label={label} href={href} key={label} rel="noopener noreferrer" target="_blank">
             <Icon />
           </a>
         ))}
-        <RSSLink href="/api/rss" aria-label="RSS Feed">
+        <RSSLink aria-label="RSS Feed" href="/api/rss">
           <FaRss />
         </RSSLink>
       </div>
@@ -135,7 +135,7 @@ const Footer: React.FC = () => {
         &copy; {new Date().getFullYear()} <SparklingName name="Stefanie Jane" /> 🌠
       </FooterText>
     </FooterContainer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

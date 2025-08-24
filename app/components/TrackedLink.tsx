@@ -1,82 +1,74 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { ReactNode, MouseEvent } from "react";
-import { trackExternalLink, trackNavigation } from "../lib/analytics";
-import { usePathname } from "next/navigation";
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { MouseEvent, ReactNode } from 'react'
+import { trackExternalLink, trackNavigation } from '../lib/analytics'
 
 interface TrackedLinkProps {
-  href: string;
-  children: ReactNode;
-  className?: string;
-  ariaLabel?: string;
-  title?: string;
-  id?: string;
-  trackingId?: string;
+  href: string
+  children: ReactNode
+  className?: string
+  ariaLabel?: string
+  title?: string
+  id?: string
+  trackingId?: string
 }
 
 /**
  * A Link component that automatically tracks clicks with analytics
  * Handles both internal and external links
  */
-export default function TrackedLink({
-  href,
-  children,
-  className,
-  ariaLabel,
-  title,
-  id,
-  trackingId,
-}: TrackedLinkProps) {
-  const pathname = usePathname();
-  const isExternal = href.startsWith("http") || href.startsWith("//");
+export default function TrackedLink({ href, children, className, ariaLabel, title, id, trackingId }: TrackedLinkProps) {
+  const pathname = usePathname()
+  const isExternal = href.startsWith('http') || href.startsWith('//')
 
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     // Get link text for analytics
-    let linkText = "";
-    if (typeof children === "string") {
-      linkText = children;
+    let linkText = ''
+    if (typeof children === 'string') {
+      linkText = children
     } else if (e.currentTarget.textContent) {
-      linkText = e.currentTarget.textContent.trim();
+      linkText = e.currentTarget.textContent.trim()
     }
 
     // Track based on link type
     if (isExternal) {
-      trackExternalLink(href, linkText);
+      trackExternalLink(href, linkText)
     } else {
-      trackNavigation(pathname, href);
+      trackNavigation(pathname, href)
     }
-  };
+  }
 
   if (isExternal) {
     return (
       <a
-        href={href}
-        className={className}
-        target="_blank"
-        rel="noopener noreferrer"
         aria-label={ariaLabel}
-        title={title}
-        id={id}
+        className={className}
         data-tracking-id={trackingId}
+        href={href}
+        id={id}
         onClick={handleClick}
+        rel="noopener noreferrer"
+        target="_blank"
+        title={title}
       >
         {children}
       </a>
-    );
+    )
   }
 
   return (
     <Link
-      href={href}
-      className={className}
       aria-label={ariaLabel}
-      title={title}
-      id={id}
+      className={className}
       data-tracking-id={trackingId}
+      href={href}
+      id={id}
       onClick={handleClick}
+      title={title}
     >
       {children}
     </Link>
-  );
+  )
 }

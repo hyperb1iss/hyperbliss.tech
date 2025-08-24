@@ -1,30 +1,30 @@
 // app/components/ProjectsPageContent.tsx
-"use client";
+'use client'
 
-import React from "react";
-import ProjectList from "./ProjectList";
-import PageTitle from "./PageTitle";
-import PageLayout from "./PageLayout";
+import React from 'react'
+import PageLayout from './PageLayout'
+import PageTitle from './PageTitle'
+import ProjectList from './ProjectList'
 
 /**
  * Interface for project data
  */
 interface Project {
-  slug: string;
+  slug: string
   frontmatter: {
-    title: string;
-    description: string;
-    github: string;
-    author?: string;
-    tags?: string[];
-  };
+    title: string
+    description: string
+    github: string
+    author?: string
+    tags?: string[]
+  }
 }
 
 /**
  * Interface for ProjectsPageContent component props
  */
 interface ProjectsPageContentProps {
-  projects: Project[];
+  projects: Project[]
 }
 
 /**
@@ -40,7 +40,7 @@ const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({ projects }) =
       <PageTitle>Projects</PageTitle>
       <ProjectList projects={projects} />
     </PageLayout>
-  );
-};
+  )
+}
 
-export default ProjectsPageContent;
+export default ProjectsPageContent

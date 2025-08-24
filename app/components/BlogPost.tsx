@@ -1,18 +1,18 @@
 // app/components/BlogPost.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import React from "react";
-import styled from "styled-components";
-import MarkdownRenderer from "./MarkdownRenderer";
-import { SparklingName } from "./SparklingName";
+import { motion } from 'framer-motion'
+import React from 'react'
+import styled from 'styled-components'
+import MarkdownRenderer from './MarkdownRenderer'
+import { SparklingName } from './SparklingName'
 
 interface BlogPostProps {
-  title: string;
-  date: string;
-  content: string;
-  author?: string;
-  tags?: string[];
+  title: string
+  date: string
+  content: string
+  author?: string
+  tags?: string[]
 }
 
 const Container = styled.div`
@@ -28,7 +28,7 @@ const Container = styled.div`
   @media (max-width: 768px) {
     padding: 6rem 1rem 1rem;
   }
-`;
+`
 
 /**
  * Title component
@@ -53,7 +53,7 @@ const Title = styled(motion.h1)`
     bottom: -10px;
     box-shadow: 0 0 10px var(--color-primary);
   }
-`;
+`
 
 /**
  * Meta component
@@ -94,7 +94,7 @@ const Meta = styled(motion.div)`
       color: var(--color-primary);
     }
   }
-`;
+`
 
 /**
  * Tags styling
@@ -105,7 +105,7 @@ const TagsContainer = styled(motion.div)`
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 2rem;
-`;
+`
 
 const Tag = styled.span`
   background-color: rgba(255, 0, 255, 0.2);
@@ -121,13 +121,13 @@ const Tag = styled.span`
     background-color: rgba(255, 0, 255, 0.3);
     transform: translateY(-1px);
   }
-`;
+`
 
 const Content = styled(motion.div)`
   font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.6;
   color: var(--color-text);
-`;
+`
 
 /**
  * BlogPost component
@@ -140,18 +140,10 @@ const Content = styled(motion.div)`
 const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags }) => {
   return (
     <Container>
-      <Title
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+      <Title animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: -20 }} transition={{ duration: 0.6 }}>
         {title}
       </Title>
-      <Meta
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
+      <Meta animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
         <span className="date">{new Date(date).toLocaleDateString()}</span>
         {author && (
           <>
@@ -163,25 +155,17 @@ const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags 
         )}
       </Meta>
       {tags && tags.length > 0 && (
-        <TagsContainer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
+        <TagsContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
           {tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
           ))}
         </TagsContainer>
       )}
-      <Content
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-      >
+      <Content animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
         <MarkdownRenderer content={content} />
       </Content>
     </Container>
-  );
-};
+  )
+}
 
-export default BlogPost;
+export default BlogPost

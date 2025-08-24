@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import React from "react";
-import AboutPageContent from "../../components/AboutPageContent";
+import React from 'react'
+import AboutPageContent from '../../components/AboutPageContent'
 
 const About: React.FC = () => {
-  return <AboutPageContent />;
-};
+  return <AboutPageContent />
+}
 
-export default About;
+export default About

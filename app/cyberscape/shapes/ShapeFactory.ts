@@ -1,11 +1,11 @@
 // app/cyberscape/shapes/ShapeFactory.ts
 
-import { CubeShape } from "./CubeShape";
-import { DodecahedronShape } from "./DodecahedronShape";
-import { OctahedronShape } from "./OctahedronShape";
-import { PyramidShape } from "./PyramidShape";
-import { TetrahedronShape } from "./TetrahedronShape";
-import { VectorShape } from "./VectorShape";
+import { CubeShape } from './CubeShape'
+import { DodecahedronShape } from './DodecahedronShape'
+import { OctahedronShape } from './OctahedronShape'
+import { PyramidShape } from './PyramidShape'
+import { TetrahedronShape } from './TetrahedronShape'
+import { VectorShape } from './VectorShape'
 
 /**
  * ShapeFactory class
@@ -23,25 +23,20 @@ export class ShapeFactory {
    * @returns A VectorShape instance of the specified type.
    * @throws Error if an unsupported shape type is specified.
    */
-  public static createShape(
-    type: string,
-    existingPositions: Set<string>,
-    width: number,
-    height: number
-  ): VectorShape {
+  public static createShape(type: string, existingPositions: Set<string>, width: number, height: number): VectorShape {
     switch (type) {
-      case "cube":
-        return new CubeShape(existingPositions, width, height);
-      case "pyramid":
-        return new PyramidShape(existingPositions, width, height);
-      case "tetrahedron":
-        return new TetrahedronShape(existingPositions, width, height);
-      case "octahedron":
-        return new OctahedronShape(existingPositions, width, height);
-      case "dodecahedron":
-        return new DodecahedronShape(existingPositions, width, height);
+      case 'cube':
+        return new CubeShape(existingPositions, width, height)
+      case 'pyramid':
+        return new PyramidShape(existingPositions, width, height)
+      case 'tetrahedron':
+        return new TetrahedronShape(existingPositions, width, height)
+      case 'octahedron':
+        return new OctahedronShape(existingPositions, width, height)
+      case 'dodecahedron':
+        return new DodecahedronShape(existingPositions, width, height)
       default:
-        throw new Error(`Unsupported shape type: ${type}`);
+        throw new Error(`Unsupported shape type: ${type}`)
     }
   }
 }

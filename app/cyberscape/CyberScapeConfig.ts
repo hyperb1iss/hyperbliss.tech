@@ -7,119 +7,119 @@
  * It allows for real-time adjustments while maintaining default values and mobile functionality.
  */
 export class CyberScapeConfig {
-  private static instance: CyberScapeConfig;
+  private static instance: CyberScapeConfig
 
   // Animation and rendering
-  public targetFPS: number = 30;
-  public frameTime: number = 1000 / this.targetFPS;
+  public targetFPS = 30
+  public frameTime: number = 1000 / this.targetFPS
 
   // Particle settings
-  public particlePoolSize: number = 500;
-  public particlesPerPixel: number = 1 / 2000;
-  public baseParticleCount: number = 100;
-  public particleMinSpeed: number = 0.1;
-  public particleMaxSpeed: number = 0.5;
-  public particleSizeMin: number = 1.5;
-  public particleSizeMax: number = 3.5;
-  public particleLifespan: number = Infinity;
+  public particlePoolSize = 500
+  public particlesPerPixel: number = 1 / 2000
+  public baseParticleCount = 100
+  public particleMinSpeed = 0.1
+  public particleMaxSpeed = 0.5
+  public particleSizeMin = 1.5
+  public particleSizeMax = 3.5
+  public particleLifespan: number = Number.POSITIVE_INFINITY
 
   // Particle At Collision settings
-  public particleAtCollisionFadeOutDuration: number = 2000;
-  public particleAtCollisionMaxSpeed: number = 3;
-  public particleAtCollisionMinSpeed: number = 1;
-  public particleAtCollisionSizeMax: number = 3;
-  public particleAtCollisionSizeMin: number = 1;
-  public particleAtCollisionColor: string = "#FF00FF";
-  public particleAtCollisionLifespan: number = 3000;
-  public particleAtCollisionSlowdownFactor: number = 0.98;
-  public particleAtCollisionSparkleDecay: number = 0.02;
-  public particleAtCollisionConnectionDistance: number = 100;
-  public particleAtCollisionMaxConnectionsPerParticle: number = 5;
-  public particleAtCollisionMaxTotalConnections: number = 50;
-  public particleAtCollisionShapeDistortionRadius: number = 100;
-  public particleAtCollisionShapeDistortionFactor: number = 0.1;
+  public particleAtCollisionFadeOutDuration = 2000
+  public particleAtCollisionMaxSpeed = 3
+  public particleAtCollisionMinSpeed = 1
+  public particleAtCollisionSizeMax = 3
+  public particleAtCollisionSizeMin = 1
+  public particleAtCollisionColor = '#FF00FF'
+  public particleAtCollisionLifespan = 3000
+  public particleAtCollisionSlowdownFactor = 0.98
+  public particleAtCollisionSparkleDecay = 0.02
+  public particleAtCollisionConnectionDistance = 100
+  public particleAtCollisionMaxConnectionsPerParticle = 5
+  public particleAtCollisionMaxTotalConnections = 50
+  public particleAtCollisionShapeDistortionRadius = 100
+  public particleAtCollisionShapeDistortionFactor = 0.1
 
   // Shape settings
-  public numberOfShapes: number = 6;
-  public numberOfShapesMobile: number = 5;
-  public shapeMinSpeed: number = 0.05;
-  public shapeMaxSpeed: number = 0.3;
-  public shapeLifespanMin: number = 10000;
-  public shapeLifespanMax: number = 25000;
-  public shapeFadeOutDuration: number = 3000;
-  public shapeGlowIntensityMin: number = 15;
-  public shapeGlowIntensityMax: number = 25;
+  public numberOfShapes = 6
+  public numberOfShapesMobile = 5
+  public shapeMinSpeed = 0.05
+  public shapeMaxSpeed = 0.3
+  public shapeLifespanMin = 10000
+  public shapeLifespanMax = 25000
+  public shapeFadeOutDuration = 3000
+  public shapeGlowIntensityMin = 15
+  public shapeGlowIntensityMax = 25
 
   // Explosion settings
-  public maxExplosionParticles: number = 100;
-  public maxSimultaneousExplosions: number = 3;
-  public explosionCooldown: number = 2000;
-  public explosionParticlesToEmit: number = 10;
+  public maxExplosionParticles = 100
+  public maxSimultaneousExplosions = 3
+  public explosionCooldown = 2000
+  public explosionParticlesToEmit = 10
 
   // Datastream effect settings
-  public maxDatastreamParticles: number = 100;
-  public datastreamParticleLifespan: number = 2000;
-  public datastreamFadeOutDuration: number = 500;
-  public datastreamEnergyLineCount: number = 20;
-  public datastreamMaxRadiusFactor: number = 0.4;
-  public datastreamNoiseSize: number = 4;
-  public datastreamNoiseRadiusFactor: number = 0.2;
-  public datastreamShapeRotationSpeed: number = 0.1;
-  public datastreamShapeForceMultiplier: number = 0.01;
-  public datastreamIntensityMultiplier: number = 5;
+  public maxDatastreamParticles = 100
+  public datastreamParticleLifespan = 2000
+  public datastreamFadeOutDuration = 500
+  public datastreamEnergyLineCount = 20
+  public datastreamMaxRadiusFactor = 0.4
+  public datastreamNoiseSize = 4
+  public datastreamNoiseRadiusFactor = 0.2
+  public datastreamShapeRotationSpeed = 0.1
+  public datastreamShapeForceMultiplier = 0.01
+  public datastreamIntensityMultiplier = 5
 
   // Interaction settings
-  public cursorInfluenceRadius: number = 300;
-  public cursorForce: number = 0.01;
-  public centerAttractionForce: number = 0.005;
-  public particleInteractionRadius: number = 100;
-  public particleInteractionForce: number = 0.1;
-  public shapeParticleInteractionRadius: number = 100;
-  public shapeParticleInteractionForce: number = 0.01;
-  public shapeAttractionRadius: number = 200;
-  public shapeRepulsionRadius: number = 80;
-  public shapeAttractionForce: number = 0.0005;
-  public shapeRepulsionForce: number = 0.001;
+  public cursorInfluenceRadius = 300
+  public cursorForce = 0.01
+  public centerAttractionForce = 0.005
+  public particleInteractionRadius = 100
+  public particleInteractionForce = 0.1
+  public shapeParticleInteractionRadius = 100
+  public shapeParticleInteractionForce = 0.01
+  public shapeAttractionRadius = 200
+  public shapeRepulsionRadius = 80
+  public shapeAttractionForce = 0.0005
+  public shapeRepulsionForce = 0.001
 
   // Glitch effect settings
-  public glitchIntervalMin: number = 10000;
-  public glitchIntervalMax: number = 20000;
-  public glitchDurationMin: number = 100;
-  public glitchDurationMax: number = 400;
-  public glitchIntensityMin: number = 0.3;
-  public glitchIntensityMax: number = 1;
+  public glitchIntervalMin = 10000
+  public glitchIntervalMax = 20000
+  public glitchDurationMin = 100
+  public glitchDurationMax = 400
+  public glitchIntensityMin = 0.3
+  public glitchIntensityMax = 1
 
   // Glitch effect detail settings
-  public glitchEffectMaxAmount: number = 15;
-  public glitchEffectDisplacementThresholdFactor: number = 0.2;
-  public glitchEffectMaxNumLines: number = 30;
-  public glitchEffectMaxNumSlices: number = 8;
-  public glitchEffectMaxNumBlocks: number = 5;
-  public glitchEffectNoiseIntensityFactor: number = 0.2;
+  public glitchEffectMaxAmount = 15
+  public glitchEffectDisplacementThresholdFactor = 0.2
+  public glitchEffectMaxNumLines = 30
+  public glitchEffectMaxNumSlices = 8
+  public glitchEffectMaxNumBlocks = 5
+  public glitchEffectNoiseIntensityFactor = 0.2
 
   // Connection settings
-  public particleConnectionDistance: number = 100;
-  public shapeConnectionDistance: number = 120;
-  public connectionAnimationDuration: number = 1000; // Default duration in milliseconds
+  public particleConnectionDistance = 100
+  public shapeConnectionDistance = 120
+  public connectionAnimationDuration = 1000 // Default duration in milliseconds
 
   // Mobile specific settings
-  public mobileWidthThreshold: number = 768;
-  public mobileParticleReductionFactor: number = 0.8;
+  public mobileWidthThreshold = 768
+  public mobileParticleReductionFactor = 0.8
 
   // New properties
-  public collisionGridSize: number = 100;
-  public minConnectionDelay: number = 100;
-  public maxConnectionDelay: number = 500;
+  public collisionGridSize = 100
+  public minConnectionDelay = 100
+  public maxConnectionDelay = 500
 
-  public canvasWidth: number = 800;
-  public canvasHeight: number = 600;
+  public canvasWidth = 800
+  public canvasHeight = 600
 
-  public performanceMode: "high" | "medium" | "low" = "high";
-  public autoAdjustPerformance: boolean = true;
-  public minFPS: number = 24;
-  public performanceCheckInterval: number = 1000;
-  public particleScaleFactor: number = 1;
-  public effectsScaleFactor: number = 1;
+  public performanceMode: 'high' | 'medium' | 'low' = 'high'
+  public autoAdjustPerformance = true
+  public minFPS = 24
+  public performanceCheckInterval = 1000
+  public particleScaleFactor = 1
+  public effectsScaleFactor = 1
 
   private constructor() {}
 
@@ -129,9 +129,9 @@ export class CyberScapeConfig {
    */
   public static getInstance(): CyberScapeConfig {
     if (!CyberScapeConfig.instance) {
-      CyberScapeConfig.instance = new CyberScapeConfig();
+      CyberScapeConfig.instance = new CyberScapeConfig()
     }
-    return CyberScapeConfig.instance;
+    return CyberScapeConfig.instance
   }
 
   /**
@@ -139,13 +139,13 @@ export class CyberScapeConfig {
    * @param updates - Partial object with properties to update.
    */
   public updateConfig(updates: Partial<CyberScapeConfig>): void {
-    Object.assign(this, updates);
-    this.frameTime = 1000 / this.targetFPS;
+    Object.assign(this, updates)
+    this.frameTime = 1000 / this.targetFPS
   }
 
   public updateCanvasSize(width: number, height: number): void {
-    this.canvasWidth = width;
-    this.canvasHeight = height;
+    this.canvasWidth = width
+    this.canvasHeight = height
   }
   /**
    * Calculates the number of particles based on canvas dimensions and device type.
@@ -154,15 +154,12 @@ export class CyberScapeConfig {
    * @returns The calculated number of particles.
    */
   public calculateParticleCount(width: number, height: number): number {
-    const isMobile = width <= this.mobileWidthThreshold;
-    let count = Math.max(
-      this.baseParticleCount,
-      Math.floor(width * height * this.particlesPerPixel)
-    );
+    const isMobile = width <= this.mobileWidthThreshold
+    let count = Math.max(this.baseParticleCount, Math.floor(width * height * this.particlesPerPixel))
     if (isMobile) {
-      count = Math.floor(count * this.mobileParticleReductionFactor);
+      count = Math.floor(count * this.mobileParticleReductionFactor)
     }
-    return count;
+    return count
   }
 
   /**
@@ -171,6 +168,6 @@ export class CyberScapeConfig {
    * @returns The number of shapes to display.
    */
   public getShapeCount(width: number): number {
-    return width <= this.mobileWidthThreshold ? this.numberOfShapesMobile : this.numberOfShapes;
+    return width <= this.mobileWidthThreshold ? this.numberOfShapesMobile : this.numberOfShapes
   }
 }

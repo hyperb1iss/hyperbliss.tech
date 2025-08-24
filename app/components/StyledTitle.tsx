@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion'
+import styled from 'styled-components'
 
 const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
   font-size: clamp(2.2rem, 1.8vw, 3rem);
@@ -56,6 +56,6 @@ const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
       background-position: -100% 0;
     }
   }
-`;
+`
 
-export default StyledTitle;
+export default StyledTitle

@@ -1,24 +1,24 @@
 // app/components/SparklingName.tsx
 
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
+import styled, { keyframes } from 'styled-components'
 
 const sparkle = keyframes`
   0%, 100% { opacity: 0; transform: scale(0); }
   50% { opacity: 1; transform: scale(1); }
-`;
+`
 
 const SparkleWrapper = styled.span`
   position: relative;
   display: inline-block;
-`;
+`
 
 const Sparkle = styled.span<{
-  $size: number;
-  $top: number;
-  $left: number;
-  $delay: number;
+  $size: number
+  $top: number
+  $left: number
+  $delay: number
 }>`
   position: absolute;
   display: block;
@@ -42,7 +42,7 @@ const Sparkle = styled.span<{
   opacity: 0;
   animation: ${sparkle} 2.5s ease-in-out infinite;
   animation-delay: ${(props) => props.$delay}s;
-`;
+`
 
 const HighlightedName = styled(motion.span)`
   color: var(--color-accent);
@@ -66,62 +66,49 @@ const HighlightedName = styled(motion.span)`
   &:hover::after {
     transform: scaleX(1);
   }
-`;
+`
 
 interface SparkleType {
-  id: number;
-  size: number;
-  top: number;
-  left: number;
-  delay: number;
+  id: number
+  size: number
+  top: number
+  left: number
+  delay: number
 }
 
 interface SparklingNameProps {
-  name: string;
-  sparkleCount?: number;
-  className?: string;
+  name: string
+  sparkleCount?: number
+  className?: string
 }
 
 const createSparkles = (count: number): SparkleType[] =>
   Array.from({ length: count }, (_, i) => ({
+    delay: Math.random() * 1.5,
     id: i,
+    left: Math.random() * 100,
     size: Math.random() * 4 + 2,
     top: Math.random() * 100,
-    left: Math.random() * 100,
-    delay: Math.random() * 1.5,
-  }));
+  }))
 
-export const SparklingName: React.FC<SparklingNameProps> = ({
-  name,
-  sparkleCount = 10,
-  className,
-}) => {
-  const [sparkles, setSparkles] = useState<SparkleType[]>([]);
+export const SparklingName: React.FC<SparklingNameProps> = ({ name, sparkleCount = 10, className }) => {
+  const [sparkles, setSparkles] = useState<SparkleType[]>([])
 
   useEffect(() => {
-    const sparklesArray = createSparkles(sparkleCount);
-    setSparkles(sparklesArray);
-  }, [sparkleCount]);
+    const sparklesArray = createSparkles(sparkleCount)
+    setSparkles(sparklesArray)
+  }, [sparkleCount])
 
   return (
     <SparkleWrapper className={className}>
-      <HighlightedName
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 300, damping: 10 }}
-      >
+      <HighlightedName transition={{ damping: 10, stiffness: 300, type: 'spring' }} whileHover={{ scale: 1.05 }}>
         {name}
       </HighlightedName>
       {sparkles.map((sparkle) => (
-        <Sparkle
-          key={sparkle.id}
-          $size={sparkle.size}
-          $top={sparkle.top}
-          $left={sparkle.left}
-          $delay={sparkle.delay}
-        />
+        <Sparkle $delay={sparkle.delay} $left={sparkle.left} $size={sparkle.size} $top={sparkle.top} key={sparkle.id} />
       ))}
     </SparkleWrapper>
-  );
-};
+  )
+}
 
-export default SparklingName;
+export default SparklingName

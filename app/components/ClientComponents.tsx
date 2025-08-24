@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic'
 
-const Analytics = dynamic(() => import("./Analytics"), {
+const Analytics = dynamic(() => import('./Analytics'), {
   ssr: false,
-});
+})
 
-const SeoWrapper = dynamic(() => import("./SeoWrapper"), {
+const SeoWrapper = dynamic(() => import('./SeoWrapper'), {
   ssr: false,
-});
+})
 
 /**
  * ClientComponents
@@ -21,5 +21,5 @@ export default function ClientComponents() {
       <SeoWrapper />
       <Analytics />
     </>
-  );
+  )
 }

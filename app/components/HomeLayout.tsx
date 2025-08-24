@@ -1,11 +1,11 @@
 // app/components/HomeLayout.tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import FeaturedProjectsSection from "./FeaturedProjectsSection";
-import HeroSection from "./HeroSection";
-import LatestBlogPosts from "./LatestBlogPosts";
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import FeaturedProjectsSection from './FeaturedProjectsSection'
+import HeroSection from './HeroSection'
+import LatestBlogPosts from './LatestBlogPosts'
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -23,14 +23,14 @@ const ContentWrapper = styled.div`
   @media (min-width: 1400px) {
     max-width: 1366px;
   }
-`;
+`
 
 const MainContent = styled.main`
   flex: 1 1 0%;
   display: flex;
   flex-direction: column;
   min-width: 0; /* Allow flex item to shrink */
-`;
+`
 
 const SidebarWrapper = styled.div`
   flex: 0 1 300px; /* Sidebar has an initial width of 300px but can shrink */
@@ -49,48 +49,48 @@ const SidebarWrapper = styled.div`
   @media (min-width: 1400px) {
     flex-basis: 350px; /* Increase sidebar width on larger screens */
   }
-`;
+`
 
 interface BlogPost {
-  slug: string;
+  slug: string
   frontmatter: {
-    title: string;
-    excerpt: string;
-    date: string;
-    tags: string[];
-  };
+    title: string
+    excerpt: string
+    date: string
+    tags: string[]
+  }
 }
 
 interface Project {
-  slug: string;
+  slug: string
   frontmatter: {
-    title: string;
-    description: string;
-    github: string;
-    tags: string[];
-  };
+    title: string
+    description: string
+    github: string
+    tags: string[]
+  }
 }
 
 interface HomeLayoutProps {
-  latestPosts: BlogPost[];
-  projects: Project[];
+  latestPosts: BlogPost[]
+  projects: Project[]
 }
 
 const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+      setIsMobile(window.innerWidth < 768)
+    }
 
-    checkIsMobile();
-    window.addEventListener("resize", checkIsMobile);
+    checkIsMobile()
+    window.addEventListener('resize', checkIsMobile)
 
     return () => {
-      window.removeEventListener("resize", checkIsMobile);
-    };
-  }, []);
+      window.removeEventListener('resize', checkIsMobile)
+    }
+  }, [])
 
   return (
     <ContentWrapper>
@@ -98,7 +98,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
         <>
           <HeroSection />
           <SidebarWrapper>
-            <LatestBlogPosts posts={latestPosts} isMobile={isMobile} />
+            <LatestBlogPosts isMobile={isMobile} posts={latestPosts} />
           </SidebarWrapper>
           <FeaturedProjectsSection projects={projects} />
         </>
@@ -109,12 +109,12 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
             <FeaturedProjectsSection projects={projects} />
           </MainContent>
           <SidebarWrapper>
-            <LatestBlogPosts posts={latestPosts} isMobile={isMobile} />
+            <LatestBlogPosts isMobile={isMobile} posts={latestPosts} />
           </SidebarWrapper>
         </>
       )}
     </ContentWrapper>
-  );
-};
+  )
+}
 
-export default HomeLayout;
+export default HomeLayout

@@ -1,16 +1,15 @@
 // app/components/MarkdownRenderer.tsx
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import rehypeRaw from "rehype-raw";
-import remarkGfm from "remark-gfm";
-import { StyleSheetManager } from "styled-components";
-import rehypeHighlight from "rehype-highlight";
-import styled from "styled-components";
-import { FiCheck, FiCopy } from "react-icons/fi";
-import { toString } from "hast-util-to-string"; // For extracting text content
-import type { Element } from "hast"; // Re-adding for proper node typing
+import type { Element } from 'hast' // Re-adding for proper node typing
+import { toString } from 'hast-util-to-string' // For extracting text content
+import React, { useEffect, useState } from 'react'
+import { FiCheck, FiCopy } from 'react-icons/fi'
+import ReactMarkdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import styled, { StyleSheetManager } from 'styled-components'
 import {
   StyledLink as MarkdownLink,
   StyledBlockquote,
@@ -24,27 +23,27 @@ import {
   StyledOl,
   StyledParagraph,
   StyledUl,
-} from "./MarkdownStyles";
+} from './MarkdownStyles'
 
 // Define the props interface
 interface MarkdownRendererProps {
-  content: string;
+  content: string
 }
 
 // Define a custom interface for the code component props
 interface CodeComponentProps {
-  inline?: boolean;
-  className?: string;
-  children?: React.ReactNode;
+  inline?: boolean
+  className?: string
+  children?: React.ReactNode
   // Add any other props as needed
 }
 
 // Function to filter out props that shouldn't be forwarded to DOM elements
 const shouldForwardProp = (prop: string): boolean => {
   // List of props that should not be forwarded to DOM elements
-  const invalidProps = ["node"];
-  return !invalidProps.includes(prop);
-};
+  const invalidProps = ['node']
+  return !invalidProps.includes(prop)
+}
 
 // Styled components for the copy button and wrapper
 const CopyButton = styled.button`
@@ -69,7 +68,7 @@ const CopyButton = styled.button`
     width: 1.2em;
     height: 1.2em;
   }
-`;
+`
 
 // Renamed to CodeBlockPreWrapper and changed tag to pre
 const CodeBlockPreWrapper = styled.pre`
@@ -161,70 +160,70 @@ const CodeBlockPreWrapper = styled.pre`
       font-weight: bold;
     }
   }
-`;
+`
 
 // --- New Component for Pre Block Logic ---
-interface PreWithCopyProps extends React.ComponentProps<"pre"> {
-  node?: Element;
-  children?: React.ReactNode;
+interface PreWithCopyProps extends React.ComponentProps<'pre'> {
+  node?: Element
+  children?: React.ReactNode
 }
 
 const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) => {
   // State for clipboard API availability and copy status
-  const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
-  const [isCopying, setIsCopying] = useState(false);
+  const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+  const [isCopying, setIsCopying] = useState(false)
 
   // Check for Clipboard API on mount
   useEffect(() => {
-    setIsClipboardApiAvailable(!!navigator.clipboard?.writeText);
-  }, []);
+    setIsClipboardApiAvailable(!!navigator.clipboard?.writeText)
+  }, [])
 
   // Extract code content for copy button
-  let codeContent = "";
-  if (node && node.type === "element") {
-    codeContent = toString(node);
+  let codeContent = ''
+  if (node && node.type === 'element') {
+    codeContent = toString(node)
   } else {
     // Fallback logic without warning
     codeContent = React.Children.toArray(children)
       .map((child) => String(child))
-      .join("");
+      .join('')
   }
-  codeContent = codeContent.replace(/\n$/, "");
+  codeContent = codeContent.replace(/\n$/, '')
 
   const copyToClipboard = async () => {
-    if (!isClipboardApiAvailable || isCopying) return;
+    if (!isClipboardApiAvailable || isCopying) return
 
-    setIsCopying(true);
-    setIsCopied(false); // Reset copied state
+    setIsCopying(true)
+    setIsCopied(false) // Reset copied state
     try {
-      await navigator.clipboard.writeText(codeContent);
-      setIsCopied(true);
+      await navigator.clipboard.writeText(codeContent)
+      setIsCopied(true)
     } catch (err) {
-      console.error("Failed to copy text: ", err);
+      console.error('Failed to copy text: ', err)
       // Optionally: set an error state here to show feedback
     } finally {
-      setIsCopying(false);
+      setIsCopying(false)
       // Reset copied check icon after a delay
       if (isCopied) {
-        setTimeout(() => setIsCopied(false), 2000);
+        setTimeout(() => setIsCopied(false), 2000)
       }
     }
-  };
+  }
 
   return (
     <CodeBlockPreWrapper {...rest}>
       {children}
       <CopyButton
-        onClick={copyToClipboard}
         disabled={!isClipboardApiAvailable || isCopying}
-        title={isClipboardApiAvailable ? "Copy code" : "Clipboard API not available"}
+        onClick={copyToClipboard}
+        title={isClipboardApiAvailable ? 'Copy code' : 'Clipboard API not available'}
       >
-        {isCopying ? "..." : isCopied ? <FiCheck /> : <FiCopy />}
+        {isCopying ? '...' : isCopied ? <FiCheck /> : <FiCopy />}
       </CopyButton>
     </CodeBlockPreWrapper>
-  );
-};
+  )
+}
 
 /**
  * MarkdownRenderer Component
@@ -236,41 +235,17 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, rehypeHighlight]}
         components={{
-          // Headings
-          h1: (props) => <StyledH1 {...props} />,
-          h2: (props) => <StyledH2 {...props} />,
-          h3: (props) => <StyledH3 {...props} />,
-
-          // Paragraph
-          p: (props) => <StyledParagraph {...props} />,
-
           // Links
           a: (props) => <MarkdownLink {...props} />,
-
-          // Lists
-          ul: (props) => <StyledUl {...props} />,
-          ol: (props) => <StyledOl {...props} />,
-          li: (props) => <StyledLi {...props} />,
 
           // Blockquote
           blockquote: (props) => <StyledBlockquote {...props} />,
 
-          // Horizontal Rule
-          hr: (props) => <StyledHr {...props} />,
-
-          // UPDATED Custom 'pre' component implementation
-          pre: (props) => {
-            // Render the component that contains the hook logic
-            return <PreWithCopy {...props} />;
-          },
-
           // UPDATED 'code' component: Only handles inline code now
           code: ({ inline, className, children, ...props }: CodeComponentProps) => {
             if (inline) {
-              return <StyledInlineCode {...props}>{children}</StyledInlineCode>;
+              return <StyledInlineCode {...props}>{children}</StyledInlineCode>
             }
 
             // Block code: Render the plain code tag.
@@ -280,17 +255,40 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
               <code className={className} {...props}>
                 {children}
               </code>
-            );
+            )
           },
+          // Headings
+          h1: (props) => <StyledH1 {...props} />,
+          h2: (props) => <StyledH2 {...props} />,
+          h3: (props) => <StyledH3 {...props} />,
+
+          // Horizontal Rule
+          hr: (props) => <StyledHr {...props} />,
 
           // Images
           img: (props) => <StyledImage {...props} />,
+          li: (props) => <StyledLi {...props} />,
+          ol: (props) => <StyledOl {...props} />,
+
+          // Paragraph
+          p: (props) => <StyledParagraph {...props} />,
+
+          // UPDATED Custom 'pre' component implementation
+          pre: (props) => {
+            // Render the component that contains the hook logic
+            return <PreWithCopy {...props} />
+          },
+
+          // Lists
+          ul: (props) => <StyledUl {...props} />,
         }}
+        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+        remarkPlugins={[remarkGfm]}
       >
         {content}
       </ReactMarkdown>
     </StyleSheetManager>
-  );
-};
+  )
+}
 
-export default MarkdownRenderer;
+export default MarkdownRenderer

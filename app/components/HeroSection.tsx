@@ -1,12 +1,12 @@
 // app/components/HeroSection.tsx
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import styled from "styled-components";
-import { useHeaderContext } from "./HeaderContext";
-import SparklingName from "./SparklingName";
-import { TECH_TAGS } from "../lib/constants";
+import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import styled from 'styled-components'
+import { TECH_TAGS } from '../lib/constants'
+import { useHeaderContext } from './HeaderContext'
+import SparklingName from './SparklingName'
 
 const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   position: relative;
@@ -15,7 +15,7 @@ const HeroSectionWrapper = styled.section<{ $isHeaderExpanded: boolean }>`
   padding: 8rem 16px 4rem;
   overflow: hidden;
   transition: padding-top 0.3s ease;
-`;
+`
 
 const ContentWrapper = styled(motion.div)`
   max-width: 100%;
@@ -32,7 +32,7 @@ const ContentWrapper = styled(motion.div)`
   @media (min-width: 1200px) {
     max-width: 1000px;
   }
-`;
+`
 
 const ParticleCanvas = styled.canvas`
   position: absolute;
@@ -41,15 +41,15 @@ const ParticleCanvas = styled.canvas`
   width: 100%;
   height: 100%;
   z-index: -1;
-`;
+`
 
 interface Particle {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  vx: number;
-  vy: number;
+  x: number
+  y: number
+  radius: number
+  color: string
+  vx: number
+  vy: number
 }
 
 /**
@@ -61,69 +61,69 @@ interface Particle {
  */
 const createParticles = (count: number, width: number, height: number): Particle[] => {
   return Array.from({ length: count }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    radius: Math.random() * 1.5 + 0.5,
     color: `rgba(${Math.floor(Math.random() * 100) + 155}, ${
       Math.floor(Math.random() * 100) + 155
     }, 255, ${Math.random() * 0.3 + 0.2})`,
+    radius: Math.random() * 1.5 + 0.5,
     vx: Math.random() * 0.2 - 0.1,
     vy: Math.random() * 0.2 - 0.1,
-  }));
-};
+    x: Math.random() * width,
+    y: Math.random() * height,
+  }))
+}
 
 /**
  * AnimatedBackground component
  * Renders an animated particle background using canvas.
  */
 const AnimatedBackground: React.FC = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
-    const particles = createParticles(50, canvas.width, canvas.height);
+    const particles = createParticles(50, canvas.width, canvas.height)
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       particles.forEach((particle) => {
-        particle.x += particle.vx;
-        particle.y += particle.vy;
+        particle.x += particle.vx
+        particle.y += particle.vy
 
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
 
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-      });
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
+        ctx.fillStyle = particle.color
+        ctx.fill()
+      })
 
-      requestAnimationFrame(animate);
-    };
+      requestAnimationFrame(animate)
+    }
 
-    animate();
+    animate()
 
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-    };
-  }, []);
+      window.removeEventListener('resize', resizeCanvas)
+    }
+  }, [])
 
-  return <ParticleCanvas ref={canvasRef} />;
-};
+  return <ParticleCanvas ref={canvasRef} />
+}
 
 const Title = styled(motion.h1)`
   font-size: clamp(3rem, 5vw, 6rem);
@@ -156,7 +156,7 @@ const Title = styled(motion.h1)`
   @media (max-width: 768px) {
     font-size: 3.5rem;
   }
-`;
+`
 
 const HyperblissSpan = styled.span`
   background: linear-gradient(
@@ -182,7 +182,7 @@ const HyperblissSpan = styled.span`
       background-position: 0% 50 s%;
     }
   }
-`;
+`
 
 const Subtitle = styled(motion.p)`
   font-size: clamp(1.8rem, 2vw, 2.4rem);
@@ -195,7 +195,7 @@ const Subtitle = styled(motion.p)`
   @media (max-width: 768px) {
     font-size: 1.7rem;
   }
-`;
+`
 
 const TagCloud = styled(motion.div)`
   display: flex;
@@ -203,7 +203,7 @@ const TagCloud = styled(motion.div)`
   gap: 0.8rem;
   margin-bottom: 2rem;
   max-width: 100%;
-`;
+`
 
 const Tag = styled(motion.span)`
   background-color: rgba(162, 89, 255, 0.1);
@@ -235,7 +235,7 @@ const Tag = styled(motion.span)`
     font-size: 1.25rem;
     padding: 0.4rem 0.8rem;
   }
-`;
+`
 
 const CTAButton = styled(motion.a)`
   background-color: transparent;
@@ -281,14 +281,14 @@ const CTAButton = styled(motion.a)`
     font-size: 1.45rem;
     padding: 0.8rem 1.6rem;
   }
-`;
+`
 
 const ButtonText = styled.span`
   position: relative;
   z-index: 2;
-`;
+`
 
-const tags = TECH_TAGS;
+const tags = TECH_TAGS
 
 /**
  * HeroSection component
@@ -296,36 +296,35 @@ const tags = TECH_TAGS;
  * Adjusted font sizes and padding for better widescreen support.
  */
 export default function HeroSection(): React.ReactElement {
-  const { isExpanded } = useHeaderContext();
+  const { isExpanded } = useHeaderContext()
 
   return (
     <HeroSectionWrapper $isHeaderExpanded={isExpanded}>
       <AnimatedBackground />
       <ContentWrapper
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        initial={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       >
         <Title
-          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0, y: -20 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
         >
           Welcome to <HyperblissSpan>Hyperbliss</HyperblissSpan>
         </Title>
         <Subtitle>
-          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted software engineer and
-          leader. I do everything from embedded systems to cloud to mobile, all the way across the
-          stack and back. Welcome to my personal site! You&apos;ll find my blog, projects, and more
-          about me here.
+          I&apos;m <SparklingName name="Stefanie Jane" />, a multifaceted software engineer and leader. I do everything
+          from embedded systems to cloud to mobile, all the way across the stack and back. Welcome to my personal site!
+          You&apos;ll find my blog, projects, and more about me here.
         </Subtitle>
         <TagCloud>
           {tags.map((tag, index) => (
             <Tag
-              key={tag}
-              initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 + index * 0.03 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              key={tag}
+              transition={{ delay: 0.1 + index * 0.03, duration: 0.5 }}
             >
               {tag}
             </Tag>
@@ -336,5 +335,5 @@ export default function HeroSection(): React.ReactElement {
         </CTAButton>
       </ContentWrapper>
     </HeroSectionWrapper>
-  );
+  )
 }

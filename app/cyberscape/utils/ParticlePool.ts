@@ -1,6 +1,6 @@
-import { Particle } from "../particles/Particle";
-import { ParticleAtCollision } from "../particles/ParticleAtCollision";
-import { vec3 } from "gl-matrix";
+import { vec3 } from 'gl-matrix'
+import { Particle } from '../particles/Particle'
+import { ParticleAtCollision } from '../particles/ParticleAtCollision'
 
 /**
  * ParticlePool class
@@ -8,22 +8,22 @@ import { vec3 } from "gl-matrix";
  * Manages pools of particle objects to optimize performance by reusing particles.
  */
 export class ParticlePool {
-  private regularPool: Particle[];
-  private collisionPool: ParticleAtCollision[];
-  private maxRegularPoolSize: number;
-  private maxCollisionPoolSize: number;
+  private regularPool: Particle[]
+  private collisionPool: ParticleAtCollision[]
+  private maxRegularPoolSize: number
+  private maxCollisionPoolSize: number
 
   /**
    * Creates a new ParticlePool instance.
    * @param maxRegularPoolSize - Maximum number of regular particles in the pool.
    * @param maxCollisionPoolSize - Maximum number of collision particles in the pool.
    */
-  constructor(maxRegularPoolSize: number = 500, maxCollisionPoolSize: number = 100) {
-    this.maxRegularPoolSize = maxRegularPoolSize;
-    this.maxCollisionPoolSize = maxCollisionPoolSize;
-    this.regularPool = [];
-    this.collisionPool = [];
-    this.initializePools();
+  constructor(maxRegularPoolSize = 500, maxCollisionPoolSize = 100) {
+    this.maxRegularPoolSize = maxRegularPoolSize
+    this.maxCollisionPoolSize = maxCollisionPoolSize
+    this.regularPool = []
+    this.collisionPool = []
+    this.initializePools()
   }
 
   /**
@@ -31,10 +31,10 @@ export class ParticlePool {
    */
   private initializePools(): void {
     for (let i = 0; i < this.maxRegularPoolSize; i++) {
-      this.regularPool.push(new Particle(new Set<string>(), window.innerWidth, window.innerHeight));
+      this.regularPool.push(new Particle(new Set<string>(), window.innerWidth, window.innerHeight))
     }
     for (let i = 0; i < this.maxCollisionPoolSize; i++) {
-      this.collisionPool.push(new ParticleAtCollision(vec3.create(), () => {}));
+      this.collisionPool.push(new ParticleAtCollision(vec3.create(), () => {}))
     }
   }
 
@@ -46,12 +46,12 @@ export class ParticlePool {
    */
   public getParticle(width: number, height: number): Particle {
     if (this.regularPool.length > 0) {
-      const particle = this.regularPool.pop()!;
-      particle.reset(new Set<string>(), width, height);
-      return particle;
+      const particle = this.regularPool.pop()!
+      particle.reset(new Set<string>(), width, height)
+      return particle
     }
     // If pool is empty, create a new particle
-    return new Particle(new Set<string>(), width, height);
+    return new Particle(new Set<string>(), width, height)
   }
 
   /**
@@ -62,12 +62,12 @@ export class ParticlePool {
    */
   public getCollisionParticle(position: vec3, onExpire: () => void): ParticleAtCollision {
     if (this.collisionPool.length > 0) {
-      const particle = this.collisionPool.pop()!;
-      particle.init(vec3.clone(position), onExpire);
-      return particle;
+      const particle = this.collisionPool.pop()!
+      particle.init(vec3.clone(position), onExpire)
+      return particle
     }
     // If pool is empty, create a new collision particle
-    return new ParticleAtCollision(vec3.clone(position), onExpire);
+    return new ParticleAtCollision(vec3.clone(position), onExpire)
   }
 
   /**
@@ -76,7 +76,7 @@ export class ParticlePool {
    */
   public returnParticle(particle: Particle): void {
     if (this.regularPool.length < this.maxRegularPoolSize) {
-      this.regularPool.push(particle);
+      this.regularPool.push(particle)
     }
   }
 
@@ -86,7 +86,7 @@ export class ParticlePool {
    */
   public returnCollisionParticle(particle: ParticleAtCollision): void {
     if (this.collisionPool.length < this.maxCollisionPoolSize) {
-      this.collisionPool.push(particle);
+      this.collisionPool.push(particle)
     }
   }
 }

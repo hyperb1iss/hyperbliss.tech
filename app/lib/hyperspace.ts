@@ -5,12 +5,12 @@
 
 // Define the interface for the global hyperbliss object
 export interface HyperblissInterface {
-  activate: () => string;
-  readonly duration: number;
-  setDuration: (seconds: number) => void;
-  readonly intensity: number;
-  setIntensity: (level: number) => void;
-  readonly isActive: boolean;
+  activate: () => string
+  readonly duration: number
+  setDuration: (seconds: number) => void
+  readonly intensity: number
+  setIntensity: (level: number) => void
+  readonly isActive: boolean
 }
 
 /**
@@ -18,35 +18,35 @@ export interface HyperblissInterface {
  * Manages the cosmic visual effects and console interactions
  */
 class HyperspaceManager {
-  private static instance: HyperspaceManager;
-  private isInitialized: boolean = false;
-  private _isActive: boolean = false;
-  private _duration: number = 10;
-  private _intensity: number = 1;
-  private container: HTMLDivElement | null = null;
-  private tunnelContainer: HTMLDivElement | null = null;
-  private dripContainer: HTMLDivElement | null = null;
+  private static instance: HyperspaceManager
+  private isInitialized = false
+  private _isActive = false
+  private _duration = 10
+  private _intensity = 1
+  private container: HTMLDivElement | null = null
+  private tunnelContainer: HTMLDivElement | null = null
+  private dripContainer: HTMLDivElement | null = null
 
   // Console styling
   private styles = {
+    activated: 'color: #ff00ff; font-weight: bold; font-size: 16px;',
+    alreadyActive: 'color: #00ffff; font-size: 14px;',
+    deactivated: 'color: #00ffff; font-weight: bold; font-size: 14px;',
+    hint: 'color: #ff9900; font-size: 12px; font-style: italic;',
     logoGradient:
-      "background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); padding: 5px;",
+      'background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); padding: 5px;',
     tagline:
-      "background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); color: #00ffff; font-weight: bold; padding: 10px; border-radius: 5px; font-size: 18px; text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 35px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff, 0 0 75px #00ffff;",
-    techStack: "color: #a259ff; font-style: italic; font-size: 14px; padding: 5px;",
-    hint: "color: #ff9900; font-size: 12px; font-style: italic;",
-    activated: "color: #ff00ff; font-weight: bold; font-size: 16px;",
-    deactivated: "color: #00ffff; font-weight: bold; font-size: 14px;",
-    alreadyActive: "color: #00ffff; font-size: 14px;",
-  };
+      'background: linear-gradient(90deg, #000033 0%, #0033cc 25%, #6600cc 50%, #cc00ff 75%, #ff00ff 100%); color: #00ffff; font-weight: bold; padding: 10px; border-radius: 5px; font-size: 18px; text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff, 0 0 35px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff, 0 0 75px #00ffff;',
+    techStack: 'color: #a259ff; font-style: italic; font-size: 14px; padding: 5px;',
+  }
 
   // Cyberpunk elements
   private cyberElements = {
-    symbols: ["✨", "⭐", "💫", "🌟", "✵", "⊹", "⎊", "⨳", "✧", "✦", "⋆"],
-    colors: ["#00ffff", "#ff00ff", "#9900ff", "#00ccff"],
-    gridColors: ["#ff00ff", "#00ffff", "#9900ff", "#cc00ff"],
-    dripColors: ["#00ffff", "#ff00ff", "#9900ff", "#00ccff"],
-  };
+    colors: ['#00ffff', '#ff00ff', '#9900ff', '#00ccff'],
+    dripColors: ['#00ffff', '#ff00ff', '#9900ff', '#00ccff'],
+    gridColors: ['#ff00ff', '#00ffff', '#9900ff', '#cc00ff'],
+    symbols: ['✨', '⭐', '💫', '🌟', '✵', '⊹', '⎊', '⨳', '✧', '✦', '⋆'],
+  }
 
   // Private constructor for singleton pattern
   private constructor() {}
@@ -56,20 +56,20 @@ class HyperspaceManager {
    */
   public static getInstance(): HyperspaceManager {
     if (!HyperspaceManager.instance) {
-      HyperspaceManager.instance = new HyperspaceManager();
+      HyperspaceManager.instance = new HyperspaceManager()
     }
-    return HyperspaceManager.instance;
+    return HyperspaceManager.instance
   }
 
   /**
    * Initialize the hyperspace easter egg
    */
   public initialize(): void {
-    if (this.isInitialized) return;
+    if (this.isInitialized) return
 
-    this.printConsoleWelcome();
-    this.registerGlobalObject();
-    this.isInitialized = true;
+    this.printConsoleWelcome()
+    this.registerGlobalObject()
+    this.isInitialized = true
   }
 
   /**
@@ -77,16 +77,16 @@ class HyperspaceManager {
    */
   private printConsoleWelcome(): void {
     // Tagling
-    console.log("%c 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹ ", this.styles.tagline);
+    console.log('%c 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹ ', this.styles.tagline)
 
     // Tech stack
     console.log(
-      "%c⟨ Next.js 15 × React 19 × TypeScript ⟩ digital elegance with neural precision",
-      this.styles.techStack
-    );
+      '%c⟨ Next.js 15 × React 19 × TypeScript ⟩ digital elegance with neural precision',
+      this.styles.techStack,
+    )
 
     // Easter egg hint
-    console.log("%c⟨ hyperbliss.activate() to initiate neural interface ⟩", this.styles.hint);
+    console.log('%c⟨ hyperbliss.activate() to initiate neural interface ⟩', this.styles.hint)
   }
 
   /**
@@ -98,21 +98,20 @@ class HyperspaceManager {
       activate: this.activate.bind(this),
       // Use arrow functions to preserve 'this' context
       get duration() {
-        return HyperspaceManager.getInstance()._duration;
+        return HyperspaceManager.getInstance()._duration
+      },
+      get intensity() {
+        return HyperspaceManager.getInstance()._intensity
+      },
+      get isActive() {
+        return HyperspaceManager.getInstance()._isActive
       },
       setDuration: this.setDuration.bind(this),
-      get intensity() {
-        return HyperspaceManager.getInstance()._intensity;
-      },
       setIntensity: this.setIntensity.bind(this),
-      get isActive() {
-        return HyperspaceManager.getInstance()._isActive;
-      },
-    };
+    }
 
     // Properly type the window object with an interface extension
-    (window as Window & typeof globalThis & { hyperbliss: HyperblissInterface }).hyperbliss =
-      hyperblissObject;
+    ;(window as Window & typeof globalThis & { hyperbliss: HyperblissInterface }).hyperbliss = hyperblissObject
   }
 
   /**
@@ -120,11 +119,11 @@ class HyperspaceManager {
    */
   public setDuration(seconds: number): void {
     if (seconds < 1 || seconds > 60) {
-      console.log("%c⟨ parameter out of range: duration must be between 1-60s ⟩", "color: #ff00ff");
-      return;
+      console.log('%c⟨ parameter out of range: duration must be between 1-60s ⟩', 'color: #ff00ff')
+      return
     }
-    this._duration = seconds;
-    console.log(`%c⟨ neural interface duration: ${seconds}s ⟩`, "color: #00ffff");
+    this._duration = seconds
+    console.log(`%c⟨ neural interface duration: ${seconds}s ⟩`, 'color: #00ffff')
   }
 
   /**
@@ -132,11 +131,11 @@ class HyperspaceManager {
    */
   public setIntensity(level: number): void {
     if (level < 1 || level > 3) {
-      console.log("%c⟨ parameter out of range: intensity must be between 1-3 ⟩", "color: #ff00ff");
-      return;
+      console.log('%c⟨ parameter out of range: intensity must be between 1-3 ⟩', 'color: #ff00ff')
+      return
     }
-    this._intensity = level;
-    console.log(`%c⟨ neural interface intensity: ${level} ⟩`, "color: #00ffff");
+    this._intensity = level
+    console.log(`%c⟨ neural interface intensity: ${level} ⟩`, 'color: #00ffff')
   }
 
   /**
@@ -151,15 +150,9 @@ class HyperspaceManager {
       }
       
       @keyframes neon-glow {
-        0% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${
-          10 * this._intensity
-        }px #ff00ff; }
-        50% { text-shadow: 0 0 ${15 * this._intensity}px #00ffff, 0 0 ${
-          25 * this._intensity
-        }px #00ffff; }
-        100% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${
-          10 * this._intensity
-        }px #ff00ff; }
+        0% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${10 * this._intensity}px #ff00ff; }
+        50% { text-shadow: 0 0 ${15 * this._intensity}px #00ffff, 0 0 ${25 * this._intensity}px #00ffff; }
+        100% { text-shadow: 0 0 ${5 * this._intensity}px #ff00ff, 0 0 ${10 * this._intensity}px #ff00ff; }
       }
       
       @keyframes cyber-float {
@@ -170,9 +163,7 @@ class HyperspaceManager {
       
       @keyframes tunnel-zoom {
         0% { transform: translateZ(0) scale(1); opacity: 0.3; }
-        100% { transform: translateZ(${500 * this._intensity}px) scale(${
-          3 + this._intensity
-        }); opacity: 0; }
+        100% { transform: translateZ(${500 * this._intensity}px) scale(${3 + this._intensity}); opacity: 0; }
       }
       
       @keyframes grid-pulse {
@@ -260,9 +251,7 @@ class HyperspaceManager {
         width: 2px;
         height: 0;
         background: linear-gradient(to bottom, var(--drip-color) 0%, transparent 100%);
-        box-shadow: 0 0 ${5 * this._intensity}px var(--drip-color), 0 0 ${
-          8 * this._intensity
-        }px var(--drip-color);
+        box-shadow: 0 0 ${5 * this._intensity}px var(--drip-color), 0 0 ${8 * this._intensity}px var(--drip-color);
         animation: neon-drip var(--drip-duration) ease-in forwards;
         animation-delay: var(--drip-delay);
         opacity: 0.7;
@@ -280,14 +269,12 @@ class HyperspaceManager {
         height: ${8 + this._intensity * 2}px;
         border-radius: 50%;
         background: var(--drip-color);
-        box-shadow: 0 0 ${8 * this._intensity}px var(--drip-color), 0 0 ${
-          15 * this._intensity
-        }px var(--drip-color);
+        box-shadow: 0 0 ${8 * this._intensity}px var(--drip-color), 0 0 ${15 * this._intensity}px var(--drip-color);
         opacity: 0.8;
       }
-    `;
+    `
 
-    return baseStyles;
+    return baseStyles
   }
 
   /**
@@ -295,25 +282,22 @@ class HyperspaceManager {
    */
   private createDrippyEffects(): void {
     // Create drip container
-    this.dripContainer = document.createElement("div");
-    this.dripContainer.id = "hyperspace-drips";
+    this.dripContainer = document.createElement('div')
+    this.dripContainer.id = 'hyperspace-drips'
     this.dripContainer.style.cssText =
-      "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9997; overflow: hidden;";
+      'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9997; overflow: hidden;'
 
     // Create drips
-    const dripCount = 15 + this._intensity * 10;
-    let dripsHTML = "";
+    const dripCount = 15 + this._intensity * 10
+    let dripsHTML = ''
 
     for (let i = 0; i < dripCount; i++) {
-      const leftPos = Math.random() * 100;
-      const delay = Math.random() * 5;
-      const duration = 3 + Math.random() * 7;
-      const height = 50 + Math.random() * 250;
-      const color =
-        this.cyberElements.dripColors[
-          Math.floor(Math.random() * this.cyberElements.dripColors.length)
-        ];
-      const dripWidth = 1 + Math.random() * 2;
+      const leftPos = Math.random() * 100
+      const delay = Math.random() * 5
+      const duration = 3 + Math.random() * 7
+      const height = 50 + Math.random() * 250
+      const color = this.cyberElements.dripColors[Math.floor(Math.random() * this.cyberElements.dripColors.length)]
+      const dripWidth = 1 + Math.random() * 2
 
       dripsHTML += `<div class="neon-drip" style="
         left: ${leftPos}%;
@@ -325,31 +309,28 @@ class HyperspaceManager {
         --drip-height: ${height}px;
       ">
         <div class="drip-head"></div>
-      </div>`;
+      </div>`
     }
 
-    this.dripContainer.innerHTML = dripsHTML;
-    document.body.appendChild(this.dripContainer);
+    this.dripContainer.innerHTML = dripsHTML
+    document.body.appendChild(this.dripContainer)
 
     // Add a few drips from the bottom too for balance
-    const bottomDripContainer = document.createElement("div");
-    bottomDripContainer.id = "hyperspace-bottom-drips";
+    const bottomDripContainer = document.createElement('div')
+    bottomDripContainer.id = 'hyperspace-bottom-drips'
     bottomDripContainer.style.cssText =
-      "position: fixed; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9997; overflow: hidden; transform: rotate(180deg);";
+      'position: fixed; bottom: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9997; overflow: hidden; transform: rotate(180deg);'
 
-    let bottomDripsHTML = "";
-    const bottomDripCount = 5 + this._intensity * 3;
+    let bottomDripsHTML = ''
+    const bottomDripCount = 5 + this._intensity * 3
 
     for (let i = 0; i < bottomDripCount; i++) {
-      const leftPos = Math.random() * 100;
-      const delay = Math.random() * 5;
-      const duration = 3 + Math.random() * 7;
-      const height = 30 + Math.random() * 150;
-      const color =
-        this.cyberElements.dripColors[
-          Math.floor(Math.random() * this.cyberElements.dripColors.length)
-        ];
-      const dripWidth = 1 + Math.random() * 2;
+      const leftPos = Math.random() * 100
+      const delay = Math.random() * 5
+      const duration = 3 + Math.random() * 7
+      const height = 30 + Math.random() * 150
+      const color = this.cyberElements.dripColors[Math.floor(Math.random() * this.cyberElements.dripColors.length)]
+      const dripWidth = 1 + Math.random() * 2
 
       bottomDripsHTML += `<div class="neon-drip" style="
         left: ${leftPos}%;
@@ -361,19 +342,19 @@ class HyperspaceManager {
         --drip-height: ${height}px;
       ">
         <div class="drip-head"></div>
-      </div>`;
+      </div>`
     }
 
-    bottomDripContainer.innerHTML = bottomDripsHTML;
-    document.body.appendChild(bottomDripContainer);
+    bottomDripContainer.innerHTML = bottomDripsHTML
+    document.body.appendChild(bottomDripContainer)
 
     // Store reference for cleanup
-    const originalDrip = this.dripContainer;
-    this.dripContainer = document.createElement("div");
-    this.dripContainer.id = "drip-containers";
-    this.dripContainer.appendChild(originalDrip);
-    this.dripContainer.appendChild(bottomDripContainer);
-    document.body.appendChild(this.dripContainer);
+    const originalDrip = this.dripContainer
+    this.dripContainer = document.createElement('div')
+    this.dripContainer.id = 'drip-containers'
+    this.dripContainer.appendChild(originalDrip)
+    this.dripContainer.appendChild(bottomDripContainer)
+    document.body.appendChild(this.dripContainer)
   }
 
   /**
@@ -381,113 +362,110 @@ class HyperspaceManager {
    */
   private createTunnelEffect(): void {
     // Create tunnel container
-    this.tunnelContainer = document.createElement("div");
-    this.tunnelContainer.id = "hyperspace-tunnel";
+    this.tunnelContainer = document.createElement('div')
+    this.tunnelContainer.id = 'hyperspace-tunnel'
     this.tunnelContainer.style.cssText =
-      "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; overflow: hidden; perspective: 1000px;";
+      'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9998; overflow: hidden; perspective: 1000px;'
 
     // Create tunnel rings
-    const ringCount = 8 + this._intensity * 4;
-    let ringsHTML = "";
+    const ringCount = 8 + this._intensity * 4
+    let ringsHTML = ''
 
     for (let i = 0; i < ringCount; i++) {
-      const size = 50 + i * 25;
-      const delay = i * (0.2 / this._intensity);
-      const color =
-        this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)];
+      const size = 50 + i * 25
+      const delay = i * (0.2 / this._intensity)
+      const color = this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)]
 
       ringsHTML += `<div class="tunnel-ring" style="
         width: ${size}px;
         height: ${size}px;
         animation-delay: ${delay}s;
         --ring-color: ${color};
-      "></div>`;
+      "></div>`
     }
 
     // Create cyberpunk grid - more subtle
-    const gridCount = 8 + this._intensity * 3;
+    const gridCount = 8 + this._intensity * 3
 
     // Horizontal grid lines
     for (let i = 0; i < gridCount; i++) {
-      const position = (100 / gridCount) * i;
-      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
-      const delay = i * 0.1;
+      const position = (100 / gridCount) * i
+      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length]
+      const delay = i * 0.1
 
       ringsHTML += `<div class="grid-line horizontal-grid" style="
         top: ${position}%;
         animation-delay: ${delay}s;
         --grid-color: ${color};
-      "></div>`;
+      "></div>`
     }
 
     // Vertical grid lines
     for (let i = 0; i < gridCount; i++) {
-      const position = (100 / gridCount) * i;
-      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length];
-      const delay = i * 0.1;
+      const position = (100 / gridCount) * i
+      const color = this.cyberElements.gridColors[i % this.cyberElements.gridColors.length]
+      const delay = i * 0.1
 
       ringsHTML += `<div class="grid-line vertical-grid" style="
         left: ${position}%;
         animation-delay: ${delay}s;
         --grid-color: ${color};
-      "></div>`;
+      "></div>`
     }
 
-    this.tunnelContainer.innerHTML = ringsHTML;
-    document.body.appendChild(this.tunnelContainer);
+    this.tunnelContainer.innerHTML = ringsHTML
+    document.body.appendChild(this.tunnelContainer)
   }
 
   /**
    * Activate the hyperspace effect
    */
   public activate(): string {
-    console.log("%c⟨ neural interface activated ⟩", this.styles.activated);
+    console.log('%c⟨ neural interface activated ⟩', this.styles.activated)
 
     // Check if hyperspace is already active
     if (this._isActive) {
-      console.log("%c⟨ neural interface already engaged ⟩", this.styles.alreadyActive);
-      return "Already active";
+      console.log('%c⟨ neural interface already engaged ⟩', this.styles.alreadyActive)
+      return 'Already active'
     }
 
-    this._isActive = true;
+    this._isActive = true
 
     // Create style element
-    const style = document.createElement("style");
-    style.id = "hyperbliss-animation";
-    style.textContent = this.getAnimationStyles();
-    document.head.appendChild(style);
+    const style = document.createElement('style')
+    style.id = 'hyperbliss-animation'
+    style.textContent = this.getAnimationStyles()
+    document.head.appendChild(style)
 
     // Add the class to the body
-    document.body.classList.add("hyperspace-active");
+    document.body.classList.add('hyperspace-active')
 
     // Create drippy neon effects
-    this.createDrippyEffects();
+    this.createDrippyEffects()
 
     // Create cyberpunk tunnel effect
-    this.createTunnelEffect();
+    this.createTunnelEffect()
 
     // Create cyber particle container
-    this.container = document.createElement("div");
-    this.container.id = "hyperspace-void";
+    this.container = document.createElement('div')
+    this.container.id = 'hyperspace-void'
     this.container.style.cssText =
-      "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden;";
+      'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden;'
 
     // Calculate number of particles based on intensity
-    const particleCount = 20 + this._intensity * 10;
+    const particleCount = 20 + this._intensity * 10
 
     // Create particles HTML
-    let particlesHTML = "";
+    let particlesHTML = ''
     for (let i = 0; i < particleCount; i++) {
-      const size = Math.random() * 10 + 3 * this._intensity;
-      const symbol =
-        this.cyberElements.symbols[Math.floor(Math.random() * this.cyberElements.symbols.length)];
-      const color =
-        this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)];
-      const duration = Math.random() * 8 + 10 - this._intensity + "s";
-      const top = Math.random() * 100 + "vh";
-      const left = Math.random() * 100 + "vw";
-      const tx = Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
-      const ty = Math.random() * 100 * this._intensity - 50 * this._intensity + "px";
+      const size = Math.random() * 10 + 3 * this._intensity
+      const symbol = this.cyberElements.symbols[Math.floor(Math.random() * this.cyberElements.symbols.length)]
+      const color = this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)]
+      const duration = Math.random() * 8 + 10 - this._intensity + 's'
+      const top = Math.random() * 100 + 'vh'
+      const left = Math.random() * 100 + 'vw'
+      const tx = Math.random() * 100 * this._intensity - 50 * this._intensity + 'px'
+      const ty = Math.random() * 100 * this._intensity - 50 * this._intensity + 'px'
 
       particlesHTML += `<div class="cyber-particle" style="
         top: ${top};
@@ -498,56 +476,56 @@ class HyperspaceManager {
         --duration: ${duration};
         --tx: ${tx};
         --ty: ${ty};
-      ">${symbol}</div>`;
+      ">${symbol}</div>`
     }
 
     // Set innerHTML and append container
-    this.container.innerHTML = particlesHTML;
-    document.body.appendChild(this.container);
+    this.container.innerHTML = particlesHTML
+    document.body.appendChild(this.container)
 
     // Deactivate after the specified duration
-    setTimeout(() => this.deactivate(), this._duration * 1000);
+    setTimeout(() => this.deactivate(), this._duration * 1000)
 
-    return `⟨ neural interface active: ${this._duration}s at intensity ${this._intensity} ⟩`;
+    return `⟨ neural interface active: ${this._duration}s at intensity ${this._intensity} ⟩`
   }
 
   /**
    * Deactivate the hyperspace effect
    */
   private deactivate(): void {
-    if (!this._isActive) return;
+    if (!this._isActive) return
 
     // Fade out
     if (this.container) {
-      this.container.style.transition = "opacity 1.5s ease-out";
-      this.container.style.opacity = "0";
+      this.container.style.transition = 'opacity 1.5s ease-out'
+      this.container.style.opacity = '0'
     }
 
     if (this.tunnelContainer) {
-      this.tunnelContainer.style.transition = "opacity 1.5s ease-out";
-      this.tunnelContainer.style.opacity = "0";
+      this.tunnelContainer.style.transition = 'opacity 1.5s ease-out'
+      this.tunnelContainer.style.opacity = '0'
     }
 
     if (this.dripContainer) {
-      this.dripContainer.style.transition = "opacity 1.5s ease-out";
-      this.dripContainer.style.opacity = "0";
+      this.dripContainer.style.transition = 'opacity 1.5s ease-out'
+      this.dripContainer.style.opacity = '0'
     }
 
     setTimeout(() => {
       // Clean up
-      document.body.classList.remove("hyperspace-active");
-      const animStyle = document.getElementById("hyperbliss-animation");
-      if (animStyle) animStyle.remove();
-      if (this.container) this.container.remove();
-      if (this.tunnelContainer) this.tunnelContainer.remove();
-      if (this.dripContainer) this.dripContainer.remove();
-      this.container = null;
-      this.tunnelContainer = null;
-      this.dripContainer = null;
-      this._isActive = false;
+      document.body.classList.remove('hyperspace-active')
+      const animStyle = document.getElementById('hyperbliss-animation')
+      if (animStyle) animStyle.remove()
+      if (this.container) this.container.remove()
+      if (this.tunnelContainer) this.tunnelContainer.remove()
+      if (this.dripContainer) this.dripContainer.remove()
+      this.container = null
+      this.tunnelContainer = null
+      this.dripContainer = null
+      this._isActive = false
 
-      console.log("%c⟨ neural interface disengaged ⟩", this.styles.deactivated);
-    }, 1500);
+      console.log('%c⟨ neural interface disengaged ⟩', this.styles.deactivated)
+    }, 1500)
   }
 }
 
@@ -556,10 +534,10 @@ class HyperspaceManager {
  */
 export function initHyperspace(): void {
   // Single bailout point for non-browser environments
-  if (typeof window === "undefined" || typeof document === "undefined") {
-    return;
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return
   }
 
-  const hyperspaceManager = HyperspaceManager.getInstance();
-  hyperspaceManager.initialize();
+  const hyperspaceManager = HyperspaceManager.getInstance()
+  hyperspaceManager.initialize()
 }

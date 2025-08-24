@@ -1,8 +1,8 @@
 // app/components/SeoWrapper.tsx
-"use client";
+'use client'
 
-import { DefaultSeo } from "next-seo";
-import SEO from "../lib/next-seo.config";
+import { DefaultSeo } from 'next-seo'
+import SEO from '../lib/next-seo.config'
 
 /**
  * SeoWrapper component
@@ -10,5 +10,5 @@ import SEO from "../lib/next-seo.config";
  * @returns {JSX.Element} DefaultSeo component with configuration
  */
 export default function SeoWrapper() {
-  return <DefaultSeo {...SEO} />;
+  return <DefaultSeo {...SEO} />
 }

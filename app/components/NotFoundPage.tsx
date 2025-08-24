@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { useEffect, useState, useRef } from "react";
-import { motion } from "framer-motion";
-import styled from "styled-components";
-import PageWrapper from "./PageWrapper";
-import StyledLink from "./StyledLink";
-import GlitchSpan from "./GlitchSpan";
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import GlitchSpan from './GlitchSpan'
+import PageWrapper from './PageWrapper'
+import StyledLink from './StyledLink'
 
 // Custom styled components for the 404 page
 const GlitchContainer = styled.div`
@@ -21,7 +21,7 @@ const GlitchContainer = styled.div`
   text-align: center;
   width: 100%;
   z-index: 0; /* Below header but above background */
-`;
+`
 
 const ContentWrapper = styled.div`
   display: flex;
@@ -33,7 +33,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   max-width: 100%;
   min-height: 500px; /* Ensure minimum height for content */
-`;
+`
 
 const GlitchCanvas = styled.canvas`
   position: absolute;
@@ -42,7 +42,7 @@ const GlitchCanvas = styled.canvas`
   width: 100%;
   height: 100%;
   z-index: -1;
-`;
+`
 
 // Dramatic but lightweight keyframes
 const slowScaleRotate = `
@@ -51,14 +51,14 @@ const slowScaleRotate = `
     50% { transform: scale(1.04) rotate(2deg); }
     100% { transform: scale(1) rotate(-2deg); }
   }
-`;
+`
 const subtlePulse = `
   @keyframes subtlePulse {
     0% { opacity: 1; }
     50% { opacity: 0.82; }
     100% { opacity: 1; }
   }
-`;
+`
 const neonFlicker = `
   @keyframes neonFlicker {
     0%, 100% { opacity: 1; }
@@ -69,7 +69,7 @@ const neonFlicker = `
     23% { opacity: 0.9; }
     25% { opacity: 1; }
   }
-`;
+`
 const colorShift = `
   @keyframes colorShift {
     0% { color: #fff; }
@@ -77,14 +77,14 @@ const colorShift = `
     60% { color: #00fff0; }
     100% { color: #ff75d8; }
   }
-`;
+`
 
 // Inject keyframes into the document (for styled-components)
-if (typeof window !== "undefined" && !document.getElementById("nfpage-keyframes")) {
-  const style = document.createElement("style");
-  style.id = "nfpage-keyframes";
-  style.innerHTML = slowScaleRotate + subtlePulse + neonFlicker + colorShift;
-  document.head.appendChild(style);
+if (typeof window !== 'undefined' && !document.getElementById('nfpage-keyframes')) {
+  const style = document.createElement('style')
+  style.id = 'nfpage-keyframes'
+  style.innerHTML = slowScaleRotate + subtlePulse + neonFlicker + colorShift
+  document.head.appendChild(style)
 }
 
 const GlitchTitle = styled(motion.h1)`
@@ -104,7 +104,7 @@ const GlitchTitle = styled(motion.h1)`
   @media (max-width: 480px) {
     font-size: 6rem;
   }
-`;
+`
 
 const GlitchSubtitle = styled(motion.h2)`
   font-size: 3.6rem;
@@ -121,37 +121,37 @@ const GlitchSubtitle = styled(motion.h2)`
   @media (max-width: 768px) {
     font-size: 2.8rem;
   }
-`;
+`
 
 // Random message selector for 404 page
 const LOST_MESSAGE_VARIANTS = [
-  "Want to retrace your steps or explore uncharted code?",
-  "Fancy hacking a new path through this digital wasteland?",
-  "Care to recalibrate your coordinates or dive into new networks?",
-  "Ready to decode a different reality or return to base?",
-  "System suggests retracing your datastream or scanning new sectors.",
-  "Feel like jacking back into the mainframe or glitching elsewhere?",
-  "Need to reboot your journey or dive into unexplored subroutines?",
-  "Time to realign your neural pathways or discover new connections?",
-  "Prefer to reset your signal or venture into different frequencies?",
-  "Shall we reconstruct your path or decode new possibilities?",
-  "Want to reload your previous instance or spawn in a new dimension?",
-  "Navigate back to your origin point or explore alternate matrices?",
-  "Yearning to restore your last checkpoint or hack into fresh terrain?",
-  "Seeking to reconfigure your destination or phase into new domains?",
-];
+  'Want to retrace your steps or explore uncharted code?',
+  'Fancy hacking a new path through this digital wasteland?',
+  'Care to recalibrate your coordinates or dive into new networks?',
+  'Ready to decode a different reality or return to base?',
+  'System suggests retracing your datastream or scanning new sectors.',
+  'Feel like jacking back into the mainframe or glitching elsewhere?',
+  'Need to reboot your journey or dive into unexplored subroutines?',
+  'Time to realign your neural pathways or discover new connections?',
+  'Prefer to reset your signal or venture into different frequencies?',
+  'Shall we reconstruct your path or decode new possibilities?',
+  'Want to reload your previous instance or spawn in a new dimension?',
+  'Navigate back to your origin point or explore alternate matrices?',
+  'Yearning to restore your last checkpoint or hack into fresh terrain?',
+  'Seeking to reconfigure your destination or phase into new domains?',
+]
 
 // Random lost message hook
 const useRandomLostMessage = () => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * LOST_MESSAGE_VARIANTS.length);
-    setMessage(LOST_MESSAGE_VARIANTS[randomIndex]);
-  }, []);
+    const randomIndex = Math.floor(Math.random() * LOST_MESSAGE_VARIANTS.length)
+    setMessage(LOST_MESSAGE_VARIANTS[randomIndex])
+  }, [])
 
-  return message;
-};
+  return message
+}
 
 const GlitchText = styled(motion.p)`
   font-size: 1.8rem;
@@ -181,7 +181,7 @@ const GlitchText = styled(motion.p)`
     width: 100%;
     line-height: 1.6;
   }
-`;
+`
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -191,7 +191,7 @@ const ButtonContainer = styled.div`
     flex-direction: column;
     gap: 1rem;
   }
-`;
+`
 
 const GlitchButton = styled(motion.button)`
   background: transparent;
@@ -226,7 +226,7 @@ const GlitchButton = styled(motion.button)`
       0 0 8px var(--color-accent),
       inset 0 0 18px rgba(0, 255, 240, 0.3);
   }
-`;
+`
 
 // Neon harmonized GlitchSpan for this page only
 const NeonGlitchSpan = styled(GlitchSpan)`
@@ -244,7 +244,7 @@ const NeonGlitchSpan = styled(GlitchSpan)`
   &::after {
     display: none !important;
   }
-`;
+`
 
 // Add dramatic highlight spans for message text
 const VioletSpan = styled.span`
@@ -268,7 +268,7 @@ const VioletSpan = styled.span`
         0 0 48px #fff;
     }
   }
-`;
+`
 const CyanSpan = styled.span`
   color: #b3fff6;
   text-shadow:
@@ -293,282 +293,279 @@ const CyanSpan = styled.span`
         0 0 12px #fff;
     }
   }
-`;
+`
 
 export default function NotFoundPage() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isCanvasLoaded, setIsCanvasLoaded] = useState(false);
-  const randomLostMessage = useRandomLostMessage();
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
+  const randomLostMessage = useRandomLostMessage()
 
   useEffect(() => {
-    if (!canvasRef.current || isCanvasLoaded) return;
+    if (!canvasRef.current || isCanvasLoaded) return
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) return;
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    if (!ctx) return
 
     // --- OFFSCREEN GRID CANVAS ---
-    let gridCanvas: HTMLCanvasElement | null = null;
-    let gridCtx: CanvasRenderingContext2D | null = null;
-    const gridSize = 60;
+    let gridCanvas: HTMLCanvasElement | null = null
+    let gridCtx: CanvasRenderingContext2D | null = null
+    const gridSize = 60
 
     // Set canvas dimensions to match container
     const resizeCanvas = () => {
-      const parentHeight = canvas.parentElement
-        ? canvas.parentElement.clientHeight
-        : window.innerHeight;
-      canvas.width = window.innerWidth;
-      canvas.height = parentHeight;
+      const parentHeight = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight
+      canvas.width = window.innerWidth
+      canvas.height = parentHeight
       // Recreate offscreen grid canvas
-      gridCanvas = document.createElement("canvas");
-      gridCanvas.width = window.innerWidth;
-      gridCanvas.height = parentHeight;
-      gridCtx = gridCanvas.getContext("2d");
+      gridCanvas = document.createElement('canvas')
+      gridCanvas.width = window.innerWidth
+      gridCanvas.height = parentHeight
+      gridCtx = gridCanvas.getContext('2d')
       if (gridCtx) {
-        gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
-        gridCtx.strokeStyle = "rgba(0, 255, 240, 0.1)";
-        gridCtx.lineWidth = 1;
+        gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height)
+        gridCtx.strokeStyle = 'rgba(0, 255, 240, 0.1)'
+        gridCtx.lineWidth = 1
         for (let y = 0; y < gridCanvas.height; y += gridSize) {
-          gridCtx.beginPath();
-          gridCtx.moveTo(0, y);
-          gridCtx.lineTo(gridCanvas.width, y);
-          gridCtx.stroke();
+          gridCtx.beginPath()
+          gridCtx.moveTo(0, y)
+          gridCtx.lineTo(gridCanvas.width, y)
+          gridCtx.stroke()
         }
         for (let x = 0; x < gridCanvas.width; x += gridSize) {
-          gridCtx.beginPath();
-          gridCtx.moveTo(x, 0);
-          gridCtx.lineTo(x, gridCanvas.height);
-          gridCtx.stroke();
+          gridCtx.beginPath()
+          gridCtx.moveTo(x, 0)
+          gridCtx.lineTo(x, gridCanvas.height)
+          gridCtx.stroke()
         }
       }
-    };
+    }
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas()
+    window.addEventListener('resize', resizeCanvas)
 
     // --- PARTICLES ---
     let particles: {
-      x: number;
-      y: number;
-      size: number;
-      color: string;
-      speed: number;
-      isTrail?: boolean;
-      prevX?: number;
-      prevY?: number;
-    }[] = [];
+      x: number
+      y: number
+      size: number
+      color: string
+      speed: number
+      isTrail?: boolean
+      prevX?: number
+      prevY?: number
+    }[] = []
     // --- DATA RAIN ---
-    let rainDrops: { x: number; y: number; speed: number; length: number; color: string }[] = [];
+    let rainDrops: { x: number; y: number; speed: number; length: number; color: string }[] = []
     // --- GLYPHS ---
-    const glyphs = ["λ", "Ξ", "Ψ", "Ж", "⟁", "✶", "⧫", "⟁", "⟟", "⧖", "⧊", "⧗", "⧉", "⧙"];
-    let glyphFlash: { x: number; y: number; glyph: string; alpha: number; ttl: number } | null =
-      null;
+    const glyphs = ['λ', 'Ξ', 'Ψ', 'Ж', '⟁', '✶', '⧫', '⟁', '⟟', '⧖', '⧊', '⧗', '⧉', '⧙']
+    let glyphFlash: { x: number; y: number; glyph: string; alpha: number; ttl: number } | null = null
 
     // Initialize particles
     const initParticles = () => {
-      particles = [];
-      const particleCount = Math.max(8, Math.floor(window.innerWidth / 120));
-      const trailCount = Math.max(2, Math.floor(particleCount / 4));
+      particles = []
+      const particleCount = Math.max(8, Math.floor(window.innerWidth / 120))
+      const trailCount = Math.max(2, Math.floor(particleCount / 4))
       for (let i = 0; i < particleCount; i++) {
-        const isTrail = i < trailCount;
+        const isTrail = i < trailCount
         particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: isTrail ? Math.random() * 5 + 4 : Math.random() * 2 + 1,
-          color: i % 3 === 0 ? "#a259ff" : i % 3 === 1 ? "#ff75d8" : "#00fff0",
-          speed: Math.random() * 1 + 0.5,
+          color: i % 3 === 0 ? '#a259ff' : i % 3 === 1 ? '#ff75d8' : '#00fff0',
           isTrail,
           prevX: undefined,
           prevY: undefined,
-        });
-      }
-    };
-    // Initialize data rain
-    const initRain = () => {
-      rainDrops = [];
-      const rainCount = Math.floor(canvas.width / 80);
-      for (let i = 0; i < rainCount; i++) {
-        rainDrops.push({
+          size: isTrail ? Math.random() * 5 + 4 : Math.random() * 2 + 1,
+          speed: Math.random() * 1 + 0.5,
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          speed: Math.random() * 2 + 1.5,
-          length: Math.random() * 60 + 40,
-          color: Math.random() > 0.5 ? "#00fff0" : "#a259ff",
-        });
+        })
       }
-    };
-    initParticles();
-    initRain();
+    }
+    // Initialize data rain
+    const initRain = () => {
+      rainDrops = []
+      const rainCount = Math.floor(canvas.width / 80)
+      for (let i = 0; i < rainCount; i++) {
+        rainDrops.push({
+          color: Math.random() > 0.5 ? '#00fff0' : '#a259ff',
+          length: Math.random() * 60 + 40,
+          speed: Math.random() * 2 + 1.5,
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+        })
+      }
+    }
+    initParticles()
+    initRain()
 
     // Draw a grid effect (now just blits the offscreen grid)
     const drawGrid = () => {
-      if (!ctx || !gridCanvas) return;
-      ctx.drawImage(gridCanvas, 0, 0);
-    };
+      if (!ctx || !gridCanvas) return
+      ctx.drawImage(gridCanvas, 0, 0)
+    }
     // Draw scanlines
     const drawScanlines = () => {
-      if (!ctx) return;
-      ctx.save();
+      if (!ctx) return
+      ctx.save()
       for (let y = 0; y < canvas.height; y += 20) {
-        ctx.globalAlpha = Math.random() > 0.97 ? 0.18 : 0.08;
-        ctx.fillStyle = "#00fff0";
-        ctx.fillRect(0, y, canvas.width, 1);
+        ctx.globalAlpha = Math.random() > 0.97 ? 0.18 : 0.08
+        ctx.fillStyle = '#00fff0'
+        ctx.fillRect(0, y, canvas.width, 1)
       }
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    };
+      ctx.globalAlpha = 1
+      ctx.restore()
+    }
     // Draw data rain
     const drawDataRain = () => {
-      if (!ctx) return;
-      ctx.save();
+      if (!ctx) return
+      ctx.save()
       rainDrops.forEach((drop) => {
-        ctx.beginPath();
-        ctx.strokeStyle = drop.color;
-        ctx.globalAlpha = 0.18 + Math.random() * 0.2;
-        ctx.moveTo(drop.x, drop.y);
-        ctx.lineTo(drop.x, drop.y + drop.length);
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        drop.y += drop.speed;
+        ctx.beginPath()
+        ctx.strokeStyle = drop.color
+        ctx.globalAlpha = 0.18 + Math.random() * 0.2
+        ctx.moveTo(drop.x, drop.y)
+        ctx.lineTo(drop.x, drop.y + drop.length)
+        ctx.lineWidth = 2
+        ctx.stroke()
+        drop.y += drop.speed
         if (drop.y > canvas.height) {
-          drop.y = -drop.length;
-          drop.x = Math.random() * canvas.width;
+          drop.y = -drop.length
+          drop.x = Math.random() * canvas.width
         }
-      });
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    };
+      })
+      ctx.globalAlpha = 1
+      ctx.restore()
+    }
     // Draw glyph flash
     const drawGlyphFlash = () => {
-      if (!ctx || !glyphFlash) return;
-      ctx.save();
-      ctx.globalAlpha = glyphFlash.alpha;
-      ctx.font = `bold 4rem 'Fira Mono', monospace`;
-      ctx.fillStyle = "#ff75d8";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.shadowColor = "#a259ff";
-      ctx.shadowBlur = 18;
-      ctx.fillText(glyphFlash.glyph, glyphFlash.x, glyphFlash.y);
-      ctx.globalAlpha = 1;
-      ctx.restore();
-    };
+      if (!ctx || !glyphFlash) return
+      ctx.save()
+      ctx.globalAlpha = glyphFlash.alpha
+      ctx.font = `bold 4rem 'Fira Mono', monospace`
+      ctx.fillStyle = '#ff75d8'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.shadowColor = '#a259ff'
+      ctx.shadowBlur = 18
+      ctx.fillText(glyphFlash.glyph, glyphFlash.x, glyphFlash.y)
+      ctx.globalAlpha = 1
+      ctx.restore()
+    }
 
     // Animation loop
-    let frameCount = 0;
+    let frameCount = 0
     // For throttling animation to 24fps
-    let lastFrameTime = performance.now();
-    const FRAME_DURATION = 1000 / 30; // Increase to 30fps for smoother experience
+    let lastFrameTime = performance.now()
+    const FRAME_DURATION = 1000 / 30 // Increase to 30fps for smoother experience
     // Random glitch effect that occasionally distorts the canvas
     const applyGlitchEffect = () => {
-      if (!ctx || Math.random() > 0.03) return; // Reduced frequency to improve performance
+      if (!ctx || Math.random() > 0.03) return // Reduced frequency to improve performance
 
       // Simplified glitch effect - less computation
       if (Math.random() > 0.7) {
-        const blockCount = Math.floor(Math.random() * 3) + 1; // Reduced block count
+        const blockCount = Math.floor(Math.random() * 3) + 1 // Reduced block count
         for (let i = 0; i < blockCount; i++) {
-          const x = Math.random() * canvas.width;
-          const y = Math.random() * canvas.height;
-          const width = Math.random() * 100 + 50;
-          const height = Math.random() * 20 + 10;
-          ctx.fillStyle = `rgba(${String(Math.random() * 255)}, ${String(Math.random() * 255)}, ${String(Math.random() * 255)}, 0.2)`;
-          ctx.fillRect(x, y, width, height);
+          const x = Math.random() * canvas.width
+          const y = Math.random() * canvas.height
+          const width = Math.random() * 100 + 50
+          const height = Math.random() * 20 + 10
+          ctx.fillStyle = `rgba(${String(Math.random() * 255)}, ${String(Math.random() * 255)}, ${String(Math.random() * 255)}, 0.2)`
+          ctx.fillRect(x, y, width, height)
         }
       } else {
         // Only do pixel manipulation occasionally
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        const data = imageData.data
         // Process fewer pixels for better performance
         for (let i = 0; i < data.length; i += 16) {
           // Process every 4th pixel
           if (Math.random() > 0.95) {
             // Lower chance
-            data[i] = data[i + 4] || data[i];
-            data[i + 1] = data[i + 5] || data[i + 1];
-            data[i + 2] = data[i + 6] || data[i + 2];
+            data[i] = data[i + 4] || data[i]
+            data[i + 1] = data[i + 5] || data[i + 1]
+            data[i + 2] = data[i + 6] || data[i + 2]
           }
         }
-        ctx.putImageData(imageData, 0, 0);
+        ctx.putImageData(imageData, 0, 0)
       }
-    };
+    }
     const animate = () => {
-      if (!ctx) return;
-      const now = performance.now();
+      if (!ctx) return
+      const now = performance.now()
       if (now - lastFrameTime < FRAME_DURATION) {
-        requestAnimationFrame(animate);
-        return;
+        requestAnimationFrame(animate)
+        return
       }
-      lastFrameTime = now;
-      ctx.fillStyle = "rgba(10, 10, 20, 1)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      drawGrid(); // Disabled for CPU testing
-      drawScanlines(); // Disabled for CPU testing
-      drawDataRain();
+      lastFrameTime = now
+      ctx.fillStyle = 'rgba(10, 10, 20, 1)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      drawGrid() // Disabled for CPU testing
+      drawScanlines() // Disabled for CPU testing
+      drawDataRain()
       particles.forEach((particle) => {
         // Store previous position for trails
         if (particle.isTrail) {
-          particle.prevX = particle.x;
-          particle.prevY = particle.y;
+          particle.prevX = particle.x
+          particle.prevY = particle.y
         }
-        particle.y += particle.speed;
+        particle.y += particle.speed
         if (particle.y > canvas.height) {
-          particle.y = 0;
-          particle.x = Math.random() * canvas.width;
+          particle.y = 0
+          particle.x = Math.random() * canvas.width
         }
         // Draw trail for special particles
         if (particle.isTrail && particle.prevX !== undefined && particle.prevY !== undefined) {
-          ctx.save();
-          ctx.globalAlpha = 0.18;
-          ctx.strokeStyle = particle.color;
-          ctx.lineWidth = particle.size * 0.7;
-          ctx.beginPath();
-          ctx.moveTo(particle.prevX, particle.prevY);
-          ctx.lineTo(particle.x, particle.y);
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-          ctx.restore();
+          ctx.save()
+          ctx.globalAlpha = 0.18
+          ctx.strokeStyle = particle.color
+          ctx.lineWidth = particle.size * 0.7
+          ctx.beginPath()
+          ctx.moveTo(particle.prevX, particle.prevY)
+          ctx.lineTo(particle.x, particle.y)
+          ctx.stroke()
+          ctx.globalAlpha = 1
+          ctx.restore()
         }
         // Draw particle
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.fill();
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = particle.color;
-      });
-      drawGlyphFlash();
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+        ctx.fillStyle = particle.color
+        ctx.fill()
+        ctx.shadowBlur = 10
+        ctx.shadowColor = particle.color
+      })
+      drawGlyphFlash()
       // Only apply glitch effect every 5th frame
       if (frameCount % 5 === 0) {
-        applyGlitchEffect();
+        applyGlitchEffect()
       }
-      ctx.shadowBlur = 0;
+      ctx.shadowBlur = 0
       // Occasionally trigger a glyph flash
       if (!glyphFlash && Math.random() > 0.995) {
         glyphFlash = {
+          alpha: 1,
+          glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
+          ttl: 30 + Math.random() * 30,
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
-          alpha: 1,
-          ttl: 30 + Math.random() * 30,
-        };
+        }
       }
       // Animate glyph flash
       if (glyphFlash) {
-        glyphFlash.ttl--;
-        glyphFlash.alpha -= 0.03;
+        glyphFlash.ttl--
+        glyphFlash.alpha -= 0.03
         if (glyphFlash.ttl <= 0 || glyphFlash.alpha <= 0) {
-          glyphFlash = null;
+          glyphFlash = null
         }
       }
-      frameCount++;
-      requestAnimationFrame(animate);
-    };
-    animate();
-    setIsCanvasLoaded(true);
+      frameCount++
+      requestAnimationFrame(animate)
+    }
+    animate()
+    setIsCanvasLoaded(true)
     return () => {
-      window.removeEventListener("resize", resizeCanvas);
-    };
-  }, [isCanvasLoaded]);
+      window.removeEventListener('resize', resizeCanvas)
+    }
+  }, [isCanvasLoaded])
 
   return (
     <PageWrapper>
@@ -576,53 +573,48 @@ export default function NotFoundPage() {
         <GlitchCanvas ref={canvasRef} />
         <ContentWrapper>
           <GlitchTitle
-            initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            initial={{ opacity: 0, y: -50 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
           >
             <NeonGlitchSpan>404</NeonGlitchSpan>
           </GlitchTitle>
-          <GlitchSubtitle
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
+          <GlitchSubtitle animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
             SIGNAL LOST
           </GlitchSubtitle>
           <GlitchText
-            initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            style={{ filter: "contrast(1.1) brightness(1.05)" }}
+            initial={{ opacity: 0 }}
+            style={{ filter: 'contrast(1.1) brightness(1.05)' }}
+            transition={{ delay: 0.8, duration: 0.8 }}
           >
             <NeonGlitchSpan data-text="The coordinates you've entered">
               The coordinates you&apos;ve entered
-            </NeonGlitchSpan>{" "}
+            </NeonGlitchSpan>{' '}
             don&apos;t exist in this realm.
             <br />
-            <VioletSpan>Reality may have been altered</VioletSpan>, or{" "}
-            <CyanSpan>signal fragmented</CyanSpan>.<br />
+            <VioletSpan>Reality may have been altered</VioletSpan>, or <CyanSpan>signal fragmented</CyanSpan>.<br />
             {randomLostMessage}
           </GlitchText>
           <ButtonContainer>
             <StyledLink href="/">
               <GlitchButton
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                transition={{ delay: 1.1, duration: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.1 }}
               >
                 Return to Nexus
               </GlitchButton>
             </StyledLink>
             <StyledLink href="/projects">
               <GlitchButton
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
+                transition={{ delay: 1.3, duration: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 1.3 }}
               >
                 Scan for Projects
               </GlitchButton>
@@ -631,5 +623,5 @@ export default function NotFoundPage() {
         </ContentWrapper>
       </GlitchContainer>
     </PageWrapper>
-  );
+  )
 }

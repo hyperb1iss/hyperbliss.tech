@@ -1,10 +1,10 @@
 // app/components/Logo.tsx
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useRef } from "react";
-import { keyframes, styled } from "styled-components";
-import { useAnimatedNavigation } from "../hooks/useAnimatedNavigation";
+import Link from 'next/link'
+import { useRef } from 'react'
+import { keyframes, styled } from 'styled-components'
+import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 
 /**
  * Keyframe animations for the logo
@@ -21,7 +21,7 @@ const animateGradient = keyframes`
   100% {
     background-position: 0% 50%;
   }
-`;
+`
 
 // Flicker keyframe animation
 const flicker = keyframes`
@@ -54,7 +54,7 @@ const flicker = keyframes`
       0 0 5px #a259ff,
       0 0 7px #a259ff;
   }
-`;
+`
 
 // Keyframe for chromatic aberration
 const chromaticAberration = keyframes`
@@ -73,7 +73,7 @@ const chromaticAberration = keyframes`
       0 0 3px #a259ff,
       0 0 5px #a259ff;
   }
-`;
+`
 
 // Keyframe for the color-shifting glow effect
 const shiftingGlow = keyframes`
@@ -109,13 +109,13 @@ const shiftingGlow = keyframes`
       0 0 5px #00fff0,
       0 0 7px #00fff0;
   }
-`;
+`
 
 // Keyframes for the sparkle and shimmer effect
 const sparkle = keyframes`
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.8; transform: scale(0.95); }
-`;
+`
 
 const shimmer = keyframes`
   0% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
@@ -123,7 +123,7 @@ const shimmer = keyframes`
   50% { text-shadow: 1px 1px 2px rgba(255,255,255,0.3), -1px -1px 2px rgba(255,255,255,0.3); }
   75% { text-shadow: -1px 1px 2px rgba(255,255,255,0.3), 1px -1px 2px rgba(255,255,255,0.3); }
   100% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
-`;
+`
 
 /**
  * Styled components for the Logo
@@ -160,7 +160,7 @@ const LogoText = styled.span`
   @media (min-width: 1200px) {
     font-size: calc(2.4rem + 0.8vw); // Further increase for very large screens
   }
-`;
+`
 
 const LogoEmojis = styled.span`
   font-size: 1.8rem; // Baseline size (matches mobile view)
@@ -191,7 +191,7 @@ const LogoEmojis = styled.span`
   @media (min-width: 1200px) {
     font-size: calc(1.8rem + 0.4vw); // Further increase for very large screens
   }
-`;
+`
 
 const GlowingEmoji = styled(LogoEmojis)`
   animation: ${chromaticAberration} 3s ease-in-out infinite;
@@ -201,7 +201,7 @@ const GlowingEmoji = styled(LogoEmojis)`
   &:hover {
     animation: ${shiftingGlow} 4s linear infinite;
   }
-`;
+`
 
 const LogoContainer = styled.div`
   display: flex;
@@ -209,7 +209,7 @@ const LogoContainer = styled.div`
   height: 100%;
   margin-right: auto;
   overflow: hidden;
-`;
+`
 
 const LogoLink = styled(Link)`
   display: flex;
@@ -220,7 +220,7 @@ const LogoLink = styled(Link)`
   height: 100%;
   overflow: hidden;
   white-space: nowrap;
-`;
+`
 
 /**
  * Logo component
@@ -228,13 +228,13 @@ const LogoLink = styled(Link)`
  * @returns {JSX.Element} Rendered logo component
  */
 const Logo: React.FC = () => {
-  const logoRef = useRef<HTMLAnchorElement>(null);
-  const animateAndNavigate = useAnimatedNavigation();
+  const logoRef = useRef<HTMLAnchorElement>(null)
+  const animateAndNavigate = useAnimatedNavigation()
 
   const handleNavigation = (e: React.MouseEvent) => {
-    e.preventDefault();
-    animateAndNavigate("/");
-  };
+    e.preventDefault()
+    animateAndNavigate('/')
+  }
 
   return (
     <LogoContainer>
@@ -242,12 +242,12 @@ const Logo: React.FC = () => {
         <LogoEmojis>🌠</LogoEmojis>
         <LogoText>𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼</LogoText>
         <LogoEmojis>✨</LogoEmojis>
-        {["⎊", "⨳", "✵", "⊹"].map((emoji, index) => (
+        {['⎊', '⨳', '✵', '⊹'].map((emoji, index) => (
           <GlowingEmoji key={index}>{emoji}</GlowingEmoji>
         ))}
       </LogoLink>
     </LogoContainer>
-  );
-};
+  )
+}
 
-export default Logo;
+export default Logo

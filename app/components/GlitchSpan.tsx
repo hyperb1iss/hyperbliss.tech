@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const GlitchSpan = styled.span`
   display: inline-block;
@@ -55,6 +55,6 @@ const GlitchSpan = styled.span`
       clip: rect(5px, 9999px, 15px, 0);
     }
   }
-`;
+`
 
-export default GlitchSpan;
+export default GlitchSpan
