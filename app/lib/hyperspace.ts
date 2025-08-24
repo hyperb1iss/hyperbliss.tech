@@ -461,11 +461,11 @@ class HyperspaceManager {
       const size = Math.random() * 10 + 3 * this._intensity
       const symbol = this.cyberElements.symbols[Math.floor(Math.random() * this.cyberElements.symbols.length)]
       const color = this.cyberElements.colors[Math.floor(Math.random() * this.cyberElements.colors.length)]
-      const duration = Math.random() * 8 + 10 - this._intensity + 's'
-      const top = Math.random() * 100 + 'vh'
-      const left = Math.random() * 100 + 'vw'
-      const tx = Math.random() * 100 * this._intensity - 50 * this._intensity + 'px'
-      const ty = Math.random() * 100 * this._intensity - 50 * this._intensity + 'px'
+      const duration = `${Math.random() * 8 + 10 - this._intensity}s`
+      const top = `${Math.random() * 100}vh`
+      const left = `${Math.random() * 100}vw`
+      const tx = `${Math.random() * 100 * this._intensity - 50 * this._intensity}px`
+      const ty = `${Math.random() * 100 * this._intensity - 50 * this._intensity}px`
 
       particlesHTML += `<div class="cyber-particle" style="
         top: ${top};

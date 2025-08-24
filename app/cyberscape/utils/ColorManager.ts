@@ -84,7 +84,7 @@ export class ColorManager {
       [r, g, b]
         .map((x) => {
           const hex = x.toString(16)
-          return hex.length === 1 ? '0' + hex : hex
+          return hex.length === 1 ? `0${hex}` : hex
         })
         .join('')
     )
@@ -204,7 +204,9 @@ export class ColorManager {
    * @returns An object with r, g, b components (0-255).
    */
   private static hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
-    let r, g, b
+    let r
+    let g
+    let b
 
     if (s === 0) {
       r = g = b = l // achromatic

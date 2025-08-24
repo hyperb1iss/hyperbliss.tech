@@ -357,7 +357,7 @@ export abstract class VectorShape {
         const pos = VectorMath.project(this.position, width, height)
 
         // Check if pos.x and pos.y are valid numbers
-        if (!isNaN(pos.x) && !isNaN(pos.y) && isFinite(pos.x) && isFinite(pos.y)) {
+        if (!Number.isNaN(pos.x) && !Number.isNaN(pos.y) && Number.isFinite(pos.x) && Number.isFinite(pos.y)) {
           const gradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, this.radius * 2 * pos.scale)
           gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${this.opacity})`)
           gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`)

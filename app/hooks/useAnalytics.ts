@@ -26,7 +26,7 @@ export default function useAnalytics() {
 
     if (prevPathRef.current && prevPathRef.current !== pathname) {
       // Calculate time spent on previous page
-      const timeSpent = new Date().getTime() - pageViewTimeRef.current.getTime()
+      const timeSpent = Date.now() - pageViewTimeRef.current.getTime()
 
       // Track navigation between pages with time spent data
       analyticsUtils.trackNavigation(prevPathRef.current, pathname)
@@ -51,7 +51,7 @@ export default function useAnalytics() {
       return // Skip on initial render
     }
 
-    if (searchParams && searchParams.toString()) {
+    if (searchParams?.toString()) {
       const params = Object.fromEntries(searchParams.entries())
       analyticsUtils.trackEngagement('search', {
         page_path: pathname,
@@ -65,7 +65,7 @@ export default function useAnalytics() {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         // User is navigating away or switching tabs
-        const timeSpent = new Date().getTime() - pageViewTimeRef.current.getTime()
+        const timeSpent = Date.now() - pageViewTimeRef.current.getTime()
 
         analyticsUtils.trackEngagement('page_exit', {
           exit_type: 'visibility_change',

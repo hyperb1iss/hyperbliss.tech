@@ -19,10 +19,10 @@ export class ColorBlender {
     const influenceRadiusSquared = INFLUENCE_RADIUS * INFLUENCE_RADIUS
 
     for (let i = 0; i < shapes.length; i++) {
-      let rTotal = 0,
-        gTotal = 0,
-        bTotal = 0,
-        count = 0
+      let rTotal = 0
+      let gTotal = 0
+      let bTotal = 0
+      let count = 0
 
       const shapeA = shapes[i]
 

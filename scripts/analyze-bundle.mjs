@@ -1,6 +1,6 @@
-import { exec } from 'child_process'
-import fs from 'fs'
-import path from 'path'
+import { exec } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
 
 // Define directories and file paths
 const nextConfigPath = path.resolve('next.config.mjs')

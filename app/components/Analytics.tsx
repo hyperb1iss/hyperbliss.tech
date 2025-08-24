@@ -22,7 +22,7 @@ export default function Analytics() {
 
   // Track when URL parameters change
   useEffect(() => {
-    if (searchParams && searchParams.toString()) {
+    if (searchParams?.toString()) {
       const params = Object.fromEntries(searchParams.entries())
 
       // Track search parameters as custom event

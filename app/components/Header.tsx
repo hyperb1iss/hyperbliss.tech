@@ -110,7 +110,8 @@ const Header: React.FC = () => {
     const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect()
       if (rect) {
-        let x, y
+        let x
+        let y
         if (event instanceof MouseEvent) {
           x = event.clientX - rect.left
           y = event.clientY - rect.top
@@ -132,7 +133,7 @@ const Header: React.FC = () => {
     interactionHandler.cancel = debouncedTrigger.cancel
 
     return interactionHandler
-  }, [canvasRef])
+  }, [])
 
   // Attach the interaction event listeners to the header for CyberScape
   useEffect(() => {

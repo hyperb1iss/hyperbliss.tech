@@ -104,7 +104,7 @@ export class ParticleAtCollision extends Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public draw(ctx: CanvasRenderingContext2D, mouseX: number, mouseY: number, width: number, height: number): void {
+  public draw(ctx: CanvasRenderingContext2D, _mouseX: number, _mouseY: number, width: number, height: number): void {
     if (this.opacity <= 0) return
 
     const pos = VectorMath.project(this.position, width, height)

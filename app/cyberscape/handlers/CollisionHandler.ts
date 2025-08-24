@@ -179,8 +179,8 @@ export class CollisionHandler {
   private static emitCollisionParticles(
     shapeA: VectorShape,
     shapeB: VectorShape,
-    deltaPos: vec3,
-    distance: number,
+    _deltaPos: vec3,
+    _distance: number,
     collisionParticlesArray: ParticleAtCollision[],
   ): void {
     // Calculate the collision position (midpoint between shapeA and shapeB)
@@ -196,7 +196,7 @@ export class CollisionHandler {
 
     for (let i = 0; i < PARTICLES_PER_COLLISION; i++) {
       // Retrieve a ParticleAtCollision from the ParticlePool
-      const particle = CollisionHandler.particlePool!.getCollisionParticle(vec3.clone(collisionPos), () => {})
+      const particle = CollisionHandler.particlePool?.getCollisionParticle(vec3.clone(collisionPos), () => {})
 
       // Configure particle properties using CyberScapeConfig
       particle.lifespan = config.particleAtCollisionLifespan

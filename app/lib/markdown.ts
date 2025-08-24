@@ -1,7 +1,7 @@
 // app/lib/markdown.ts
-import fs from 'fs/promises'
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import matter from 'gray-matter'
-import path from 'path'
 
 /**
  * Base interface for common frontmatter fields

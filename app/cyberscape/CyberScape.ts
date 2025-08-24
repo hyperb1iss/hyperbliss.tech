@@ -52,7 +52,7 @@ export const triggerCyberScapeAnimation = (x: number, y: number) => {
  */
 export const initializeCyberScape = (
   canvas: HTMLCanvasElement,
-  logoElement: HTMLAnchorElement,
+  _logoElement: HTMLAnchorElement,
   navElement: HTMLElement,
 ) => {
   const ctx = canvas.getContext('2d', { willReadFrequently: true })
