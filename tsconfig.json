@@ -24,8 +24,8 @@
     "strict": true,
     "strictNullChecks": true,
     "target": "ES2017",
-    "types": ["jest", "@testing-library/jest-dom"]
+    "types": []
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "tests"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"]
 }

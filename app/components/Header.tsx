@@ -112,12 +112,12 @@ const Header: React.FC = () => {
     const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect()
       if (rect) {
-        let x: number
-        let y: number
+        let x: number | undefined
+        let y: number | undefined
         if (event instanceof MouseEvent) {
           x = event.clientX - rect.left
           y = event.clientY - rect.top
-        } else if (event instanceof TouchEvent) {
+        } else if (event instanceof TouchEvent && event.touches.length > 0) {
           x = event.touches[0].clientX - rect.left
           y = event.touches[0].clientY - rect.top
         }

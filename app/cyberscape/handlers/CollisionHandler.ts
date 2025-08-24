@@ -198,12 +198,14 @@ export class CollisionHandler {
       // Retrieve a ParticleAtCollision from the ParticlePool
       const particle = CollisionHandler.particlePool?.getCollisionParticle(vec3.clone(collisionPos), () => {})
 
-      // Configure particle properties using CyberScapeConfig
-      particle.lifespan = config.particleAtCollisionLifespan
-      particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
+      if (particle) {
+        // Configure particle properties using CyberScapeConfig
+        particle.lifespan = config.particleAtCollisionLifespan
+        particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
 
-      // Add the particle to the collision particles array
-      collisionParticlesArray.push(particle)
+        // Add the particle to the collision particles array
+        collisionParticlesArray.push(particle)
+      }
     }
   }
 }

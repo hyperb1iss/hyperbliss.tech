@@ -31,7 +31,7 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
     name: 'Hyperbliss',
     potentialAction: {
       '@type': 'SearchAction',
-      'query-input': 'required name=search_term_string',
+      query: 'required name=search_term_string',
       target: {
         '@type': 'EntryPoint',
         urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
