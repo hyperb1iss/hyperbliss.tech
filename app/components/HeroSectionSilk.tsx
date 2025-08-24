@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { TECH_TAGS } from '../lib/constants'
 import { SilkButton } from '../styles/silkcircuit/components'
 import { usePageLoad } from './PageLoadOrchestrator'
+import { SparklingName } from './SparklingName'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styled Components
@@ -110,33 +111,6 @@ const Subtitle = styled(motion.p)`
   }
 `
 
-const NameHighlight = styled.span`
-  color: var(--silk-quantum-purple);
-  font-weight: var(--font-semibold);
-  position: relative;
-  white-space: nowrap;
-  
-  &::after {
-    content: '✨';
-    position: absolute;
-    right: -1.5em;
-    top: -0.2em;
-    font-size: 0.7em;
-    animation: sparkle 2s ease-in-out infinite;
-  }
-  
-  @keyframes sparkle {
-    0%, 100% { 
-      opacity: 0.5; 
-      transform: scale(1) rotate(0deg);
-    }
-    50% { 
-      opacity: 1; 
-      transform: scale(1.2) rotate(180deg);
-    }
-  }
-`
-
 const TagCloud = styled(motion.div)`
   display: flex;
   flex-wrap: wrap;
@@ -152,7 +126,7 @@ const SkillTag = styled(motion.div)<{ $index: number }>`
   backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  font-size: var(--text-sm);
+  font-size: 1.4rem;
   font-weight: var(--font-medium);
   color: var(--text-secondary);
   transition: all var(--duration-normal) var(--ease-silk);
@@ -392,9 +366,9 @@ export default function HeroSectionSilk() {
         </Title>
 
         <Subtitle variants={itemVariants}>
-          I'm <NameHighlight>Stefanie Jane</NameHighlight>, a full-stack engineer crafting elegant solutions at the
-          intersection of art and technology. I build experiences that push the boundaries of what's possible on the
-          web.
+          I'm <SparklingName name="Stefanie Jane" sparkleCount={8} />, a full-stack engineer crafting elegant solutions
+          at the intersection of art and technology. I build experiences that push the boundaries of what's possible on
+          the web.
         </Subtitle>
 
         <TagCloud variants={itemVariants}>

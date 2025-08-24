@@ -59,15 +59,18 @@ const CardTitle = styled.h3`
   line-height: var(--leading-tight);
   position: relative;
   z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 15px rgba(162, 89, 255, 0.4);
 `
 
 const CardMeta = styled.div`
   font-family: var(--font-body);
-  font-size: var(--text-sm);
+  font-size: 1.4rem;
   font-weight: var(--font-semibold);
   color: var(--silk-circuit-cyan);
   margin-bottom: var(--space-4);
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
   background: var(--silk-circuit-cyan-alpha-10);
   border-left: 2px solid var(--silk-circuit-cyan);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -99,9 +102,9 @@ const TagsContainer = styled.div`
 const Tag = styled.span`
   background: var(--surface-overlay);
   color: var(--text-secondary);
-  padding: var(--space-1) var(--space-3);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-full);
-  font-size: var(--text-xs);
+  font-size: 1.3rem;
   font-weight: var(--font-medium);
   border: 1px solid var(--border-subtle);
   transition: all var(--duration-fast) var(--ease-silk);
@@ -125,11 +128,11 @@ const CardFooter = styled.div`
 
 const CardLink = styled(Link)`
   font-family: var(--font-body);
-  font-size: var(--text-fluid-sm);
+  font-size: 1.5rem;
   font-weight: var(--font-semibold);
   color: var(--silk-quantum-purple);
   text-decoration: none;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;

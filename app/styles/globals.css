@@ -8,8 +8,8 @@
 @import "./silkcircuit/variables.css";
 @import "./silkcircuit/utilities.css";
 
-/* Import Inter Variable font */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+/* Import Cyberpunk/Futuristic fonts */
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap");
 
 /* Reset and base styles */
 *,
@@ -66,7 +66,7 @@ body::before {
   pointer-events: none;
 }
 
-/* Typography styles with SilkCircuit */
+/* Typography styles with SilkCircuit - Futuristic */
 h1,
 h2,
 h3,
@@ -78,7 +78,9 @@ h6 {
   line-height: var(--leading-tight);
   color: var(--text-primary);
   margin-bottom: var(--space-4);
-  letter-spacing: var(--tracking-tight);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(162, 89, 255, 0.3);
 }
 
 h1 {
@@ -128,9 +130,13 @@ a:focus-visible {
 
 /* Paragraph styles */
 p {
+  font-family: var(--font-body);
+  font-size: var(--text-fluid-base);
   line-height: var(--leading-relaxed);
   margin-bottom: var(--space-4);
   color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
 /* Code styles */
