@@ -427,7 +427,9 @@ export const initializeCyberScape = (
         if (nearbyParticles.length > 20) {
           // Calculate the average position of nearby particles
           const avgPosition = vec3.create()
-          nearbyParticles.forEach((p) => vec3.add(avgPosition, avgPosition, p.position))
+          nearbyParticles.forEach((p) => {
+            vec3.add(avgPosition, avgPosition, p.position)
+          })
           vec3.scale(avgPosition, avgPosition, 1 / nearbyParticles.length)
 
           // Move the particle away from the cluster

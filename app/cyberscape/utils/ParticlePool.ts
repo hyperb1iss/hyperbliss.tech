@@ -46,9 +46,11 @@ export class ParticlePool {
    */
   public getParticle(width: number, height: number): Particle {
     if (this.regularPool.length > 0) {
-      const particle = this.regularPool.pop()!
-      particle.reset(new Set<string>(), width, height)
-      return particle
+      const particle = this.regularPool.pop()
+      if (particle) {
+        particle.reset(new Set<string>(), width, height)
+        return particle
+      }
     }
     // If pool is empty, create a new particle
     return new Particle(new Set<string>(), width, height)
@@ -62,9 +64,11 @@ export class ParticlePool {
    */
   public getCollisionParticle(position: vec3, onExpire: () => void): ParticleAtCollision {
     if (this.collisionPool.length > 0) {
-      const particle = this.collisionPool.pop()!
-      particle.init(vec3.clone(position), onExpire)
-      return particle
+      const particle = this.collisionPool.pop()
+      if (particle) {
+        particle.init(vec3.clone(position), onExpire)
+        return particle
+      }
     }
     // If pool is empty, create a new collision particle
     return new ParticleAtCollision(vec3.clone(position), onExpire)

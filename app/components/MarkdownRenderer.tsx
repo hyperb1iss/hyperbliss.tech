@@ -2,7 +2,7 @@
 'use client'
 
 import type { Element } from 'hast' // Re-adding for proper node typing
-import { toString } from 'hast-util-to-string' // For extracting text content
+import { toString as hastToString } from 'hast-util-to-string' // For extracting text content
 import React, { useEffect, useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
@@ -182,7 +182,7 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
   // Extract code content for copy button
   let codeContent = ''
   if (node && node.type === 'element') {
-    codeContent = toString(node)
+    codeContent = hastToString(node)
   } else {
     // Fallback logic without warning
     codeContent = React.Children.toArray(children)

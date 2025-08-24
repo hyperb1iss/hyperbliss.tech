@@ -125,7 +125,8 @@ export class DatastreamEffect {
     const noiseCanvas = document.createElement('canvas')
     noiseCanvas.width = width
     noiseCanvas.height = height
-    const noiseCtx = noiseCanvas.getContext('2d')!
+    const noiseCtx = noiseCanvas.getContext('2d')
+    if (!noiseCtx) return
 
     for (let x = centerX - noiseRadius; x < centerX + noiseRadius; x += noiseSize) {
       for (let y = centerY - noiseRadius; y < centerY + noiseRadius; y += noiseSize) {

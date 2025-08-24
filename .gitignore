@@ -132,3 +132,6 @@ target
 # aider-chat
 .aider*
 
+# Claude configuration
+.claude/
+

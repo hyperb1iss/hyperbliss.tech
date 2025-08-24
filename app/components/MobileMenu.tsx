@@ -24,6 +24,7 @@ const MobileMenu: React.FC = () => {
         aria-label="Toggle menu"
         className="menu-icon fixed top-4 right-4 z-50 p-2 rounded-full bg-cyberpunk-900 shadow-neon"
         onClick={toggleMenu}
+        type="button"
       >
         <motion.div
           animate={isOpen ? 'open' : 'closed'}

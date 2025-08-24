@@ -112,8 +112,8 @@ const Header: React.FC = () => {
     const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
       const rect = canvasRef.current?.getBoundingClientRect()
       if (rect) {
-        let x
-        let y
+        let x: number
+        let y: number
         if (event instanceof MouseEvent) {
           x = event.clientX - rect.left
           y = event.clientY - rect.top
@@ -200,6 +200,7 @@ const Header: React.FC = () => {
         variants={chevronVariants}
       >
         <svg
+          aria-label="Toggle header expansion"
           fill="none"
           stroke="currentColor"
           strokeLinecap="round"
@@ -208,6 +209,7 @@ const Header: React.FC = () => {
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <title>Toggle header expansion</title>
           <polyline points="6 9 12 15 18 9" />
         </svg>
       </ChevronIcon>
