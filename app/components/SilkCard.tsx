@@ -285,7 +285,7 @@ const CardButton = styled.div`
   }
 `
 
-const GithubLink = styled.a`
+const GithubLink = styled.button`
   color: var(--text-secondary);
   font-size: var(--text-lg);
   padding: var(--space-2);
@@ -297,6 +297,8 @@ const GithubLink = styled.a`
   position: relative;
   background: rgba(162, 89, 255, 0.1);
   border: 1px solid rgba(162, 89, 255, 0.3);
+  cursor: pointer;
+  outline: none;
   
   &::before {
     content: '';
@@ -396,14 +398,13 @@ export const SilkCard: React.FC<SilkCardProps> = ({
           </CardButton>
           {githubLink && (
             <GithubLink
-              href={githubLink}
+              aria-label="View on GitHub"
               onClick={(e) => {
                 e.stopPropagation()
                 e.preventDefault()
-                window.open(githubLink, '_blank')
+                window.open(githubLink, '_blank', 'noopener,noreferrer')
               }}
-              rel="noopener noreferrer"
-              target="_blank"
+              type="button"
             >
               <FaGithub />
             </GithubLink>
@@ -469,14 +470,13 @@ const _OriginalSilkCard: React.FC<SilkCardProps> = ({
           </CardButton>
           {githubLink && (
             <GithubLink
-              href={githubLink}
+              aria-label="View on GitHub"
               onClick={(e) => {
                 e.stopPropagation()
                 e.preventDefault()
-                window.open(githubLink, '_blank')
+                window.open(githubLink, '_blank', 'noopener,noreferrer')
               }}
-              rel="noopener noreferrer"
-              target="_blank"
+              type="button"
             >
               <FaGithub />
             </GithubLink>

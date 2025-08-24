@@ -1,8 +1,8 @@
-// app/components/MarkdownRenderer.tsx
+// app/components/ProjectMarkdownRenderer.tsx
 'use client'
 
-import type { Element } from 'hast' // Re-adding for proper node typing
-import { toString as hastToString } from 'hast-util-to-string' // For extracting text content
+import type { Element } from 'hast'
+import { toString as hastToString } from 'hast-util-to-string'
 import React, { useEffect, useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
@@ -11,22 +11,22 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import styled, { StyleSheetManager } from 'styled-components'
 import {
-  StyledLink as MarkdownLink,
-  StyledBlockquote,
-  StyledH1,
-  StyledH2,
-  StyledH3,
-  StyledHr,
-  StyledImage,
-  StyledInlineCode,
-  StyledLi,
-  StyledOl,
-  StyledParagraph,
-  StyledUl,
-} from './MarkdownStyles'
+  ProjectBlockquote,
+  ProjectH1,
+  ProjectH2,
+  ProjectH3,
+  ProjectHr,
+  ProjectImage,
+  ProjectInlineCode,
+  ProjectLi,
+  ProjectLink,
+  ProjectOl,
+  ProjectParagraph,
+  ProjectUl,
+} from './ProjectMarkdownStyles'
 
 // Define the props interface
-interface MarkdownRendererProps {
+interface ProjectMarkdownRendererProps {
   content: string
 }
 
@@ -35,12 +35,10 @@ interface CodeComponentProps {
   inline?: boolean
   className?: string
   children?: React.ReactNode
-  // Add any other props as needed
 }
 
 // Function to filter out props that shouldn't be forwarded to DOM elements
 const shouldForwardProp = (prop: string): boolean => {
-  // List of props that should not be forwarded to DOM elements
   const invalidProps = ['node']
   return !invalidProps.includes(prop)
 }
@@ -52,13 +50,13 @@ const CopyButton = styled.button`
   right: 0.8rem;
   background: linear-gradient(
     135deg,
-    rgba(162, 89, 255, 0.2),
-    rgba(255, 117, 216, 0.1)
+    rgba(0, 255, 240, 0.2),
+    rgba(0, 229, 255, 0.1)
   );
-  border: 1px solid rgba(224, 170, 255, 0.3);
+  border: 1px solid rgba(0, 255, 240, 0.3);
   border-radius: var(--radius-sm);
   padding: 0.5rem;
-  color: var(--silk-lavender);
+  color: #00fff0;
   cursor: pointer;
   transition: all 0.3s var(--ease-silk);
   opacity: 0;
@@ -68,13 +66,13 @@ const CopyButton = styled.button`
   &:hover {
     background: linear-gradient(
       135deg,
-      rgba(162, 89, 255, 0.3),
-      rgba(255, 117, 216, 0.2)
+      rgba(0, 255, 240, 0.3),
+      rgba(0, 229, 255, 0.2)
     );
-    border-color: var(--silk-plasma-pink);
-    color: var(--silk-circuit-cyan);
+    border-color: #00e5ff;
+    color: #26c6da;
     transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 117, 216, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 240, 0.3);
   }
 
   svg {
@@ -84,12 +82,12 @@ const CopyButton = styled.button`
   }
 `
 
-// Renamed to CodeBlockPreWrapper and changed tag to pre
+// Code block wrapper with cyan theme
 const CodeBlockPreWrapper = styled.pre`
   position: relative;
   
-  /* Add blog-syntax class for theme targeting */
-  &.blog-syntax {
+  /* Add project-syntax class for theme targeting */
+  &.project-syntax {
     /* Class added via props */
   }
 
@@ -97,14 +95,14 @@ const CodeBlockPreWrapper = styled.pre`
     opacity: 1;
   }
 
-  /* Apply purple/magenta silk circuit theme */
+  /* Apply cyan-dominant silk circuit theme */
   background: linear-gradient(
     135deg,
-    rgba(255, 117, 216, 0.08) 0%,
-    rgba(217, 70, 239, 0.06) 20%,
+    rgba(0, 255, 240, 0.08) 0%,
+    rgba(0, 229, 255, 0.06) 20%,
     rgba(30, 25, 45, 0.95) 40%,
-    rgba(236, 72, 153, 0.04) 80%,
-    rgba(224, 170, 255, 0.06) 100%
+    rgba(0, 172, 193, 0.04) 80%,
+    rgba(38, 198, 218, 0.06) 100%
   ) !important;
   backdrop-filter: blur(15px) saturate(1.1);
   color: rgba(224, 224, 224, 0.95) !important;
@@ -114,11 +112,11 @@ const CodeBlockPreWrapper = styled.pre`
   font-family: var(--font-mono) !important;
   font-size: 1.3rem !important;
   line-height: 1.6 !important;
-  border: 1px solid rgba(255, 117, 216, 0.2);
+  border: 1px solid rgba(0, 255, 240, 0.2);
   box-shadow:
-    0 0 40px rgba(217, 70, 239, 0.15),
-    0 0 80px rgba(255, 117, 216, 0.08),
-    inset 0 0 30px rgba(236, 72, 153, 0.03);
+    0 0 40px rgba(0, 229, 255, 0.15),
+    0 0 80px rgba(0, 255, 240, 0.08),
+    inset 0 0 30px rgba(0, 172, 193, 0.03);
   margin: 2rem 0 !important;
   white-space: pre-wrap !important;
   word-spacing: normal !important;
@@ -127,27 +125,27 @@ const CodeBlockPreWrapper = styled.pre`
 
   /* Target code tag inside */
   code {
-    font-family: inherit; /* Use inherit now that pre is explicitly set */
+    font-family: inherit;
     background: none;
     padding: 0;
     margin: 0;
     display: block;
     color: inherit;
-    white-space: inherit; /* Inherit wrap setting */
+    white-space: inherit;
     word-spacing: inherit;
     word-break: inherit;
     word-wrap: inherit;
 
-    /* Purple/magenta dominant syntax highlighting */
+    /* Cyan/teal dominant syntax highlighting */
     .hljs-comment,
     .hljs-prolog,
     .hljs-doctype,
     .hljs-cdata {
-      color: rgba(168, 85, 247, 0.65);
+      color: rgba(0, 172, 193, 0.65);
       font-style: italic;
     }
     .hljs-punctuation {
-      color: #e0aaff;
+      color: #26c6da;
       opacity: 0.8;
     }
     .hljs-property,
@@ -157,8 +155,8 @@ const CodeBlockPreWrapper = styled.pre`
     .hljs-constant,
     .hljs-symbol,
     .hljs-deleted {
-      color: #ff75d8;
-      text-shadow: 0 0 8px rgba(255, 117, 216, 0.4);
+      color: #00fff0;
+      text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
       font-weight: 500;
     }
     .hljs-selector,
@@ -167,8 +165,8 @@ const CodeBlockPreWrapper = styled.pre`
     .hljs-char,
     .hljs-builtin,
     .hljs-inserted {
-      color: #ec4899;
-      text-shadow: 0 0 6px rgba(236, 72, 153, 0.3);
+      color: #00e5ff;
+      text-shadow: 0 0 6px rgba(0, 229, 255, 0.3);
     }
     .hljs-operator,
     .hljs-entity,
@@ -176,23 +174,23 @@ const CodeBlockPreWrapper = styled.pre`
     .language-css .hljs-string,
     .style .hljs-string,
     .hljs-variable {
-      color: #e0aaff;
-      text-shadow: 0 0 5px rgba(224, 170, 255, 0.3);
+      color: #26c6da;
+      text-shadow: 0 0 5px rgba(38, 198, 218, 0.3);
     }
     .hljs-atrule,
     .hljs-attr-value,
     .hljs-function,
     .hljs-class-name {
-      color: #d946ef;
+      color: #00acc1;
       font-weight: 600;
-      text-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
+      text-shadow: 0 0 10px rgba(0, 172, 193, 0.4);
     }
     .hljs-keyword,
     .hljs-regex,
     .hljs-important {
-      color: #a855f7;
+      color: #00fff0;
       font-weight: bold;
-      text-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+      text-shadow: 0 0 12px rgba(0, 255, 240, 0.5);
     }
     .hljs-important {
       font-weight: bold;
@@ -200,29 +198,25 @@ const CodeBlockPreWrapper = styled.pre`
   }
 `
 
-// --- New Component for Pre Block Logic ---
+// Pre component with copy functionality
 interface PreWithCopyProps extends React.ComponentProps<'pre'> {
   node?: Element
   children?: React.ReactNode
 }
 
 const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) => {
-  // State for clipboard API availability and copy status
   const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [isCopying, setIsCopying] = useState(false)
 
-  // Check for Clipboard API on mount
   useEffect(() => {
     setIsClipboardApiAvailable(!!navigator.clipboard?.writeText)
   }, [])
 
-  // Extract code content for copy button
   let codeContent = ''
   if (node && node.type === 'element') {
     codeContent = hastToString(node)
   } else {
-    // Fallback logic without warning
     codeContent = React.Children.toArray(children)
       .map((child) => String(child))
       .join('')
@@ -233,16 +227,14 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
     if (!isClipboardApiAvailable || isCopying) return
 
     setIsCopying(true)
-    setIsCopied(false) // Reset copied state
+    setIsCopied(false)
     try {
       await navigator.clipboard.writeText(codeContent)
       setIsCopied(true)
     } catch (err) {
       console.error('Failed to copy text: ', err)
-      // Optionally: set an error state here to show feedback
     } finally {
       setIsCopying(false)
-      // Reset copied check icon after a delay
       if (isCopied) {
         setTimeout(() => setIsCopied(false), 2000)
       }
@@ -250,7 +242,7 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
   }
 
   return (
-    <CodeBlockPreWrapper className="blog-syntax" {...rest}>
+    <CodeBlockPreWrapper className="project-syntax" {...rest}>
       {children}
       <CopyButton
         disabled={!isClipboardApiAvailable || isCopying}
@@ -265,7 +257,6 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
 
 // Safe link wrapper component
 const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
-  // Create a new props object that's extensible
   const safeProps = {
     href,
     rel: 'noopener noreferrer',
@@ -279,16 +270,14 @@ const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
     delete safeProps.rel
   }
 
-  return <MarkdownLink {...safeProps}>{children}</MarkdownLink>
+  return <ProjectLink {...safeProps}>{children}</ProjectLink>
 }
 
 /**
- * MarkdownRenderer Component
- * Renders Markdown content with custom styled components.
- * @param {MarkdownRendererProps} props - The component props
- * @returns {JSX.Element} Rendered Markdown content
+ * ProjectMarkdownRenderer Component
+ * Renders Markdown content with custom cyan/teal styled components for projects.
  */
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content }) => {
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ReactMarkdown
@@ -297,47 +286,44 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           a: SafeLink,
 
           // Blockquote
-          blockquote: (props) => <StyledBlockquote {...props} />,
+          blockquote: (props) => <ProjectBlockquote {...props} />,
 
-          // UPDATED 'code' component: Only handles inline code now
+          // Code component
           code: ({ inline, className, children, ...props }: CodeComponentProps) => {
             if (inline) {
-              return <StyledInlineCode {...props}>{children}</StyledInlineCode>
+              return <ProjectInlineCode {...props}>{children}</ProjectInlineCode>
             }
 
-            // Block code: Render the plain code tag.
-            // Our 'pre' component above will wrap it and add the button/styles.
-            // Pass className for language detection by rehype-highlight.
             return (
               <code className={className} {...props}>
                 {children}
               </code>
             )
           },
+
           // Headings
-          h1: (props) => <StyledH1 {...props} />,
-          h2: (props) => <StyledH2 {...props} />,
-          h3: (props) => <StyledH3 {...props} />,
+          h1: (props) => <ProjectH1 {...props} />,
+          h2: (props) => <ProjectH2 {...props} />,
+          h3: (props) => <ProjectH3 {...props} />,
 
           // Horizontal Rule
-          hr: (props) => <StyledHr {...props} />,
+          hr: (props) => <ProjectHr {...props} />,
 
           // Images
-          img: (props) => <StyledImage {...props} />,
-          li: (props) => <StyledLi {...props} />,
-          ol: (props) => <StyledOl {...props} />,
+          img: (props) => <ProjectImage {...props} />,
+          li: (props) => <ProjectLi {...props} />,
+          ol: (props) => <ProjectOl {...props} />,
 
           // Paragraph
-          p: (props) => <StyledParagraph {...props} />,
+          p: (props) => <ProjectParagraph {...props} />,
 
-          // UPDATED Custom 'pre' component implementation
+          // Pre component with copy button
           pre: (props) => {
-            // Render the component that contains the hook logic
             return <PreWithCopy {...props} />
           },
 
           // Lists
-          ul: (props) => <StyledUl {...props} />,
+          ul: (props) => <ProjectUl {...props} />,
         }}
         rehypePlugins={[rehypeRaw, rehypeHighlight]}
         remarkPlugins={[remarkGfm]}
@@ -348,4 +334,4 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   )
 }
 
-export default MarkdownRenderer
+export default ProjectMarkdownRenderer

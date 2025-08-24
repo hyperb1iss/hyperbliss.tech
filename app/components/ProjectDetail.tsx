@@ -4,7 +4,7 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 import styled from 'styled-components'
-import MarkdownRenderer from './MarkdownRenderer'
+import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
 
 interface ProjectDetailProps {
   title: string
@@ -144,7 +144,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ title, github, content, a
         </TagsContainer>
       )}
       <Content animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
-        <MarkdownRenderer content={content} />
+        <ProjectMarkdownRenderer content={content} />
       </Content>
       <GitHubLink
         animate={{ opacity: 1 }}

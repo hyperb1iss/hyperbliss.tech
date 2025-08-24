@@ -1,5 +1,6 @@
 // app/layout.tsx
 import { Metadata } from 'next'
+import SilkCircuitSyntaxTheme from './components/SilkCircuitSyntaxTheme'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import StyledComponentsRegistry from './lib/registry'
@@ -26,7 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <StructuredData data={structuredData} />
       </head>
       <body>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <StyledComponentsRegistry>
+          <SilkCircuitSyntaxTheme />
+          {children}
+        </StyledComponentsRegistry>
       </body>
     </html>
   )
