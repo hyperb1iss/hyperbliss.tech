@@ -53,8 +53,8 @@ holistic software experiences that are as beautiful as they are powerful.
 
 ## 🛠️ Technology Stack
 
-- **Framework**: Next.js 15.2 with TypeScript 5.8
-- **Frontend**: React 19.0
+- **Framework**: Next.js 16.0 with TypeScript 5.9
+- **Frontend**: React 19.2
 - **Styling**: Styled Components 6.1
 - **Routing**: Next.js App Router
 - **Content Management**: Markdown files with gray-matter and react-markdown

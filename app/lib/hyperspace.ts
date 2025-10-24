@@ -81,7 +81,7 @@ class HyperspaceManager {
 
     // Tech stack
     console.log(
-      '%c⟨ Next.js 15 × React 19 × TypeScript ⟩ digital elegance with neural precision',
+      '%c⟨ Next.js 16 × React 19 × TypeScript ⟩ digital elegance with neural precision',
       this.styles.techStack,
     )
 

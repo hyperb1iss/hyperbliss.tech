@@ -86,7 +86,7 @@ const createMinimalMetadata = (): ResolvedMetadata => ({
   },
   keywords: ['test'],
   manifest: '/manifest.json',
-  metadataBase: new URL('https://hyperbliss.tech'),
+  metadataBase: null,
   openGraph: {
     audio: [],
     countryName: 'United States',

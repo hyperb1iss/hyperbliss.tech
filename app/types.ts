@@ -1,5 +1,5 @@
 /**
- * Custom type definitions for Next.js 15
+ * Custom type definitions for Next.js 16
  */
 
 export interface PageParams {

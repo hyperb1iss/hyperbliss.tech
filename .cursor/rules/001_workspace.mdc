@@ -30,8 +30,8 @@ Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* ð
 
 ## ðŸ’» Technology Stack
 
-- **Framework**: Next.js 15.3.1
-- **Language**: TypeScript 5.8
+- **Framework**: Next.js 16.0.0
+- **Language**: TypeScript 5.9
 - **Styling**: Styled Components 6.1
 - **State Management**: React built-in hooks
 - **Content**: Markdown with gray-matter and react-markdown
