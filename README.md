@@ -262,8 +262,8 @@ file includes frontmatter for metadata.
 
 ## 🔍 SEO and Analytics
 
-SEO is managed through Next SEO, with configurations in
-`src/app/lib/next-seo.config.ts`. Google Analytics is integrated using
+SEO defaults are managed with Next.js' built-in metadata API via
+`app/lib/metadata.ts`. Google Analytics is integrated using
 `nextjs-google-analytics`.
 
 ## 🌟 Key Components

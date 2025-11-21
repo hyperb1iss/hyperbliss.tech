@@ -27,12 +27,11 @@
   },
   "dependencies": {
     "feed": "5.1.0",
-    "framer-motion": "^11.15.0",
+    "framer-motion": "^12.23.24",
     "gl-matrix": "3.4.4",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
     "next": "^16.0.7",
-    "next-seo": "6.8.0",
     "nextjs-google-analytics": "^2.3.7",
     "prismjs": "^1.30.0",
     "react": "19.2.0",
@@ -46,26 +45,26 @@
     "styled-components": "6.1.19"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.2",
+    "@biomejs/biome": "^2.3.6",
     "@next/bundle-analyzer": "^16.0.7",
-    "@testing-library/jest-dom": "6.8.0",
+    "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
     "@testing-library/user-event": "14.6.1",
     "@types/lodash": "4.17.20",
-    "@types/node": "24.3.0",
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2",
-    "@vitejs/plugin-react-swc": "^4.0.1",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react-swc": "^4.2.2",
     "babel-plugin-styled-components": "^2.1.4",
-    "jsdom": "26.1.0",
+    "jsdom": "27.2.0",
     "prettier": "3.6.2",
     "schema-dts": "^1.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "5.9.2",
-    "vitest": "^3.2.4"
+    "typescript": "5.9.3",
+    "vitest": "^4.0.12"
   },
   "overrides": {
-    "@types/react": "19.2.2",
-    "@types/react-dom": "19.2.2"
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3"
   }
 }
