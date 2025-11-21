@@ -63,24 +63,26 @@ export const StyledH2 = styled.h2`
 export const StyledH3 = styled.h3`
   font-size: clamp(1.75rem, 1.5vw, 3rem);
   color: #ff75d8;
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.8rem;
   text-shadow: 0 0 15px rgba(255, 117, 216, 0.4),
                0 0 8px rgba(217, 70, 239, 0.3);
   text-align: left;
   font-weight: 600;
   position: relative;
-  padding-left: 1.2rem;
-  
-  &::before {
-    content: '▸';
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  &::after {
+    content: '';
     position: absolute;
     left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #d946ef;
-    font-size: 1.2em;
-    text-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
+    bottom: -0.4rem;
+    width: 5.5rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ff75d8, rgba(255, 117, 216, 0));
+    box-shadow: 0 0 12px rgba(255, 117, 216, 0.35);
   }
 `
 
@@ -148,72 +150,104 @@ export const StyledLink = styled.a`
 
 // Lists
 export const StyledUl = styled.ul`
-  font-size: clamp(1.6rem, 1.2vw, 2rem);
-  list-style-type: none;
-  padding-left: 2rem;
-  margin-bottom: 1.5rem;
-  
+  list-style: none;
+  padding-left: 0;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+
   li {
-    position: relative;
-    padding-left: 1.8rem;
-    
+    padding: 0;
+
     &::before {
-      content: '◈';
-      position: absolute;
-      left: 0;
-      color: #d946ef;
-      font-weight: bold;
-      font-size: 1.2em;
-      text-shadow: 0 0 12px rgba(217, 70, 239, 0.6),
-                   0 0 6px rgba(255, 117, 216, 0.4);
-      animation: pulse 2s ease infinite;
+      content: '';
+      width: 1rem;
+      height: 1rem;
+      border-radius: 0.35rem;
+      margin-top: 0.6rem;
+      background: radial-gradient(circle at 30% 30%, #fff 0%, #ff75d8 45%, rgba(162, 89, 255, 0.3) 100%);
+      box-shadow:
+        0 0 12px rgba(255, 117, 216, 0.65),
+        0 0 24px rgba(162, 89, 255, 0.45);
+      flex-shrink: 0;
     }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.8; }
-      50% { transform: scale(1.1); opacity: 1; }
-    }
+  }
+
+  li ul {
+    margin-top: 0.9rem;
+    margin-left: 1.4rem;
+    padding-left: 1.2rem;
+    border-left: 1px solid rgba(224, 170, 255, 0.25);
+    gap: 0.9rem;
+  }
+
+  li ul li::before {
+    transform: scale(0.75);
+    box-shadow:
+      0 0 8px rgba(255, 117, 216, 0.5),
+      0 0 16px rgba(162, 89, 255, 0.35);
+    opacity: 0.9;
   }
 `
 
 export const StyledOl = styled.ol`
-  font-size: clamp(1.6rem, 1.2vw, 2rem);
-  list-style-type: none;
-  padding-left: 2rem;
-  margin-bottom: 1.5rem;
-  counter-reset: list-counter;
-  
+  list-style: none;
+  padding-left: 0;
+  margin: 2rem 0;
+  counter-reset: silk-counter;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+
   li {
-    position: relative;
-    padding-left: 2.5rem;
-    counter-increment: list-counter;
-    
+    padding: 0;
+    counter-increment: silk-counter;
+
     &::before {
-      content: counter(list-counter);
-      position: absolute;
-      left: 0;
-      top: 0.1em;
-      width: 1.8rem;
-      height: 1.8rem;
-      background: linear-gradient(135deg, #ff75d8, #ec4899);
+      content: counter(silk-counter);
+      width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 0.75rem;
+      background: linear-gradient(135deg, #ff75d8 0%, #d946ef 60%, #a855f7 100%);
       color: var(--silk-void-black);
-      font-weight: bold;
+      font-weight: 600;
       font-family: var(--font-mono);
-      font-size: 0.8em;
+      font-size: 0.95em;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 50%;
-      box-shadow: 0 0 15px rgba(255, 117, 216, 0.5),
-                  inset 0 0 10px rgba(236, 72, 153, 0.3);
+      box-shadow:
+        0 0 20px rgba(255, 117, 216, 0.6),
+        inset 0 0 12px rgba(236, 72, 153, 0.35);
+      margin-top: 0.1rem;
+      flex-shrink: 0;
     }
+  }
+
+  li ol {
+    margin-top: 0.9rem;
+    margin-left: 1.5rem;
+    padding-left: 1.2rem;
+    border-left: 1px solid rgba(224, 170, 255, 0.2);
+    gap: 1rem;
   }
 `
 
 export const StyledLi = styled.li`
-  margin-bottom: 0.8rem;
-  line-height: 1.7;
-  color: rgba(224, 224, 224, 0.9);
+  list-style: none;
+  margin: 0;
+  font-size: clamp(1.6rem, 1.2vw, 2rem);
+  line-height: 1.75;
+  color: rgba(224, 224, 224, 0.92);
+  letter-spacing: 0.01em;
+  display: flex;
+  gap: 1.1rem;
+  align-items: flex-start;
+
+  p {
+    margin: 0;
+  }
 `
 
 // Blockquote
