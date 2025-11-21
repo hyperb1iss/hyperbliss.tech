@@ -4,127 +4,68 @@
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
-import { keyframes, styled } from 'styled-components'
+import { styled } from 'styled-components'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
-
-/**
- * Keyframe animation for slide-in effect.
- */
-const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`
+import { navLinkBaseStyles, silkNavEase } from './NavLinks'
 
 /**
  * Styled components for mobile navigation
  */
-const MobileNavLinksContainer = styled.ul<{ open: boolean }>`
+const MobileNavLinksContainer = styled(motion.ul)`
   list-style: none;
   position: fixed;
-  top: 100px;
-  right: 0;
-  background-color: rgba(10, 10, 20, 0.95);
-  width: 250px;
+  top: 110px;
+  right: var(--space-2);
+  width: min(320px, calc(100% - var(--space-4)));
   flex-direction: column;
   display: flex;
+  gap: var(--space-2);
   z-index: 1001;
-  padding: 1rem 1rem;
-  border-radius: 10px 0 0 10px;
-  box-shadow: -5px 0 20px rgba(162, 89, 255, 0.5);
-  border-left: 1px solid rgba(162, 89, 255, 0.4);
-  opacity: ${(props) => (props.open ? 1 : 0)};
-  transform: ${(props) => (props.open ? 'translateX(0)' : 'translateX(100%)')};
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
-  pointer-events: ${(props) => (props.open ? 'all' : 'none')};
+  padding: var(--space-3);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background:
+    radial-gradient(circle at 12% 15%, rgba(162, 89, 255, 0.25), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(0, 255, 240, 0.25), transparent 60%),
+    rgba(5, 5, 8, 0.92);
+  box-shadow: 0 30px 65px rgba(5, 5, 8, 0.75);
+  backdrop-filter: blur(var(--blur-xl));
 
-  li {
-    padding: 1rem;
-    text-align: center;
-    transition:
-      background-color 0.3s ease,
-      transform 0.3s ease;
-
-    &:hover {
-      background-color: rgba(162, 89, 255, 0.2);
-      transform: scale(1.05);
-    }
+  @media (min-width: 769px) {
+    display: none;
   }
 `
 
-const MobileNavItem = styled(motion.li)<{ $index: number; $open: boolean }>`
-  @media (max-width: 768px) {
-    opacity: 0;
-    transform: translateX(20px);
-    animation: ${slideIn} 0.3s forwards;
-    animation-delay: ${(props) => (props.$open ? props.$index * 0.1 : 0)}s;
-  }
+const MobileNavItem = styled(motion.li)`
+  width: 100%;
 `
 
-const StyledNavLink = styled.a<{ $active: boolean }>`
-  font-family: var(--font-body);
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: ${(props) => (props.$active ? '#00ffff' : '#ffffff')};
-  padding: 0.5rem 1rem;
-  transition: all 0.3s ease;
-  position: relative;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  text-shadow:
-    0 0 1px #000,
-    0 0 2px #000,
-    0 0 3px ${(props) => (props.$active ? '#00ffff' : '#ffffff')};
+const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
+  ${navLinkBaseStyles}
+  width: 100%;
+  font-size: 1.6rem;
+  letter-spacing: 0.18em;
+  padding: var(--space-3) var(--space-4);
+  justify-content: center;
+  color: ${({ $active }) => ($active ? 'var(--silk-white)' : 'var(--text-secondary)')};
+  background: ${({ $active }) =>
+    $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.2), rgba(0, 255, 240, 0.18))' : 'rgba(2, 6, 23, 0.72)'};
+  border: 1px solid ${({ $active }) => ($active ? 'rgba(0, 255, 240, 0.45)' : 'rgba(148, 163, 184, 0.2)')};
+  box-shadow: ${({ $active }) => ($active ? '0 12px 30px rgba(0, 255, 240, 0.2)' : '0 6px 18px rgba(5, 5, 8, 0.35)')};
 
   &:hover,
-  &:focus {
-    color: #00ffff;
-    text-shadow:
-      0 0 1px #000,
-      0 0 2px #000,
-      0 0 3px #00ffff,
-      0 0 5px #00ffff,
-      0 0 7px #00ffff;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #00ffff;
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 5px #00ffff;
+  &:focus-visible {
+    color: var(--silk-white);
+    border-color: rgba(0, 255, 240, 0.45);
+    background: ${({ $active }) =>
+      $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.3), rgba(0, 255, 240, 0.3))' : 'rgba(15, 23, 42, 0.9)'};
+    transform: translateX(6px);
   }
 
   &:hover::after,
-  &:focus::after {
-    transform: scaleX(1);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-    padding: 0.5rem 0;
-    display: block;
-    width: 100%;
-    text-align: center;
-    color: ${(props) => (props.$active ? '#00ffff' : '#ffffff')};
-
-    &::after {
-      bottom: 0;
-    }
+  &:focus-visible::after {
+    opacity: 1;
   }
 `
 
@@ -146,6 +87,28 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   const pathname = usePathname()
   const animateAndNavigate = useAnimatedNavigation()
   const mobileMenuRef = useRef<HTMLUListElement>(null)
+  const mobileMenuVariants = {
+    closed: { opacity: 0, pointerEvents: 'none', transition: { duration: 0.25 }, x: '105%' },
+    open: {
+      opacity: 1,
+      pointerEvents: 'auto',
+      transition: { duration: 0.3, ease: silkNavEase },
+      x: 0,
+    },
+  }
+
+  const mobileItemVariants = {
+    closed: { opacity: 0, x: 24 },
+    open: (index: number) => ({
+      opacity: 1,
+      transition: {
+        delay: 0.05 * index + 0.05,
+        duration: 0.3,
+        ease: silkNavEase,
+      },
+      x: 0,
+    }),
+  }
 
   const handleNavigation = (href: string, event: React.MouseEvent) => {
     event.preventDefault()
@@ -177,13 +140,21 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   }, [handleClickOutside])
 
   return (
-    <MobileNavLinksContainer open={open} ref={mobileMenuRef}>
+    <MobileNavLinksContainer
+      animate={open ? 'open' : 'closed'}
+      initial={false}
+      ref={mobileMenuRef}
+      variants={mobileMenuVariants}
+    >
       {NAV_ITEMS.map((item, index) => (
-        <MobileNavItem $index={index} $open={open} key={item} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <MobileNavItem animate={open ? 'open' : 'closed'} custom={index} key={item} variants={mobileItemVariants}>
           <StyledNavLink
             $active={pathname === `/${item.toLowerCase()}`}
+            aria-current={pathname === `/${item.toLowerCase()}` ? 'page' : undefined}
             href={`/${item.toLowerCase()}`}
             onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
+            whileHover={{ x: 6 }}
+            whileTap={{ scale: 0.98 }}
           >
             {item}
           </StyledNavLink>

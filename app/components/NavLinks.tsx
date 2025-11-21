@@ -1,28 +1,73 @@
 // app/components/NavLinks.tsx
 'use client'
 
+import { type Easing, motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { styled } from 'styled-components'
+import { css, styled } from 'styled-components'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
 
-/**
- * Styled component for navigation links container.
- */
+export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
+
+export const navLinkBaseStyles = css`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-3xl);
+  padding: var(--space-2) var(--space-5);
+  font-size: clamp(1rem, 0.8rem + 0.35vw, 1.35rem);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  z-index: 1;
+  transition:
+    color var(--duration-fast) var(--ease-silk),
+    background var(--duration-fast) var(--ease-silk),
+    border-color var(--duration-fast) var(--ease-silk),
+    transform var(--duration-fast) var(--ease-silk),
+    box-shadow var(--duration-fast) var(--ease-silk);
+  text-shadow: none;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: radial-gradient(circle at 30% 20%, rgba(0, 255, 240, 0.35), transparent 65%);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-silk);
+    z-index: -1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(0, 255, 240, 0.8);
+    outline-offset: 3px;
+  }
+`
+
 const NavLinksContainer = styled.ul`
   list-style: none;
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   flex-shrink: 0;
   margin-left: auto;
   align-items: center;
+  pointer-events: auto;
 
   @media (min-width: 769px) {
-    gap: calc(0.5rem + 0.5vw); // Scale up gap for larger screens
+    gap: calc(var(--space-2) + 0.25vw);
   }
 
   @media (min-width: 1200px) {
-    gap: calc(0.5rem + 1vw); // Further increase gap for very large screens
+    gap: calc(var(--space-3) + 0.35vw);
   }
 
   @media (max-width: 768px) {
@@ -30,78 +75,61 @@ const NavLinksContainer = styled.ul`
   }
 `
 
-/**
- * Styled component for navigation item.
- */
 const NavItem = styled.li`
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  isolation: isolate;
 `
 
-/**
- * Styled component for navigation link.
- */
-const StyledNavLink = styled.a<{ $active: boolean }>`
-  font-family: var(--font-body);
-  font-size: 2rem;
-  font-weight: 700;
-  color: ${(props) => (props.$active ? '#00ffff' : '#ffffff')};
-  padding: 0.5rem 0.5rem; // Decreased initial padding
-  transition: all 0.3s ease;
-  position: relative;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  text-shadow:
-    0 0 1px #000,
-    0 0 2px #000,
-    0 0 3px ${(props) => (props.$active ? '#00ffff' : '#ffffff')};
+const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
+  ${navLinkBaseStyles}
+  color: ${({ $active }) => ($active ? 'var(--silk-white)' : 'var(--text-secondary)')};
+  background: ${({ $active }) =>
+    $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.25), rgba(0, 255, 240, 0.2))' : 'rgba(2, 6, 23, 0.65)'};
+  border: 1px solid ${({ $active }) => ($active ? 'rgba(0, 255, 240, 0.55)' : 'rgba(148, 163, 184, 0.25)')};
+  box-shadow: ${({ $active }) =>
+    $active
+      ? '0 18px 35px rgba(0, 255, 240, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+      : '0 12px 30px rgba(5, 5, 8, 0.45)'};
+
+  ${({ $active }) =>
+    !$active &&
+    css`
+      &::after {
+        opacity: 0.45;
+      }
+    `}
 
   &:hover,
-  &:focus {
-    color: #00ffff;
-    text-shadow:
-      0 0 1px #000,
-      0 0 2px #000,
-      0 0 3px #00ffff,
-      0 0 5px #00ffff,
-      0 0 7px #00ffff;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #00ffff;
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 5px #00ffff;
+  &:focus-visible {
+    color: var(--silk-white);
+    border-color: rgba(0, 255, 240, 0.55);
+    background: ${({ $active }) =>
+      $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.3), rgba(0, 255, 240, 0.3))' : 'rgba(15, 23, 42, 0.85)'};
+    transform: translateY(-2px);
   }
 
   &:hover::after,
-  &:focus::after {
-    transform: scaleX(1);
-  }
-
-  @media (min-width: 769px) {
-    font-size: calc(1.8rem + 0.3vw);
-    padding: 0.5rem calc(0.5rem + 0.2vw); // Scale up padding for larger screens
+  &:focus-visible::after {
+    opacity: 1;
   }
 
   @media (min-width: 1200px) {
-    font-size: calc(2rem + 0.3vw);
-    padding: 0.5rem calc(0.5rem + 0.4vw); // Further increase padding for very large screens
+    letter-spacing: 0.24em;
+    padding: var(--space-2) var(--space-6);
   }
+`
 
-  ${(props) =>
-    props.$active &&
-    `
-    &.active {
-      color: #00ffff;
-    }
-  `}
+const ActiveGlow = styled(motion.span)`
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-3xl);
+  background: radial-gradient(circle at 50% 50%, rgba(0, 255, 240, 0.45), rgba(162, 89, 255, 0.25));
+  box-shadow: 0 0 30px rgba(0, 255, 240, 0.55);
+  opacity: 0.65;
+  pointer-events: none;
+  z-index: 0;
 `
 
 /**
@@ -125,11 +153,17 @@ const NavLinks: React.FC = () => {
         const isActive = pathname === href
         return (
           <NavItem key={item}>
+            {isActive ? (
+              <ActiveGlow layoutId="nav-active-glow" transition={{ duration: 0.45, ease: silkNavEase }} />
+            ) : null}
             <StyledNavLink
               $active={isActive}
+              aria-current={isActive ? 'page' : undefined}
               className={isActive ? 'active' : ''}
               href={href}
               onClick={(e) => handleNavigation(href, e)}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
             >
               {item}
             </StyledNavLink>

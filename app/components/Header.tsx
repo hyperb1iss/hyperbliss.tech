@@ -20,26 +20,107 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
-  padding: 1rem;
-  height: ${(props) => (props.$isExpanded ? '200px' : '100px')};
-  transition: height 0.3s ease;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  height: ${(props) => (props.$isExpanded ? '200px' : '110px')};
+  transition:
+    height var(--duration-normal) var(--ease-silk),
+    background var(--duration-normal) var(--ease-silk);
   z-index: 1000;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   justify-content: center;
   align-items: center;
   -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.25), transparent 60%),
+    linear-gradient(180deg, rgba(5, 5, 20, 0.75) 0%, rgba(5, 5, 20, 0.25) 55%, transparent 100%);
+  border-bottom: 1px solid rgba(0, 255, 240, 0.05);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 240, 0.45), transparent 65%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: var(--space-2);
+    height: ${(props) => (props.$isExpanded ? '180px' : '96px')};
+  }
+`
+
+const NavOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background:
+    linear-gradient(140deg, rgba(15, 5, 28, 0.45), rgba(7, 11, 30, 0.2)),
+    radial-gradient(circle at 15% 30%, rgba(0, 255, 240, 0.12), transparent 55%),
+    radial-gradient(circle at 85% 25%, rgba(162, 89, 255, 0.12), transparent 60%);
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+  pointer-events: none;
+  z-index: 0;
+`
+
+const NavShadow = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(180deg, rgba(6, 5, 12, 0.55), transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+  filter: drop-shadow(0 10px 25px rgba(5, 8, 20, 0.45));
 `
 
 const NavContent = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  width: 100%;
-  padding: 0 2rem;
+  column-gap: var(--space-4);
+  width: min(1460px, calc(100% - var(--space-2)));
+  padding: 0 var(--space-5);
   height: 100%;
-  overflow: hidden;
+  position: relative;
+  pointer-events: all;
+  z-index: 1;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    row-gap: var(--space-2);
+    & > *:nth-child(2) {
+      grid-column: span 2;
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: var(--space-1) var(--space-3);
+  }
+
+  & > *:first-child {
+    justify-self: flex-start;
+  }
+
+  & > *:nth-child(2) {
+    justify-self: center;
+  }
+
+  & > *:nth-child(3) {
+    justify-self: flex-end;
+  }
 `
 
 const Canvas = styled(motion.canvas)`
@@ -50,21 +131,27 @@ const Canvas = styled(motion.canvas)`
   height: 100%; // Ensures the canvas scales to the full height
   pointer-events: none;
   z-index: -1;
+  mix-blend-mode: screen;
+  filter: saturate(1.3) brightness(1.15);
+  background: linear-gradient(180deg, rgba(20, 7, 43, 0.9) 0%, rgba(10, 5, 18, 0.2) 65%, transparent 100%);
 `
 
 const ChevronIcon = styled(motion.div)`
   position: absolute;
-  bottom: 5px;
-  left: 20px;
-  width: 24px;
-  height: 24px;
+  bottom: 10px;
+  left: 30px;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-  color: var(--color-accent);
-  opacity: 0.4;
-  transition: opacity 0.3s ease;
+  pointer-events: auto;
+  color: rgba(0, 255, 240, 0.8);
+  opacity: 0.9;
+  transition: all var(--duration-fast) var(--ease-silk);
+  z-index: 5;
 
   &:hover {
     opacity: 1;
+    transform: translateY(-2px) scale(1.05);
   }
 
   svg {
@@ -185,6 +272,8 @@ const Header: React.FC = () => {
         ref={canvasRef}
         transition={{ delay: isInitialLoad ? 0.2 : 0, duration: isInitialLoad ? 0.8 : 0 }}
       />
+      <NavOverlay aria-hidden="true" />
+      <NavShadow aria-hidden="true" />
       <NavContent>
         <Logo />
         <NavLinks />
