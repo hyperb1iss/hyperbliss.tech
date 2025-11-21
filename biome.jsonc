@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // ◆ VCS INTEGRATION
@@ -89,6 +89,7 @@
         "useHookAtTopLevel": "error",
         "useJsxKeyInIterable": "error",
         "noUnusedVariables": "warn", // Warn for flexibility
+        "noUnusedPrivateClassMembers": "off",
         "useExhaustiveDependencies": "warn" // Warn for React hooks
       },
 
