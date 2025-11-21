@@ -24,7 +24,7 @@ describe('ColorManager', () => {
 
   describe('hexToRgb', () => {
     it('should correctly convert hex to RGB', () => {
-      expect(ColorManager.hexToRgb('#ff00ff')).toEqual({ b: 255, g: 0, r: 255 })
+      expect(ColorManager.hexToRgb('#a259ff')).toEqual({ b: 255, g: 89, r: 162 })
       expect(ColorManager.hexToRgb('#00ff00')).toEqual({ b: 0, g: 255, r: 0 })
     })
 

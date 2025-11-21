@@ -428,7 +428,7 @@ export abstract class VectorShape {
     }, 200) // Pulse duration in milliseconds
 
     // Temporarily change color to a collision-specific color
-    const collisionColor = '#FF00FF' // Neon Magenta for collision
+    const collisionColor = '#ff75d8' // SilkCircuit plasma pink for collision
     const originalColor = this.color
     this.color = collisionColor
     setTimeout(() => {

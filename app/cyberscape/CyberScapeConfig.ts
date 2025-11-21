@@ -29,7 +29,7 @@ export class CyberScapeConfig {
   public particleAtCollisionMinSpeed = 1
   public particleAtCollisionSizeMax = 3
   public particleAtCollisionSizeMin = 1
-  public particleAtCollisionColor = '#FF00FF'
+  public particleAtCollisionColor = '#ff75d8'
   public particleAtCollisionLifespan = 3000
   public particleAtCollisionSlowdownFactor = 0.98
   public particleAtCollisionSparkleDecay = 0.02

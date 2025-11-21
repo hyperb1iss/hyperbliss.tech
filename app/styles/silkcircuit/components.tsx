@@ -134,7 +134,7 @@ export const SilkButton = styled(motion.button)<{
       case 'lg':
         return css`
           padding: var(--space-4) var(--space-8);
-          font-size: var(--text-lg);
+          font-size: var(--text-xl);
         `
       default:
         return null

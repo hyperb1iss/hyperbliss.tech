@@ -7,25 +7,27 @@
  */
 export class ColorManager {
   /**
-   * Cyberpunk color hue ranges.
+   * Harmonized color hue ranges tuned to the SilkCircuit palette.
    */
   private static readonly CYBERPUNK_HUE_RANGES = [
-    { end: 220, start: 180 }, // Electric Cyan to Neon Blue
-    { end: 330, start: 270 }, // Neon Purple to Bright Magenta
+    { end: 200, start: 160 }, // Circuit teal + cyan
+    { end: 230, start: 200 }, // Matrix cyan to cool blues
+    { end: 290, start: 250 }, // Quantum purples
+    { end: 330, start: 300 }, // Plasma pinks
   ]
 
   /**
-   * Predefined Cyberpunk colors.
+   * Predefined colors aligned with the SilkCircuit design tokens.
    */
   private static readonly CYBERPUNK_COLORS = [
-    '#00fff0', // Cyan
-    '#ff00ff', // Magenta
-    '#a259ff', // Purple
-    '#ff75d8', // Pink
-    '#00ffff', // Electric Blue
-    '#4b0082', // Indigo
-    '#8a2be2', // Blue Violet
-    '#483d8b', // Dark Slate Blue
+    '#00fff0', // Matrix cyan
+    '#14b8a6', // Circuit teal
+    '#3b82f6', // Neutron blue
+    '#a259ff', // Quantum purple
+    '#8b5cf6', // Violet accent
+    '#ff75d8', // Plasma pink
+    '#fbbf24', // Fusion gold
+    '#10b981', // Quantum green
   ]
 
   /**

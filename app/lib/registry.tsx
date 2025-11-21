@@ -13,6 +13,13 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
  * @param children - The child components to be wrapped
  * @returns A component with styled-components server-side rendering support
  */
+const filterTransientProps = (prop?: string) => {
+  if (!prop) return true
+  if (prop.startsWith('$')) return false
+  if (['as', 'theme', 'forwardedAs'].includes(prop)) return false
+  return true
+}
+
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
@@ -25,17 +32,11 @@ export default function StyledComponentsRegistry({ children }: { children: React
   })
 
   if (typeof window !== 'undefined') {
-    return <>{children}</>
+    return <StyleSheetManager shouldForwardProp={filterTransientProps}>{children}</StyleSheetManager>
   }
 
   return (
-    <StyleSheetManager
-      sheet={styledComponentsStyleSheet.instance}
-      shouldForwardProp={(prop) => {
-        // Filter out internal props and transient props (starting with $)
-        return !prop.startsWith('$') && !['as', 'theme', 'forwardedAs'].includes(prop) && !prop.startsWith('data-') // Allow data attributes
-      }}
-    >
+    <StyleSheetManager sheet={styledComponentsStyleSheet.instance} shouldForwardProp={filterTransientProps}>
       {children}
     </StyleSheetManager>
   )

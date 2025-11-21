@@ -129,7 +129,7 @@ const SkillTag = styled(motion.div)<{ $index: number }>`
   backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
-  font-size: 1.4rem;
+  font-size: clamp(1.2rem, 1.05rem + 0.35vw, 1.55rem);
   font-weight: var(--font-medium);
   color: var(--text-secondary);
   transition: all var(--duration-normal) var(--ease-silk);
