@@ -15,11 +15,11 @@ export const navLinkBaseStyles = css`
   justify-content: center;
   gap: var(--space-1);
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: clamp(0.18em, 0.12em + 0.15vw, 0.32em);
   font-weight: var(--font-semibold);
   border-radius: var(--radius-3xl);
-  padding: var(--space-2) var(--space-5);
-  font-size: clamp(1rem, 0.8rem + 0.35vw, 1.35rem);
+  padding: clamp(0.9rem, 0.7rem + 0.45vw, 1.35rem) clamp(2.5rem, 1.2rem + 1.3vw, 4.75rem);
+  font-size: clamp(1.1rem, 0.9rem + 0.55vw, 1.85rem);
   text-decoration: none;
   position: relative;
   overflow: hidden;
@@ -51,6 +51,18 @@ export const navLinkBaseStyles = css`
     outline: 2px solid rgba(0, 255, 240, 0.8);
     outline-offset: 3px;
   }
+
+  @media (max-width: 1200px) {
+    letter-spacing: 0.16em;
+    font-size: 1.05rem;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  @media (max-width: 1024px) {
+    letter-spacing: 0.14em;
+    font-size: 0.95rem;
+    padding: var(--space-2) var(--space-3);
+  }
 `
 
 const NavLinksContainer = styled.ul`
@@ -67,7 +79,7 @@ const NavLinksContainer = styled.ul`
   }
 
   @media (min-width: 1200px) {
-    gap: calc(var(--space-3) + 0.35vw);
+    gap: calc(var(--space-3) + 0.5vw);
   }
 
   @media (max-width: 768px) {
@@ -115,9 +127,8 @@ const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
     opacity: 1;
   }
 
-  @media (min-width: 1200px) {
-    letter-spacing: 0.24em;
-    padding: var(--space-2) var(--space-6);
+  @media (min-width: 1400px) {
+    padding: clamp(1rem, 0.8rem + 0.3vw, 1.4rem) clamp(3rem, 2rem + 1.2vw, 4rem);
   }
 `
 

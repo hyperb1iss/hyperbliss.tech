@@ -33,8 +33,8 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   -webkit-tap-highlight-color: transparent;
   pointer-events: none;
   background:
-    radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.25), transparent 60%),
-    linear-gradient(180deg, rgba(5, 5, 20, 0.75) 0%, rgba(5, 5, 20, 0.25) 55%, transparent 100%);
+    radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.28), transparent 60%),
+    linear-gradient(180deg, rgba(6, 5, 15, 0.95) 0%, rgba(5, 6, 14, 0.78) 55%, rgba(5, 6, 14, 0.25) 100%);
   border-bottom: 1px solid rgba(0, 255, 240, 0.05);
 
   &::after {
@@ -62,9 +62,9 @@ const NavOverlay = styled.div`
   left: 0;
   right: 0;
   background:
-    linear-gradient(140deg, rgba(15, 5, 28, 0.45), rgba(7, 11, 30, 0.2)),
-    radial-gradient(circle at 15% 30%, rgba(0, 255, 240, 0.12), transparent 55%),
-    radial-gradient(circle at 85% 25%, rgba(162, 89, 255, 0.12), transparent 60%);
+    linear-gradient(140deg, rgba(10, 4, 24, 0.65), rgba(4, 8, 24, 0.35)),
+    radial-gradient(circle at 20% 30%, rgba(0, 255, 240, 0.2), transparent 55%),
+    radial-gradient(circle at 80% 25%, rgba(162, 89, 255, 0.18), transparent 60%);
   border-top: 1px solid rgba(148, 163, 184, 0.1);
   border-bottom: 1px solid rgba(148, 163, 184, 0.05);
   pointer-events: none;
@@ -85,11 +85,11 @@ const NavShadow = styled.div`
 
 const NavContent = styled.div`
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  column-gap: var(--space-4);
-  width: min(1460px, calc(100% - var(--space-2)));
-  padding: 0 var(--space-5);
+  column-gap: clamp(var(--space-4), 2vw, var(--space-8));
+  width: min(1580px, calc(100% - var(--space-2)));
+  padding: 0 clamp(var(--space-4), 2vw, var(--space-8));
   height: 100%;
   position: relative;
   pointer-events: all;
@@ -101,6 +101,9 @@ const NavContent = styled.div`
     row-gap: var(--space-2);
     & > *:nth-child(2) {
       grid-column: span 2;
+      justify-self: center;
+    }
+    & > *:last-child {
       justify-self: center;
     }
   }
