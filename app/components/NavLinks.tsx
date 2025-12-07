@@ -12,19 +12,10 @@ export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
 const NavLinksContainer = styled.ul`
   list-style: none;
   display: flex;
-  gap: var(--space-1);
+  gap: clamp(var(--space-1), 1vw, var(--space-3));
   flex-shrink: 0;
-  margin-left: auto;
   align-items: center;
   pointer-events: auto;
-
-  @media (min-width: 769px) {
-    gap: var(--space-2);
-  }
-
-  @media (min-width: 1200px) {
-    gap: var(--space-3);
-  }
 
   @media (max-width: 768px) {
     display: none;
@@ -94,15 +85,6 @@ const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
     outline-offset: 4px;
   }
 
-  @media (min-width: 1200px) {
-    padding: var(--space-2) var(--space-4);
-    font-size: 1.9rem;
-  }
-
-  @media (min-width: 1400px) {
-    padding: var(--space-3) var(--space-5);
-    font-size: 2.1rem;
-  }
 `
 
 /**

@@ -83,45 +83,20 @@ const NavShadow = styled.div`
 `
 
 const NavContent = styled.div`
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
   align-items: center;
-  column-gap: clamp(var(--space-4), 2vw, var(--space-8));
+  justify-content: space-between;
   width: min(1580px, calc(100% - var(--space-2)));
   padding: 0 clamp(var(--space-4), 2vw, var(--space-8));
   height: 100%;
   position: relative;
   pointer-events: all;
   z-index: 1;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    row-gap: var(--space-2);
-    & > *:nth-child(2) {
-      grid-column: span 2;
-      justify-self: center;
-    }
-    & > *:last-child {
-      justify-self: center;
-    }
-  }
+  gap: var(--space-4);
 
   @media (max-width: 768px) {
     width: 100%;
     padding: var(--space-1) var(--space-3);
-  }
-
-  & > *:first-child {
-    justify-self: flex-start;
-  }
-
-  & > *:nth-child(2) {
-    justify-self: center;
-  }
-
-  & > *:nth-child(3) {
-    justify-self: flex-end;
   }
 `
 
