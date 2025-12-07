@@ -3,6 +3,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import React from 'react'
 import { FaArrowRight, FaCalendar, FaUser } from 'react-icons/fa6'
 import styled from 'styled-components'
 
@@ -372,4 +373,4 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   )
 }
 
-export default BlogCard
+export default React.memo(BlogCard)

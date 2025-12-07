@@ -20,7 +20,7 @@ const pageTransition = {
   duration: 0.5,
   ease: 'anticipate',
   type: 'tween',
-}
+} as const
 
 interface MainContentProps {
   children: ReactNode

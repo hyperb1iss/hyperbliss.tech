@@ -3,6 +3,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import React from 'react'
 import { FaArrowRight, FaGithub } from 'react-icons/fa6'
 import styled from 'styled-components'
 
@@ -12,13 +13,9 @@ const StyledLink = styled(Link)`
   width: 100%;
 `
 
-const CardWrapper = styled(motion.div)
-  .attrs({
-    'data-component': 'silk-card-v2',
-  })
-  .withConfig({
-    shouldForwardProp: (prop) => !['$isHovered', '$mouseX', '$mouseY'].includes(prop),
-  })`
+const CardWrapper = styled(motion.div).withConfig({
+  shouldForwardProp: (prop) => !['$isHovered', '$mouseX', '$mouseY'].includes(prop),
+})`
   background: linear-gradient(
     135deg,
     rgba(0, 255, 240, 0.12) 0%,
@@ -432,4 +429,4 @@ export const SilkCard: React.FC<SilkCardProps> = ({
   )
 }
 
-export default SilkCard
+export default React.memo(SilkCard)

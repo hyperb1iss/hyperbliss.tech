@@ -4,6 +4,25 @@ import path from 'node:path'
 import matter from 'gray-matter'
 
 /**
+ * Sanitizes a slug to prevent path traversal attacks.
+ * Only allows alphanumeric characters, hyphens, underscores, and dots.
+ * @param slug - The slug to sanitize
+ * @returns The sanitized slug
+ * @throws Error if slug contains invalid characters
+ */
+function sanitizeSlug(slug: string): string {
+  // Remove any path traversal attempts
+  const sanitized = slug.replace(/\.\./g, '').replace(/[/\\]/g, '')
+
+  // Validate slug format (alphanumeric, hyphens, underscores, dots)
+  if (!/^[a-zA-Z0-9._-]+$/.test(sanitized)) {
+    throw new Error(`Invalid slug format: ${slug}`)
+  }
+
+  return sanitized
+}
+
+/**
  * Base interface for common frontmatter fields
  */
 export interface BaseFrontmatter extends Record<string, unknown> {
@@ -36,8 +55,18 @@ export async function getMarkdownContent<T extends Record<string, unknown> = Rec
   directory: string,
   slug: string,
 ): Promise<MarkdownFile<T>> {
-  const filePath = path.join(process.cwd(), directory, `${slug}.md`)
-  const fileContents = await fs.readFile(filePath, 'utf-8')
+  // Sanitize slug to prevent path traversal
+  const sanitizedSlug = sanitizeSlug(slug)
+  const filePath = path.join(process.cwd(), directory, `${sanitizedSlug}.md`)
+
+  // Additional safeguard: verify resolved path is within expected directory
+  const resolvedPath = path.resolve(filePath)
+  const expectedDir = path.resolve(process.cwd(), directory)
+  if (!resolvedPath.startsWith(expectedDir)) {
+    throw new Error('Invalid file path')
+  }
+
+  const fileContents = await fs.readFile(resolvedPath, 'utf-8')
   const { data, content } = matter(fileContents)
 
   return {

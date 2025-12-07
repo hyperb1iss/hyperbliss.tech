@@ -2,8 +2,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { debounce } from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { initializeCyberScape, triggerCyberScapeAnimation } from '../cyberscape/CyberScape'
 import { useHeaderContext } from './HeaderContext'
@@ -33,9 +32,9 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   -webkit-tap-highlight-color: transparent;
   pointer-events: none;
   background:
-    radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.28), transparent 60%),
-    linear-gradient(180deg, rgba(6, 5, 15, 0.95) 0%, rgba(5, 6, 14, 0.78) 55%, rgba(5, 6, 14, 0.25) 100%);
-  border-bottom: 1px solid rgba(0, 255, 240, 0.05);
+    radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.12), transparent 50%),
+    linear-gradient(180deg, rgba(6, 5, 15, 0.92) 0%, rgba(5, 6, 14, 0.75) 60%, rgba(5, 6, 14, 0.15) 100%);
+  border-bottom: 1px solid rgba(0, 255, 240, 0.03);
 
   &::after {
     content: '';
@@ -44,7 +43,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
     left: 0;
     width: 100%;
     height: 1px;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 240, 0.45), transparent 65%);
+    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 240, 0.25), transparent 60%);
     opacity: 0.7;
     pointer-events: none;
   }
@@ -62,11 +61,11 @@ const NavOverlay = styled.div`
   left: 0;
   right: 0;
   background:
-    linear-gradient(140deg, rgba(10, 4, 24, 0.65), rgba(4, 8, 24, 0.35)),
-    radial-gradient(circle at 20% 30%, rgba(0, 255, 240, 0.2), transparent 55%),
-    radial-gradient(circle at 80% 25%, rgba(162, 89, 255, 0.18), transparent 60%);
-  border-top: 1px solid rgba(148, 163, 184, 0.1);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+    linear-gradient(140deg, rgba(10, 4, 24, 0.5), rgba(4, 8, 24, 0.25)),
+    radial-gradient(circle at 20% 30%, rgba(0, 255, 240, 0.08), transparent 50%),
+    radial-gradient(circle at 80% 25%, rgba(162, 89, 255, 0.08), transparent 55%);
+  border-top: 1px solid rgba(148, 163, 184, 0.06);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.03);
   pointer-events: none;
   z-index: 0;
 `
@@ -76,11 +75,11 @@ const NavShadow = styled.div`
   top: 100%;
   left: 0;
   right: 0;
-  height: 80px;
-  background: linear-gradient(180deg, rgba(6, 5, 12, 0.55), transparent 80%);
+  height: 60px;
+  background: linear-gradient(180deg, rgba(6, 5, 12, 0.35), transparent 85%);
   pointer-events: none;
   z-index: 0;
-  filter: drop-shadow(0 10px 25px rgba(5, 8, 20, 0.45));
+  filter: drop-shadow(0 8px 20px rgba(5, 8, 20, 0.25));
 `
 
 const NavContent = styled.div`
@@ -135,8 +134,8 @@ const Canvas = styled(motion.canvas)`
   pointer-events: none;
   z-index: -1;
   mix-blend-mode: screen;
-  filter: saturate(1.3) brightness(1.15);
-  background: linear-gradient(180deg, rgba(20, 7, 43, 0.9) 0%, rgba(10, 5, 18, 0.2) 65%, transparent 100%);
+  filter: saturate(1.15) brightness(1.05);
+  background: linear-gradient(180deg, rgba(20, 7, 43, 0.7) 0%, rgba(10, 5, 18, 0.15) 60%, transparent 100%);
 `
 
 const ChevronIcon = styled(motion.div)`
@@ -197,54 +196,58 @@ const Header: React.FC = () => {
     }
   }, [])
 
-  // Optimized handler for triggering CyberScape animation
-  const handleHeaderInteraction = useCallback(() => {
-    const debouncedTrigger = debounce((event: MouseEvent | TouchEvent) => {
-      const rect = canvasRef.current?.getBoundingClientRect()
-      if (rect) {
-        let x: number | undefined
-        let y: number | undefined
-        if (event instanceof MouseEvent) {
-          x = event.clientX - rect.left
-          y = event.clientY - rect.top
-        } else if (event instanceof TouchEvent && event.touches.length > 0) {
-          x = event.touches[0].clientX - rect.left
-          y = event.touches[0].clientY - rect.top
-        }
-        if (x !== undefined && y !== undefined) {
-          triggerCyberScapeAnimation(x, y)
-        }
-      }
-    }, 100)
+  // Memoized debounced handler to prevent memory leaks
+  const debouncedTrigger = useMemo(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-    const interactionHandler = (event: MouseEvent | TouchEvent) => {
-      debouncedTrigger(event)
+    const handler = (event: MouseEvent | TouchEvent) => {
+      if (timeoutId) clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        const rect = canvasRef.current?.getBoundingClientRect()
+        if (rect) {
+          let x: number | undefined
+          let y: number | undefined
+          if (event instanceof MouseEvent) {
+            x = event.clientX - rect.left
+            y = event.clientY - rect.top
+          } else if (event instanceof TouchEvent && event.touches.length > 0) {
+            x = event.touches[0].clientX - rect.left
+            y = event.touches[0].clientY - rect.top
+          }
+          if (x !== undefined && y !== undefined) {
+            triggerCyberScapeAnimation(x, y)
+          }
+        }
+      }, 100)
     }
 
-    // Attach the cancel method to the interactionHandler
-    interactionHandler.cancel = debouncedTrigger.cancel
+    handler.cancel = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId)
+        timeoutId = null
+      }
+    }
 
-    return interactionHandler
+    return handler
   }, [])
 
   // Attach the interaction event listeners to the header for CyberScape
   useEffect(() => {
     const navElement = navRef.current
-    const interactionHandler = handleHeaderInteraction()
     if (navElement) {
-      navElement.addEventListener('click', interactionHandler)
-      navElement.addEventListener('touchstart', interactionHandler, {
+      navElement.addEventListener('click', debouncedTrigger)
+      navElement.addEventListener('touchstart', debouncedTrigger, {
         passive: true,
       })
     }
     return () => {
       if (navElement) {
-        navElement.removeEventListener('click', interactionHandler)
-        navElement.removeEventListener('touchstart', interactionHandler)
+        navElement.removeEventListener('click', debouncedTrigger)
+        navElement.removeEventListener('touchstart', debouncedTrigger)
       }
-      interactionHandler.cancel()
+      debouncedTrigger.cancel()
     }
-  }, [handleHeaderInteraction])
+  }, [debouncedTrigger])
 
   // Function to trigger CyberScape animation when menu is opened
   const triggerMenuAnimation = useCallback(() => {

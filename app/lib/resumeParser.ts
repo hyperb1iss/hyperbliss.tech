@@ -262,6 +262,7 @@ export function parseResume(markdown: string): ParsedResume {
           const techStr = itemText.replace('**Technologies:**', '').trim()
           currentExperience.technologies = extractLinksAsItems(techStr)
         } else {
+          currentExperience.bullets = currentExperience.bullets || []
           currentExperience.bullets.push(itemText)
         }
       } else if (currentH2Section === 'projects') {

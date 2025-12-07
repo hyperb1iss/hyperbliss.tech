@@ -13,7 +13,7 @@ const pageVariants = {
 
 const pageTransition = {
   duration: 0.5,
-  ease: [0.43, 0.13, 0.23, 0.96],
+  ease: [0.43, 0.13, 0.23, 0.96] as const,
 }
 
 interface PageWrapperProps {

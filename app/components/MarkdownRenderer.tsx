@@ -7,8 +7,19 @@ import React, { useEffect, useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
+
+// Custom schema that allows code highlighting classes
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), 'className'],
+    span: [...(defaultSchema.attributes?.span || []), 'className'],
+  },
+}
+
 import styled, { StyleSheetManager } from 'styled-components'
 import {
   StyledLink as MarkdownLink,
@@ -339,7 +350,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           // Lists
           ul: (props) => <StyledUl {...props} />,
         }}
-        rehypePlugins={[rehypeRaw, rehypeHighlight]}
+        rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
         remarkPlugins={[remarkGfm]}
       >
         {content}
@@ -348,4 +359,4 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   )
 }
 
-export default MarkdownRenderer
+export default React.memo(MarkdownRenderer)

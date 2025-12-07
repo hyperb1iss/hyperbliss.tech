@@ -156,7 +156,7 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.23, 1, 0.32, 1],
+        ease: [0.23, 1, 0.32, 1] as const,
       },
       x: 0,
     },
@@ -202,10 +202,9 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
               <BlogCard
                 author={post.frontmatter.author}
                 date={post.frontmatter.date}
-                excerpt={post.frontmatter.excerpt}
+                description={post.frontmatter.excerpt}
                 index={index}
                 link={`/blog/${post.slug}`}
-                slug={post.slug}
                 tags={post.frontmatter.tags}
                 title={post.frontmatter.title}
               />
