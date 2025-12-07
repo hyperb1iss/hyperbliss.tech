@@ -20,13 +20,16 @@ interface BlogPost {
 
 interface LatestBlogPostsSilkProps {
   posts: BlogPost[]
-  isMobile: boolean
 }
 
-const SidebarContainer = styled(motion.aside)`
+const SectionWrapper = styled(motion.section)`
+  padding: var(--space-16) var(--space-4);
   width: 100%;
-  padding: var(--space-20) var(--space-4) var(--space-8);
-  overflow-y: auto;
+`
+
+const Container = styled.div`
+  max-width: var(--container-xl);
+  margin: 0 auto;
 `
 
 const SidebarHeader = styled(motion.div)`
@@ -77,18 +80,18 @@ const TitleGradient = styled.span`
   -webkit-text-fill-color: transparent;
 `
 
-const PostsGrid = styled(motion.div)<{ $isMobile: boolean }>`
-  display: ${(props) => (props.$isMobile ? 'grid' : 'flex')};
-  flex-direction: column;
-  ${(props) =>
-    props.$isMobile &&
-    `
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  `}
-  gap: var(--space-6);
-  
+const PostsGrid = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: var(--space-10);
+
   @media (max-width: 768px) {
-    gap: var(--space-4);
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  @media (min-width: 1600px) {
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
   }
 `
 
@@ -136,7 +139,7 @@ const FloatingShape = styled(motion.div)`
   z-index: -1;
 `
 
-export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPostsSilkProps) {
+export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps) {
   const { isInitialLoad } = usePageLoad()
 
   const containerVariants = {
@@ -172,7 +175,7 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
   }
 
   return (
-    <SidebarContainer animate="visible" initial="hidden" variants={containerVariants}>
+    <SectionWrapper animate="visible" initial="hidden" variants={containerVariants}>
       {/* Floating decorative shape */}
       <FloatingShape
         animate={{
@@ -187,41 +190,43 @@ export default function LatestBlogPostsSilk({ posts, isMobile }: LatestBlogPosts
         }}
       />
 
-      <SidebarHeader variants={itemVariants}>
-        <Title>
-          <TitleLink href="/blog">
-            <TitleGradient>Latest Posts</TitleGradient>
-          </TitleLink>
-        </Title>
-      </SidebarHeader>
+      <Container>
+        <SidebarHeader variants={itemVariants}>
+          <Title>
+            <TitleLink href="/blog">
+              <TitleGradient>Latest Posts</TitleGradient>
+            </TitleLink>
+          </Title>
+        </SidebarHeader>
 
-      <PostsGrid $isMobile={isMobile}>
-        {posts.length > 0 ? (
-          posts.map((post, index) => (
-            <motion.div key={post.slug} variants={itemVariants}>
-              <BlogCard
-                author={post.frontmatter.author}
-                date={post.frontmatter.date}
-                description={post.frontmatter.excerpt}
-                index={index}
-                link={`/blog/${post.slug}`}
-                tags={post.frontmatter.tags}
-                title={post.frontmatter.title}
-              />
-            </motion.div>
-          ))
-        ) : (
-          <EmptyState variants={itemVariants}>
-            <EmptyStateText>
-              No posts available yet. Check back soon for exciting content about web development, design systems, and
-              creative coding!
-            </EmptyStateText>
-            <EmptyStateText>
-              <EmptyStateLink href="/about">Learn more about me</EmptyStateLink>
-            </EmptyStateText>
-          </EmptyState>
-        )}
-      </PostsGrid>
-    </SidebarContainer>
+        <PostsGrid>
+          {posts.length > 0 ? (
+            posts.map((post, index) => (
+              <motion.div key={post.slug} variants={itemVariants}>
+                <BlogCard
+                  author={post.frontmatter.author}
+                  date={post.frontmatter.date}
+                  description={post.frontmatter.excerpt}
+                  index={index}
+                  link={`/blog/${post.slug}`}
+                  tags={post.frontmatter.tags}
+                  title={post.frontmatter.title}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <EmptyState variants={itemVariants}>
+              <EmptyStateText>
+                No posts available yet. Check back soon for exciting content about web development, design systems, and
+                creative coding!
+              </EmptyStateText>
+              <EmptyStateText>
+                <EmptyStateLink href="/about">Learn more about me</EmptyStateLink>
+              </EmptyStateText>
+            </EmptyState>
+          )}
+        </PostsGrid>
+      </Container>
+    </SectionWrapper>
   )
 }

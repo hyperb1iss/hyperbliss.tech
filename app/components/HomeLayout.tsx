@@ -96,9 +96,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
         // Mobile layout: Stack everything vertically
         <>
           <HeroSectionSilk />
-          <SidebarWrapper>
-            <LatestBlogPostsSilk isMobile={isMobile} posts={latestPosts} />
-          </SidebarWrapper>
+          <LatestBlogPostsSilk posts={latestPosts} />
           <FeaturedProjectsSectionSilk projects={projects} />
         </>
       ) : (
@@ -109,7 +107,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
             <FeaturedProjectsSectionSilk projects={projects} />
           </MainContent>
           <SidebarWrapper>
-            <LatestBlogPostsSilk isMobile={isMobile} posts={latestPosts} />
+            <LatestBlogPostsSilk posts={latestPosts} />
           </SidebarWrapper>
         </DesktopLayout>
       )}

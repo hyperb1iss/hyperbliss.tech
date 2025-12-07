@@ -38,7 +38,7 @@ const buttonBase = css`
   gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
   font-family: var(--font-body);
-  font-size: var(--text-base);
+  font-size: clamp(1.5rem, 1.3rem + 0.4vw, 1.8rem);
   font-weight: var(--font-medium);
   line-height: var(--leading-snug);
   border-radius: var(--radius-lg);
@@ -134,7 +134,7 @@ export const SilkButton = styled(motion.button)<{
       case 'lg':
         return css`
           padding: var(--space-4) var(--space-8);
-          font-size: var(--text-xl);
+          font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
         `
       default:
         return null

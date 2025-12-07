@@ -7,107 +7,176 @@ import { useCallback, useEffect, useRef } from 'react'
 import { styled } from 'styled-components'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
-import { navLinkBaseStyles, silkNavEase } from './NavLinks'
 
-/**
- * Styled components for mobile navigation
- */
-const MobileNavLinksContainer = styled(motion.ul)`
-  list-style: none;
+const silkEase = [0.23, 1, 0.32, 1] as const
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styled Components
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const NavPanel = styled(motion.nav)`
   position: fixed;
-  top: 110px;
-  right: var(--space-2);
-  width: min(320px, calc(100% - var(--space-4)));
-  flex-direction: column;
-  display: flex;
-  gap: var(--space-2);
+  top: 76px;
+  right: var(--space-3);
+  width: min(260px, calc(100vw - var(--space-6)));
   z-index: 1001;
-  padding: var(--space-3);
-  border-radius: var(--radius-2xl);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background:
-    radial-gradient(circle at 12% 15%, rgba(162, 89, 255, 0.25), transparent 55%),
-    radial-gradient(circle at 80% 10%, rgba(0, 255, 240, 0.25), transparent 60%),
-    rgba(5, 5, 8, 0.92);
-  box-shadow: 0 30px 65px rgba(5, 5, 8, 0.75);
-  backdrop-filter: blur(var(--blur-xl));
+
+  /* Glass panel */
+  background: rgba(10, 10, 18, 0.95);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+
+  /* Gradient top accent */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: var(--space-4);
+    right: var(--space-4);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--silk-quantum-purple) 30%,
+      var(--silk-circuit-cyan) 70%,
+      transparent
+    );
+    opacity: 0.6;
+  }
+
+  /* Soft shadow */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
 
   @media (min-width: 769px) {
     display: none;
   }
 `
 
-const MobileNavItem = styled(motion.li)`
+const NavList = styled.ul`
+  list-style: none;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+`
+
+const NavItem = styled(motion.li)`
   width: 100%;
 `
 
-const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
-  ${navLinkBaseStyles}
-  width: 100%;
-  font-size: 1.6rem;
-  letter-spacing: 0.18em;
+const NavLink = styled(motion.a)<{ $active: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  justify-content: center;
-  color: ${({ $active }) => ($active ? 'var(--silk-white)' : 'var(--text-secondary)')};
-  background: ${({ $active }) =>
-    $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.2), rgba(0, 255, 240, 0.18))' : 'rgba(2, 6, 23, 0.72)'};
-  border: 1px solid ${({ $active }) => ($active ? 'rgba(0, 255, 240, 0.45)' : 'rgba(148, 163, 184, 0.2)')};
-  box-shadow: ${({ $active }) => ($active ? '0 12px 30px rgba(0, 255, 240, 0.2)' : '0 6px 18px rgba(5, 5, 8, 0.35)')};
+  font-family: var(--font-body);
+  font-size: 1.8rem;
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  transition: all 0.2s ease;
 
-  &:hover,
-  &:focus-visible {
-    color: var(--silk-white);
-    border-color: rgba(0, 255, 240, 0.45);
-    background: ${({ $active }) =>
-      $active ? 'linear-gradient(135deg, rgba(162, 89, 255, 0.3), rgba(0, 255, 240, 0.3))' : 'rgba(15, 23, 42, 0.9)'};
-    transform: translateX(6px);
+  color: ${({ $active }) => ($active ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)')};
+  background: ${({ $active }) => ($active ? 'rgba(0, 255, 240, 0.08)' : 'transparent')};
+
+  ${({ $active }) =>
+    $active &&
+    `
+    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
+  `}
+
+  &:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
   }
 
-  &:hover::after,
-  &:focus-visible::after {
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--silk-quantum-purple);
+    outline-offset: 2px;
+  }
+`
+
+const NavIcon = styled.span<{ $active: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 1rem;
+  opacity: ${({ $active }) => ($active ? 1 : 0.5)};
+  transition: opacity 0.2s ease;
+
+  ${NavLink}:hover & {
     opacity: 1;
   }
 `
 
-/**
- * Props interface for MobileNavLinks component.
- */
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Nav Icons
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const NAV_ICONS: Record<string, string> = {
+  About: '◆',
+  Blog: '◈',
+  Projects: '▣',
+  Resume: '◉',
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 interface MobileNavLinksProps {
   open: boolean
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-/**
- * MobileNavLinks component
- * Renders the mobile navigation links with animations.
- * @param {MobileNavLinksProps} props - Component props
- * @returns {JSX.Element} Rendered mobile navigation links
- */
 const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) => {
   const pathname = usePathname()
   const animateAndNavigate = useAnimatedNavigation()
-  const mobileMenuRef = useRef<HTMLUListElement>(null)
-  const mobileMenuVariants = {
-    closed: { opacity: 0, pointerEvents: 'none', transition: { duration: 0.25 }, x: '105%' },
+  const panelRef = useRef<HTMLElement>(null)
+
+  const panelVariants = {
+    closed: {
+      opacity: 0,
+      pointerEvents: 'none' as const,
+      scale: 0.95,
+      transition: { duration: 0.2, ease: silkEase },
+      y: -10,
+    },
     open: {
       opacity: 1,
-      pointerEvents: 'auto',
-      transition: { duration: 0.3, ease: silkNavEase },
-      x: 0,
+      pointerEvents: 'auto' as const,
+      scale: 1,
+      transition: {
+        delayChildren: 0.05,
+        duration: 0.25,
+        ease: silkEase,
+        staggerChildren: 0.04,
+      },
+      y: 0,
     },
   }
 
-  const mobileItemVariants = {
-    closed: { opacity: 0, x: 24 },
-    open: (index: number) => ({
+  const itemVariants = {
+    closed: { opacity: 0, x: 12 },
+    open: {
       opacity: 1,
-      transition: {
-        delay: 0.05 * index + 0.05,
-        duration: 0.3,
-        ease: silkNavEase,
-      },
+      transition: { duration: 0.2, ease: silkEase },
       x: 0,
-    }),
+    },
   }
 
   const handleNavigation = (href: string, event: React.MouseEvent) => {
@@ -116,13 +185,12 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     animateAndNavigate(href)
   }
 
-  // Handler for clicking outside mobile menu
   const handleClickOutside = useCallback(
     (event: MouseEvent) => {
       if (
         open &&
-        mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node) &&
+        panelRef.current &&
+        !panelRef.current.contains(event.target as Node) &&
         !(event.target as Element).closest('.mobile-menu-icon')
       ) {
         setMenuOpen(false)
@@ -131,7 +199,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     [open, setMenuOpen],
   )
 
-  // Effect for adding/removing click outside listener
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
@@ -140,27 +207,27 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   }, [handleClickOutside])
 
   return (
-    <MobileNavLinksContainer
-      animate={open ? 'open' : 'closed'}
-      initial={false}
-      ref={mobileMenuRef}
-      variants={mobileMenuVariants}
-    >
-      {NAV_ITEMS.map((item, index) => (
-        <MobileNavItem animate={open ? 'open' : 'closed'} custom={index} key={item} variants={mobileItemVariants}>
-          <StyledNavLink
-            $active={pathname === `/${item.toLowerCase()}`}
-            aria-current={pathname === `/${item.toLowerCase()}` ? 'page' : undefined}
-            href={`/${item.toLowerCase()}`}
-            onClick={(e) => handleNavigation(`/${item.toLowerCase()}`, e)}
-            whileHover={{ x: 6 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            {item}
-          </StyledNavLink>
-        </MobileNavItem>
-      ))}
-    </MobileNavLinksContainer>
+    <NavPanel animate={open ? 'open' : 'closed'} initial="closed" ref={panelRef} variants={panelVariants}>
+      <NavList>
+        {NAV_ITEMS.map((item) => {
+          const href = `/${item.toLowerCase()}`
+          const isActive = pathname === href
+          return (
+            <NavItem key={item} variants={itemVariants}>
+              <NavLink
+                $active={isActive}
+                aria-current={isActive ? 'page' : undefined}
+                href={href}
+                onClick={(e) => handleNavigation(href, e)}
+              >
+                <NavIcon $active={isActive}>{NAV_ICONS[item]}</NavIcon>
+                {item}
+              </NavLink>
+            </NavItem>
+          )
+        })}
+      </NavList>
+    </NavPanel>
   )
 }
 

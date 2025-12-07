@@ -301,11 +301,11 @@ select:focus {
 /* Responsive Typography */
 @media (max-width: 768px) {
   html {
-    font-size: 55%; /* Slightly smaller base for mobile */
+    font-size: 60%; /* Mobile base: 9.6px per rem */
   }
 
   body {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
   }
 
   section {

@@ -158,15 +158,11 @@ export function parseResume(markdown: string): ParsedResume {
     const line = lines[i]
     const trimmed = line.trim()
 
-    // Skip empty lines unless we're collecting a paragraph
+    // Handle empty lines - for summary section, preserve paragraph breaks
     if (!trimmed) {
-      if (collectingParagraph && paragraphLines.length > 0) {
-        // End of paragraph
-        if (currentH2Section === 'summary') {
-          result.summary = paragraphLines.join(' ')
-        }
-        collectingParagraph = false
-        paragraphLines = []
+      if (collectingParagraph && paragraphLines.length > 0 && currentH2Section === 'summary') {
+        // In summary section, empty line means paragraph break - add separator
+        paragraphLines.push('\n\n')
       }
       continue
     }
@@ -180,6 +176,15 @@ export function parseResume(markdown: string): ParsedResume {
     // H2 - Major sections
     if (line.startsWith('## ')) {
       saveExperience()
+      // Save summary if we were collecting it
+      if (collectingParagraph && paragraphLines.length > 0 && currentH2Section === 'summary') {
+        result.summary = paragraphLines
+          .join(' ')
+          .replace(/\s*\n\n\s*/g, '\n\n')
+          .trim()
+        collectingParagraph = false
+        paragraphLines = []
+      }
       const heading = line
         .substring(3)
         .replace(/[^\w\s&]/g, '')
@@ -369,7 +374,10 @@ export function parseResume(markdown: string): ParsedResume {
   // Save any pending paragraph
   if (collectingParagraph && paragraphLines.length > 0) {
     if (currentH2Section === 'summary') {
-      result.summary = paragraphLines.join(' ')
+      result.summary = paragraphLines
+        .join(' ')
+        .replace(/\s*\n\n\s*/g, '\n\n')
+        .trim()
     }
   }
 

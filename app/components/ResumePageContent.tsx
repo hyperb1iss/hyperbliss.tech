@@ -21,11 +21,6 @@ const glow = keyframes`
   50% { opacity: 0.8; }
 `
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-`
-
 // Main container
 const ResumeWrapper = styled(motion.div)`
   max-width: 1400px;
@@ -333,8 +328,7 @@ const SectionIcon = styled.div`
   );
   border: 2px solid var(--silk-circuit-cyan);
   border-radius: var(--radius-lg);
-  animation: ${float} 4s ease-in-out infinite;
-  
+
   svg {
     font-size: 2.4rem;
     color: var(--silk-circuit-cyan);
@@ -675,12 +669,16 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                 <SectionTitle>Summary</SectionTitle>
               </SectionHeader>
               <TimelineContent>
-                <p>{summary}</p>
                 {tagline && (
-                  <p style={{ color: 'var(--silk-plasma-pink)', fontStyle: 'italic', marginTop: 'var(--space-4)' }}>
+                  <p style={{ color: 'var(--silk-plasma-pink)', fontStyle: 'italic', marginBottom: 'var(--space-4)' }}>
                     {tagline}
                   </p>
                 )}
+                {summary.split('\n\n').map((paragraph, idx) => (
+                  <p key={idx} style={idx > 0 ? { marginTop: 'var(--space-4)' } : undefined}>
+                    {paragraph}
+                  </p>
+                ))}
               </TimelineContent>
             </ContentSection>
           )}
