@@ -98,6 +98,24 @@ export const initializeCyberScape = (
     max: [width / 2, height / 2, 300],
     min: [-width / 2, -height / 2, -300],
   })
+
+  // Pre-allocated objects for particle grid distribution (avoid per-frame allocations)
+  const GRID_SIZE = 4
+  const particleGrid: number[][] = Array(GRID_SIZE)
+    .fill(0)
+    .map(() => Array(GRID_SIZE).fill(0))
+  const cellsWithCounts: Array<{ count: number; x: number; y: number }> = []
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      cellsWithCounts.push({ count: 0, x, y })
+    }
+  }
+
+  // Pre-allocated vectors for anti-clustering (avoid per-particle allocations)
+  const clusterQueryMin: vec3 = vec3.create()
+  const clusterQueryMax: vec3 = vec3.create()
+  const clusterAvgPosition: vec3 = vec3.create()
+  const clusterAwayVector: vec3 = vec3.create()
   const frustumCuller = new FrustumCuller()
 
   let recentlyExpiredParticles = 0
@@ -376,25 +394,29 @@ export const initializeCyberScape = (
           numberOfParticles - activeParticles,
         )
 
-        // Divide the screen into a grid
-        const gridSize = 4 // 4x4 grid
-        const cellWidth = width / gridSize
-        const cellHeight = height / gridSize
+        // Divide the screen into a grid (reuse pre-allocated arrays)
+        const cellWidth = width / GRID_SIZE
+        const cellHeight = height / GRID_SIZE
 
-        // Count particles in each cell
-        const particleGrid: number[][] = Array(gridSize)
-          .fill(0)
-          .map(() => Array(gridSize).fill(0))
+        // Reset and count particles in each cell (reuse pre-allocated grid)
+        for (let y = 0; y < GRID_SIZE; y++) {
+          for (let x = 0; x < GRID_SIZE; x++) {
+            particleGrid[y][x] = 0
+          }
+        }
         particlesArray.forEach((particle) => {
           const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth)
           const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight)
-          if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
+          if (cellX >= 0 && cellX < GRID_SIZE && cellY >= 0 && cellY < GRID_SIZE) {
             particleGrid[cellY][cellX]++
           }
         })
 
-        // Find cells with the least particles
-        const cellsWithCounts = particleGrid.flatMap((row, y) => row.map((count, x) => ({ count, x, y })))
+        // Update pre-allocated cellsWithCounts and sort
+        for (let i = 0; i < cellsWithCounts.length; i++) {
+          const cell = cellsWithCounts[i]
+          cell.count = particleGrid[cell.y][cell.x]
+        }
         cellsWithCounts.sort((a, b) => a.count - b.count)
 
         for (let i = 0; i < particlesToAdd; i++) {
@@ -415,29 +437,33 @@ export const initializeCyberScape = (
         recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
       }
 
-      // Add this function to prevent particle clustering
+      // Prevent particle clustering (reuse pre-allocated vectors)
       const preventClustering = (particle: Particle) => {
+        // Build query bounds using pre-allocated vectors
+        vec3.set(clusterQueryMin, particle.position[0] - 20, particle.position[1] - 20, particle.position[2] - 20)
+        vec3.set(clusterQueryMax, particle.position[0] + 20, particle.position[1] + 20, particle.position[2] + 20)
+
         const nearbyObjects = octree.query({
-          max: vec3.add(vec3.create(), particle.position, [20, 20, 20]),
-          min: vec3.sub(vec3.create(), particle.position, [20, 20, 20]),
+          max: clusterQueryMax,
+          min: clusterQueryMin,
         })
 
         const nearbyParticles = nearbyObjects.filter((obj) => obj instanceof Particle) as Particle[]
 
         if (nearbyParticles.length > 20) {
-          // Calculate the average position of nearby particles
-          const avgPosition = vec3.create()
+          // Calculate the average position using pre-allocated vector
+          vec3.set(clusterAvgPosition, 0, 0, 0)
           nearbyParticles.forEach((p) => {
-            vec3.add(avgPosition, avgPosition, p.position)
+            vec3.add(clusterAvgPosition, clusterAvgPosition, p.position)
           })
-          vec3.scale(avgPosition, avgPosition, 1 / nearbyParticles.length)
+          vec3.scale(clusterAvgPosition, clusterAvgPosition, 1 / nearbyParticles.length)
 
-          // Move the particle away from the cluster
-          const awayVector = vec3.sub(vec3.create(), particle.position, avgPosition)
-          vec3.normalize(awayVector, awayVector)
-          vec3.scale(awayVector, awayVector, 0.5) // Adjust this value to control the strength of repulsion
+          // Move the particle away from the cluster using pre-allocated vector
+          vec3.sub(clusterAwayVector, particle.position, clusterAvgPosition)
+          vec3.normalize(clusterAwayVector, clusterAwayVector)
+          vec3.scale(clusterAwayVector, clusterAwayVector, 0.5)
 
-          vec3.add(particle.velocity, particle.velocity, awayVector)
+          vec3.add(particle.velocity, particle.velocity, clusterAwayVector)
           vec3.normalize(particle.velocity, particle.velocity)
         }
       }

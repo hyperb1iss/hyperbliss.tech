@@ -40,6 +40,12 @@ export abstract class VectorShape {
   private tempVector: vec3
   temporaryDistortion: vec3
 
+  // Pre-allocated vectors for draw() to avoid per-edge allocations
+  private readonly scaledV1: vec3 = vec3.create()
+  private readonly scaledV2: vec3 = vec3.create()
+  private readonly projResult1 = VectorMath.createProjectionResult()
+  private readonly projResult2 = VectorMath.createProjectionResult()
+
   private config: CyberScapeConfig
 
   private glowIntensity: number
@@ -377,25 +383,24 @@ export abstract class VectorShape {
         ctx.shadowBlur = glowEffect
         ctx.shadowColor = `rgb(${r}, ${g}, ${b})`
 
-        // Draw the shape
+        // Draw the shape (reuse pre-allocated vectors to avoid per-edge allocations)
         ctx.beginPath()
         this.edges.forEach(([start, end]) => {
           const v1 = VectorMath.rotateVertex(this.vertices[start], this.rotation)
           const v2 = VectorMath.rotateVertex(this.vertices[end], this.rotation)
 
-          // Apply scaling and translation to vertices
-          const scaledV1 = vec3.create()
-          const scaledV2 = vec3.create()
-          vec3.scale(scaledV1, v1, this.scale)
-          vec3.scale(scaledV2, v2, this.scale)
-          vec3.add(scaledV1, scaledV1, this.position)
-          vec3.add(scaledV2, scaledV2, this.position)
+          // Apply scaling and translation to vertices (reuse instance vectors)
+          vec3.scale(this.scaledV1, v1, this.scale)
+          vec3.scale(this.scaledV2, v2, this.scale)
+          vec3.add(this.scaledV1, this.scaledV1, this.position)
+          vec3.add(this.scaledV2, this.scaledV2, this.position)
 
-          const projectedV1 = VectorMath.project(scaledV1, width, height)
-          const projectedV2 = VectorMath.project(scaledV2, width, height)
+          // Project to 2D (reuse instance projection results)
+          VectorMath.project(this.scaledV1, width, height, this.projResult1)
+          VectorMath.project(this.scaledV2, width, height, this.projResult2)
 
-          ctx.moveTo(projectedV1.x, projectedV1.y)
-          ctx.lineTo(projectedV2.x, projectedV2.y)
+          ctx.moveTo(this.projResult1.x, this.projResult1.y)
+          ctx.lineTo(this.projResult2.x, this.projResult2.y)
         })
         ctx.closePath()
         ctx.fill()

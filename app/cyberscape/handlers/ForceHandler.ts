@@ -10,6 +10,10 @@ import { CyberScapeConfig } from '../CyberScapeConfig'
 import { VectorShape } from '../shapes/VectorShape'
 
 export class ForceHandler {
+  // Pre-allocated vectors to avoid allocations in force calculations
+  private static readonly tempVector: vec3 = vec3.create()
+  private static readonly negatedForce: vec3 = vec3.create()
+
   /**
    * Handles attraction and repulsion forces between shapes.
    * @param shapes - Array of VectorShape instances to apply forces to.
@@ -21,31 +25,31 @@ export class ForceHandler {
     const ATTRACTION_FORCE = config.shapeAttractionForce
     const REPULSION_FORCE = config.shapeRepulsionForce
 
-    const tempVector = vec3.create()
-
     for (let i = 0; i < shapes.length; i++) {
       for (let j = i + 1; j < shapes.length; j++) {
         const shapeA = shapes[i]
         const shapeB = shapes[j]
 
-        vec3.subtract(tempVector, shapeB.position, shapeA.position)
-        const distance = vec3.length(tempVector)
+        vec3.subtract(ForceHandler.tempVector, shapeB.position, shapeA.position)
+        const distance = vec3.length(ForceHandler.tempVector)
 
         if (distance > 0 && distance < ATTRACTION_RADIUS && distance > REPULSION_RADIUS) {
           // Attraction
           const forceMagnitude = ATTRACTION_FORCE * (1 - distance / ATTRACTION_RADIUS)
-          vec3.normalize(tempVector, tempVector)
-          vec3.scale(tempVector, tempVector, forceMagnitude)
-          shapeA.applyForce(tempVector)
-          vec3.scale(tempVector, tempVector, -1) // Reverse force
-          shapeB.applyForce(tempVector)
+          vec3.normalize(ForceHandler.tempVector, ForceHandler.tempVector)
+          vec3.scale(ForceHandler.tempVector, ForceHandler.tempVector, forceMagnitude)
+          shapeA.applyForce(ForceHandler.tempVector)
+          vec3.scale(ForceHandler.tempVector, ForceHandler.tempVector, -1) // Reverse force
+          shapeB.applyForce(ForceHandler.tempVector)
         } else if (distance > 0 && distance <= REPULSION_RADIUS) {
           // Repulsion
           const forceMagnitude = REPULSION_FORCE * (1 - distance / REPULSION_RADIUS)
-          vec3.normalize(tempVector, tempVector)
-          vec3.scale(tempVector, tempVector, forceMagnitude)
-          shapeA.applyForce(vec3.negate(vec3.create(), tempVector))
-          shapeB.applyForce(tempVector)
+          vec3.normalize(ForceHandler.tempVector, ForceHandler.tempVector)
+          vec3.scale(ForceHandler.tempVector, ForceHandler.tempVector, forceMagnitude)
+          // Negate into pre-allocated vector instead of creating new one
+          vec3.negate(ForceHandler.negatedForce, ForceHandler.tempVector)
+          shapeA.applyForce(ForceHandler.negatedForce)
+          shapeB.applyForce(ForceHandler.tempVector)
         }
       }
     }
