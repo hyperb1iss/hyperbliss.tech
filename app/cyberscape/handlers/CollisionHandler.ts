@@ -26,6 +26,18 @@ export class CollisionHandler {
   // Static reference to the Octree instance for spatial partitioning
   private static octree: Octree
 
+  // Pre-allocated vectors to avoid GC pressure in collision handling
+  private static readonly queryMin: vec3 = vec3.create()
+  private static readonly queryMax: vec3 = vec3.create()
+  private static readonly deltaPos: vec3 = vec3.create()
+  private static readonly normal: vec3 = vec3.create()
+  private static readonly relativeVelocity: vec3 = vec3.create()
+  private static readonly impulseVec: vec3 = vec3.create()
+  private static readonly correction: vec3 = vec3.create()
+  private static readonly collisionPos: vec3 = vec3.create()
+  private static readonly maxVelocityVec: vec3 = vec3.fromValues(2, 2, 2)
+  private static readonly minVelocityVec: vec3 = vec3.fromValues(-2, -2, -2)
+
   /**
    * Initializes the CollisionHandler with a ParticlePool instance.
    * This method must be called once during the application's initialization phase.
@@ -71,22 +83,36 @@ export class CollisionHandler {
     shapes.forEach((shapeA) => {
       if (shapeA.isExploded) return
 
+      // Build query bounds using pre-allocated vectors
+      vec3.set(
+        CollisionHandler.queryMax,
+        shapeA.position[0] + shapeA.radius,
+        shapeA.position[1] + shapeA.radius,
+        shapeA.position[2] + shapeA.radius,
+      )
+      vec3.set(
+        CollisionHandler.queryMin,
+        shapeA.position[0] - shapeA.radius,
+        shapeA.position[1] - shapeA.radius,
+        shapeA.position[2] - shapeA.radius,
+      )
+
       // Retrieve nearby shapes from the octree
       const nearbyShapes = CollisionHandler.octree.query({
-        max: vec3.add(vec3.create(), shapeA.position, [shapeA.radius, shapeA.radius, shapeA.radius]),
-        min: vec3.sub(vec3.create(), shapeA.position, [shapeA.radius, shapeA.radius, shapeA.radius]),
+        max: CollisionHandler.queryMax,
+        min: CollisionHandler.queryMin,
       }) as VectorShape[]
 
       nearbyShapes.forEach((shapeB) => {
         if (shapeA === shapeB || shapeB.isExploded) return
 
-        const deltaPos = vec3.create()
-        vec3.subtract(deltaPos, shapeB.position, shapeA.position)
-        const distance = vec3.length(deltaPos)
+        // Reuse pre-allocated deltaPos
+        vec3.subtract(CollisionHandler.deltaPos, shapeB.position, shapeA.position)
+        const distance = vec3.length(CollisionHandler.deltaPos)
 
         if (distance < shapeA.radius + shapeB.radius) {
           // Handle collision response between the two shapes
-          CollisionHandler.handleCollisionResponse(shapeA, shapeB, deltaPos, distance)
+          CollisionHandler.handleCollisionResponse(shapeA, shapeB, CollisionHandler.deltaPos, distance)
 
           // Trigger additional effects if a collision callback is provided
           if (collisionCallback) {
@@ -95,7 +121,13 @@ export class CollisionHandler {
 
           // Emit collision particles if a collision particles array is provided
           if (collisionParticlesArray) {
-            CollisionHandler.emitCollisionParticles(shapeA, shapeB, deltaPos, distance, collisionParticlesArray)
+            CollisionHandler.emitCollisionParticles(
+              shapeA,
+              shapeB,
+              CollisionHandler.deltaPos,
+              distance,
+              collisionParticlesArray,
+            )
           }
         }
       })
@@ -116,16 +148,14 @@ export class CollisionHandler {
     deltaPos: vec3,
     distance: number,
   ): void {
-    // Normalize the collision vector
-    const normal = vec3.create()
-    vec3.normalize(normal, deltaPos)
+    // Normalize the collision vector (reuse pre-allocated normal)
+    vec3.normalize(CollisionHandler.normal, deltaPos)
 
-    // Calculate relative velocity
-    const relativeVelocity = vec3.create()
-    vec3.subtract(relativeVelocity, shapeA.velocity, shapeB.velocity)
+    // Calculate relative velocity (reuse pre-allocated vector)
+    vec3.subtract(CollisionHandler.relativeVelocity, shapeA.velocity, shapeB.velocity)
 
     // Calculate velocity along the normal
-    const vn = vec3.dot(relativeVelocity, normal)
+    const vn = vec3.dot(CollisionHandler.relativeVelocity, CollisionHandler.normal)
 
     // If shapes are moving away from each other, skip
     if (vn > 0) return
@@ -133,20 +163,18 @@ export class CollisionHandler {
     // Calculate impulse scalar (assuming equal mass and perfect elasticity)
     const impulse = (-2 * vn) / 2 // mass cancels out
 
-    // Apply impulse to the shapes' velocities
-    const impulseVec = vec3.create()
-    vec3.scale(impulseVec, normal, impulse)
+    // Apply impulse to the shapes' velocities (reuse pre-allocated vector)
+    vec3.scale(CollisionHandler.impulseVec, CollisionHandler.normal, impulse)
 
-    vec3.add(shapeA.velocity, shapeA.velocity, impulseVec)
-    vec3.subtract(shapeB.velocity, shapeB.velocity, impulseVec)
+    vec3.add(shapeA.velocity, shapeA.velocity, CollisionHandler.impulseVec)
+    vec3.subtract(shapeB.velocity, shapeB.velocity, CollisionHandler.impulseVec)
 
-    // Adjust positions to prevent overlap
+    // Adjust positions to prevent overlap (reuse pre-allocated vector)
     const overlap = shapeA.radius + shapeB.radius - distance
-    const correction = vec3.create()
-    vec3.scale(correction, normal, overlap / 2)
+    vec3.scale(CollisionHandler.correction, CollisionHandler.normal, overlap / 2)
 
-    vec3.subtract(shapeA.position, shapeA.position, correction)
-    vec3.add(shapeB.position, shapeB.position, correction)
+    vec3.subtract(shapeA.position, shapeA.position, CollisionHandler.correction)
+    vec3.add(shapeB.position, shapeB.position, CollisionHandler.correction)
 
     // Change colors upon collision
     shapeA.color = ColorManager.getRandomCyberpunkColor()
@@ -156,16 +184,12 @@ export class CollisionHandler {
     shapeA.triggerCollisionVisuals()
     shapeB.triggerCollisionVisuals()
 
-    // Limit the maximum velocity change to prevent abrupt movements
-    const maxVelocityChange = 2
-    const maxVelocityVec = vec3.fromValues(maxVelocityChange, maxVelocityChange, maxVelocityChange)
-    const minVelocityVec = vec3.fromValues(-maxVelocityChange, -maxVelocityChange, -maxVelocityChange)
+    // Limit the maximum velocity change to prevent abrupt movements (use pre-allocated vectors)
+    vec3.min(shapeA.velocity, shapeA.velocity, CollisionHandler.maxVelocityVec)
+    vec3.max(shapeA.velocity, shapeA.velocity, CollisionHandler.minVelocityVec)
 
-    vec3.min(shapeA.velocity, shapeA.velocity, maxVelocityVec)
-    vec3.max(shapeA.velocity, shapeA.velocity, minVelocityVec)
-
-    vec3.min(shapeB.velocity, shapeB.velocity, maxVelocityVec)
-    vec3.max(shapeB.velocity, shapeB.velocity, minVelocityVec)
+    vec3.min(shapeB.velocity, shapeB.velocity, CollisionHandler.maxVelocityVec)
+    vec3.max(shapeB.velocity, shapeB.velocity, CollisionHandler.minVelocityVec)
   }
 
   /**
@@ -183,10 +207,9 @@ export class CollisionHandler {
     _distance: number,
     collisionParticlesArray: ParticleAtCollision[],
   ): void {
-    // Calculate the collision position (midpoint between shapeA and shapeB)
-    const collisionPos = vec3.create()
-    vec3.add(collisionPos, shapeA.position, shapeB.position)
-    vec3.scale(collisionPos, collisionPos, 0.5)
+    // Calculate the collision position (midpoint between shapeA and shapeB) using pre-allocated vector
+    vec3.add(CollisionHandler.collisionPos, shapeA.position, shapeB.position)
+    vec3.scale(CollisionHandler.collisionPos, CollisionHandler.collisionPos, 0.5)
 
     // Define the number of particles to emit per collision
     const PARTICLES_PER_COLLISION = 10
@@ -195,8 +218,11 @@ export class CollisionHandler {
     const config = CyberScapeConfig.getInstance()
 
     for (let i = 0; i < PARTICLES_PER_COLLISION; i++) {
-      // Retrieve a ParticleAtCollision from the ParticlePool
-      const particle = CollisionHandler.particlePool?.getCollisionParticle(vec3.clone(collisionPos), () => {})
+      // Retrieve a ParticleAtCollision from the ParticlePool (clone is needed - particle owns its position)
+      const particle = CollisionHandler.particlePool?.getCollisionParticle(
+        vec3.clone(CollisionHandler.collisionPos),
+        () => {},
+      )
 
       if (particle) {
         // Configure particle properties using CyberScapeConfig

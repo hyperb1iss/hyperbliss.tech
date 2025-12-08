@@ -161,16 +161,14 @@ export class Particle {
       }
     }
 
-    // Apply slight attraction to center
-    vec3.add(
-      this.velocity,
-      this.velocity,
-      vec3.fromValues(
-        (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
-        (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
-        0,
-      ),
+    // Apply slight attraction to center (reuse tempVector to avoid allocation)
+    vec3.set(
+      this.tempVector,
+      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
+      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+      0,
     )
+    vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Update position
     vec3.add(this.position, this.position, this.velocity)
@@ -197,12 +195,9 @@ export class Particle {
       vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed)
     }
 
-    // Add small random changes to velocity for more natural movement
-    vec3.add(
-      this.velocity,
-      this.velocity,
-      vec3.fromValues((Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01),
-    )
+    // Add small random changes to velocity for more natural movement (reuse tempVector)
+    vec3.set(this.tempVector, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01)
+    vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Gradually increase opacity when the particle becomes visible
     if (this.opacity < 1) {

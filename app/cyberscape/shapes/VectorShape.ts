@@ -208,16 +208,14 @@ export abstract class VectorShape {
       }
     }
 
-    // Apply slight attraction to center
-    vec3.add(
-      this.velocity,
-      this.velocity,
-      vec3.fromValues(
-        (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
-        (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
-        0,
-      ),
+    // Apply slight attraction to center (reuse tempVector to avoid allocation)
+    vec3.set(
+      this.tempVector,
+      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
+      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+      0,
     )
+    vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Introduce Z-Drift Over Time
     this.velocity[2] += (Math.random() - 0.5) * 0.005 // Small random drift
@@ -242,12 +240,14 @@ export abstract class VectorShape {
       vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed)
     }
 
-    // Add small random changes to velocity for more natural movement
-    vec3.add(
-      this.velocity,
-      this.velocity,
-      vec3.fromValues((Math.random() - 0.5) * 0.005, (Math.random() - 0.5) * 0.005, (Math.random() - 0.5) * 0.005),
+    // Add small random changes to velocity for more natural movement (reuse tempVector)
+    vec3.set(
+      this.tempVector,
+      (Math.random() - 0.5) * 0.005,
+      (Math.random() - 0.5) * 0.005,
+      (Math.random() - 0.5) * 0.005,
     )
+    vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Update rotation on all axes
     vec3.add(this.rotation, this.rotation, this.rotationSpeed)

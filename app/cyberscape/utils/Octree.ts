@@ -43,6 +43,10 @@ export class Octree {
   private maxObjects: number
   private maxDepth: number
 
+  // Pre-allocated vectors to avoid GC pressure in hot paths
+  private readonly tempVec: vec3 = vec3.create()
+  private readonly midpoint: vec3 = vec3.create()
+
   /**
    * Creates a new Octree instance.
    * @param bounds - The bounds of the entire octree.
@@ -120,7 +124,10 @@ export class Octree {
    */
   private split(node: OctreeNode): void {
     const { min, max } = node.bounds
-    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), min, max), 0.5)
+    // Reuse pre-allocated vectors for midpoint calculation
+    vec3.add(this.tempVec, min, max)
+    vec3.scale(this.midpoint, this.tempVec, 0.5)
+    const mid = this.midpoint
 
     node.children = [
       new OctreeNode({
@@ -174,11 +181,13 @@ export class Octree {
    * @returns The index of the child node (0-7).
    */
   private getChildIndex(position: vec3, bounds: Bounds): number {
-    const mid = vec3.scale(vec3.create(), vec3.add(vec3.create(), bounds.min, bounds.max), 0.5)
+    // Reuse pre-allocated vectors for midpoint calculation
+    vec3.add(this.tempVec, bounds.min, bounds.max)
+    vec3.scale(this.midpoint, this.tempVec, 0.5)
     let index = 0
-    if (position[0] > mid[0]) index |= 1
-    if (position[1] > mid[1]) index |= 2
-    if (position[2] > mid[2]) index |= 4
+    if (position[0] > this.midpoint[0]) index |= 1
+    if (position[1] > this.midpoint[1]) index |= 2
+    if (position[2] > this.midpoint[2]) index |= 4
     return index
   }
 
