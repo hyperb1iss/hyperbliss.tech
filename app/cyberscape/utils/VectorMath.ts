@@ -3,6 +3,15 @@
 import { mat4, vec3 } from 'gl-matrix'
 
 /**
+ * Reusable projection result object to avoid allocations in hot paths.
+ */
+export interface ProjectionResult {
+  x: number
+  y: number
+  scale: number
+}
+
+/**
  * VectorMath class
  *
  * This class provides utility functions for vector and 3D math operations
@@ -11,28 +20,43 @@ import { mat4, vec3 } from 'gl-matrix'
 export class VectorMath {
   private static readonly tmpMat4 = mat4.create()
 
+  /** Pre-allocated projection result for internal reuse */
+  private static readonly tmpProjection: ProjectionResult = { scale: 0, x: 0, y: 0 }
+
+  /** Projection constants */
+  private static readonly FOV = 500
+  private static readonly MIN_SCALE = 0.5
+  private static readonly MAX_SCALE = 1.5
+
   /**
    * Projects a 3D point onto a 2D plane.
    * @param position - The position of the 3D point as a vec3.
    * @param width - The width of the 2D plane.
    * @param height - The height of the 2D plane.
-   * @returns An object containing the projected x, y coordinates and the scale.
+   * @param out - Optional output object to reuse (avoids allocation).
+   * @returns The projection result with x, y coordinates and scale.
    */
-  public static project(position: vec3, width: number, height: number) {
-    const fov = 500 // Field of view
-    const minScale = 0.5 // Minimum scale to prevent shapes from becoming too small
-    const maxScale = 1.5 // Maximum scale to prevent shapes from becoming too large
+  public static project(position: vec3, width: number, height: number, out?: ProjectionResult): ProjectionResult {
+    // Use provided output or internal temp (caller should provide for hot paths)
+    const result = out ?? VectorMath.tmpProjection
 
     // Ensure z is not zero to avoid division by zero
     const z = position[2] === 0 ? 0.001 : position[2]
 
-    const scale = fov / (fov + z)
-    const clampedScale = Math.min(Math.max(scale, minScale), maxScale)
-    return {
-      scale: clampedScale,
-      x: position[0] * clampedScale + width / 2,
-      y: position[1] * clampedScale + height / 2,
-    }
+    const scale = VectorMath.FOV / (VectorMath.FOV + z)
+    result.scale = Math.min(Math.max(scale, VectorMath.MIN_SCALE), VectorMath.MAX_SCALE)
+    result.x = position[0] * result.scale + width / 2
+    result.y = position[1] * result.scale + height / 2
+
+    return result
+  }
+
+  /**
+   * Creates a new ProjectionResult object for reuse in loops.
+   * Call once outside hot paths, then pass to project() as 'out' parameter.
+   */
+  public static createProjectionResult(): ProjectionResult {
+    return { scale: 0, x: 0, y: 0 }
   }
 
   /**

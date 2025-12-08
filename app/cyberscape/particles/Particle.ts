@@ -11,9 +11,20 @@ import { VectorMath } from '../utils/VectorMath'
  * Each particle moves independently, reacts to user interaction, and maintains constant motion across the canvas.
  */
 export class Particle {
+  /** Static counter for unique particle IDs */
+  private static nextId = 0
+
+  /** Unique identifier for this particle (used for connection tracking) */
+  public readonly id: number
+
   position: vec3
   velocity: vec3
   size: number
+
+  /** Alias for size - required for OctreeObject interface */
+  get radius(): number {
+    return this.size
+  }
   color: string
   maxSpeed: number
   minSpeed: number
@@ -43,6 +54,7 @@ export class Particle {
    * @param height - Height of the canvas.
    */
   constructor(existingPositions: Set<string>, width: number, height: number) {
+    this.id = Particle.nextId++
     this.config = CyberScapeConfig.getInstance()
 
     // Initialize position
