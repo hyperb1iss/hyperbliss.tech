@@ -31,7 +31,7 @@
     "gl-matrix": "3.4.4",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
-    "next": "^16.0.7",
+    "next": "^16.0.10",
     "nextjs-google-analytics": "^2.3.7",
     "react": "19.2.0",
     "react-dom": "19.2.0",
