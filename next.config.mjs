@@ -93,5 +93,15 @@ const nextConfig = {
 
   // Ensure consistent URL format (with or without trailing slashes)
   trailingSlash: true,
+
+  // Rewrites for TinaCMS admin
+  async rewrites() {
+    return [
+      {
+        source: '/admin/',
+        destination: '/admin/index.html',
+      },
+    ]
+  },
 }
 export default nextConfig

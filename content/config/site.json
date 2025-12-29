@@ -1,0 +1,76 @@
+{
+  "seo": {
+    "siteTitle": "@hyperb1iss | Stefanie Jane",
+    "siteDescription": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
+    "siteName": "🌠 𝓱 𝔂 𝓹 𝓮 𝔯 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹",
+    "authorName": "Stefanie Jane",
+    "twitterHandle": "@hyperb1iss",
+    "keywords": [
+      "Stefanie Jane",
+      "hyperb1iss",
+      "software engineer",
+      "full-stack developer",
+      "web development",
+      "React",
+      "TypeScript",
+      "Next.js",
+      "open source",
+      "CyanogenMod",
+      "LineageOS",
+      "Android",
+      "tech blog",
+      "portfolio"
+    ],
+    "ogImage": "/images/og-image.png"
+  },
+  "navigation": [
+    { "label": "About", "href": "/about/" },
+    { "label": "Blog", "href": "/blog/" },
+    { "label": "Projects", "href": "/projects/" },
+    { "label": "Resume", "href": "/resume/" }
+  ],
+  "socialLinks": [
+    { "label": "Bluesky", "href": "https://bsky.app/profile/hyperbliss.tech", "icon": "FaBluesky" },
+    { "label": "Mastodon", "href": "https://hachyderm.io/@bliss", "icon": "FaMastodon" },
+    { "label": "Instagram", "href": "https://instagram.com/hyperb1iss", "icon": "FaInstagram" },
+    { "label": "LinkedIn", "href": "https://linkedin.com/in/hyperb1iss", "icon": "FaLinkedin" },
+    { "label": "GitHub", "href": "https://github.com/hyperb1iss", "icon": "FaGithub" },
+    { "label": "Spotify", "href": "https://open.spotify.com/user/12173574470", "icon": "FaSpotify" }
+  ],
+  "techTags": [
+    "AI/ML", "Android", "AWS", "Backend", "BSP", "C/C++", "Cloud Services",
+    "DevOps", "Embedded Systems", "Firmware", "Frontend", "Full Stack",
+    "Golang", "Hardware Bringup", "Infrastructure", "IoT", "Java",
+    "JavaScript", "Kotlin", "Linux Kernel", "Mobile Development", "Node.js",
+    "Open Source", "Prototyping", "Python", "Qualcomm Snapdragon", "React",
+    "Rust", "System Architecture", "Team Leadership", "TypeScript"
+  ],
+  "notFound": {
+    "title": "404",
+    "subtitle": "SIGNAL LOST",
+    "description": "The coordinates you've entered don't exist in this realm. Reality may have been altered, or signal fragmented.",
+    "messages": [
+      "Want to retrace your steps or explore uncharted code?",
+      "Fancy hacking a new path through this digital wasteland?",
+      "Care to recalibrate your coordinates or dive into new networks?",
+      "Looking to debug your route or inject some new variables?",
+      "Shall we recompile your journey or browse the data archives?",
+      "Want to defrag your destination or surf the packet waves?",
+      "Ready to reboot your trajectory or scan for open ports?",
+      "Need to patch your navigation or trace a new network?",
+      "Time to refactor your path or query the mainframe?",
+      "Shall we decrypt a new direction or ping alternative routes?",
+      "Looking to overclock your adventure or tunnel through the firewall?",
+      "Ready to benchmark new paths or fork your current branch?",
+      "Want to cache a new location or run a sys diagnostic?",
+      "Care to initialize a new journey or rollback to a checkpoint?"
+    ],
+    "primaryButtonText": "Return to Nexus",
+    "primaryButtonLink": "/",
+    "secondaryButtonText": "Scan for Projects",
+    "secondaryButtonLink": "/projects/"
+  },
+  "footer": {
+    "copyrightName": "Stefanie Jane"
+  }
+}
