@@ -1,471 +1,407 @@
 // app/components/AboutPageContent.tsx
-'use client'
 
-import { motion } from 'framer-motion'
-import React from 'react'
-import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaMicrochip, FaRocket } from 'react-icons/fa6'
-import styled, { keyframes } from 'styled-components'
-import PageLayout from './PageLayout'
-import PageTitle from './PageTitle'
+import { motion } from "framer-motion";
+import React from "react";
+import styled from "styled-components";
+import PageLayout from "./PageLayout";
+import PageTitle from "./PageTitle";
+import SparklingName from "./SparklingName";
 
-// Subtle float animation
-const _floatAnimation = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-`
-
-// Gradient shift for text
-const gradientShift = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-`
-
-const ContentGrid = styled(motion.div)`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-10);
+const ContentWrapper = styled(motion.div)`
+  display: block;
+  width: 100%;
+  margin-top: 2rem;
+  padding: 0 2rem;
   max-width: 1200px;
-  margin: 0 auto;
-  
-  @media (min-width: 1024px) {
-    grid-template-columns: 380px 1fr;
-    gap: var(--space-12);
-  }
-`
-
-const ProfileSection = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-`
-
-const ProfileCard = styled(motion.div)`
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.08) 0%,
-    rgba(30, 41, 59, 0.6) 50%,
-    rgba(255, 117, 216, 0.08) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.2);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 0 25px rgba(162, 89, 255, 0.2),
-    0 0 40px rgba(255, 117, 216, 0.1),
-    inset 0 0 20px rgba(139, 92, 246, 0.05);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      #a855f7,
-      #00fff0,
-      #ff75d8
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
-  }
-`
+  margin: 2rem auto;
+`;
 
 const ProfileImage = styled(motion.img)`
-  width: 100%;
+  float: left;
+  width: clamp(200px, 20vw, 400px);
   height: auto;
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-4);
+  border-radius: 50% / 40%;
+  box-shadow: 0 0 20px rgba(162, 89, 255, 0.3);
+  margin: 0 3rem 2rem 0;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid rgba(162, 89, 255, 0.2);
+  shape-outside: circle(50%);
   filter: saturate(1.1) brightness(1.05);
-  position: relative;
-  z-index: 1;
-`
 
-const ProfileName = styled.h2`
-  font-family: 'Audiowide', var(--font-display);
-  font-size: var(--text-fluid-2xl);
-  font-weight: var(--font-bold);
-  background: linear-gradient(
-    90deg,
-    #ff75d8 0%,
-    #00fff0 50%,
-    #ff75d8 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: var(--space-2);
-  animation: ${gradientShift} 4s ease infinite;
-  filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.4));
-  position: relative;
-  z-index: 1;
-`
-
-const ProfileTitle = styled.p`
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  color: var(--silk-circuit-cyan);
-  margin-bottom: var(--space-6);
-  position: relative;
-  z-index: 1;
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-`
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: var(--space-4);
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-`
-
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.1),
-    rgba(0, 255, 240, 0.05)
-  );
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: var(--radius-full);
-  color: var(--silk-lavender);
-  font-size: 1.8rem;
-  transition: all var(--duration-normal) var(--ease-silk);
-  
   &:hover {
-    transform: translateY(-3px) scale(1.1);
-    border-color: var(--silk-circuit-cyan);
-    color: var(--silk-circuit-cyan);
-    box-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(139, 92, 246, 0.1)
-    );
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5),
+      0 0 60px rgba(162, 89, 255, 0.2);
+    border-color: rgba(0, 255, 255, 0.4);
   }
-`
 
-const ContentSection = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-`
+  @media (max-width: 768px) {
+    float: none;
+    margin: 0 auto 2rem auto;
+    width: 80%;
+    max-width: 300px;
+    display: block;
+  }
+`;
 
-const BioCard = styled(motion.div)`
+const TextContent = styled(motion.div)`
+  width: 100%;
+  text-align: justify;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    text-align: left;
+  }
+`;
+
+const Paragraph = styled.p`
+  font-size: clamp(1.4rem, 1.8vw, 1.8rem);
+  line-height: 1.5;
+  color: var(--color-text);
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.01em;
+
+  &:hover {
+    opacity: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+
+  &:first-of-type {
+    margin-top: 0;
+    font-size: clamp(1.6rem, 2vw, 2rem);
+    letter-spacing: 0.02em;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+`;
+
+const StyledLink = styled.a`
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  position: relative;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+  padding: 0 0.2em;
+  white-space: nowrap;
+
+  &::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(162, 89, 255, 0.1);
+    left: 0;
+    top: 0;
+    border-radius: 4px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: var(--color-secondary);
+    text-shadow: 0 0 15px rgba(255, 117, 216, 0.4);
+
+    &::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+  }
+`;
+
+const ContactSection = styled.div`
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid rgba(162, 89, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(162, 89, 255, 0.03) 100%
+  );
+  border-radius: 0 0 20px 20px;
+`;
+
+const ContactGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  padding: 0 1rem;
+`;
+
+const ContactReason = styled.div`
+  padding: 2rem;
   background: linear-gradient(
     135deg,
-    rgba(139, 92, 246, 0.06) 0%,
-    rgba(30, 41, 59, 0.5) 50%,
-    rgba(0, 255, 240, 0.04) 100%
+    rgba(162, 89, 255, 0.05) 0%,
+    rgba(0, 255, 255, 0.05) 100%
   );
-  backdrop-filter: blur(20px) saturate(1.1);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-10);
+  border-radius: 10px;
+  transition: all 0.4s ease-out;
+  border: 1px solid transparent;
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    0 0 20px rgba(139, 92, 246, 0.15),
-    inset 0 0 20px rgba(224, 170, 255, 0.03);
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.4),
-      transparent,
-      rgba(0, 255, 240, 0.4)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.3;
-  }
-`
-
-const BioTitle = styled.h3`
-  font-family: 'Audiowide', var(--font-display);
-  font-size: var(--text-fluid-xl);
-  font-weight: var(--font-bold);
-  color: var(--silk-plasma-pink);
-  margin-bottom: var(--space-4);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  
-  svg {
-    color: var(--silk-circuit-cyan);
-    filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.5));
-  }
-`
-
-const BioText = styled.p`
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  line-height: var(--leading-relaxed);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-4);
-  position: relative;
-  z-index: 1;
-  
-  &:last-child {
-    margin-bottom: 0;
-  }
-  
-  strong {
-    color: var(--silk-lavender);
-    font-weight: var(--font-semibold);
-  }
-  
-  a {
-    color: var(--silk-circuit-cyan);
-    text-decoration: none;
-    position: relative;
-    transition: all var(--duration-fast) var(--ease-silk);
-    
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--silk-circuit-cyan), var(--silk-plasma-pink));
-      transition: width var(--duration-normal) var(--ease-silk);
-    }
-    
-    &:hover {
-      color: var(--silk-plasma-pink);
-      text-shadow: 0 0 8px rgba(255, 117, 216, 0.5);
-      
-      &::after {
-        width: 100%;
-      }
-    }
-  }
-`
-
-const SkillsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-6);
-`
-
-const SkillCategory = styled(motion.div)`
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.6) 0%,
-    rgba(139, 92, 246, 0.05) 100%
-  );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(
-      135deg,
-      transparent,
-      rgba(139, 92, 246, 0.1)
+      rgba(162, 89, 255, 0.1) 0%,
+      rgba(0, 255, 255, 0.1) 100%
     );
     opacity: 0;
-    transition: opacity var(--duration-normal) var(--ease-silk);
+    transition: opacity 0.4s ease;
+    z-index: 1;
   }
-  
+
   &:hover {
-    border-color: rgba(0, 255, 240, 0.3);
-    
+    transform: translateY(-5px);
+    border: 1px solid rgba(162, 89, 255, 0.1);
+    box-shadow: 0 5px 15px rgba(162, 89, 255, 0.1),
+      0 15px 40px rgba(0, 0, 0, 0.1);
+
     &::before {
       opacity: 1;
     }
   }
-`
 
-const SkillTitle = styled.h4`
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: var(--font-semibold);
-  color: var(--silk-circuit-cyan);
-  margin-bottom: var(--space-3);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-`
+  h3 {
+    color: var(--color-accent);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.02em;
 
-const SkillList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-`
+    &::before {
+      content: "";
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      width: 4px;
+      height: 0;
+      background: linear-gradient(
+        to bottom,
+        var(--color-accent),
+        var(--color-secondary)
+      );
+      transition: height 0.3s ease, transform 0.3s ease;
+      transform: translateY(-50%);
+      border-radius: 2px;
+    }
+  }
 
-const SkillChip = styled.span`
-  padding: var(--space-1-5) var(--space-3);
+  &:hover h3 {
+    transform: translateX(5px);
+    color: var(--color-secondary);
+  }
+
+  p {
+    font-size: 1.6rem;
+    margin: 0;
+    line-height: 1.5;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+    text-align: left;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const GradientText = styled.span`
   background: linear-gradient(
     135deg,
-    rgba(255, 117, 216, 0.1),
-    rgba(139, 92, 246, 0.08)
+    var(--color-accent) 0%,
+    var(--color-secondary) 100%
   );
-  border: 1px solid rgba(255, 117, 216, 0.2);
-  border-radius: var(--radius-full);
-  font-size: 1.3rem;
-  color: var(--silk-lavender);
-  transition: all var(--duration-fast) var(--ease-silk);
-  
-  &:hover {
-    border-color: var(--silk-circuit-cyan);
-    color: var(--silk-circuit-cyan);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(139, 92, 246, 0.1)
-    );
-    transform: translateY(-2px);
-    text-shadow: 0 0 6px rgba(0, 255, 240, 0.5);
-  }
-`
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: none;
+  filter: brightness(1.2);
+  padding: 0 0.2em;
+`;
+
+const contentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.3,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+    },
+  },
+};
 
 const AboutPageContent: React.FC = () => {
-  const skills = {
-    Backend: ['Node.js', 'Python', 'Rust', 'GraphQL', 'PostgreSQL'],
-    'Cloud & DevOps': ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform'],
-    Frontend: ['React', 'TypeScript', 'Next.js', 'WebGL', 'Styled Components'],
-    Specialties: ['AI/ML', 'Android', 'Performance', 'Architecture', 'Open Source'],
-  }
-
   return (
     <PageLayout>
-      <PageTitle>About</PageTitle>
+      <PageTitle>About Me</PageTitle>
+      <ContentWrapper
+        variants={contentVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.div variants={itemVariants}>
+          <ProfileImage
+            src="/images/profile-image.jpg"
+            alt="Profile image of Stefanie Jane"
+            whileHover={{ scale: 1.05 }}
+          />
+        </motion.div>
+        <TextContent>
+          <motion.div variants={itemVariants}>
+            <Paragraph>
+              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and
+              I&apos;ve spent
+              <GradientText> the last 25+ years </GradientText>
+              turning complex technical challenges into beautiful products. My
+              experience spans the entire technology stack—from embedded
+              systems, hardware bringup, and OS development to cloud services,
+              frontend, and AI.
+            </Paragraph>
+          </motion.div>
 
-      <ContentGrid>
-        <ProfileSection>
-          <ProfileCard
-            animate={{ opacity: 1, x: 0 }}
-            initial={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+          <motion.div variants={itemVariants}>
+            <Paragraph>
+              I&apos;ve successfully led both open-source and enterprise
+              projects, helping teams achieve technical excellence and
+              innovation. I&apos;m proficient in multiple programming languages,
+              and highly skilled with the use of modern AI developer tooling and
+              practices. I thrive in hands-on leadership roles, and am committed
+              to continuous learning and self improvement.
+            </Paragraph>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Paragraph>
+              You might know me as the creator of{" "}
+              <StyledLink
+                href="https://en.wikipedia.org/wiki/CyanogenMod"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                CyanogenMod
+              </StyledLink>
+              , now{" "}
+              <StyledLink
+                href="https://lineageos.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LineageOS
+              </StyledLink>
+              , which became the largest open-source Android distribution,
+              empowering millions of people to take control of their devices. I
+              also co-founded the company which was formed to support it&apos;s
+              development.
+            </Paragraph>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Paragraph>
+              When I&apos;m not hacking on code or flashing devices, you&apos;ll
+              find me skating with my roller derby team, producing electronic
+              music, or creating and contributing to open-source projects. Check
+              out all my work on{" "}
+              <StyledLink
+                href="https://github.com/hyperb1iss"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub
+              </StyledLink>
+              .
+            </Paragraph>
+          </motion.div>
+
+          <motion.div
+            variants={{
+              ...itemVariants,
+              visible: {
+                ...itemVariants.visible,
+                transition: {
+                  duration: 0.7,
+                  ease: "easeOut",
+                },
+              },
+            }}
           >
-            <ProfileImage
-              alt="Stefanie Jane"
-              src="/images/profile-image.jpg"
-              transition={{ duration: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-            />
-            <ProfileName>Stefanie Jane</ProfileName>
-            <ProfileTitle>Full-Stack Engineer & Creative Technologist</ProfileTitle>
+            <ContactSection>
+              <Paragraph style={{ marginBottom: "1rem", opacity: 0.95 }}>
+                I&apos;m always excited to connect with fellow technologists,
+                creators, and innovators. You can reach me via email or using
+                any of the links below. Here&apos;s how we might work together:
+              </Paragraph>
 
-            <SocialLinks>
-              <SocialLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">
-                <FaGithub />
-              </SocialLink>
-              <SocialLink href="https://linkedin.com/in/hyperb1iss" rel="noopener noreferrer" target="_blank">
-                <FaLinkedin />
-              </SocialLink>
-              <SocialLink href="mailto:stef@hyperbliss.tech">
-                <FaEnvelope />
-              </SocialLink>
-            </SocialLinks>
-          </ProfileCard>
-        </ProfileSection>
-
-        <ContentSection>
-          <BioCard
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle>
-              <FaCode /> Engineering Excellence
-            </BioTitle>
-            <BioText>
-              With over <strong>two decades</strong> in technology, I've journeyed from kernel hacking to cloud
-              architecture, always seeking the perfect fusion of art and code. My expertise spans the entire stack—from
-              embedded systems and Android OS development to modern web frameworks and AI/ML applications.
-            </BioText>
-            <BioText>
-              I've led engineering teams at companies like <strong>T-Mobile</strong> and <strong>Microsoft</strong>,
-              pioneered open-source innovations, and consistently pushed the boundaries of what's possible in software.
-              My passion lies in building extraordinary digital experiences that challenge conventions and create
-              meaningful impact.
-            </BioText>
-          </BioCard>
-
-          <BioCard
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle>
-              <FaRocket /> Beyond the Code
-            </BioTitle>
-            <BioText>
-              I'm a <strong>music producer</strong>, hardware tinkerer, and perpetual learner. I believe the best
-              technology emerges at the intersection of diverse disciplines. Whether crafting elegant algorithms,
-              designing intuitive interfaces, or composing electronic music, I bring creativity and precision to
-              everything I create.
-            </BioText>
-            <BioText>
-              Currently focused on building next-generation <strong>AI-powered applications</strong> and exploring the
-              frontiers of human-computer interaction. Always excited to collaborate on projects that merge technical
-              excellence with creative vision.
-            </BioText>
-          </BioCard>
-
-          <BioCard
-            animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle>
-              <FaMicrochip /> Technical Arsenal
-            </BioTitle>
-            <SkillsGrid>
-              {Object.entries(skills).map(([category, items], index) => (
-                <SkillCategory
-                  animate={{ opacity: 1, scale: 1 }}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  key={category}
-                  transition={{ delay: 0.5 + index * 0.1, duration: 0.5 }}
-                >
-                  <SkillTitle>{category}</SkillTitle>
-                  <SkillList>
-                    {items.map((skill) => (
-                      <SkillChip key={skill}>{skill}</SkillChip>
-                    ))}
-                  </SkillList>
-                </SkillCategory>
-              ))}
-            </SkillsGrid>
-          </BioCard>
-        </ContentSection>
-      </ContentGrid>
+              <ContactGrid>
+                {[
+                  {
+                    title: "Technical Consultation",
+                    description:
+                      "Need help building or customizing a device, getting a BSP in shape, building a mobile app, or integrating AI? Let's discuss your technical challenges.",
+                  },
+                  {
+                    title: "Speaking Engagements",
+                    description:
+                      "Looking for a keynote speaker or technical presenter? I'd love to share insights at your next event.",
+                  },
+                  {
+                    title: "Collaboration",
+                    description:
+                      "Have an interesting project or idea and need help building it? I'm always open to exploring new opportunities and partnerships.",
+                  },
+                  {
+                    title: "Mentorship",
+                    description:
+                      "Seeking guidance in technology leadership or system design? Let's connect and grow together.",
+                  },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 + index * 0.1 }}
+                  >
+                    <ContactReason>
+                      <h3>{item.title}</h3>
+                      <p>{item.description}</p>
+                    </ContactReason>
+                  </motion.div>
+                ))}
+              </ContactGrid>
+            </ContactSection>
+          </motion.div>
+        </TextContent>
+      </ContentWrapper>
     </PageLayout>
-  )
-}
+  );
+};
 
-export default AboutPageContent
+export default AboutPageContent;
