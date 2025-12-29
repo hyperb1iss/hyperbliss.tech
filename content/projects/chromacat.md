@@ -1,5 +1,6 @@
 ---
-title: '😺 ChromaCat: A Fabulous Terminal Colorizer'
+emoji: '😺'
+title: 'ChromaCat: A Fabulous Terminal Colorizer'
 date: '2024-09-25'
 tags: ['Rust', 'CLI', 'Terminal', 'Open Source', 'Customization']
 description:

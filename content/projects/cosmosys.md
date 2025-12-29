@@ -1,5 +1,6 @@
 ---
-title: '🪐 Cosmosys: Stellar Release Management'
+emoji: '🪐'
+title: 'Cosmosys: Stellar Release Management'
 description:
   'A powerful, flexible, and customizable release management tool designed to
   streamline your software deployment process.'

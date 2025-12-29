@@ -1,5 +1,6 @@
 ---
-title: '🔮 Git-Iris: AI-Powered Git Workflow Assistant'
+emoji: '🔮'
+title: 'Git-Iris: AI-Powered Git Workflow Assistant'
 description:
   'A comprehensive AI-powered Git workflow assistant that enhances your
   development process from start to finish.'

@@ -1,5 +1,6 @@
 ---
-title: '🌠 Dotfiles: A Beautiful Development Environment'
+emoji: '🌠'
+title: 'Dotfiles: A Beautiful Development Environment'
 date: '2024-09-25'
 tags: ['Shell', 'Development', 'WSL', 'Customization', 'Productivity']
 description:

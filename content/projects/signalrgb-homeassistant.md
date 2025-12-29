@@ -1,5 +1,6 @@
 ---
-title: '🏠 SignalRGB Home Assistant Integration'
+emoji: '🏠'
+title: 'SignalRGB Home Assistant Integration'
 date: '2024-09-25'
 tags: ['home-assistant', 'iot', 'rgb-lighting', 'smart-home']
 category: 'Projects'

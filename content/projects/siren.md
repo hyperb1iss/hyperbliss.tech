@@ -1,5 +1,6 @@
 ---
-title: '🧜‍♀️ Siren ✨'
+emoji: '🧜‍♀️'
+title: 'Siren'
 description: 'Enchanting code quality guardian with style and flair.'
 date: '2025-03-07'
 github: 'https://github.com/hyperb1iss/siren'

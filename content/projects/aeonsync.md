@@ -1,5 +1,6 @@
 ---
-title: '🌀 AeonSync: Powerful Remote Backup Tool'
+emoji: '🌀'
+title: 'AeonSync: Powerful Remote Backup Tool'
 date: '2024-09-25'
 tags: ['Python', 'Backup', 'CLI', 'DevOps', 'Open Source']
 description:

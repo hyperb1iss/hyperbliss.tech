@@ -1,5 +1,6 @@
 ---
-title: '🌈 signalrgb-python: Python Interface for SignalRGB Pro'
+emoji: '🌈'
+title: 'signalrgb-python: Python Interface for SignalRGB Pro'
 date: '2024-09-25'
 tags: ['Python', 'SignalRGB', 'API', 'CLI', 'RGB', 'Lighting']
 category: 'Projects'

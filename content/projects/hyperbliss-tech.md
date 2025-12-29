@@ -1,5 +1,6 @@
 ---
-title: '🌠 hyperbliss.tech: A Symphony of Code and Design'
+emoji: '🌠'
+title: 'hyperbliss.tech: A Symphony of Code and Design'
 date: '2024-09-25'
 tags: ['Next.js', 'TypeScript', 'React', 'Web Development', 'Creative Coding']
 description:

@@ -1,5 +1,6 @@
 ---
-title: '🌟 Hyper Light Card'
+emoji: '🌟'
+title: 'Hyper Light Card'
 description:
   'A beautifully designed custom card for controlling SignalRGB in Home
   Assistant'

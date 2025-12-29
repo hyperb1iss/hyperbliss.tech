@@ -1,5 +1,6 @@
 ---
-title: '🤖 DroidMind ✨'
+emoji: '🤖'
+title: 'DroidMind'
 description:
   'AI-powered Android device control via Model Context Protocol (MCP).'
 date: '2025-03-07'

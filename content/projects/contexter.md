@@ -1,5 +1,6 @@
 ---
-title: '🚀 Contexter: Streamlined Context Gathering for LLMs'
+emoji: '🚀'
+title: 'Contexter: Streamlined Context Gathering for LLMs'
 date: '2024-09-25'
 description:
   'A powerful command-line and browser extension tool for gathering context from

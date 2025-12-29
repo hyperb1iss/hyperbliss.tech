@@ -52,11 +52,16 @@ export default defineConfig({
         fields: [
           {
             type: 'string',
+            name: 'emoji',
+            label: 'Emoji',
+            description: 'Optional emoji displayed before the title',
+          },
+          {
+            type: 'string',
             name: 'title',
             label: 'Title',
             isTitle: true,
             required: true,
-            searchable: false,
           },
           {
             type: 'datetime',
@@ -113,11 +118,16 @@ export default defineConfig({
         fields: [
           {
             type: 'string',
+            name: 'emoji',
+            label: 'Emoji',
+            description: 'Optional emoji displayed before the title',
+          },
+          {
+            type: 'string',
             name: 'title',
             label: 'Title',
             isTitle: true,
             required: true,
-            searchable: false,
           },
           {
             type: 'string',
