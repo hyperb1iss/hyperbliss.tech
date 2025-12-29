@@ -1,11 +1,11 @@
 // app/components/AboutPageContent.tsx
 
-import { motion } from "framer-motion";
-import React from "react";
-import styled from "styled-components";
-import PageLayout from "./PageLayout";
-import PageTitle from "./PageTitle";
-import SparklingName from "./SparklingName";
+import { motion } from 'framer-motion'
+import React from 'react'
+import styled from 'styled-components'
+import PageLayout from './PageLayout'
+import PageTitle from './PageTitle'
+import SparklingName from './SparklingName'
 
 const ContentWrapper = styled(motion.div)`
   display: block;
@@ -14,7 +14,7 @@ const ContentWrapper = styled(motion.div)`
   padding: 0 2rem;
   max-width: 1200px;
   margin: 2rem auto;
-`;
+`
 
 const ProfileImage = styled(motion.img)`
   float: left;
@@ -42,7 +42,7 @@ const ProfileImage = styled(motion.img)`
     max-width: 300px;
     display: block;
   }
-`;
+`
 
 const TextContent = styled(motion.div)`
   width: 100%;
@@ -52,7 +52,7 @@ const TextContent = styled(motion.div)`
     width: 100%;
     text-align: left;
   }
-`;
+`
 
 const Paragraph = styled.p`
   font-size: clamp(1.4rem, 1.8vw, 1.8rem);
@@ -80,7 +80,7 @@ const Paragraph = styled.p`
   @media (max-width: 768px) {
     font-size: 1.4rem;
   }
-`;
+`
 
 const StyledLink = styled.a`
   color: var(--color-accent);
@@ -116,7 +116,7 @@ const StyledLink = styled.a`
       transform-origin: left;
     }
   }
-`;
+`
 
 const ContactSection = styled.div`
   margin-top: 4rem;
@@ -128,7 +128,7 @@ const ContactSection = styled.div`
     rgba(162, 89, 255, 0.03) 100%
   );
   border-radius: 0 0 20px 20px;
-`;
+`
 
 const ContactGrid = styled.div`
   display: grid;
@@ -136,7 +136,7 @@ const ContactGrid = styled.div`
   gap: 2rem;
   margin-top: 2rem;
   padding: 0 1rem;
-`;
+`
 
 const ContactReason = styled.div`
   padding: 2rem;
@@ -222,7 +222,7 @@ const ContactReason = styled.div`
     text-align: left;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   }
-`;
+`
 
 const GradientText = styled.span`
   background: linear-gradient(
@@ -236,7 +236,7 @@ const GradientText = styled.span`
   text-shadow: none;
   filter: brightness(1.2);
   padding: 0 0.2em;
-`;
+`
 
 const contentVariants = {
   hidden: { opacity: 0 },
@@ -246,95 +246,71 @@ const contentVariants = {
       staggerChildren: 0.3,
     },
   },
-};
+}
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
-    y: 0,
     transition: {
       duration: 0.5,
     },
+    y: 0,
   },
-};
+}
 
 const AboutPageContent: React.FC = () => {
   return (
     <PageLayout>
       <PageTitle>About Me</PageTitle>
-      <ContentWrapper
-        variants={contentVariants}
-        initial="hidden"
-        animate="visible"
-      >
+      <ContentWrapper animate="visible" initial="hidden" variants={contentVariants}>
         <motion.div variants={itemVariants}>
           <ProfileImage
-            src="/images/profile-image.jpg"
             alt="Profile image of Stefanie Jane"
+            src="/images/profile-image.jpg"
             whileHover={{ scale: 1.05 }}
           />
         </motion.div>
         <TextContent>
           <motion.div variants={itemVariants}>
             <Paragraph>
-              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and
-              I&apos;ve spent
+              Hey there! I&apos;m <SparklingName name="Stefanie Jane" />, and I&apos;ve spent
               <GradientText> the last 25+ years </GradientText>
-              turning complex technical challenges into beautiful products. My
-              experience spans the entire technology stack—from embedded
-              systems, hardware bringup, and OS development to cloud services,
-              frontend, and AI.
+              turning complex technical challenges into beautiful products. My experience spans the entire technology
+              stack—from embedded systems, hardware bringup, and OS development to cloud services, frontend, and AI.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              I&apos;ve successfully led both open-source and enterprise
-              projects, helping teams achieve technical excellence and
-              innovation. I&apos;m proficient in multiple programming languages,
-              and highly skilled with the use of modern AI developer tooling and
-              practices. I thrive in hands-on leadership roles, and am committed
-              to continuous learning and self improvement.
+              I&apos;ve successfully led both open-source and enterprise projects, helping teams achieve technical
+              excellence and innovation. I&apos;m proficient in multiple programming languages, and highly skilled with
+              the use of modern AI developer tooling and practices. I thrive in hands-on leadership roles, and am
+              committed to continuous learning and self improvement.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              You might know me as the creator of{" "}
-              <StyledLink
-                href="https://en.wikipedia.org/wiki/CyanogenMod"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              You might know me as the creator of{' '}
+              <StyledLink href="https://en.wikipedia.org/wiki/CyanogenMod" rel="noopener noreferrer" target="_blank">
                 CyanogenMod
               </StyledLink>
-              , now{" "}
-              <StyledLink
-                href="https://lineageos.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              , now{' '}
+              <StyledLink href="https://lineageos.org/" rel="noopener noreferrer" target="_blank">
                 LineageOS
               </StyledLink>
-              , which became the largest open-source Android distribution,
-              empowering millions of people to take control of their devices. I
-              also co-founded the company which was formed to support it&apos;s
-              development.
+              , which became the largest open-source Android distribution, empowering millions of people to take control
+              of their devices. I also co-founded the company which was formed to support it&apos;s development.
             </Paragraph>
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <Paragraph>
-              When I&apos;m not hacking on code or flashing devices, you&apos;ll
-              find me skating with my roller derby team, producing electronic
-              music, or creating and contributing to open-source projects. Check
-              out all my work on{" "}
-              <StyledLink
-                href="https://github.com/hyperb1iss"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              When I&apos;m not hacking on code or flashing devices, you&apos;ll find me skating with my roller derby
+              team, producing electronic music, or creating and contributing to open-source projects. Check out all my
+              work on{' '}
+              <StyledLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">
                 GitHub
               </StyledLink>
               .
@@ -348,45 +324,44 @@ const AboutPageContent: React.FC = () => {
                 ...itemVariants.visible,
                 transition: {
                   duration: 0.7,
-                  ease: "easeOut",
+                  ease: 'easeOut',
                 },
               },
             }}
           >
             <ContactSection>
-              <Paragraph style={{ marginBottom: "1rem", opacity: 0.95 }}>
-                I&apos;m always excited to connect with fellow technologists,
-                creators, and innovators. You can reach me via email or using
-                any of the links below. Here&apos;s how we might work together:
+              <Paragraph style={{ marginBottom: '1rem', opacity: 0.95 }}>
+                I&apos;m always excited to connect with fellow technologists, creators, and innovators. You can reach me
+                via email or using any of the links below. Here&apos;s how we might work together:
               </Paragraph>
 
               <ContactGrid>
                 {[
                   {
-                    title: "Technical Consultation",
                     description:
                       "Need help building or customizing a device, getting a BSP in shape, building a mobile app, or integrating AI? Let's discuss your technical challenges.",
+                    title: 'Technical Consultation',
                   },
                   {
-                    title: "Speaking Engagements",
                     description:
                       "Looking for a keynote speaker or technical presenter? I'd love to share insights at your next event.",
+                    title: 'Speaking Engagements',
                   },
                   {
-                    title: "Collaboration",
                     description:
                       "Have an interesting project or idea and need help building it? I'm always open to exploring new opportunities and partnerships.",
+                    title: 'Collaboration',
                   },
                   {
-                    title: "Mentorship",
                     description:
                       "Seeking guidance in technology leadership or system design? Let's connect and grow together.",
+                    title: 'Mentorship',
                   },
                 ].map((item, index) => (
                   <motion.div
-                    key={item.title}
-                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    key={item.title}
                     transition={{ delay: 0.2 + index * 0.1 }}
                   >
                     <ContactReason>
@@ -401,7 +376,7 @@ const AboutPageContent: React.FC = () => {
         </TextContent>
       </ContentWrapper>
     </PageLayout>
-  );
-};
+  )
+}
 
-export default AboutPageContent;
+export default AboutPageContent

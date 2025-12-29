@@ -1,46 +1,32 @@
 import HomeLayout from '@/components/HomeLayout'
-import { getAllMarkdownSlugs, getMarkdownContent } from '@/lib/markdown'
+import { getAllPosts, getAllProjects } from '@/lib/tina'
 
 export default async function Home() {
-  const postSlugs = await getAllMarkdownSlugs('src/posts')
-  const posts = await Promise.all(
-    postSlugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent('src/posts', slug)
-      return {
-        frontmatter: {
-          author: frontmatter.author as string,
-          date: frontmatter.date as string,
-          excerpt: frontmatter.excerpt as string,
-          tags: (frontmatter.tags as string[]) || [],
-          title: frontmatter.title as string,
-        },
-        slug,
-      }
-    }),
-  )
+  const allPosts = await getAllPosts()
+  const allProjects = await getAllProjects()
 
-  // Sort posts by date
-  posts.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+  // Transform posts to the format HomeLayout expects
+  const latestPosts = allPosts.slice(0, 5).map((post) => ({
+    frontmatter: {
+      author: post.author ?? '',
+      date: post.date ?? '',
+      excerpt: post.excerpt ?? '',
+      tags: (post.tags ?? []).filter((t): t is string => t !== null),
+      title: post.displayTitle,
+    },
+    slug: post.slug,
+  }))
 
-  // Take only the latest 5 posts for the sidebar
-  const latestPosts = posts.slice(0, 5)
-
-  // Fetch real project data
-  const projectSlugs = await getAllMarkdownSlugs('src/projects')
-  const projects = await Promise.all(
-    projectSlugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent('src/projects', slug)
-      return {
-        frontmatter: {
-          description: frontmatter.description as string,
-          github: frontmatter.github as string,
-          tags: (frontmatter.tags as string[]) || [],
-          title: frontmatter.title as string,
-        },
-        slug,
-      }
-    }),
-  )
+  // Transform projects to the format HomeLayout expects
+  const projects = allProjects.map((project) => ({
+    frontmatter: {
+      description: project.description ?? '',
+      github: project.github ?? '',
+      tags: (project.tags ?? []).filter((t): t is string => t !== null),
+      title: project.displayTitle,
+    },
+    slug: project.slug,
+  }))
 
   return <HomeLayout latestPosts={latestPosts} projects={projects} />
 }

@@ -1,27 +1,21 @@
 // app/(transition)/blog/page.tsx
 import BlogList from '../../components/BlogList'
-import { getAllMarkdownSlugs, getMarkdownContent } from '../../lib/markdown'
+import { getAllPosts } from '../../lib/tina'
 
 export default async function Blog() {
-  const slugs = await getAllMarkdownSlugs('src/posts')
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent('src/posts', slug)
-      return {
-        frontmatter: {
-          author: frontmatter.author as string,
-          date: frontmatter.date as string,
-          excerpt: frontmatter.excerpt as string,
-          tags: frontmatter.tags as string[],
-          title: frontmatter.title as string,
-        },
-        slug,
-      }
-    }),
-  )
+  const posts = await getAllPosts()
 
-  // Sort posts by date
-  posts.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+  // Transform to the format BlogList expects
+  const blogPosts = posts.map((post) => ({
+    frontmatter: {
+      author: post.author ?? undefined,
+      date: post.date ?? '',
+      excerpt: post.excerpt ?? '',
+      tags: (post.tags ?? []).filter((t): t is string => t !== null),
+      title: post.displayTitle,
+    },
+    slug: post.slug,
+  }))
 
-  return <BlogList posts={posts} />
+  return <BlogList posts={blogPosts} />
 }

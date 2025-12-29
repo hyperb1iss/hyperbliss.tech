@@ -1,53 +1,14 @@
 {
-  "seo": {
-    "siteTitle": "@hyperb1iss | Stefanie Jane",
-    "siteDescription": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
-    "siteName": "🌠 𝓱 𝔂 𝓹 𝓮 𝔯 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹",
-    "authorName": "Stefanie Jane",
-    "twitterHandle": "@hyperb1iss",
-    "keywords": [
-      "Stefanie Jane",
-      "hyperb1iss",
-      "software engineer",
-      "full-stack developer",
-      "web development",
-      "React",
-      "TypeScript",
-      "Next.js",
-      "open source",
-      "CyanogenMod",
-      "LineageOS",
-      "Android",
-      "tech blog",
-      "portfolio"
-    ],
-    "ogImage": "/images/og-image.png"
+  "footer": {
+    "copyrightName": "Stefanie Jane"
   },
   "navigation": [
-    { "label": "About", "href": "/about/" },
-    { "label": "Blog", "href": "/blog/" },
-    { "label": "Projects", "href": "/projects/" },
-    { "label": "Resume", "href": "/resume/" }
-  ],
-  "socialLinks": [
-    { "label": "Bluesky", "href": "https://bsky.app/profile/hyperbliss.tech", "icon": "FaBluesky" },
-    { "label": "Mastodon", "href": "https://hachyderm.io/@bliss", "icon": "FaMastodon" },
-    { "label": "Instagram", "href": "https://instagram.com/hyperb1iss", "icon": "FaInstagram" },
-    { "label": "LinkedIn", "href": "https://linkedin.com/in/hyperb1iss", "icon": "FaLinkedin" },
-    { "label": "GitHub", "href": "https://github.com/hyperb1iss", "icon": "FaGithub" },
-    { "label": "Spotify", "href": "https://open.spotify.com/user/12173574470", "icon": "FaSpotify" }
-  ],
-  "techTags": [
-    "AI/ML", "Android", "AWS", "Backend", "BSP", "C/C++", "Cloud Services",
-    "DevOps", "Embedded Systems", "Firmware", "Frontend", "Full Stack",
-    "Golang", "Hardware Bringup", "Infrastructure", "IoT", "Java",
-    "JavaScript", "Kotlin", "Linux Kernel", "Mobile Development", "Node.js",
-    "Open Source", "Prototyping", "Python", "Qualcomm Snapdragon", "React",
-    "Rust", "System Architecture", "Team Leadership", "TypeScript"
+    { "href": "/about/", "label": "About" },
+    { "href": "/blog/", "label": "Blog" },
+    { "href": "/projects/", "label": "Projects" },
+    { "href": "/resume/", "label": "Resume" }
   ],
   "notFound": {
-    "title": "404",
-    "subtitle": "SIGNAL LOST",
     "description": "The coordinates you've entered don't exist in this realm. Reality may have been altered, or signal fragmented.",
     "messages": [
       "Want to retrace your steps or explore uncharted code?",
@@ -65,12 +26,76 @@
       "Want to cache a new location or run a sys diagnostic?",
       "Care to initialize a new journey or rollback to a checkpoint?"
     ],
-    "primaryButtonText": "Return to Nexus",
     "primaryButtonLink": "/",
+    "primaryButtonText": "Return to Nexus",
+    "secondaryButtonLink": "/projects/",
     "secondaryButtonText": "Scan for Projects",
-    "secondaryButtonLink": "/projects/"
+    "subtitle": "SIGNAL LOST",
+    "title": "404"
   },
-  "footer": {
-    "copyrightName": "Stefanie Jane"
-  }
+  "seo": {
+    "authorName": "Stefanie Jane",
+    "keywords": [
+      "Stefanie Jane",
+      "hyperb1iss",
+      "software engineer",
+      "full-stack developer",
+      "web development",
+      "React",
+      "TypeScript",
+      "Next.js",
+      "open source",
+      "CyanogenMod",
+      "LineageOS",
+      "Android",
+      "tech blog",
+      "portfolio"
+    ],
+    "ogImage": "/images/og-image.png",
+    "siteDescription": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
+    "siteName": "🌠 𝓱 𝔂 𝓹 𝓮 𝔯 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹",
+    "siteTitle": "@hyperb1iss | Stefanie Jane",
+    "twitterHandle": "@hyperb1iss"
+  },
+  "socialLinks": [
+    { "href": "https://bsky.app/profile/hyperbliss.tech", "icon": "FaBluesky", "label": "Bluesky" },
+    { "href": "https://hachyderm.io/@bliss", "icon": "FaMastodon", "label": "Mastodon" },
+    { "href": "https://instagram.com/hyperb1iss", "icon": "FaInstagram", "label": "Instagram" },
+    { "href": "https://linkedin.com/in/hyperb1iss", "icon": "FaLinkedin", "label": "LinkedIn" },
+    { "href": "https://github.com/hyperb1iss", "icon": "FaGithub", "label": "GitHub" },
+    { "href": "https://open.spotify.com/user/12173574470", "icon": "FaSpotify", "label": "Spotify" }
+  ],
+  "techTags": [
+    "AI/ML",
+    "Android",
+    "AWS",
+    "Backend",
+    "BSP",
+    "C/C++",
+    "Cloud Services",
+    "DevOps",
+    "Embedded Systems",
+    "Firmware",
+    "Frontend",
+    "Full Stack",
+    "Golang",
+    "Hardware Bringup",
+    "Infrastructure",
+    "IoT",
+    "Java",
+    "JavaScript",
+    "Kotlin",
+    "Linux Kernel",
+    "Mobile Development",
+    "Node.js",
+    "Open Source",
+    "Prototyping",
+    "Python",
+    "Qualcomm Snapdragon",
+    "React",
+    "Rust",
+    "System Architecture",
+    "Team Leadership",
+    "TypeScript"
+  ]
 }

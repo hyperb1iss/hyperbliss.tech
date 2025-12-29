@@ -1,7 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compiler: {
-    styledComponents: true,
+    styledComponents: {
+      displayName: true,
+      fileName: true,
+      minify: false,
+      pure: true,
+      ssr: true,
+      transpileTemplateLiterals: true,
+    },
   },
   compress: true,
 
@@ -91,17 +98,17 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
-  // Ensure consistent URL format (with or without trailing slashes)
-  trailingSlash: true,
-
   // Rewrites for TinaCMS admin
   async rewrites() {
     return [
       {
-        source: '/admin/',
         destination: '/admin/index.html',
+        source: '/admin/',
       },
     ]
   },
+
+  // Ensure consistent URL format (with or without trailing slashes)
+  trailingSlash: true,
 }
 export default nextConfig

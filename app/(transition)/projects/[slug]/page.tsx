@@ -1,12 +1,12 @@
 // app/(transition)/projects/[slug]/page.tsx
 import { ResolvingMetadata } from 'next'
-import ProjectDetail from '../../../components/ProjectDetail'
+import ProjectDetailTina from '../../../components/ProjectDetailTina'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getAllMarkdownSlugs, getMarkdownContent } from '../../../lib/markdown'
+import { getAllProjectSlugs, getProject } from '../../../lib/tina'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
-  const slugs = await getAllMarkdownSlugs('src/projects')
+  const slugs = await getAllProjectSlugs()
   return slugs.map((slug) => ({ slug }))
 }
 
@@ -14,7 +14,15 @@ export async function generateMetadata({ params }: PageProps, parent: ResolvingM
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('src/projects', slug)
+  const project = await getProject(slug)
+
+  const frontmatter: ProjectFrontmatter = {
+    description: project.description ?? '',
+    github: project.github ?? '',
+    tags: (project.tags ?? []).filter((t): t is string => t !== null),
+    title: project.displayTitle,
+  }
+
   return generateProjectMetadata(frontmatter, slug, parent)
 }
 
@@ -22,15 +30,14 @@ export default async function ProjectPage({ params }: PageProps) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { frontmatter, content } = await getMarkdownContent<ProjectFrontmatter>('src/projects', slug)
+  const project = await getProject(slug)
 
   return (
-    <ProjectDetail
-      author={frontmatter.author}
-      content={content}
-      github={frontmatter.github}
-      tags={frontmatter.tags}
-      title={frontmatter.title}
+    <ProjectDetailTina
+      body={project.body}
+      github={project.github ?? ''}
+      tags={(project.tags ?? []).filter((t): t is string => t !== null)}
+      title={project.displayTitle}
     />
   )
 }

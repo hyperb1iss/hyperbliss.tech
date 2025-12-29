@@ -261,7 +261,7 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
   }
 
   return (
-    <CodeBlockPreWrapper className="blog-syntax" {...rest}>
+    <CodeBlockPreWrapper className="blog-syntax" suppressHydrationWarning={true} {...rest}>
       {children}
       <CopyButton
         disabled={!isClipboardApiAvailable || isCopying}
@@ -319,8 +319,9 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
             // Block code: Render the plain code tag.
             // Our 'pre' component above will wrap it and add the button/styles.
             // Pass className for language detection by rehype-highlight.
+            // suppressHydrationWarning because syntax highlighting may differ between server/client
             return (
-              <code className={className} {...props}>
+              <code className={className} suppressHydrationWarning={true} {...props}>
                 {children}
               </code>
             )

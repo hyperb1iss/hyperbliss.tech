@@ -1,28 +1,23 @@
 // app/(transition)/projects/page.tsx
 import ProjectsPageContent from '../../components/ProjectsPageContent'
-import { getAllMarkdownSlugs, getMarkdownContent } from '../../lib/markdown'
-
-interface ProjectFrontmatter extends Record<string, unknown> {
-  title: string
-  description: string
-  github: string
-  author?: string
-  tags?: string[]
-}
+import { getAllProjects } from '../../lib/tina'
 
 export default async function Projects() {
-  const slugs = await getAllMarkdownSlugs('src/projects')
-  const projects = await Promise.all(
-    slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('src/projects', slug)
-      return {
-        frontmatter,
-        slug,
-      }
-    }),
-  )
+  const projects = await getAllProjects()
 
-  return <ProjectsPageContent projects={projects} />
+  // Transform to the format ProjectsPageContent expects
+  const projectsList = projects.map((project) => ({
+    frontmatter: {
+      author: undefined,
+      description: project.description ?? '',
+      github: project.github ?? '',
+      tags: (project.tags ?? []).filter((t): t is string => t !== null),
+      title: project.displayTitle,
+    },
+    slug: project.slug,
+  }))
+
+  return <ProjectsPageContent projects={projectsList} />
 }
 
 export const metadata = {

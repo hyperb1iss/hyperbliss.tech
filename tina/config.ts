@@ -1,11 +1,7 @@
 import { defineConfig } from 'tinacms'
 
 // Branch configuration for TinaCloud
-const branch =
-  process.env.GITHUB_BRANCH ||
-  process.env.VERCEL_GIT_COMMIT_REF ||
-  process.env.HEAD ||
-  'main'
+const branch = process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || process.env.HEAD || 'main'
 
 const APP_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
 const TINA_CLIENT_ID = process.env.NEXT_PUBLIC_TINA_CLIENT_ID
@@ -20,11 +16,9 @@ export default defineConfig({
 
   clientId: TINA_CLIENT_ID ?? '',
 
-  ui: {
-    previewUrl: () => ({
-      url: APP_BASE_URL,
-    }),
-  },
+  // Use local content for builds when not in production (Netlify)
+  // This allows `npm run build` to work locally without TinaCloud
+  localContentPath: process.env.NETLIFY ? undefined : 'content',
 
   media: {
     tina: {
@@ -33,373 +27,537 @@ export default defineConfig({
     },
   },
 
-  // TinaCloud token for cloud mode
-  token: process.env.TINA_TOKEN,
-
   schema: {
     collections: [
       // ═══════════════════════════════════════════════════════════════════════
       // BLOG POSTS COLLECTION
       // ═══════════════════════════════════════════════════════════════════════
       {
-        name: 'posts',
-        label: 'Blog Posts',
-        path: 'content/posts',
-        format: 'md',
-        ui: {
-          router: ({ document }) => `/blog/${document._sys.filename}`,
-        },
         fields: [
           {
-            type: 'string',
-            name: 'emoji',
-            label: 'Emoji',
             description: 'Optional emoji displayed before the title',
+            label: 'Emoji',
+            name: 'emoji',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'title',
-            label: 'Title',
             isTitle: true,
+            label: 'Title',
+            name: 'title',
             required: true,
-          },
-          {
-            type: 'datetime',
-            name: 'date',
-            label: 'Date',
-          },
-          {
             type: 'string',
-            name: 'author',
+          },
+          {
+            label: 'Date',
+            name: 'date',
+            type: 'datetime',
+          },
+          {
             label: 'Author',
+            name: 'author',
+            type: 'string',
             ui: {
               component: 'text',
             },
           },
           {
-            type: 'string',
-            name: 'excerpt',
             label: 'Excerpt',
+            name: 'excerpt',
+            type: 'string',
             ui: {
               component: 'textarea',
             },
           },
           {
-            type: 'string',
-            name: 'tags',
             label: 'Tags',
             list: true,
+            name: 'tags',
+            type: 'string',
           },
           {
-            type: 'image',
-            name: 'coverImage',
             label: 'Cover Image',
+            name: 'coverImage',
+            type: 'image',
           },
           {
-            type: 'rich-text',
-            name: 'body',
-            label: 'Body',
             isBody: true,
+            label: 'Body',
+            name: 'body',
+            type: 'rich-text',
           },
         ],
+        format: 'md',
+        label: 'Blog Posts',
+        name: 'posts',
+        path: 'content/posts',
+        ui: {
+          router: ({ document }) => `/blog/${document._sys.filename}`,
+        },
       },
 
       // ═══════════════════════════════════════════════════════════════════════
       // PROJECTS COLLECTION
       // ═══════════════════════════════════════════════════════════════════════
       {
-        name: 'projects',
-        label: 'Projects',
-        path: 'content/projects',
-        format: 'md',
-        ui: {
-          router: ({ document }) => `/projects/${document._sys.filename}`,
-        },
         fields: [
           {
-            type: 'string',
-            name: 'emoji',
-            label: 'Emoji',
             description: 'Optional emoji displayed before the title',
+            label: 'Emoji',
+            name: 'emoji',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'title',
-            label: 'Title',
             isTitle: true,
+            label: 'Title',
+            name: 'title',
             required: true,
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'description',
             label: 'Description',
+            name: 'description',
+            type: 'string',
             ui: {
               component: 'textarea',
             },
           },
           {
-            type: 'string',
-            name: 'github',
             label: 'GitHub URL',
+            name: 'github',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'date',
-            label: 'Date',
             description: 'Date in YYYY-MM-DD format',
+            label: 'Date',
+            name: 'date',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'tags',
             label: 'Tags',
             list: true,
+            name: 'tags',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'category',
             label: 'Category',
+            name: 'category',
+            type: 'string',
           },
           {
-            type: 'string',
-            name: 'categories',
             label: 'Categories',
             list: true,
-          },
-          {
+            name: 'categories',
             type: 'string',
-            name: 'status',
-            label: 'Status',
+          },
+          {
             description: 'Project status (e.g., Active Development)',
+            label: 'Status',
+            name: 'status',
+            type: 'string',
           },
           {
-            type: 'image',
-            name: 'image',
             label: 'Image',
-          },
-          {
+            name: 'image',
             type: 'image',
-            name: 'coverImage',
-            label: 'Cover Image',
           },
           {
-            type: 'rich-text',
-            name: 'body',
-            label: 'Body',
+            label: 'Cover Image',
+            name: 'coverImage',
+            type: 'image',
+          },
+          {
             isBody: true,
+            label: 'Body',
+            name: 'body',
+            type: 'rich-text',
           },
         ],
+        format: 'md',
+        label: 'Projects',
+        name: 'projects',
+        path: 'content/projects',
+        ui: {
+          router: ({ document }) => `/projects/${document._sys.filename}`,
+        },
       },
 
       // ═══════════════════════════════════════════════════════════════════════
       // SITE CONFIG COLLECTION (Global Settings)
       // ═══════════════════════════════════════════════════════════════════════
       {
-        name: 'siteConfig',
-        label: 'Site Config',
-        path: 'content/config',
+        fields: [
+          // SEO Settings
+          {
+            fields: [
+              {
+                label: 'Site Title',
+                name: 'siteTitle',
+                required: true,
+                type: 'string',
+              },
+              {
+                label: 'Site Description',
+                name: 'siteDescription',
+                required: true,
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+              {
+                label: 'Site Name (for OG)',
+                name: 'siteName',
+                required: true,
+                type: 'string',
+              },
+              {
+                label: 'Author Name',
+                name: 'authorName',
+                required: true,
+                type: 'string',
+              },
+              {
+                label: 'Twitter Handle',
+                name: 'twitterHandle',
+                type: 'string',
+              },
+              {
+                label: 'Keywords',
+                list: true,
+                name: 'keywords',
+                type: 'string',
+              },
+              {
+                label: 'Default OG Image',
+                name: 'ogImage',
+                type: 'image',
+              },
+            ],
+            label: 'SEO Settings',
+            name: 'seo',
+            type: 'object',
+          },
+
+          // Navigation
+          {
+            fields: [
+              {
+                label: 'Label',
+                name: 'label',
+                required: true,
+                type: 'string',
+              },
+              {
+                label: 'Link',
+                name: 'href',
+                required: true,
+                type: 'string',
+              },
+            ],
+            label: 'Navigation',
+            list: true,
+            name: 'navigation',
+            type: 'object',
+            ui: {
+              itemProps: (item) => ({
+                label: item?.label || 'Nav Item',
+              }),
+            },
+          },
+
+          // Social Links
+          {
+            fields: [
+              {
+                label: 'Label',
+                name: 'label',
+                required: true,
+                type: 'string',
+              },
+              {
+                label: 'URL',
+                name: 'href',
+                required: true,
+                type: 'string',
+              },
+              {
+                description: 'React Icons name (e.g., FaGithub, FaLinkedin)',
+                label: 'Icon Name',
+                name: 'icon',
+                type: 'string',
+              },
+            ],
+            label: 'Social Links',
+            list: true,
+            name: 'socialLinks',
+            type: 'object',
+            ui: {
+              itemProps: (item) => ({
+                label: item?.label || 'Social Link',
+              }),
+            },
+          },
+
+          // Tech Tags (for hero animation)
+          {
+            description: 'Technology tags displayed in the hero section animation',
+            label: 'Tech Tags',
+            list: true,
+            name: 'techTags',
+            type: 'string',
+          },
+
+          // 404 Page Content
+          {
+            fields: [
+              {
+                label: 'Title',
+                name: 'title',
+                type: 'string',
+              },
+              {
+                label: 'Subtitle',
+                name: 'subtitle',
+                type: 'string',
+              },
+              {
+                label: 'Description',
+                name: 'description',
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+              {
+                description: 'Array of random messages shown on 404 page',
+                label: 'Random Messages',
+                list: true,
+                name: 'messages',
+                type: 'string',
+              },
+              {
+                label: 'Primary Button Text',
+                name: 'primaryButtonText',
+                type: 'string',
+              },
+              {
+                label: 'Primary Button Link',
+                name: 'primaryButtonLink',
+                type: 'string',
+              },
+              {
+                label: 'Secondary Button Text',
+                name: 'secondaryButtonText',
+                type: 'string',
+              },
+              {
+                label: 'Secondary Button Link',
+                name: 'secondaryButtonLink',
+                type: 'string',
+              },
+            ],
+            label: '404 Page',
+            name: 'notFound',
+            type: 'object',
+          },
+
+          // Footer
+          {
+            fields: [
+              {
+                label: 'Copyright Name',
+                name: 'copyrightName',
+                type: 'string',
+              },
+            ],
+            label: 'Footer',
+            name: 'footer',
+            type: 'object',
+          },
+        ],
         format: 'json',
+        label: 'Site Config',
+        name: 'siteConfig',
+        path: 'content/config',
         ui: {
           allowedActions: {
             create: false,
             delete: false,
           },
         },
-        fields: [
-          // SEO Settings
-          {
-            type: 'object',
-            name: 'seo',
-            label: 'SEO Settings',
-            fields: [
-              {
-                type: 'string',
-                name: 'siteTitle',
-                label: 'Site Title',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'siteDescription',
-                label: 'Site Description',
-                required: true,
-                ui: { component: 'textarea' },
-              },
-              {
-                type: 'string',
-                name: 'siteName',
-                label: 'Site Name (for OG)',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'authorName',
-                label: 'Author Name',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'twitterHandle',
-                label: 'Twitter Handle',
-              },
-              {
-                type: 'string',
-                name: 'keywords',
-                label: 'Keywords',
-                list: true,
-              },
-              {
-                type: 'image',
-                name: 'ogImage',
-                label: 'Default OG Image',
-              },
-            ],
-          },
-
-          // Navigation
-          {
-            type: 'object',
-            name: 'navigation',
-            label: 'Navigation',
-            list: true,
-            ui: {
-              itemProps: (item) => ({
-                label: item?.label || 'Nav Item',
-              }),
-            },
-            fields: [
-              {
-                type: 'string',
-                name: 'label',
-                label: 'Label',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'href',
-                label: 'Link',
-                required: true,
-              },
-            ],
-          },
-
-          // Social Links
-          {
-            type: 'object',
-            name: 'socialLinks',
-            label: 'Social Links',
-            list: true,
-            ui: {
-              itemProps: (item) => ({
-                label: item?.label || 'Social Link',
-              }),
-            },
-            fields: [
-              {
-                type: 'string',
-                name: 'label',
-                label: 'Label',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'href',
-                label: 'URL',
-                required: true,
-              },
-              {
-                type: 'string',
-                name: 'icon',
-                label: 'Icon Name',
-                description: 'React Icons name (e.g., FaGithub, FaLinkedin)',
-              },
-            ],
-          },
-
-          // Tech Tags (for hero animation)
-          {
-            type: 'string',
-            name: 'techTags',
-            label: 'Tech Tags',
-            list: true,
-            description: 'Technology tags displayed in the hero section animation',
-          },
-
-          // 404 Page Content
-          {
-            type: 'object',
-            name: 'notFound',
-            label: '404 Page',
-            fields: [
-              {
-                type: 'string',
-                name: 'title',
-                label: 'Title',
-              },
-              {
-                type: 'string',
-                name: 'subtitle',
-                label: 'Subtitle',
-              },
-              {
-                type: 'string',
-                name: 'description',
-                label: 'Description',
-                ui: { component: 'textarea' },
-              },
-              {
-                type: 'string',
-                name: 'messages',
-                label: 'Random Messages',
-                list: true,
-                description: 'Array of random messages shown on 404 page',
-              },
-              {
-                type: 'string',
-                name: 'primaryButtonText',
-                label: 'Primary Button Text',
-              },
-              {
-                type: 'string',
-                name: 'primaryButtonLink',
-                label: 'Primary Button Link',
-              },
-              {
-                type: 'string',
-                name: 'secondaryButtonText',
-                label: 'Secondary Button Text',
-              },
-              {
-                type: 'string',
-                name: 'secondaryButtonLink',
-                label: 'Secondary Button Link',
-              },
-            ],
-          },
-
-          // Footer
-          {
-            type: 'object',
-            name: 'footer',
-            label: 'Footer',
-            fields: [
-              {
-                type: 'string',
-                name: 'copyrightName',
-                label: 'Copyright Name',
-              },
-            ],
-          },
-        ],
       },
 
       // ═══════════════════════════════════════════════════════════════════════
       // PAGES COLLECTION (About, Home, etc.)
       // ═══════════════════════════════════════════════════════════════════════
       {
-        name: 'pages',
-        label: 'Pages',
-        path: 'content/pages',
+        fields: [
+          {
+            isTitle: true,
+            label: 'Page Slug',
+            name: 'slug',
+            required: true,
+            type: 'string',
+          },
+          {
+            label: 'SEO Title',
+            name: 'title',
+            required: true,
+            type: 'string',
+          },
+          {
+            label: 'SEO Description',
+            name: 'description',
+            required: true,
+            type: 'string',
+            ui: { component: 'textarea' },
+          },
+
+          // Hero Section (for home page)
+          {
+            fields: [
+              {
+                label: 'Welcome Text',
+                name: 'welcomeText',
+                type: 'string',
+              },
+              {
+                label: 'Name',
+                name: 'name',
+                type: 'string',
+              },
+              {
+                label: 'Subtitle',
+                name: 'subtitle',
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+              {
+                label: 'Primary CTA Text',
+                name: 'primaryCtaText',
+                type: 'string',
+              },
+              {
+                label: 'Primary CTA Link',
+                name: 'primaryCtaLink',
+                type: 'string',
+              },
+              {
+                label: 'Secondary CTA Text',
+                name: 'secondaryCtaText',
+                type: 'string',
+              },
+              {
+                label: 'Secondary CTA Link',
+                name: 'secondaryCtaLink',
+                type: 'string',
+              },
+              {
+                label: 'Scroll Indicator Text',
+                name: 'scrollText',
+                type: 'string',
+              },
+            ],
+            label: 'Hero Section',
+            name: 'hero',
+            type: 'object',
+          },
+
+          // About Section (for about page)
+          {
+            fields: [
+              {
+                label: 'Profile Image',
+                name: 'profileImage',
+                type: 'image',
+              },
+              {
+                label: 'Profile Image Alt Text',
+                name: 'profileImageAlt',
+                type: 'string',
+              },
+              {
+                label: 'Biography',
+                name: 'bio',
+                type: 'rich-text',
+              },
+              {
+                fields: [
+                  {
+                    label: 'Title',
+                    name: 'title',
+                    required: true,
+                    type: 'string',
+                  },
+                  {
+                    label: 'Description',
+                    name: 'description',
+                    required: true,
+                    type: 'string',
+                    ui: { component: 'textarea' },
+                  },
+                ],
+                label: 'Contact Reasons',
+                list: true,
+                name: 'contactReasons',
+                type: 'object',
+                ui: {
+                  itemProps: (item) => ({
+                    label: item?.title || 'Contact Reason',
+                  }),
+                },
+              },
+            ],
+            label: 'About Section',
+            name: 'about',
+            type: 'object',
+          },
+
+          // Featured Projects Section
+          {
+            fields: [
+              {
+                label: 'Section Title',
+                name: 'title',
+                type: 'string',
+              },
+              {
+                label: 'Section Subtitle',
+                name: 'subtitle',
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+              {
+                label: 'Card CTA Text',
+                name: 'ctaText',
+                type: 'string',
+              },
+            ],
+            label: 'Featured Projects Section',
+            name: 'featuredProjects',
+            type: 'object',
+          },
+
+          // Latest Posts Section
+          {
+            fields: [
+              {
+                label: 'Section Title',
+                name: 'title',
+                type: 'string',
+              },
+              {
+                label: 'Empty State Text',
+                name: 'emptyStateText',
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+            ],
+            label: 'Latest Posts Section',
+            name: 'latestPosts',
+            type: 'object',
+          },
+        ],
         format: 'json',
+        label: 'Pages',
+        name: 'pages',
+        path: 'content/pages',
         ui: {
           router: ({ document }) => {
             const slug = document._sys.filename
@@ -407,174 +565,16 @@ export default defineConfig({
             return `/${slug}/`
           },
         },
-        fields: [
-          {
-            type: 'string',
-            name: 'slug',
-            label: 'Page Slug',
-            isTitle: true,
-            required: true,
-          },
-          {
-            type: 'string',
-            name: 'title',
-            label: 'SEO Title',
-            required: true,
-          },
-          {
-            type: 'string',
-            name: 'description',
-            label: 'SEO Description',
-            required: true,
-            ui: { component: 'textarea' },
-          },
-
-          // Hero Section (for home page)
-          {
-            type: 'object',
-            name: 'hero',
-            label: 'Hero Section',
-            fields: [
-              {
-                type: 'string',
-                name: 'welcomeText',
-                label: 'Welcome Text',
-              },
-              {
-                type: 'string',
-                name: 'name',
-                label: 'Name',
-              },
-              {
-                type: 'string',
-                name: 'subtitle',
-                label: 'Subtitle',
-                ui: { component: 'textarea' },
-              },
-              {
-                type: 'string',
-                name: 'primaryCtaText',
-                label: 'Primary CTA Text',
-              },
-              {
-                type: 'string',
-                name: 'primaryCtaLink',
-                label: 'Primary CTA Link',
-              },
-              {
-                type: 'string',
-                name: 'secondaryCtaText',
-                label: 'Secondary CTA Text',
-              },
-              {
-                type: 'string',
-                name: 'secondaryCtaLink',
-                label: 'Secondary CTA Link',
-              },
-              {
-                type: 'string',
-                name: 'scrollText',
-                label: 'Scroll Indicator Text',
-              },
-            ],
-          },
-
-          // About Section (for about page)
-          {
-            type: 'object',
-            name: 'about',
-            label: 'About Section',
-            fields: [
-              {
-                type: 'image',
-                name: 'profileImage',
-                label: 'Profile Image',
-              },
-              {
-                type: 'string',
-                name: 'profileImageAlt',
-                label: 'Profile Image Alt Text',
-              },
-              {
-                type: 'rich-text',
-                name: 'bio',
-                label: 'Biography',
-              },
-              {
-                type: 'object',
-                name: 'contactReasons',
-                label: 'Contact Reasons',
-                list: true,
-                ui: {
-                  itemProps: (item) => ({
-                    label: item?.title || 'Contact Reason',
-                  }),
-                },
-                fields: [
-                  {
-                    type: 'string',
-                    name: 'title',
-                    label: 'Title',
-                    required: true,
-                  },
-                  {
-                    type: 'string',
-                    name: 'description',
-                    label: 'Description',
-                    required: true,
-                    ui: { component: 'textarea' },
-                  },
-                ],
-              },
-            ],
-          },
-
-          // Featured Projects Section
-          {
-            type: 'object',
-            name: 'featuredProjects',
-            label: 'Featured Projects Section',
-            fields: [
-              {
-                type: 'string',
-                name: 'title',
-                label: 'Section Title',
-              },
-              {
-                type: 'string',
-                name: 'subtitle',
-                label: 'Section Subtitle',
-                ui: { component: 'textarea' },
-              },
-              {
-                type: 'string',
-                name: 'ctaText',
-                label: 'Card CTA Text',
-              },
-            ],
-          },
-
-          // Latest Posts Section
-          {
-            type: 'object',
-            name: 'latestPosts',
-            label: 'Latest Posts Section',
-            fields: [
-              {
-                type: 'string',
-                name: 'title',
-                label: 'Section Title',
-              },
-              {
-                type: 'string',
-                name: 'emptyStateText',
-                label: 'Empty State Text',
-                ui: { component: 'textarea' },
-              },
-            ],
-          },
-        ],
       },
     ],
+  },
+
+  // TinaCloud token for cloud mode
+  token: process.env.TINA_TOKEN,
+
+  ui: {
+    previewUrl: () => ({
+      url: APP_BASE_URL,
+    }),
   },
 })
