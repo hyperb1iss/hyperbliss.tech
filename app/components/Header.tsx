@@ -4,7 +4,6 @@
 import { motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { initializeCyberScape, triggerCyberScapeAnimation } from '../cyberscape/CyberScape'
 import { useHeaderContext } from './HeaderContext'
 import Logo from './Logo'
 import MobileMenuIcon from './MobileMenuIcon'
@@ -21,9 +20,7 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
   width: 100%;
   padding: var(--space-3) var(--space-3) var(--space-4);
   height: ${(props) => (props.$isExpanded ? '200px' : '110px')};
-  transition:
-    height var(--duration-normal) var(--ease-silk),
-    background var(--duration-normal) var(--ease-silk);
+  transition: height var(--duration-normal) var(--ease-silk);
   z-index: 1000;
   overflow: visible;
   display: flex;
@@ -35,6 +32,8 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
     radial-gradient(circle at 25% -10%, rgba(0, 255, 240, 0.12), transparent 50%),
     linear-gradient(180deg, rgba(6, 5, 15, 0.92) 0%, rgba(5, 6, 14, 0.75) 60%, rgba(5, 6, 14, 0.15) 100%);
   border-bottom: 1px solid rgba(0, 255, 240, 0.03);
+  transform: translateZ(0);
+  backface-visibility: hidden;
 
   &::after {
     content: '';
@@ -151,22 +150,49 @@ const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const navRef = useRef<HTMLElement>(null)
+  const cyberScapeRef = useRef<null | {
+    initializeCyberScape: typeof import('../cyberscape/CyberScape')['initializeCyberScape']
+    triggerCyberScapeAnimation: typeof import('../cyberscape/CyberScape')['triggerCyberScapeAnimation']
+  }>(null)
   const { isExpanded, setIsExpanded } = useHeaderContext()
   const { isInitialLoad } = usePageLoad()
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
-    let cleanupCanvas: () => void = () => {}
-    if (canvasRef.current && navRef.current) {
-      cleanupCanvas = initializeCyberScape(
-        canvasRef.current,
-        navRef.current as unknown as HTMLAnchorElement,
-        navRef.current as HTMLElement,
-      )
+    let cancelled = false
+    let cleanupCanvas: (() => void) | null = null
+
+    const startCyberScape = async () => {
+      if (cancelled) return
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return
+
+      const mod = await import('../cyberscape/CyberScape')
+      if (cancelled) return
+
+      cyberScapeRef.current = mod
+
+      if (canvasRef.current && navRef.current) {
+        cleanupCanvas = mod.initializeCyberScape(
+          canvasRef.current,
+          navRef.current as unknown as HTMLAnchorElement,
+          navRef.current as HTMLElement,
+        )
+      }
+    }
+
+    // Defer heavy JS until the browser is idle to keep initial load/scroll smooth.
+    const requestIdleCallback = (
+      window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => void }
+    ).requestIdleCallback
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(() => void startCyberScape(), { timeout: 1500 })
+    } else {
+      setTimeout(() => void startCyberScape(), 250)
     }
 
     // Cleanup on unmount
     return () => {
+      cancelled = true
       if (cleanupCanvas) cleanupCanvas()
     }
   }, [])
@@ -190,7 +216,7 @@ const Header: React.FC = () => {
             y = event.touches[0].clientY - rect.top
           }
           if (x !== undefined && y !== undefined) {
-            triggerCyberScapeAnimation(x, y)
+            cyberScapeRef.current?.triggerCyberScapeAnimation(x, y)
           }
         }
       }, 100)
@@ -230,7 +256,7 @@ const Header: React.FC = () => {
       const rect = canvasRef.current.getBoundingClientRect()
       const x = rect.right - 20 // 20px from the right edge
       const y = rect.top + 50 // Middle of the header height
-      triggerCyberScapeAnimation(x, y)
+      cyberScapeRef.current?.triggerCyberScapeAnimation(x, y)
     }
   }, [])
 

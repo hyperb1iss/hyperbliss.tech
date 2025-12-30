@@ -4,10 +4,12 @@
 // Two-column grid layout with profile card and bio content
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import React from 'react'
 import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaMicrochip, FaRocket } from 'react-icons/fa6'
 import styled, { keyframes } from 'styled-components'
 import type { AboutSection } from '@/lib/tina'
+import defaultProfileImage from '../../public/images/profile-image.jpg'
 import MarkdownRenderer from './MarkdownRenderer'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
@@ -86,18 +88,32 @@ const ProfileCard = styled(motion.div)`
   }
 `
 
-const ProfileImage = styled(motion.img)`
+const ProfileImageFrame = styled.div`
   width: 100%;
-  height: auto;
+  aspect-ratio: 2792 / 4083;
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-4);
+  overflow: hidden;
   filter: saturate(1.1) brightness(1.05);
   position: relative;
   z-index: 1;
+
+  img {
+    transition: transform var(--duration-normal) var(--ease-silk);
+    will-change: transform;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+`
+
+const ProfileImage = styled(Image)`
+  object-fit: cover;
 `
 
 const ProfileName = styled.h2`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-2xl);
   font-weight: var(--font-bold);
   background: linear-gradient(
@@ -211,7 +227,7 @@ const BioCard = styled(motion.div)`
 `
 
 const BioTitle = styled.h3`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-xl);
   font-weight: var(--font-bold);
   color: var(--silk-plasma-pink);
@@ -410,6 +426,9 @@ const ContactCard = styled(motion.div)`
 
 const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
   const { profileImage, profileImageAlt, intro, bio, contactIntro, contactReasons } = about
+  const profileImageSrc =
+    profileImage === '/images/profile-image.jpg' || !profileImage ? defaultProfileImage : profileImage
+  const profilePlaceholder = profileImageSrc === defaultProfileImage ? 'blur' : 'empty'
 
   const skills = {
     Backend: ['Node.js', 'Python', 'Rust', 'GraphQL', 'PostgreSQL'],
@@ -429,12 +448,15 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             initial={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
-            <ProfileImage
-              alt={profileImageAlt ?? 'Stefanie Jane'}
-              src={profileImage ?? '/images/profile-image.jpg'}
-              transition={{ duration: 0.3 }}
-              whileHover={{ scale: 1.05 }}
-            />
+            <ProfileImageFrame>
+              <ProfileImage
+                alt={profileImageAlt ?? 'Stefanie Jane'}
+                fill={true}
+                placeholder={profilePlaceholder}
+                sizes="(min-width: 1024px) 380px, 80vw"
+                src={profileImageSrc}
+              />
+            </ProfileImageFrame>
             <ProfileName>{intro?.name ?? 'Stefanie Jane'}</ProfileName>
             <ProfileTitle>Full-Stack Engineer & Creative Technologist</ProfileTitle>
 

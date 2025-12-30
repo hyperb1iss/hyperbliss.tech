@@ -5,7 +5,7 @@ import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import StyledComponentsRegistry from './lib/registry'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
-import { notoSans, orbitron, rajdhani, spaceMono } from './styles/fonts'
+import { orbitron, rajdhani, spaceMono } from './styles/fonts'
 import './styles/globals.css'
 
 export const metadata: Metadata = siteMetadata
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
 
   return (
-    <html className={`${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable} ${notoSans.variable}`} lang="en">
+    <html className={`${orbitron.variable} ${rajdhani.variable} ${spaceMono.variable}`} lang="en">
       <head>
         <StructuredData data={structuredData} />
       </head>

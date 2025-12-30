@@ -1,10 +1,12 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+
 const nextConfig = {
   compiler: {
     styledComponents: {
-      displayName: true,
-      fileName: true,
-      minify: false,
+      displayName: !isProd,
+      fileName: !isProd,
+      minify: isProd,
       pure: true,
       ssr: true,
       transpileTemplateLiterals: true,

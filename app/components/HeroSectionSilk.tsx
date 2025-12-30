@@ -49,10 +49,13 @@ const BackgroundGradient = styled(motion.div)`
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: 
+  background:
     radial-gradient(circle at 30% 20%, rgba(162, 89, 255, 0.15) 0%, transparent 40%),
     radial-gradient(circle at 70% 80%, rgba(0, 255, 240, 0.1) 0%, transparent 40%),
     radial-gradient(circle at 50% 50%, rgba(255, 117, 216, 0.05) 0%, transparent 60%);
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 `
 
 const ContentContainer = styled(motion.div)`
@@ -70,7 +73,7 @@ const ContentContainer = styled(motion.div)`
 `
 
 const Title = styled(motion.h1)`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-5xl);
   font-weight: var(--font-black);
   line-height: var(--leading-tight);

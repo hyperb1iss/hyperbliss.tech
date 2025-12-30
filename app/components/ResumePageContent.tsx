@@ -83,7 +83,7 @@ const ContactCard = styled(motion.div)`
 `
 
 const ContactTitle = styled.h3`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-xl);
   font-weight: var(--font-bold);
   background: linear-gradient(
@@ -337,7 +337,7 @@ const SectionIcon = styled.div`
 `
 
 const SectionTitle = styled.h2`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-2xl);
   font-weight: var(--font-bold);
   background: linear-gradient(

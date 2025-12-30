@@ -59,20 +59,7 @@ const CardWrapper = styled(motion.div)`
   }
   
   &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-      circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(224, 170, 255, 0.05) 0%,
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity var(--duration-normal) var(--ease-silk);
-    pointer-events: none;
+    content: none;
   }
 
   &:hover {
@@ -94,14 +81,11 @@ const CardWrapper = styled(motion.div)`
       opacity: 0.7;
     }
     
-    &::after {
-      opacity: 1;
-    }
   }
 `
 
 const CardTitle = styled.h3`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-xl);
   font-weight: var(--font-bold);
   background: linear-gradient(
@@ -312,21 +296,12 @@ export const BlogCard: React.FC<BlogCardProps> = ({
   className,
   style,
 }) => {
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * 100
-    const y = ((e.clientY - rect.top) / rect.height) * 100
-    e.currentTarget.style.setProperty('--mouse-x', `${x}%`)
-    e.currentTarget.style.setProperty('--mouse-y', `${y}%`)
-  }
-
   return (
     <StyledLink href={link}>
       <CardWrapper
         animate={{ opacity: 1, y: 0 }}
         className={className}
         initial={{ opacity: 0, y: 20 }}
-        onMouseMove={handleMouseMove}
         style={style}
         transition={{
           delay: index * 0.1,

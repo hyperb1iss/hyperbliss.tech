@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import styled from 'styled-components'
 
 const TitleWrapper = styled(motion.h1)`
-  font-family: 'Audiowide', var(--font-display);
+  font-family: var(--font-heading);
   font-size: var(--text-fluid-5xl);
   font-weight: var(--font-black);
   text-align: center;

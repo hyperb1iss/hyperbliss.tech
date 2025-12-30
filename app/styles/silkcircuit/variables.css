@@ -94,18 +94,15 @@
      Typography
      ═══════════════════════════════════════════════════════════════ */
 
-  /* Font Stacks - Cyberpunk/Futuristic */
-  --font-display: "Orbitron", "Audiowide", system-ui, -apple-system, sans-serif;
-  --font-heading: "Orbitron", "Audiowide", system-ui, -apple-system, sans-serif;
-  --font-body: "Rajdhani", "Exo 2", system-ui, -apple-system, sans-serif;
-  --font-mono: "Space Mono", "JetBrains Mono", "SF Mono", Consolas, monospace;
-
-  /* Legacy font variables (for compatibility) */
-  --font-orbitron: "Orbitron", var(--font-display);
-  --font-rajdhani: "Rajdhani", var(--font-body);
-  --font-space-mono: "Space Mono", var(--font-mono);
-  --font-noto-sans: var(--font-body);
-  --font-logo: "Orbitron", var(--font-display);
+  /* Font Stacks - Cyberpunk/Futuristic
+     Powered by `next/font` CSS variables (see `app/styles/fonts.ts`). */
+  --font-display: var(--font-orbitron, system-ui), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-orbitron, system-ui), system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-rajdhani, system-ui), system-ui, -apple-system, sans-serif;
+  --font-mono:
+    var(--font-space-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --font-logo: var(--font-display);
 
   /* Type Scale */
   --text-xs: 0.75rem;

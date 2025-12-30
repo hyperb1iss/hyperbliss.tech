@@ -12,18 +12,26 @@ import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
  * CRITICAL: Must be at root level to capture all styled-components.
  */
 export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
-  // Only create stylesheet once with lazy initial state
-  const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet())
+  const isBrowser = typeof window !== 'undefined'
+
+  // Only create the ServerStyleSheet on the server; client should use the default sheet.
+  const [styledComponentsStyleSheet] = useState<ServerStyleSheet | null>(() => {
+    return isBrowser ? null : new ServerStyleSheet()
+  })
 
   useServerInsertedHTML(() => {
+    if (!styledComponentsStyleSheet) return null
     const styles = styledComponentsStyleSheet.getStyleElement()
     styledComponentsStyleSheet.instance.clearTag()
     return <>{styles}</>
   })
 
-  // On client, just render children directly (styles are already in the DOM)
-  if (typeof window !== 'undefined') return <>{children}</>
+  // Always render a StyleSheetManager so stylis options remain consistent between server/client.
+  if (!styledComponentsStyleSheet) return <StyleSheetManager enableVendorPrefixes={true}>{children}</StyleSheetManager>
 
-  // On server, wrap with StyleSheetManager to collect styles
-  return <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>{children}</StyleSheetManager>
+  return (
+    <StyleSheetManager enableVendorPrefixes={true} sheet={styledComponentsStyleSheet.instance}>
+      {children}
+    </StyleSheetManager>
+  )
 }

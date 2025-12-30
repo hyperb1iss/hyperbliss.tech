@@ -75,7 +75,8 @@ const ContentWrapper = styled.div`
     color: var(--color-accent);
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    font-family: 'Space Mono', monospace;
+    font-family: var(--font-space-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
     font-size: 0.9em;
   }
 

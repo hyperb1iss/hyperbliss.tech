@@ -8,9 +8,6 @@
 @import "./silkcircuit/variables.css";
 @import "./silkcircuit/utilities.css";
 
-/* Import Cyberpunk/Futuristic fonts */
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Audiowide&family=Exo+2:wght@300;400;500;600;700;800;900&display=swap");
-
 /* Reset and base styles */
 *,
 *::before,
@@ -46,11 +43,21 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
+  background-attachment: scroll;
 
   overflow-x: hidden;
   position: relative;
   z-index: 0;
+}
+
+@supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
+  body {
+    background-image: image-set(
+      url("/images/background2.avif") type("image/avif"),
+      url("/images/background2.webp") type("image/webp"),
+      url("/images/background2.png") type("image/png")
+    );
+  }
 }
 
 /* Subtle overlay for better text readability */
@@ -317,6 +324,14 @@ select:focus {
   }
 }
 
+/* `background-attachment: fixed` can cause scroll jank on many devices.
+   Apply it only on higher-powered, non-touch setups. */
+@media (hover: hover) and (pointer: fine) and (min-width: 769px) {
+  body {
+    background-attachment: fixed;
+  }
+}
+
 /* Print styles */
 @media print {
   body {
@@ -380,5 +395,24 @@ select:focus {
     --silk-quantum-purple: #b366ff;
     --silk-circuit-cyan: #33ffff;
     --silk-plasma-pink: #ff99e6;
+  }
+}
+
+/* Respect reduced motion preferences (also helps on lower-power devices). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.001ms;
+  }
+
+  body {
+    background-attachment: scroll;
   }
 }
