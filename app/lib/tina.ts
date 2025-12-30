@@ -274,3 +274,216 @@ export async function getAllProjectSlugs(): Promise<string[]> {
     .filter((path): path is string => !!path)
     .map(getSlugFromRelativePath)
 }
+
+// ============================================================
+// Pages functions (Home, About, etc.)
+// ============================================================
+
+export interface HeroSection {
+  welcomeText: string | null
+  name: string | null
+  subtitle: string | null
+  primaryCtaText: string | null
+  primaryCtaLink: string | null
+  secondaryCtaText: string | null
+  secondaryCtaLink: string | null
+  scrollText: string | null
+}
+
+export interface ContactReason {
+  title: string
+  description: string
+}
+
+export interface AboutIntro {
+  greeting: string | null
+  name: string | null
+  highlightText: string | null
+  introText: string | null
+}
+
+export interface AboutSection {
+  profileImage: string | null
+  profileImageAlt: string | null
+  intro: AboutIntro | null
+  bio: string | null
+  contactIntro: string | null
+  contactReasons: ContactReason[] | null
+}
+
+export interface FeaturedProjectsSection {
+  title: string | null
+  subtitle: string | null
+  ctaText: string | null
+}
+
+export interface LatestPostsSection {
+  title: string | null
+  emptyStateText: string | null
+}
+
+export interface PageData {
+  slug: string
+  title: string
+  description: string
+  hero: HeroSection | null
+  about: AboutSection | null
+  featuredProjects: FeaturedProjectsSection | null
+  latestPosts: LatestPostsSection | null
+}
+
+export async function getPage(slug: string): Promise<PageData> {
+  const relativePath = `${slug}.json`
+  const response = await client.queries.pages({ relativePath })
+  const page = response.data.pages
+
+  return {
+    about: page.about
+      ? {
+          bio: page.about.bio ?? null,
+          contactIntro: page.about.contactIntro ?? null,
+          contactReasons: page.about.contactReasons
+            ? page.about.contactReasons.map((r) => ({
+                description: r?.description ?? '',
+                title: r?.title ?? '',
+              }))
+            : null,
+          intro: page.about.intro
+            ? {
+                greeting: page.about.intro.greeting ?? null,
+                highlightText: page.about.intro.highlightText ?? null,
+                introText: page.about.intro.introText ?? null,
+                name: page.about.intro.name ?? null,
+              }
+            : null,
+          profileImage: page.about.profileImage ?? null,
+          profileImageAlt: page.about.profileImageAlt ?? null,
+        }
+      : null,
+    description: page.description,
+    featuredProjects: page.featuredProjects
+      ? {
+          ctaText: page.featuredProjects.ctaText ?? null,
+          subtitle: page.featuredProjects.subtitle ?? null,
+          title: page.featuredProjects.title ?? null,
+        }
+      : null,
+    hero: page.hero
+      ? {
+          name: page.hero.name ?? null,
+          primaryCtaLink: page.hero.primaryCtaLink ?? null,
+          primaryCtaText: page.hero.primaryCtaText ?? null,
+          scrollText: page.hero.scrollText ?? null,
+          secondaryCtaLink: page.hero.secondaryCtaLink ?? null,
+          secondaryCtaText: page.hero.secondaryCtaText ?? null,
+          subtitle: page.hero.subtitle ?? null,
+          welcomeText: page.hero.welcomeText ?? null,
+        }
+      : null,
+    latestPosts: page.latestPosts
+      ? {
+          emptyStateText: page.latestPosts.emptyStateText ?? null,
+          title: page.latestPosts.title ?? null,
+        }
+      : null,
+    slug: page.slug,
+    title: page.title,
+  }
+}
+
+// ============================================================
+// Resume functions
+// ============================================================
+
+export interface ResumeData {
+  title: string
+  description: string | null
+  body: TinaMarkdownContent | string | null
+}
+
+export async function getResume(): Promise<ResumeData> {
+  const response = await client.queries.resume({ relativePath: 'resume.md' })
+  const resume = response.data.resume
+
+  return {
+    body: extractBodyContent(resume.body),
+    description: resume.description ?? null,
+    title: resume.title,
+  }
+}
+
+// ============================================================
+// Site Config functions
+// ============================================================
+
+export interface SiteConfig {
+  seo: {
+    siteTitle: string
+    siteDescription: string
+    siteName: string
+    authorName: string
+    twitterHandle: string | null
+    keywords: string[] | null
+    ogImage: string | null
+  }
+  navigation: Array<{ label: string; href: string }>
+  socialLinks: Array<{ label: string; href: string; icon: string | null }>
+  techTags: string[] | null
+  notFound: {
+    title: string | null
+    subtitle: string | null
+    description: string | null
+    messages: string[] | null
+    primaryButtonText: string | null
+    primaryButtonLink: string | null
+    secondaryButtonText: string | null
+    secondaryButtonLink: string | null
+  } | null
+  footer: {
+    copyrightName: string | null
+  } | null
+}
+
+export async function getSiteConfig(): Promise<SiteConfig> {
+  const response = await client.queries.siteConfig({ relativePath: 'site.json' })
+  const config = response.data.siteConfig
+
+  return {
+    footer: config.footer
+      ? {
+          copyrightName: config.footer.copyrightName ?? null,
+        }
+      : null,
+    navigation: (config.navigation ?? []).map((n) => ({
+      href: n?.href ?? '',
+      label: n?.label ?? '',
+    })),
+    notFound: config.notFound
+      ? {
+          description: config.notFound.description ?? null,
+          messages: config.notFound.messages?.filter((m): m is string => m !== null) ?? null,
+          primaryButtonLink: config.notFound.primaryButtonLink ?? null,
+          primaryButtonText: config.notFound.primaryButtonText ?? null,
+          secondaryButtonLink: config.notFound.secondaryButtonLink ?? null,
+          secondaryButtonText: config.notFound.secondaryButtonText ?? null,
+          subtitle: config.notFound.subtitle ?? null,
+          title: config.notFound.title ?? null,
+        }
+      : null,
+    seo: {
+      authorName: config.seo?.authorName ?? '',
+      keywords: config.seo?.keywords?.filter((k): k is string => k !== null) ?? null,
+      ogImage: config.seo?.ogImage ?? null,
+      siteDescription: config.seo?.siteDescription ?? '',
+      siteName: config.seo?.siteName ?? '',
+      siteTitle: config.seo?.siteTitle ?? '',
+      twitterHandle: config.seo?.twitterHandle ?? null,
+    },
+    socialLinks: (config.socialLinks ?? []).map((s) => ({
+      href: s?.href ?? '',
+      icon: s?.icon ?? null,
+      label: s?.label ?? '',
+    })),
+    techTags: config.techTags?.filter((t): t is string => t !== null) ?? null,
+  }
+}

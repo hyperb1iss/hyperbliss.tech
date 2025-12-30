@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import type { HeroSection } from '@/lib/tina'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
 import HeroSectionSilk from './HeroSectionSilk'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
@@ -72,9 +73,11 @@ interface Project {
 interface HomeLayoutProps {
   latestPosts: BlogPost[]
   projects: Project[]
+  hero?: HeroSection | null
+  techTags?: string[] | null
 }
 
-const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
+const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects, hero, techTags }) => {
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -95,7 +98,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
       {isMobile ? (
         // Mobile layout: Stack everything vertically
         <>
-          <HeroSectionSilk />
+          <HeroSectionSilk hero={hero} techTags={techTags} />
           <LatestBlogPostsSilk posts={latestPosts} />
           <FeaturedProjectsSectionSilk projects={projects} />
         </>
@@ -103,7 +106,7 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ latestPosts, projects }) => {
         // Desktop layout: Hero & Projects on left, Sidebar on right
         <DesktopLayout>
           <MainContent>
-            <HeroSectionSilk />
+            <HeroSectionSilk hero={hero} techTags={techTags} />
             <FeaturedProjectsSectionSilk projects={projects} />
           </MainContent>
           <SidebarWrapper>

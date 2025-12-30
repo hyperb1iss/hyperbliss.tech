@@ -1,9 +1,14 @@
 import HomeLayout from '@/components/HomeLayout'
-import { getAllPosts, getAllProjects } from '@/lib/tina'
+import { getAllPosts, getAllProjects, getPage, getSiteConfig } from '@/lib/tina'
 
 export default async function Home() {
-  const allPosts = await getAllPosts()
-  const allProjects = await getAllProjects()
+  // Fetch all data in parallel
+  const [allPosts, allProjects, homePage, siteConfig] = await Promise.all([
+    getAllPosts(),
+    getAllProjects(),
+    getPage('home').catch(() => null),
+    getSiteConfig().catch(() => null),
+  ])
 
   // Transform posts to the format HomeLayout expects
   const latestPosts = allPosts.slice(0, 5).map((post) => ({
@@ -28,5 +33,7 @@ export default async function Home() {
     slug: project.slug,
   }))
 
-  return <HomeLayout latestPosts={latestPosts} projects={projects} />
+  return (
+    <HomeLayout hero={homePage?.hero} latestPosts={latestPosts} projects={projects} techTags={siteConfig?.techTags} />
+  )
 }

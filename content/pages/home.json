@@ -1,0 +1,24 @@
+{
+  "description": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
+  "featuredProjects": {
+    "ctaText": "View on GitHub",
+    "subtitle": "A selection of my open source work and experiments",
+    "title": "Featured Projects"
+  },
+  "hero": {
+    "name": "Stefanie Jane",
+    "primaryCtaLink": "/projects",
+    "primaryCtaText": "View Projects",
+    "scrollText": "Scroll to explore",
+    "secondaryCtaLink": "/about",
+    "secondaryCtaText": "Learn More",
+    "subtitle": "I'm Stefanie Jane, a full-stack engineer crafting elegant solutions at the intersection of art and technology. I build experiences that push the boundaries of what's possible on the web.",
+    "welcomeText": "Welcome to"
+  },
+  "latestPosts": {
+    "emptyStateText": "No posts yet. Check back soon!",
+    "title": "Latest Posts"
+  },
+  "slug": "home",
+  "title": "@hyperb1iss | Stefanie Jane"
+}

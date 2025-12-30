@@ -5,7 +5,7 @@
   "author": "Stefanie Jane",
   "private": true,
   "scripts": {
-    "dev": "tinacms dev --verbose -c \"next dev\"",
+    "dev": "tinacms dev -c \"next dev\"",
     "prebuild": "bash -c 'set -a; [ -f .env.local ] && source .env.local; set +a; if [ -n \"${NEXT_PUBLIC_TINA_CLIENT_ID}\" ] && [ -n \"${TINA_TOKEN}\" ]; then tinacms build --skip-search-index --skip-cloud-checks; else echo \"Skipping tinacms build (missing Tina credentials)\"; fi'",
     "build": "next build",
     "build:local": "tinacms build --local --skip-cloud-checks --skip-search-index && next build",

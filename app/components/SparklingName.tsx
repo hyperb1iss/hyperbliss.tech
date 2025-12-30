@@ -1,3 +1,5 @@
+'use client'
+
 // app/components/SparklingName.tsx
 
 import { motion } from 'framer-motion'

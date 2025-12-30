@@ -16,10 +16,6 @@ export default defineConfig({
 
   clientId: TINA_CLIENT_ID ?? '',
 
-  // Use local content for builds when not in production (Netlify)
-  // This allows `npm run build` to work locally without TinaCloud
-  localContentPath: process.env.NETLIFY ? undefined : 'content',
-
   media: {
     tina: {
       mediaRoot: 'images',
@@ -384,6 +380,44 @@ export default defineConfig({
       },
 
       // ═══════════════════════════════════════════════════════════════════════
+      // RESUME COLLECTION (Markdown-based resume)
+      // ═══════════════════════════════════════════════════════════════════════
+      {
+        fields: [
+          {
+            isTitle: true,
+            label: 'Title',
+            name: 'title',
+            required: true,
+            type: 'string',
+          },
+          {
+            label: 'SEO Description',
+            name: 'description',
+            type: 'string',
+            ui: { component: 'textarea' },
+          },
+          {
+            isBody: true,
+            label: 'Content',
+            name: 'body',
+            type: 'rich-text',
+          },
+        ],
+        format: 'md',
+        label: 'Resume',
+        name: 'resume',
+        path: 'content/resume',
+        ui: {
+          allowedActions: {
+            create: false,
+            delete: false,
+          },
+          router: () => '/resume/',
+        },
+      },
+
+      // ═══════════════════════════════════════════════════════════════════════
       // PAGES COLLECTION (About, Home, etc.)
       // ═══════════════════════════════════════════════════════════════════════
       {
@@ -472,10 +506,52 @@ export default defineConfig({
                 name: 'profileImageAlt',
                 type: 'string',
               },
+              // Intro section with special formatting
               {
+                fields: [
+                  {
+                    description: 'e.g., "Hey there!"',
+                    label: 'Greeting',
+                    name: 'greeting',
+                    type: 'string',
+                  },
+                  {
+                    description: 'Rendered with sparkle effect',
+                    label: 'Name',
+                    name: 'name',
+                    type: 'string',
+                  },
+                  {
+                    description: 'Rendered with gradient effect, e.g., "the last 25+ years"',
+                    label: 'Highlight Text',
+                    name: 'highlightText',
+                    type: 'string',
+                  },
+                  {
+                    description: 'Text after the highlight',
+                    label: 'Intro Text',
+                    name: 'introText',
+                    type: 'string',
+                    ui: { component: 'textarea' },
+                  },
+                ],
+                label: 'Intro',
+                name: 'intro',
+                type: 'object',
+              },
+              {
+                description: 'Main bio content in markdown format',
                 label: 'Biography',
                 name: 'bio',
-                type: 'rich-text',
+                type: 'string',
+                ui: { component: 'textarea' },
+              },
+              {
+                description: 'Text before contact reasons',
+                label: 'Contact Section Intro',
+                name: 'contactIntro',
+                type: 'string',
+                ui: { component: 'textarea' },
               },
               {
                 fields: [

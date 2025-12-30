@@ -4,10 +4,15 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { TECH_TAGS } from '../lib/constants'
+import type { HeroSection } from '@/lib/tina'
 import { SilkButton } from '../styles/silkcircuit/components'
 import { usePageLoad } from './PageLoadOrchestrator'
 import { SparklingName } from './SparklingName'
+
+interface HeroSectionSilkProps {
+  hero?: HeroSection | null
+  techTags?: string[] | null
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styled Components
@@ -259,10 +264,64 @@ const createParticles = (count: number, width: number, height: number): Particle
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-export default function HeroSectionSilk() {
+// Default values for hero content
+const DEFAULT_HERO: HeroSection = {
+  name: 'Stefanie Jane',
+  primaryCtaLink: '/projects',
+  primaryCtaText: 'View Projects',
+  scrollText: 'Scroll to explore',
+  secondaryCtaLink: '/about',
+  secondaryCtaText: 'Learn More',
+  subtitle:
+    "I'm Stefanie Jane, a full-stack engineer crafting elegant solutions at the intersection of art and technology. I build experiences that push the boundaries of what's possible on the web.",
+  welcomeText: 'Welcome to',
+}
+
+const DEFAULT_TECH_TAGS = [
+  'AI/ML',
+  'Android',
+  'AWS',
+  'Backend',
+  'BSP',
+  'C/C++',
+  'Cloud Services',
+  'DevOps',
+  'Embedded Systems',
+  'Firmware',
+  'Frontend',
+  'Full Stack',
+  'Golang',
+  'Hardware Bringup',
+  'Infrastructure',
+  'IoT',
+  'Java',
+  'JavaScript',
+  'Kotlin',
+  'Linux Kernel',
+  'Mobile Development',
+  'Node.js',
+  'Open Source',
+  'Prototyping',
+  'Python',
+  'Qualcomm Snapdragon',
+  'React',
+  'Rust',
+  'System Architecture',
+  'Team Leadership',
+  'TypeScript',
+]
+
+export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { isInitialLoad } = usePageLoad()
   const { scrollY } = useScroll()
+
+  // Merge provided hero with defaults
+  const heroContent = {
+    ...DEFAULT_HERO,
+    ...hero,
+  }
+  const tags = techTags ?? DEFAULT_TECH_TAGS
 
   // Parallax transforms
   const y = useTransform(scrollY, [0, 500], [0, 150])
@@ -364,18 +423,18 @@ export default function HeroSectionSilk() {
 
       <ContentContainer animate="visible" initial="hidden" variants={containerVariants}>
         <Title variants={itemVariants}>
-          <TitleStatic>Welcome to </TitleStatic>
+          <TitleStatic>{heroContent.welcomeText} </TitleStatic>
           <TitleGradient>hyperbliss</TitleGradient>
         </Title>
 
         <Subtitle variants={itemVariants}>
-          I'm <SparklingName name="Stefanie Jane" sparkleCount={8} />, a full-stack engineer crafting elegant solutions
-          at the intersection of art and technology. I build experiences that push the boundaries of what's possible on
-          the web.
+          I'm <SparklingName name={heroContent.name ?? 'Stefanie Jane'} sparkleCount={8} />,{' '}
+          {heroContent.subtitle?.replace(/^I'm [^,]+, /, '') ??
+            "a full-stack engineer crafting elegant solutions at the intersection of art and technology. I build experiences that push the boundaries of what's possible on the web."}
         </Subtitle>
 
         <TagCloud variants={itemVariants}>
-          {TECH_TAGS.map((tag, index) => (
+          {tags.map((tag, index) => (
             <SkillTag
               $index={index}
               animate={{ opacity: 1, scale: 1 }}
@@ -395,7 +454,7 @@ export default function HeroSectionSilk() {
         </TagCloud>
 
         <CTASection variants={itemVariants}>
-          <Link href="/projects" style={{ textDecoration: 'none' }}>
+          <Link href={heroContent.primaryCtaLink ?? '/projects'} style={{ textDecoration: 'none' }}>
             <SilkButton
               $size="lg"
               $variant="primary"
@@ -403,11 +462,11 @@ export default function HeroSectionSilk() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              View Projects
+              {heroContent.primaryCtaText ?? 'View Projects'}
             </SilkButton>
           </Link>
 
-          <Link href="/about" style={{ textDecoration: 'none' }}>
+          <Link href={heroContent.secondaryCtaLink ?? '/about'} style={{ textDecoration: 'none' }}>
             <SilkButton
               $size="lg"
               $variant="secondary"
@@ -415,7 +474,7 @@ export default function HeroSectionSilk() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Learn More
+              {heroContent.secondaryCtaText ?? 'Learn More'}
             </SilkButton>
           </Link>
         </CTASection>
@@ -423,7 +482,7 @@ export default function HeroSectionSilk() {
 
       <ScrollIndicator animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 1.5 }}>
         <ScrollMouse />
-        <span>Scroll to explore</span>
+        <span>{heroContent.scrollText ?? 'Scroll to explore'}</span>
       </ScrollIndicator>
     </HeroWrapper>
   )
