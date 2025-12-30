@@ -60,31 +60,37 @@ function astNodeToMarkdown(node: Record<string, unknown>, depth = 0): string {
     case 'p':
       return `${childContent}\n\n`
     case 'ul':
-      return (children?.map((c) => `- ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? '') + '\n'
+      return `${children?.map((c) => `- ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? ''}\n`
     case 'ol':
-      return (
-        (children?.map((c, i) => `${i + 1}. ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? '') + '\n'
-      )
+      return `${children?.map((c, i) => `${i + 1}. ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? ''}\n`
     case 'li':
       return childContent
     case 'lic': // List item content
       return childContent
     case 'blockquote':
       return `> ${childContent.trim()}\n\n`
-    case 'code_block':
+    case 'code_block': {
       const lang = (node.lang as string) || ''
       return `\`\`\`${lang}\n${value || childContent}\`\`\`\n\n`
-    case 'a':
+    }
+    case 'a': {
       const url = node.url as string
       return `[${childContent}](${url})`
-    case 'img':
+    }
+    case 'img': {
       const src = node.url as string
       const alt = (node.alt as string) || ''
       return `![${alt}](${src})`
+    }
+    case 'strong':
+      return `**${childContent}**`
+    case 'em':
+    case 'emphasis':
+      return `_${childContent}_`
     case 'hr':
-      return `---\n\n`
+      return '---\n\n'
     case 'br':
-      return `\n`
+      return '\n'
     default:
       return childContent
   }

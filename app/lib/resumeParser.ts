@@ -224,7 +224,19 @@ export function parseResume(markdown: string): ParsedResume {
       const heading = line.substring(5).trim()
 
       // In experience section, H4 is position
+      // If we already have a position with bullets, save it and start a new role at same company
       if (currentH2Section === 'experience' && currentExperience) {
+        if (currentExperience.position && currentExperience.bullets && currentExperience.bullets.length > 0) {
+          // Save current role and start a new one at the same company
+          saveExperience()
+          currentExperience = {
+            bullets: [],
+            company: result.experience.length > 0 ? result.experience[result.experience.length - 1].company : '',
+            companyUrl:
+              result.experience.length > 0 ? result.experience[result.experience.length - 1].companyUrl : undefined,
+            technologies: [],
+          }
+        }
         currentExperience.position = heading
       }
       continue
@@ -271,22 +283,54 @@ export function parseResume(markdown: string): ParsedResume {
           currentExperience.bullets.push(itemText)
         }
       } else if (currentH2Section === 'projects') {
-        // Parse project format: **[Name](url)**: Description
-        const projectMatch = itemText.match(/\*\*\[(.+?)\]\((.+?)\)\*\*:\s*(.+)/)
-        if (projectMatch) {
-          result.projects.push({
-            description: projectMatch[3],
-            name: projectMatch[1],
-            url: projectMatch[2],
-          })
-        } else {
-          // Try without URL
-          const simpleMatch = itemText.match(/\*\*(.+?)\*\*:\s*(.+)/)
-          if (simpleMatch) {
+        // Parse project formats:
+        // 1. Original: **[Name](url)**: Description (bold wrapping link)
+        // 2. TinaCMS converted: [**Name**](url): Description (link with bold text)
+        // 3. Complex: **[Name](url)/[Name2](url2)**: Description
+
+        // Try original format: **...**: followed by description
+        const boldMatch = itemText.match(/\*\*(.+?)\*\*:\s*(.*)/)
+        if (boldMatch) {
+          const nameSection = boldMatch[1]
+          const description = boldMatch[2] || ''
+          // Extract first URL from the name section if present
+          const urlMatch = nameSection.match(/\[([^\]]+)\]\(([^)]+)\)/)
+          if (urlMatch) {
             result.projects.push({
-              description: simpleMatch[2],
-              name: simpleMatch[1],
+              description: description.trim(),
+              name: urlMatch[1].replace(/\*\*/g, ''), // Remove any bold markers
+              url: urlMatch[2],
             })
+          } else {
+            result.projects.push({
+              description: description.trim(),
+              name: nameSection.trim(),
+            })
+          }
+        } else {
+          // Try TinaCMS format: [**Name**](url): Description or [...](url)**:
+          // Match a markdown link followed by optional markers and colon
+          const linkMatch = itemText.match(/\[([^\]]+)\]\(([^)]+)\)[^:]*:\s*(.*)/)
+          if (linkMatch) {
+            result.projects.push({
+              description: linkMatch[3]?.trim() || '',
+              name: linkMatch[1].replace(/\*\*/g, ''), // Remove bold markers from name
+              url: linkMatch[2],
+            })
+          } else {
+            // Last fallback: find colon that's NOT part of URL scheme (://)
+            // Look for ": " (colon followed by space) as the separator
+            const colonSpaceMatch = itemText.match(/^(.+?):\s+(.+)$/)
+            if (colonSpaceMatch) {
+              const namePart = colonSpaceMatch[1]
+              const descPart = colonSpaceMatch[2]
+              const link = parseMarkdownLink(namePart)
+              result.projects.push({
+                description: descPart.trim(),
+                name: link.text.replace(/\*\*/g, ''),
+                url: link.url,
+              })
+            }
           }
         }
       } else if (currentH2Section === 'awards') {

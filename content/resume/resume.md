@@ -61,13 +61,27 @@ Lifecycle | Software Licensing | Team Management | Technical Vision
 
 ## 🏢 Experience
 
+### [Gradial](https://www.gradial.ai/)
+
+#### Principal Software Engineer
+
+_(May 2025 - Present)_
+
+- Leading platform engineering and infrastructure development
+- Built foundational authentication and permissions systems for applications
+- Owning developer experience, creating efficient workflows and tooling
+- Enhancing and extending AI agent capabilities 🤖
+- **Technologies:** [TypeScript](https://www.typescriptlang.org/),
+  [Next.js](https://nextjs.org/), [React](https://reactjs.org/),
+  [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
+
 ### [Mason](https://www.bymason.com/)
 
 #### Senior Principal Engineer
 
-_(Current Role)_
+_(May 2024 - May 2025)_
 
-- Leading multiple new AI product initiatives 🚀
+- Led multiple new AI product initiatives 🚀
 - **Technologies:** Java, C++, Kotlin, Go, Python,
   [Node.js](https://nodejs.org/), [React](https://reactjs.org/),
   [Django](https://www.djangoproject.com/),
@@ -84,8 +98,6 @@ _(March 2021 - May 2024)_
 - Managed cloud services and device software teams
 - Built processes for supporting customers and developers
 - Created tutorial videos and webinars for developer experience
-- Designed and implemented X-Ray remote device management system, streamlining
-  troubleshooting and diagnostics for enterprise MDM
 
 #### Principal Software Engineer
 
@@ -96,6 +108,7 @@ _(May 2019 - March 2021)_
   [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) hardware
 - Launched several phones and a smartwatch 📱
 - Enhanced capabilities of device management platform
+- Designed and implemented X-Ray remote device management system, streamlining troubleshooting and diagnostics for enterprise MDM
 - Mentored new team members and provided technical direction
 
 ### [Cartogram, Inc](https://www.cartogram.com/)
@@ -235,15 +248,7 @@ _(April 1998 - April 2005)_
 
 _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 
-## 🎤 Speaking & Recognition
-
-- Featured presenter at Big Android BBQ for multiple years
-- Industry panelist on mobile technology, open source, and software development
-- Keynote speaker at Droidcon and March of the Droids
-- Represented CyanogenMod/Cyanogen Inc. at global product announcements and
-  industry events
-
-## 🏆 Awards & Recognitions
+## 🏆 Recognition & Achievements
 
 - Created [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), now
   [LineageOS](https://lineageos.org/), revolutionizing Android customization for
@@ -251,6 +256,11 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 - Established a foundation for device longevity through community-supported
   software
 - Led one of the most successful open-source projects in the mobile ecosystem
+- Featured presenter at Big Android BBQ for multiple years
+- Keynote speaker at Droidcon and March of the Droids
+- Industry panelist on mobile technology, open source, and software development
+- Represented CyanogenMod/Cyanogen Inc. at global product announcements and
+  industry events
 
 ## 🎧 Personal Interests
 

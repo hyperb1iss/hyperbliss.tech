@@ -3,7 +3,7 @@
 
 import { motion } from 'framer-motion'
 import React, { useMemo } from 'react'
-import { FiAward, FiBriefcase, FiCode, FiDownload, FiGithub, FiGlobe, FiLink, FiLinkedin, FiMail } from 'react-icons/fi'
+import { FiAward, FiBriefcase, FiCode, FiDownload, FiGithub, FiGlobe, FiHeart, FiLink, FiLinkedin, FiMail } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
 import styled, { keyframes } from 'styled-components'
 import { parseResume } from '../lib/resumeParser'
@@ -579,7 +579,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
   // Parse the resume markdown
   const resumeData = useMemo(() => parseResume(content), [content])
 
-  const { name, tagline, contact, summary, skills, experience, projects, speaking, awards } = resumeData
+  const { name, tagline, contact, summary, skills, experience, projects, speaking, awards, interests } = resumeData
 
   // Filter out empty skill categories
   const displaySkills = Object.entries(skills).filter(([_, items]) => items.length > 0)
@@ -638,7 +638,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               <SkillCategory key={category}>
                 <SkillLabel>{category}</SkillLabel>
                 <SkillTags>
-                  {items.slice(0, 8).map((skill, idx) => (
+                  {items.map((skill, idx) => (
                     <SkillTag
                       as={skill.url ? 'a' : 'span'}
                       href={skill.url}
@@ -695,7 +695,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               <SectionTitle>Experience</SectionTitle>
             </SectionHeader>
 
-            {experience.slice(0, 6).map((job, index) => (
+            {experience.map((job, index) => (
               <TimelineItem key={index}>
                 <TimelineHeader>
                   <CompanyName>
@@ -779,7 +779,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               </SectionHeader>
 
               <TimelineContent>
-                {projects.slice(0, 5).map((project, index) => (
+                {projects.map((project, index) => (
                   <TimelineItem key={index}>
                     <TimelineHeader>
                       <CompanyName>
@@ -849,6 +849,31 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                     </ul>
                   </div>
                 )}
+              </TimelineContent>
+            </ContentSection>
+          )}
+
+          {interests.length > 0 && (
+            <ContentSection
+              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.6, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <SectionHeader>
+                <SectionIcon>
+                  <FiHeart />
+                </SectionIcon>
+                <SectionTitle>Personal Interests</SectionTitle>
+              </SectionHeader>
+
+              <TimelineContent>
+                <ul>
+                  {interests.map((item, idx) => (
+                    <li key={idx}>
+                      <MarkdownContent content={item} />
+                    </li>
+                  ))}
+                </ul>
               </TimelineContent>
             </ContentSection>
           )}
