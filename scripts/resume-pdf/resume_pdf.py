@@ -23,7 +23,6 @@ def remove_emojis(text):
 def process_skills_paragraph(p, soup):
     """Process skills paragraph to create tag-like spans from pipe-separated items."""
     items = []
-    current_category = None
 
     for content in list(p.contents):
         if isinstance(content, str):
@@ -45,7 +44,6 @@ def process_skills_paragraph(p, soup):
                 # This is a category label - add as category header
                 cat_text = content.get_text().strip().rstrip(":")
                 if cat_text:
-                    current_category = cat_text
                     items.append(("category", cat_text))
             elif content.name == "br":
                 pass  # Skip line breaks
@@ -139,7 +137,7 @@ def process_name(soup):
 async def create_styled_resume_async(input_path, output_path=None):
     """Create a styled PDF resume from a markdown input file."""
     # Read the markdown content
-    with open(input_path, "r", encoding="utf-8") as file:
+    with open(input_path, encoding="utf-8") as file:
         md_content = file.read()
 
     # Remove YAML frontmatter (everything between --- markers at the start)
@@ -148,19 +146,18 @@ async def create_styled_resume_async(input_path, output_path=None):
     # Add IDs to sections before removing emojis
     md_content = re.sub(
         r"^##.*Experience.*$",
-        "## Experience {: #experience}",
+        "## 🏢 Experience {: #experience}",
         md_content,
         flags=re.MULTILINE,
     )
     md_content = re.sub(
         r"^##.*Summary.*$",
-        "## Summary {: #summary}",
+        "## 🌠 Summary {: #summary}",
         md_content,
         flags=re.MULTILINE,
     )
 
-    # Remove emojis
-    md_content = remove_emojis(md_content)
+    # Keep emojis - they add personality
 
     # Convert Markdown to HTML
     # Note: removed "nl2br" extension so text wraps naturally
@@ -275,7 +272,7 @@ async def create_styled_resume_async(input_path, output_path=None):
                 border-bottom: 1px dotted var(--link-color);
                 padding-bottom: 1px;
             }
-            
+
             a:hover {
                 color: var(--secondary);
                 border-bottom: 1px solid var(--secondary);
@@ -346,7 +343,7 @@ async def create_styled_resume_async(input_path, output_path=None):
                 width: 100% !important;
                 display: block !important;
             }
-            
+
             /* Style specifically for the links paragraph */
             .header-content a {
                 display: inline-block;

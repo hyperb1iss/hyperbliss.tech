@@ -3,7 +3,18 @@
 
 import { motion } from 'framer-motion'
 import React, { useMemo } from 'react'
-import { FiAward, FiBriefcase, FiCode, FiDownload, FiGithub, FiGlobe, FiHeart, FiLink, FiLinkedin, FiMail } from 'react-icons/fi'
+import {
+  FiAward,
+  FiBriefcase,
+  FiCode,
+  FiDownload,
+  FiGithub,
+  FiGlobe,
+  FiHeart,
+  FiLink,
+  FiLinkedin,
+  FiMail,
+} from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
 import styled, { keyframes } from 'styled-components'
 import { parseResume } from '../lib/resumeParser'

@@ -1,6 +1,7 @@
 # Resume PDF Generator
 
-Generates a styled PDF resume from markdown using Playwright (headless Chromium).
+Generates a styled PDF resume from markdown using Playwright (headless
+Chromium).
 
 ## Prerequisites
 

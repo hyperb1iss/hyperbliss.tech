@@ -15,14 +15,14 @@ description:
 
 ## 🌠 Summary
 
-With a passion for technology and creativity, I bring over two decades of
-transformative experience across the entire software stack. From pioneering
-open-source mobile innovation to leading enterprise AI initiatives, I've
-consistently pushed technological boundaries while building and mentoring
-high-performing teams. My expertise spans Android OS, embedded systems, cloud
-infrastructure, frontend development, and cutting-edge AI/ML applications. I
-thrive at the intersection of visionary leadership and hands-on technical
-execution, always pursuing innovation with purpose.
+As a creative technologist, I bring over two decades of transformative
+experience across the entire software stack. From pioneering open-source mobile
+innovation to leading enterprise AI initiatives, I've consistently pushed
+technological boundaries while building and mentoring high-performing teams. My
+expertise spans Android OS, embedded systems, cloud infrastructure, frontend
+development, and cutting-edge AI/ML applications. I thrive at the intersection
+of visionary leadership and hands-on technical execution, where art meets
+engineering.
 
 Let's build something amazing together!
 
@@ -108,7 +108,8 @@ _(May 2019 - March 2021)_
   [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) hardware
 - Launched several phones and a smartwatch 📱
 - Enhanced capabilities of device management platform
-- Designed and implemented X-Ray remote device management system, streamlining troubleshooting and diagnostics for enterprise MDM
+- Designed and implemented X-Ray remote device management system, streamlining
+  troubleshooting and diagnostics for enterprise MDM
 - Mentored new team members and provided technical direction
 
 ### [Cartogram, Inc](https://www.cartogram.com/)
