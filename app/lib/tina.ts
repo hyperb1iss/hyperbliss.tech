@@ -13,6 +13,99 @@ export function formatDisplayTitle(emoji: string | null | undefined, title: stri
   return emoji ? `${emoji} ${title}` : title
 }
 
+/**
+ * Convert TinaMarkdown AST node to markdown string.
+ * Handles various node types that TinaCMS generates.
+ */
+function astNodeToMarkdown(node: Record<string, unknown>, depth = 0): string {
+  if (!node || typeof node !== 'object') return ''
+
+  const type = node.type as string | undefined
+  const children = node.children as Record<string, unknown>[] | undefined
+  const text = node.text as string | undefined
+  const value = node.value as string | undefined
+
+  // Text node
+  if (text !== undefined) {
+    let result = text
+    if (node.bold) result = `**${result}**`
+    if (node.italic) result = `_${result}_`
+    if (node.code) result = `\`${result}\``
+    return result
+  }
+
+  // Raw markdown (invalid_markdown type from TinaCMS local mode)
+  if (type === 'invalid_markdown' && value) {
+    return value
+  }
+
+  // Process children recursively
+  const childContent = children?.map((c) => astNodeToMarkdown(c, depth)).join('') ?? ''
+
+  switch (type) {
+    case 'root':
+      return childContent
+    case 'h1':
+      return `# ${childContent}\n\n`
+    case 'h2':
+      return `## ${childContent}\n\n`
+    case 'h3':
+      return `### ${childContent}\n\n`
+    case 'h4':
+      return `#### ${childContent}\n\n`
+    case 'h5':
+      return `##### ${childContent}\n\n`
+    case 'h6':
+      return `###### ${childContent}\n\n`
+    case 'p':
+      return `${childContent}\n\n`
+    case 'ul':
+      return (children?.map((c) => `- ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? '') + '\n'
+    case 'ol':
+      return (
+        (children?.map((c, i) => `${i + 1}. ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? '') + '\n'
+      )
+    case 'li':
+      return childContent
+    case 'lic': // List item content
+      return childContent
+    case 'blockquote':
+      return `> ${childContent.trim()}\n\n`
+    case 'code_block':
+      const lang = (node.lang as string) || ''
+      return `\`\`\`${lang}\n${value || childContent}\`\`\`\n\n`
+    case 'a':
+      const url = node.url as string
+      return `[${childContent}](${url})`
+    case 'img':
+      const src = node.url as string
+      const alt = (node.alt as string) || ''
+      return `![${alt}](${src})`
+    case 'hr':
+      return `---\n\n`
+    case 'br':
+      return `\n`
+    default:
+      return childContent
+  }
+}
+
+/**
+ * Convert TinaMarkdownContent AST to raw markdown string.
+ * Used when we need to process markdown with custom parsers (like resume parser).
+ */
+export function tinaMarkdownToString(content: TinaMarkdownContent | string | null): string {
+  if (!content) return ''
+  if (typeof content === 'string') return content
+
+  // Handle AST object
+  if (typeof content === 'object' && 'children' in content) {
+    return astNodeToMarkdown(content as Record<string, unknown>).trim()
+  }
+
+  return ''
+}
+
 // Helper to extract slug from relativePath (removes .md extension)
 export function getSlugFromRelativePath(relativePath: string): string {
   return relativePath.replace(/\.md$/, '')

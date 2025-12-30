@@ -1,6 +1,6 @@
 // app/(transition)/resume/page.tsx
 import ResumePageContent from '../../components/ResumePageContent'
-import { getResume } from '../../lib/tina'
+import { getResume, tinaMarkdownToString } from '../../lib/tina'
 
 export const metadata = {
   description: 'Professional resume of Stefanie Jane, full-stack developer and designer.',
@@ -11,9 +11,8 @@ export default async function ResumePage() {
   // Fetch resume content from TinaCMS
   const resume = await getResume()
 
-  // The resume body can be TinaMarkdown AST or raw markdown string
-  // The parser expects a raw markdown string
-  const content = typeof resume.body === 'string' ? resume.body : ''
+  // Convert TinaMarkdown AST to raw markdown string for the resume parser
+  const content = tinaMarkdownToString(resume.body)
 
   return <ResumePageContent content={content} />
 }
