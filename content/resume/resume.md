@@ -6,7 +6,7 @@ description:
 
 # Stefanie Jane
 
-**Engineering Leader | Software Sorceress | Music Producer | Maker | Founder**
+**Engineering Leader | Software Sorceress | Maker | Founder**
 
 📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼
 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙
@@ -266,3 +266,4 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 
 - Avid roller skater and roller derby player
 - Electronic music producer
+- Flow artist and fire performer

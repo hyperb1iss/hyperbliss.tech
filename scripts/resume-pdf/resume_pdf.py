@@ -163,8 +163,9 @@ async def create_styled_resume_async(input_path, output_path=None):
     md_content = remove_emojis(md_content)
 
     # Convert Markdown to HTML
+    # Note: removed "nl2br" extension so text wraps naturally
     html_content = markdown.markdown(
-        md_content, extensions=["tables", "nl2br", "attr_list"]
+        md_content, extensions=["tables", "attr_list"]
     )
 
     # Process the HTML content
