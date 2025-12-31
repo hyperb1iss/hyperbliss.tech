@@ -64,7 +64,7 @@ const ProfileCard = styled(motion.div)`
   border-radius: var(--radius-xl);
   padding: var(--space-8);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   box-shadow:
     0 0 25px rgba(162, 89, 255, 0.2),
     0 0 40px rgba(255, 117, 216, 0.1),
@@ -117,21 +117,9 @@ const ProfileName = styled.h2`
   font-family: var(--font-heading);
   font-size: var(--text-fluid-2xl);
   font-weight: var(--font-bold);
-  background: linear-gradient(
-    90deg,
-    #ff75d8 0%,
-    #00fff0 50%,
-    #ff75d8 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: var(--space-2);
-  animation: ${gradientShift} 4s ease infinite;
-  filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.4));
   position: relative;
   z-index: 1;
 `

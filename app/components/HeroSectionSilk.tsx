@@ -134,8 +134,7 @@ const TagCloud = styled(motion.div)`
 
 const SkillTag = styled(motion.div)<{ $index: number }>`
   padding: var(--space-2) var(--space-4);
-  background: var(--surface-glass);
-  backdrop-filter: blur(var(--blur-lg));
+  background: rgba(20, 20, 35, 0.85);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   font-size: clamp(1.5rem, 1.3rem + 0.45vw, 1.85rem);
