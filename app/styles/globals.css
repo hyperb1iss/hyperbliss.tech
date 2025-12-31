@@ -319,13 +319,8 @@ select:focus {
   }
 }
 
-/* `background-attachment: fixed` can cause scroll jank on many devices.
-   Apply it only on higher-powered, non-touch setups. */
-@media (hover: hover) and (pointer: fine) and (min-width: 769px) {
-  body {
-    background-attachment: fixed;
-  }
-}
+/* REMOVED: background-attachment: fixed causes severe scroll jank
+   even on modern browsers. The repaint cost isn't worth the parallax effect. */
 
 /* Print styles */
 @media print {

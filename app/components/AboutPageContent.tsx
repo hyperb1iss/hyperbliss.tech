@@ -13,6 +13,7 @@ import defaultProfileImage from '../../public/images/profile-image.jpg'
 import MarkdownRenderer from './MarkdownRenderer'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
+import { SparklingName } from './SparklingName'
 
 interface AboutPageContentProps {
   about: AboutSection
@@ -457,8 +458,10 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
                 src={profileImageSrc}
               />
             </ProfileImageFrame>
-            <ProfileName>{intro?.name ?? 'Stefanie Jane'}</ProfileName>
-            <ProfileTitle>Full-Stack Engineer & Creative Technologist</ProfileTitle>
+            <ProfileName>
+              <SparklingName name={intro?.name ?? 'Stefanie Jane'} sparkleCount={5} />
+            </ProfileName>
+            <ProfileTitle>Creative Technologist</ProfileTitle>
 
             <SocialLinks>
               <SocialLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">

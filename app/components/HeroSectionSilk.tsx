@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
@@ -318,7 +318,6 @@ const DEFAULT_TECH_TAGS = [
 export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { isInitialLoad } = usePageLoad()
-  const { scrollY } = useScroll()
 
   // Merge provided hero with defaults
   const heroContent = {
@@ -326,10 +325,6 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
     ...hero,
   }
   const tags = techTags ?? DEFAULT_TECH_TAGS
-
-  // Parallax transforms
-  const y = useTransform(scrollY, [0, 500], [0, 150])
-  const opacity = useTransform(scrollY, [0, 300], [1, 0])
 
   // Particle animation
   useEffect(() => {
@@ -423,7 +418,7 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
   return (
     <HeroWrapper>
       <BackgroundCanvas ref={canvasRef} />
-      <BackgroundGradient style={{ opacity, y }} />
+      <BackgroundGradient />
 
       <ContentContainer animate="visible" initial="hidden" variants={containerVariants}>
         <Title variants={itemVariants}>
