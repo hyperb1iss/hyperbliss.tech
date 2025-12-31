@@ -357,8 +357,24 @@ export default defineConfig({
           {
             fields: [
               {
+                label: 'Brand Text',
+                name: 'brandText',
+                type: 'string',
+              },
+              {
                 label: 'Copyright Name',
                 name: 'copyrightName',
+                type: 'string',
+              },
+              {
+                description: 'Override the dynamic year (e.g., 2026)',
+                label: 'Copyright Year',
+                name: 'copyrightYear',
+                type: 'number',
+              },
+              {
+                label: 'Made With Text',
+                name: 'madeWithText',
                 type: 'string',
               },
             ],

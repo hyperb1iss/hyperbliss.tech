@@ -8,6 +8,7 @@ import type { HeroSection } from '@/lib/tina'
 import { SilkButton } from '../styles/silkcircuit/components'
 import { usePageLoad } from './PageLoadOrchestrator'
 import { SparklingName } from './SparklingName'
+import { StarButton } from './StarComponents'
 
 interface HeroSectionSilkProps {
   hero?: HeroSection | null
@@ -458,15 +459,9 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
 
         <CTASection variants={itemVariants}>
           <Link href={heroContent.primaryCtaLink ?? '/projects'} style={{ textDecoration: 'none' }}>
-            <SilkButton
-              $size="lg"
-              $variant="primary"
-              as={motion.div}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <StarButton size="lg" variant="primary">
               {heroContent.primaryCtaText ?? 'View Projects'}
-            </SilkButton>
+            </StarButton>
           </Link>
 
           <Link href={heroContent.secondaryCtaLink ?? '/about'} style={{ textDecoration: 'none' }}>

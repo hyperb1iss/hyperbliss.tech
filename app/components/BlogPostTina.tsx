@@ -37,18 +37,6 @@ const Title = styled(motion.h1)`
   margin-bottom: 1rem;
   text-shadow: 0 0 10px var(--color-secondary);
   text-align: center;
-  position: relative;
-
-  &:after {
-    content: "";
-    position: absolute;
-    width: 50%;
-    height: 2px;
-    background: var(--color-primary);
-    left: 25%;
-    bottom: -10px;
-    box-shadow: 0 0 10px var(--color-primary);
-  }
 `
 
 const Meta = styled(motion.div)`

@@ -1580,7 +1580,25 @@
           {
             "arguments": [],
             "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "brandText" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
             "name": { "kind": "Name", "value": "copyrightName" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "copyrightYear" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "arguments": [],
+            "kind": "FieldDefinition",
+            "name": { "kind": "Name", "value": "madeWithText" },
             "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
           }
         ],
@@ -1799,7 +1817,66 @@
         "fields": [
           {
             "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "lt" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "lte" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "gte" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "gt" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "eq" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "exists" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Boolean" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "in" },
+            "type": {
+              "kind": "ListType",
+              "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+            }
+          }
+        ],
+        "kind": "InputObjectTypeDefinition",
+        "name": { "kind": "Name", "value": "NumberFilter" }
+      },
+      {
+        "fields": [
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "brandText" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "StringFilter" } }
+          },
+          {
+            "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "copyrightName" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "StringFilter" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "copyrightYear" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "NumberFilter" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "madeWithText" },
             "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "StringFilter" } }
           }
         ],
@@ -3323,7 +3400,22 @@
         "fields": [
           {
             "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "brandText" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
+          },
+          {
+            "kind": "InputValueDefinition",
             "name": { "kind": "Name", "value": "copyrightName" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "copyrightYear" },
+            "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "Float" } }
+          },
+          {
+            "kind": "InputValueDefinition",
+            "name": { "kind": "Name", "value": "madeWithText" },
             "type": { "kind": "NamedType", "name": { "kind": "Name", "value": "String" } }
           }
         ],
@@ -4099,9 +4191,34 @@
           {
             "fields": [
               {
+                "label": "Brand Text",
+                "name": "brandText",
+                "namespace": ["siteConfig", "footer", "brandText"],
+                "searchable": true,
+                "type": "string",
+                "uid": false
+              },
+              {
                 "label": "Copyright Name",
                 "name": "copyrightName",
                 "namespace": ["siteConfig", "footer", "copyrightName"],
+                "searchable": true,
+                "type": "string",
+                "uid": false
+              },
+              {
+                "description": "Override the dynamic year (e.g., 2026)",
+                "label": "Copyright Year",
+                "name": "copyrightYear",
+                "namespace": ["siteConfig", "footer", "copyrightYear"],
+                "searchable": true,
+                "type": "number",
+                "uid": false
+              },
+              {
+                "label": "Made With Text",
+                "name": "madeWithText",
+                "namespace": ["siteConfig", "footer", "madeWithText"],
                 "searchable": true,
                 "type": "string",
                 "uid": false

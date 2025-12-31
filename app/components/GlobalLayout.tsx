@@ -1,19 +1,10 @@
 // app/components/GlobalLayout.tsx
 'use client'
 
-import dynamic from 'next/dynamic'
 import React from 'react'
 import styled from 'styled-components'
+import Footer from './Footer'
 import { useHeaderContext } from './HeaderContext'
-
-// Import StaticFooter by default for initial page load
-import StaticFooter from './StaticFooter'
-
-// Lazy load the animated Footer for enhanced experience after page load
-const AnimatedFooter = dynamic(() => import('./Footer'), {
-  loading: () => <StaticFooter />,
-  ssr: false,
-})
 
 const LayoutContainer = styled.div<{ $isHeaderExpanded: boolean }>`
   padding-top: ${(props) => (props.$isHeaderExpanded ? '200px' : '100px')};
@@ -49,21 +40,11 @@ interface GlobalLayoutProps {
  */
 const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   const { isExpanded } = useHeaderContext()
-  const [isAnimatedFooterLoaded, setIsAnimatedFooterLoaded] = React.useState(false)
-
-  // After a delay, load the animated footer instead
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsAnimatedFooterLoaded(true)
-    }, 2000) // Delay loading animated footer for better performance
-
-    return () => clearTimeout(timer)
-  }, [])
 
   return (
     <LayoutContainer $isHeaderExpanded={isExpanded}>
       <ContentWrapper>{children}</ContentWrapper>
-      {isAnimatedFooterLoaded ? <AnimatedFooter /> : <StaticFooter />}
+      <Footer />
     </LayoutContainer>
   )
 }

@@ -1,6 +1,8 @@
 {
   "footer": {
-    "copyrightName": "Stefanie Jane"
+    "brandText": "hyperbliss",
+    "copyrightName": "Stefanie Jane",
+    "madeWithText": "crafted with </> + ♥"
   },
   "navigation": [
     { "href": "/about/", "label": "About" },
@@ -9,28 +11,22 @@
     { "href": "/resume/", "label": "Resume" }
   ],
   "notFound": {
-    "description": "The coordinates you've entered don't exist in this realm. Reality may have been altered, or signal fragmented.",
+    "description": "Let's guide you back to familiar territory.",
     "messages": [
-      "Want to retrace your steps or explore uncharted code?",
-      "Fancy hacking a new path through this digital wasteland?",
-      "Care to recalibrate your coordinates or dive into new networks?",
-      "Looking to debug your route or inject some new variables?",
-      "Shall we recompile your journey or browse the data archives?",
-      "Want to defrag your destination or surf the packet waves?",
-      "Ready to reboot your trajectory or scan for open ports?",
-      "Need to patch your navigation or trace a new network?",
-      "Time to refactor your path or query the mainframe?",
-      "Shall we decrypt a new direction or ping alternative routes?",
-      "Looking to overclock your adventure or tunnel through the firewall?",
-      "Ready to benchmark new paths or fork your current branch?",
-      "Want to cache a new location or run a sys diagnostic?",
-      "Care to initialize a new journey or rollback to a checkpoint?"
+      "This star got lost searching for that page...",
+      "Even shooting stars miss their targets sometimes.",
+      "The cosmic winds blew this page into the void.",
+      "This star wandered off the beaten path.",
+      "Some destinations exist only in dreams.",
+      "The universe hid this page from us.",
+      "This star took a wrong turn at the nebula.",
+      "Not all who wander are lost... but this page is."
     ],
     "primaryButtonLink": "/",
-    "primaryButtonText": "Return to Nexus",
+    "primaryButtonText": "Return Home",
     "secondaryButtonLink": "/projects/",
-    "secondaryButtonText": "Scan for Projects",
-    "subtitle": "SIGNAL LOST",
+    "secondaryButtonText": "Explore Projects",
+    "subtitle": "Lost in Space",
     "title": "404"
   },
   "seo": {

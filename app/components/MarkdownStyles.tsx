@@ -310,31 +310,48 @@ export const StyledBlockquote = styled.blockquote`
   }
 `
 
-// Horizontal Rule
+// Horizontal Rule with Star Divider
 export const StyledHr = styled.hr`
   border: none;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--silk-quantum-purple) 20%,
-    var(--silk-circuit-cyan) 50%,
-    var(--silk-quantum-purple) 80%,
-    transparent
-  );
-  margin: 3rem 0;
+  height: 28px;
+  background: transparent;
+  margin: 2.5rem 0;
   position: relative;
-  
-  &::after {
-    content: '◆';
+
+  &::before {
+    content: '';
     position: absolute;
-    left: 50%;
     top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--silk-quantum-purple) 15%,
+      var(--silk-circuit-cyan) 35%,
+      transparent 45%,
+      transparent 55%,
+      var(--silk-circuit-cyan) 65%,
+      var(--silk-quantum-purple) 85%,
+      transparent 100%
+    );
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--silk-void-black);
-    color: var(--silk-lavender);
-    padding: 0 1rem;
-    font-size: 1.2rem;
+    width: 24px;
+    height: 24px;
+    background-image: url('/images/star-icon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 0 6px rgba(0, 255, 240, 0.5));
+    z-index: 1;
   }
 `
 

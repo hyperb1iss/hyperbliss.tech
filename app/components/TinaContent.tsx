@@ -121,9 +121,46 @@ const ContentWrapper = styled.div`
 
   hr {
     border: none;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
-    margin: 3rem 0;
+    height: 28px;
+    background: transparent;
+    margin: 2.5rem 0;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--color-primary) 15%,
+        var(--color-secondary) 35%,
+        transparent 45%,
+        transparent 55%,
+        var(--color-secondary) 65%,
+        var(--color-primary) 85%,
+        transparent 100%
+      );
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 24px;
+      height: 24px;
+      background-image: url('/images/star-icon.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(0 0 6px rgba(0, 255, 240, 0.5));
+      z-index: 1;
+    }
   }
 `
 

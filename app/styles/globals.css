@@ -17,13 +17,8 @@
   padding: 0;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-
 html {
+  margin: 0;
   font-size: 62.5%; /* Sets 1rem to 10px for easier calculations */
   scroll-behavior: smooth;
 }

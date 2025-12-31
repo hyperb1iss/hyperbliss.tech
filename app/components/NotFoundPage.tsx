@@ -1,15 +1,46 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import GlitchSpan from './GlitchSpan'
+import Image from 'next/image'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import styled, { keyframes } from 'styled-components'
 import PageWrapper from './PageWrapper'
+import { StarButton } from './StarComponents'
 import StyledLink from './StyledLink'
 
-// Custom styled components for the 404 page
-const GlitchContainer = styled.div`
-  position: fixed; /* Use fixed positioning to take over viewport */
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Animations
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const glow = keyframes`
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.6))
+            drop-shadow(0 0 40px rgba(0, 255, 240, 0.4));
+    opacity: 0.9;
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(162, 89, 255, 0.8))
+            drop-shadow(0 0 60px rgba(0, 255, 240, 0.6));
+    opacity: 1;
+  }
+`
+
+const gradientShift = keyframes`
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+`
+
+const sparkle = keyframes`
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+`
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styled Components
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const Container = styled.div`
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -19,609 +50,386 @@ const GlitchContainer = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 100%;
-  z-index: 0; /* Below header but above background */
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(20, 20, 35, 1) 0%,
+    rgba(10, 10, 20, 1) 100%
+  );
+  overflow: hidden;
 `
 
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0 2rem;
-  margin-top: -2rem; /* Move content up slightly */
-  width: 100%;
-  max-width: 100%;
-  min-height: 500px; /* Ensure minimum height for content */
-`
-
-const GlitchCanvas = styled.canvas`
+const StarFieldCanvas = styled.canvas`
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  pointer-events: none;
 `
 
-// Dramatic but lightweight keyframes
-const slowScaleRotate = `
-  @keyframes slowScaleRotate {
-    0% { transform: scale(1) rotate(-2deg); }
-    50% { transform: scale(1.04) rotate(2deg); }
-    100% { transform: scale(1) rotate(-2deg); }
-  }
-`
-const subtlePulse = `
-  @keyframes subtlePulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.82; }
-    100% { opacity: 1; }
-  }
-`
-const neonFlicker = `
-  @keyframes neonFlicker {
-    0%, 100% { opacity: 1; }
-    2% { opacity: 0.85; }
-    4% { opacity: 1; }
-    19% { opacity: 0.95; }
-    21% { opacity: 1; }
-    23% { opacity: 0.9; }
-    25% { opacity: 1; }
-  }
-`
-const colorShift = `
-  @keyframes colorShift {
-    0% { color: #fff; }
-    30% { color: #a259ff; }
-    60% { color: #00fff0; }
-    100% { color: #ff75d8; }
-  }
+const LostStarContainer = styled(motion.div)`
+  position: relative;
+  margin-bottom: var(--space-8);
 `
 
-// Inject keyframes into the document (for styled-components)
-if (typeof window !== 'undefined' && !document.getElementById('nfpage-keyframes')) {
-  const style = document.createElement('style')
-  style.id = 'nfpage-keyframes'
-  style.innerHTML = slowScaleRotate + subtlePulse + neonFlicker + colorShift
-  document.head.appendChild(style)
-}
+const LostStar = styled.div`
+  width: 180px;
+  height: auto;
+  animation: ${glow} 3s ease-in-out infinite;
 
-const GlitchTitle = styled(motion.h1)`
-  font-size: 12rem;
-  margin-bottom: 1rem;
-  color: var(--color-accent);
-  text-shadow:
-    0 0 10px var(--color-accent),
-    0 0 20px var(--color-accent),
-    3px 3px 0px var(--color-primary);
-  animation: slowScaleRotate 7s cubic-bezier(0.77, 0, 0.18, 1) infinite;
-
-  @media (max-width: 768px) {
-    font-size: 8rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 6rem;
-  }
-`
-
-const GlitchSubtitle = styled(motion.h2)`
-  font-size: 3.6rem;
-  margin-bottom: 3rem;
-  color: #ff75d8;
-  text-shadow:
-    0 0 8px #ff75d8,
-    0 0 24px #ff75d8,
-    0 0 40px #a259ff,
-    0 0 2px var(--color-secondary);
-  filter: contrast(1.2) brightness(1.1);
-  animation: subtlePulse 2.8s ease-in-out infinite;
-
-  @media (max-width: 768px) {
-    font-size: 2.8rem;
-  }
-`
-
-// Random message selector for 404 page
-const LOST_MESSAGE_VARIANTS = [
-  'Want to retrace your steps or explore uncharted code?',
-  'Fancy hacking a new path through this digital wasteland?',
-  'Care to recalibrate your coordinates or dive into new networks?',
-  'Ready to decode a different reality or return to base?',
-  'System suggests retracing your datastream or scanning new sectors.',
-  'Feel like jacking back into the mainframe or glitching elsewhere?',
-  'Need to reboot your journey or dive into unexplored subroutines?',
-  'Time to realign your neural pathways or discover new connections?',
-  'Prefer to reset your signal or venture into different frequencies?',
-  'Shall we reconstruct your path or decode new possibilities?',
-  'Want to reload your previous instance or spawn in a new dimension?',
-  'Navigate back to your origin point or explore alternate matrices?',
-  'Yearning to restore your last checkpoint or hack into fresh terrain?',
-  'Seeking to reconfigure your destination or phase into new domains?',
-]
-
-// Random lost message hook
-const useRandomLostMessage = () => {
-  const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * LOST_MESSAGE_VARIANTS.length)
-    setMessage(LOST_MESSAGE_VARIANTS[randomIndex])
-  }, [])
-
-  return message
-}
-
-const GlitchText = styled(motion.p)`
-  font-size: 1.8rem;
-  max-width: 60rem;
-  margin-bottom: 3rem;
-  color: #00fff0;
-  text-shadow:
-    0 0 6px #00fff0,
-    0 0 18px #00fff0,
-    0 0 32px #a259ff,
-    0 0 2px var(--color-text);
-  /* animation:
-    neonFlicker 2.2s infinite alternate,
-    colorShift 6s infinite linear; */
-
-  @media (max-width: 768px) {
-    font-size: 1.6rem;
-    max-width: 100%;
-    padding: 0 1rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.4rem;
+  img {
     width: 100%;
-    line-height: 1.6;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    width: 140px;
   }
 `
 
-const ButtonContainer = styled.div`
+const Sparkle = styled.div<{ $x: number; $y: number; $delay: number }>`
+  position: absolute;
+  left: ${({ $x }) => $x}%;
+  top: ${({ $y }) => $y}%;
+  width: 8px;
+  height: 8px;
+  background: var(--color-secondary);
+  border-radius: 50%;
+  animation: ${sparkle} 2s ease-in-out infinite;
+  animation-delay: ${({ $delay }) => $delay}s;
+  box-shadow: 0 0 10px var(--color-secondary);
+`
+
+const ContentWrapper = styled(motion.div)`
+  position: relative;
+  z-index: 1;
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 var(--space-6);
+  max-width: 700px;
+`
+
+const ErrorCode = styled(motion.h1)`
+  font-family: var(--font-heading);
+  font-size: clamp(8rem, 15vw, 14rem);
+  font-weight: var(--font-black);
+  margin: 0;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 50%,
+    var(--color-accent) 100%
+  );
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ${gradientShift} 4s ease infinite;
+  text-shadow: none;
+  line-height: 1;
+`
+
+const Title = styled(motion.h2)`
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: var(--space-4) 0 var(--space-6);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+`
+
+const Message = styled(motion.p)`
+  font-family: var(--font-body);
+  font-size: clamp(1.6rem, 2vw, 2rem);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-8);
+  max-width: 500px;
+`
+
+const Highlight = styled.span<{ $color?: 'purple' | 'cyan' | 'pink' }>`
+  color: ${({ $color = 'cyan' }) =>
+    $color === 'purple'
+      ? 'var(--color-primary)'
+      : $color === 'pink'
+        ? 'var(--color-accent)'
+        : 'var(--color-secondary)'};
+  font-weight: var(--font-medium);
+`
+
+const ButtonContainer = styled(motion.div)`
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
 
   @media (max-width: 480px) {
     flex-direction: column;
-    gap: 1rem;
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
   }
 `
 
-const GlitchButton = styled(motion.button)`
+const SecondaryButton = styled(motion.button)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4) var(--space-8);
+  min-height: 56px;
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
   background: transparent;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 1rem 2rem;
-  font-family: var(--font-heading);
-  font-size: 1.6rem;
-  text-transform: uppercase;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition:
-    all 0.3s cubic-bezier(0.77, 0, 0.18, 1),
-    border-color 0.2s;
-  box-shadow:
-    0 0 12px #00fff0,
-    0 0 32px #a259ff,
-    0 0 2px var(--color-primary);
-  text-shadow:
-    0 0 6px #00fff0,
-    0 0 12px #a259ff;
-  /* No infinite animation! */
+  transition: all var(--duration-normal) var(--ease-silk);
 
   &:hover {
-    transform: scale(1.07) rotate(-2deg);
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-    box-shadow:
-      0 0 24px #00fff0,
-      0 0 48px #a259ff,
-      0 0 8px var(--color-accent),
-      inset 0 0 18px rgba(0, 255, 240, 0.3);
+    color: var(--text-primary);
+    border-color: var(--color-secondary);
+    background: rgba(0, 255, 240, 0.05);
   }
 `
 
-// Neon harmonized GlitchSpan for this page only
-const NeonGlitchSpan = styled(GlitchSpan)`
-  color: #fff;
-  text-shadow:
-    0 0 8px #00fff0,
-    0 0 18px #a259ff,
-    0 0 32px #ff75d8,
-    0 0 2px #fff;
-  animation:
-    neonFlicker 2.2s infinite alternate,
-    colorShift 7s infinite linear;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Lost Messages
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  &::before,
-  &::after {
-    display: none !important;
-  }
-`
+const LOST_MESSAGES = [
+  'This star got lost searching for that page...',
+  'Even shooting stars miss their targets sometimes.',
+  'The cosmic winds blew this page into the void.',
+  'This star wandered off the beaten path.',
+  'Some destinations exist only in dreams.',
+  'The universe hid this page from us.',
+  'This star took a wrong turn at the nebula.',
+  'Not all who wander are lost... but this page is.',
+]
 
-// Add dramatic highlight spans for message text
-const VioletSpan = styled.span`
-  color: #a259ff;
-  text-shadow:
-    0 0 8px #a259ff,
-    0 0 24px #ff75d8,
-    0 0 32px #fff;
-  /* animation: violetPulse 3.2s infinite alternate; */
-  @keyframes violetPulse {
-    0% {
-      text-shadow:
-        0 0 8px #a259ff,
-        0 0 24px #ff75d8,
-        0 0 32px #fff;
-    }
-    100% {
-      text-shadow:
-        0 0 18px #a259ff,
-        0 0 32px #ff75d8,
-        0 0 48px #fff;
-    }
-  }
-`
-const CyanSpan = styled.span`
-  color: #b3fff6;
-  text-shadow:
-    0 0 16px #b3fff6,
-    0 0 32px #00fff0,
-    0 0 48px #a259ff,
-    0 0 8px #fff;
-  /* animation: cyanPulse 3.5s infinite alternate; */
-  @keyframes cyanPulse {
-    0% {
-      text-shadow:
-        0 0 16px #b3fff6,
-        0 0 32px #00fff0,
-        0 0 48px #a259ff,
-        0 0 8px #fff;
-    }
-    100% {
-      text-shadow:
-        0 0 28px #b3fff6,
-        0 0 48px #00fff0,
-        0 0 64px #a259ff,
-        0 0 12px #fff;
-    }
-  }
-`
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// Generate sparkles around the lost star
+const SPARKLES = [
+  { delay: 0, x: -20, y: 10 },
+  { delay: 0.5, x: 110, y: 20 },
+  { delay: 1, x: 90, y: 90 },
+  { delay: 1.5, x: 0, y: 80 },
+  { delay: 0.8, x: 50, y: -10 },
+]
+
+// Star interface for the warp field
+interface WarpStar {
+  x: number
+  y: number
+  z: number
+  prevX: number
+  prevY: number
+}
 
 export default function NotFoundPage() {
+  const [message, setMessage] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
-  const randomLostMessage = useRandomLostMessage()
+  const _starsRef = useRef<WarpStar[]>([])
+
+  // Initialize warp stars
+  const _initStars = useCallback((count: number) => {
+    const stars: WarpStar[] = []
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        prevX: 0,
+        prevY: 0,
+        x: (Math.random() - 0.5) * 2000,
+        y: (Math.random() - 0.5) * 2000,
+        z: Math.random() * 1000,
+      })
+    }
+    return stars
+  }, [])
 
   useEffect(() => {
-    if (!canvasRef.current || isCanvasLoaded) return
+    setMessage(LOST_MESSAGES[Math.floor(Math.random() * LOST_MESSAGES.length)])
+  }, [])
 
+  // Canvas starfield animation
+  useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // --- OFFSCREEN GRID CANVAS ---
-    let gridCanvas: HTMLCanvasElement | null = null
-    let gridCtx: CanvasRenderingContext2D | null = null
-    const gridSize = 60
+    let animationId: number
+    let stars: WarpStar[] = []
+    const speed = 3
+    const maxDepth = 1000
+    const starCount = 300
 
-    // Set canvas dimensions to match container
     const resizeCanvas = () => {
-      const parentHeight = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight
       canvas.width = window.innerWidth
-      canvas.height = parentHeight
-      // Recreate offscreen grid canvas
-      gridCanvas = document.createElement('canvas')
-      gridCanvas.width = window.innerWidth
-      gridCanvas.height = parentHeight
-      gridCtx = gridCanvas.getContext('2d')
-      if (gridCtx) {
-        gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height)
-        gridCtx.strokeStyle = 'rgba(0, 255, 240, 0.1)'
-        gridCtx.lineWidth = 1
-        for (let y = 0; y < gridCanvas.height; y += gridSize) {
-          gridCtx.beginPath()
-          gridCtx.moveTo(0, y)
-          gridCtx.lineTo(gridCanvas.width, y)
-          gridCtx.stroke()
-        }
-        for (let x = 0; x < gridCanvas.width; x += gridSize) {
-          gridCtx.beginPath()
-          gridCtx.moveTo(x, 0)
-          gridCtx.lineTo(x, gridCanvas.height)
-          gridCtx.stroke()
-        }
+      canvas.height = window.innerHeight
+      // Clear fully on resize
+      ctx.fillStyle = 'rgb(10, 10, 20)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+    }
+
+    const initializeStars = () => {
+      const cx = canvas.width / 2
+      const cy = canvas.height / 2
+      stars = []
+      for (let i = 0; i < starCount; i++) {
+        const x = (Math.random() - 0.5) * canvas.width * 2
+        const y = (Math.random() - 0.5) * canvas.height * 2
+        const z = Math.random() * maxDepth
+        const sx = cx + (x / z) * 300
+        const sy = cy + (y / z) * 300
+        stars.push({ prevX: sx, prevY: sy, x, y, z })
       }
     }
 
     resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
+    initializeStars()
+    window.addEventListener('resize', () => {
+      resizeCanvas()
+      initializeStars()
+    })
 
-    // --- PARTICLES ---
-    let particles: {
-      x: number
-      y: number
-      size: number
-      color: string
-      speed: number
-      isTrail?: boolean
-      prevX?: number
-      prevY?: number
-    }[] = []
-    // --- DATA RAIN ---
-    let rainDrops: { x: number; y: number; speed: number; length: number; color: string }[] = []
-    // --- GLYPHS ---
-    const glyphs = ['λ', 'Ξ', 'Ψ', 'Ж', '⟁', '✶', '⧫', '⟁', '⟟', '⧖', '⧊', '⧗', '⧉', '⧙']
-    let glyphFlash: { x: number; y: number; glyph: string; alpha: number; ttl: number } | null = null
-
-    // Initialize particles
-    const initParticles = () => {
-      particles = []
-      const particleCount = Math.max(8, Math.floor(window.innerWidth / 120))
-      const trailCount = Math.max(2, Math.floor(particleCount / 4))
-      for (let i = 0; i < particleCount; i++) {
-        const isTrail = i < trailCount
-        particles.push({
-          color: i % 3 === 0 ? '#a259ff' : i % 3 === 1 ? '#ff75d8' : '#00fff0',
-          isTrail,
-          prevX: undefined,
-          prevY: undefined,
-          size: isTrail ? Math.random() * 5 + 4 : Math.random() * 2 + 1,
-          speed: Math.random() * 1 + 0.5,
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-        })
-      }
-    }
-    // Initialize data rain
-    const initRain = () => {
-      rainDrops = []
-      const rainCount = Math.floor(canvas.width / 80)
-      for (let i = 0; i < rainCount; i++) {
-        rainDrops.push({
-          color: Math.random() > 0.5 ? '#00fff0' : '#a259ff',
-          length: Math.random() * 60 + 40,
-          speed: Math.random() * 2 + 1.5,
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-        })
-      }
-    }
-    initParticles()
-    initRain()
-
-    // Draw a grid effect (now just blits the offscreen grid)
-    const drawGrid = () => {
-      if (!ctx || !gridCanvas) return
-      ctx.drawImage(gridCanvas, 0, 0)
-    }
-    // Draw scanlines
-    const drawScanlines = () => {
-      if (!ctx) return
-      ctx.save()
-      for (let y = 0; y < canvas.height; y += 20) {
-        ctx.globalAlpha = Math.random() > 0.97 ? 0.18 : 0.08
-        ctx.fillStyle = '#00fff0'
-        ctx.fillRect(0, y, canvas.width, 1)
-      }
-      ctx.globalAlpha = 1
-      ctx.restore()
-    }
-    // Draw data rain
-    const drawDataRain = () => {
-      if (!ctx) return
-      ctx.save()
-      rainDrops.forEach((drop) => {
-        ctx.beginPath()
-        ctx.strokeStyle = drop.color
-        ctx.globalAlpha = 0.18 + Math.random() * 0.2
-        ctx.moveTo(drop.x, drop.y)
-        ctx.lineTo(drop.x, drop.y + drop.length)
-        ctx.lineWidth = 2
-        ctx.stroke()
-        drop.y += drop.speed
-        if (drop.y > canvas.height) {
-          drop.y = -drop.length
-          drop.x = Math.random() * canvas.width
-        }
-      })
-      ctx.globalAlpha = 1
-      ctx.restore()
-    }
-    // Draw glyph flash
-    const drawGlyphFlash = () => {
-      if (!ctx || !glyphFlash) return
-      ctx.save()
-      ctx.globalAlpha = glyphFlash.alpha
-      ctx.font = `bold 4rem 'Fira Mono', monospace`
-      ctx.fillStyle = '#ff75d8'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.shadowColor = '#a259ff'
-      ctx.shadowBlur = 18
-      ctx.fillText(glyphFlash.glyph, glyphFlash.x, glyphFlash.y)
-      ctx.globalAlpha = 1
-      ctx.restore()
-    }
-
-    // Animation loop
-    let frameCount = 0
-    // For throttling animation to 24fps
-    let lastFrameTime = performance.now()
-    const FRAME_DURATION = 1000 / 30 // Increase to 30fps for smoother experience
-    // Random glitch effect that occasionally distorts the canvas
-    const applyGlitchEffect = () => {
-      if (!ctx || Math.random() > 0.03) return // Reduced frequency to improve performance
-
-      // Simplified glitch effect - less computation
-      if (Math.random() > 0.7) {
-        const blockCount = Math.floor(Math.random() * 3) + 1 // Reduced block count
-        for (let i = 0; i < blockCount; i++) {
-          const x = Math.random() * canvas.width
-          const y = Math.random() * canvas.height
-          const width = Math.random() * 100 + 50
-          const height = Math.random() * 20 + 10
-          ctx.fillStyle = `rgba(${String(Math.random() * 255)}, ${String(Math.random() * 255)}, ${String(Math.random() * 255)}, 0.2)`
-          ctx.fillRect(x, y, width, height)
-        }
-      } else {
-        // Only do pixel manipulation occasionally
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const data = imageData.data
-        // Process fewer pixels for better performance
-        for (let i = 0; i < data.length; i += 16) {
-          // Process every 4th pixel
-          if (Math.random() > 0.95) {
-            // Lower chance
-            data[i] = data[i + 4] || data[i]
-            data[i + 1] = data[i + 5] || data[i + 1]
-            data[i + 2] = data[i + 6] || data[i + 2]
-          }
-        }
-        ctx.putImageData(imageData, 0, 0)
-      }
-    }
     const animate = () => {
-      if (!ctx) return
-      const now = performance.now()
-      if (now - lastFrameTime < FRAME_DURATION) {
-        requestAnimationFrame(animate)
-        return
-      }
-      lastFrameTime = now
-      ctx.fillStyle = 'rgba(10, 10, 20, 1)'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-      drawGrid() // Disabled for CPU testing
-      drawScanlines() // Disabled for CPU testing
-      drawDataRain()
-      particles.forEach((particle) => {
-        // Store previous position for trails
-        if (particle.isTrail) {
-          particle.prevX = particle.x
-          particle.prevY = particle.y
+      const { width, height } = canvas
+      const cx = width / 2
+      const cy = height / 2
+
+      // Semi-transparent clear for trail effect
+      ctx.fillStyle = 'rgba(10, 10, 20, 0.2)'
+      ctx.fillRect(0, 0, width, height)
+
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i]
+
+        // Store previous position before moving
+        const prevSx = cx + (star.x / star.z) * 300
+        const prevSy = cy + (star.y / star.z) * 300
+
+        // Move star toward viewer
+        star.z -= speed
+
+        // Reset star if it passes the viewer
+        if (star.z <= 0) {
+          star.x = (Math.random() - 0.5) * width * 2
+          star.y = (Math.random() - 0.5) * height * 2
+          star.z = maxDepth
+          star.prevX = cx
+          star.prevY = cy
+          continue
         }
-        particle.y += particle.speed
-        if (particle.y > canvas.height) {
-          particle.y = 0
-          particle.x = Math.random() * canvas.width
-        }
-        // Draw trail for special particles
-        if (particle.isTrail && particle.prevX !== undefined && particle.prevY !== undefined) {
-          ctx.save()
-          ctx.globalAlpha = 0.18
-          ctx.strokeStyle = particle.color
-          ctx.lineWidth = particle.size * 0.7
-          ctx.beginPath()
-          ctx.moveTo(particle.prevX, particle.prevY)
-          ctx.lineTo(particle.x, particle.y)
-          ctx.stroke()
-          ctx.globalAlpha = 1
-          ctx.restore()
-        }
-        // Draw particle
+
+        // Project 3D to 2D
+        const sx = cx + (star.x / star.z) * 300
+        const sy = cy + (star.y / star.z) * 300
+
+        // Skip if off screen
+        if (sx < 0 || sx > width || sy < 0 || sy > height) continue
+
+        // Calculate size and brightness based on depth
+        const depthRatio = 1 - star.z / maxDepth
+        const size = 0.5 + depthRatio * 2.5
+        const brightness = 0.2 + depthRatio * 0.8
+
+        // Draw star trail
         ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fillStyle = particle.color
+        ctx.moveTo(prevSx, prevSy)
+        ctx.lineTo(sx, sy)
+        ctx.strokeStyle = `rgba(255, 255, 255, ${brightness * 0.6})`
+        ctx.lineWidth = size * 0.8
+        ctx.stroke()
+
+        // Draw star point
+        ctx.beginPath()
+        ctx.arc(sx, sy, size, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255, 255, 255, ${brightness})`
         ctx.fill()
-        ctx.shadowBlur = 10
-        ctx.shadowColor = particle.color
-      })
-      drawGlyphFlash()
-      // Only apply glitch effect every 5th frame
-      if (frameCount % 5 === 0) {
-        applyGlitchEffect()
       }
-      ctx.shadowBlur = 0
-      // Occasionally trigger a glyph flash
-      if (!glyphFlash && Math.random() > 0.995) {
-        glyphFlash = {
-          alpha: 1,
-          glyph: glyphs[Math.floor(Math.random() * glyphs.length)],
-          ttl: 30 + Math.random() * 30,
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-        }
-      }
-      // Animate glyph flash
-      if (glyphFlash) {
-        glyphFlash.ttl--
-        glyphFlash.alpha -= 0.03
-        if (glyphFlash.ttl <= 0 || glyphFlash.alpha <= 0) {
-          glyphFlash = null
-        }
-      }
-      frameCount++
-      requestAnimationFrame(animate)
+
+      animationId = requestAnimationFrame(animate)
     }
+
     animate()
-    setIsCanvasLoaded(true)
+
     return () => {
       window.removeEventListener('resize', resizeCanvas)
+      cancelAnimationFrame(animationId)
     }
-  }, [isCanvasLoaded])
+  }, [])
 
   return (
     <PageWrapper>
-      <GlitchContainer>
-        <GlitchCanvas ref={canvasRef} />
+      <Container>
+        <StarFieldCanvas ref={canvasRef} />
+
         <ContentWrapper>
-          <GlitchTitle
+          <LostStarContainer
             animate={{ opacity: 1, y: 0 }}
-            initial={{ opacity: 0, y: -50 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
+            initial={{ opacity: 0, y: -30 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
           >
-            <NeonGlitchSpan>404</NeonGlitchSpan>
-          </GlitchTitle>
-          <GlitchSubtitle animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.5, duration: 0.8 }}>
-            SIGNAL LOST
-          </GlitchSubtitle>
-          <GlitchText
-            animate={{ opacity: 1 }}
-            initial={{ opacity: 0 }}
-            style={{ filter: 'contrast(1.1) brightness(1.05)' }}
-            transition={{ delay: 0.8, duration: 0.8 }}
+            <LostStar>
+              <Image alt="Lost shooting star" height={180} priority={true} src="/images/star-icon.png" width={180} />
+            </LostStar>
+            {SPARKLES.map((sparkle, i) => (
+              <Sparkle $delay={sparkle.delay} $x={sparkle.x} $y={sparkle.y} key={i} />
+            ))}
+          </LostStarContainer>
+
+          <ErrorCode
+            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
           >
-            <NeonGlitchSpan data-text="The coordinates you've entered">
-              The coordinates you&apos;ve entered
-            </NeonGlitchSpan>{' '}
-            don&apos;t exist in this realm.
-            <br />
-            <VioletSpan>Reality may have been altered</VioletSpan>, or <CyanSpan>signal fragmented</CyanSpan>.<br />
-            {randomLostMessage}
-          </GlitchText>
-          <ButtonContainer>
+            404
+          </ErrorCode>
+
+          <Title
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
+            Lost in Space
+          </Title>
+
+          <Message
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
+            {message} <Highlight $color="cyan">Let&apos;s guide you back</Highlight> to{' '}
+            <Highlight $color="purple">familiar territory</Highlight>.
+          </Message>
+
+          <ButtonContainer
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            transition={{ delay: 1, duration: 0.5 }}
+          >
             <StyledLink href="/">
-              <GlitchButton
-                animate={{ opacity: 1 }}
-                initial={{ opacity: 0 }}
-                transition={{ delay: 1.1, duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Return to Nexus
-              </GlitchButton>
+              <StarButton size="lg" variant="primary">
+                Return Home
+              </StarButton>
             </StyledLink>
             <StyledLink href="/projects">
-              <GlitchButton
-                animate={{ opacity: 1 }}
-                initial={{ opacity: 0 }}
-                transition={{ delay: 1.3, duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Scan for Projects
-              </GlitchButton>
+              <SecondaryButton whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                Explore Projects
+              </SecondaryButton>
             </StyledLink>
           </ButtonContainer>
         </ContentWrapper>
-      </GlitchContainer>
+      </Container>
     </PageWrapper>
   )
 }

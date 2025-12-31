@@ -539,7 +539,10 @@ export interface SiteConfig {
     secondaryButtonLink: string | null
   } | null
   footer: {
+    brandText: string | null
     copyrightName: string | null
+    copyrightYear: number | null
+    madeWithText: string | null
   } | null
 }
 
@@ -550,7 +553,10 @@ export async function getSiteConfig(): Promise<SiteConfig> {
   return {
     footer: config.footer
       ? {
+          brandText: config.footer.brandText ?? null,
           copyrightName: config.footer.copyrightName ?? null,
+          copyrightYear: config.footer.copyrightYear ?? null,
+          madeWithText: config.footer.madeWithText ?? null,
         }
       : null,
     navigation: (config.navigation ?? []).map((n) => ({

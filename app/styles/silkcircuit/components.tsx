@@ -130,14 +130,18 @@ export const SilkButton = styled(motion.button)<{
         return css`
           padding: var(--space-2) var(--space-4);
           font-size: var(--text-sm);
+          min-height: 36px;
         `
       case 'lg':
         return css`
           padding: var(--space-4) var(--space-8);
           font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
+          min-height: 56px;
         `
       default:
-        return null
+        return css`
+          min-height: 44px;
+        `
     }
   }}
 `
@@ -518,4 +522,150 @@ export const SilkSkeleton = styled.div<{
   border-radius: var(--radius-md);
   height: ${({ $height = 'var(--space-6)' }) => $height};
   width: ${({ $width = '100%' }) => $width};
+`
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Star Button Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const starFloat = keyframes`
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-2px) rotate(3deg); }
+`
+
+export const StarButtonWrapper = styled(motion.div)<{
+  $variant?: 'primary' | 'secondary'
+  $size?: 'sm' | 'md' | 'lg'
+}>`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-body);
+  font-size: clamp(1.5rem, 1.3rem + 0.4vw, 1.8rem);
+  font-weight: var(--font-medium);
+  line-height: var(--leading-snug);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) var(--ease-silk);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+  overflow: hidden;
+
+  ${({ $variant = 'primary' }) =>
+    $variant === 'primary'
+      ? css`
+          background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+          color: var(--silk-white);
+          border: 1px solid transparent;
+          box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        `
+      : css`
+          background: var(--surface-raised);
+          color: var(--color-secondary);
+          border: 1px solid var(--color-secondary);
+        `}
+
+  ${({ $size = 'md' }) => {
+    switch ($size) {
+      case 'sm':
+        return css`
+          padding: var(--space-2) var(--space-4);
+          font-size: var(--text-sm);
+          gap: var(--space-2);
+          min-height: 36px;
+
+          .star-icon {
+            width: 16px;
+          }
+        `
+      case 'lg':
+        return css`
+          padding: var(--space-4) var(--space-8);
+          font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
+          gap: var(--space-3);
+          min-height: 56px;
+
+          .star-icon {
+            width: 28px;
+          }
+        `
+      default:
+        return css`
+          min-height: 44px;
+
+          .star-icon {
+            width: 22px;
+          }
+        `
+    }
+  }}
+
+  .star-icon {
+    height: auto;
+    filter: brightness(1.5) drop-shadow(0 0 4px rgba(0, 255, 240, 0.5));
+    animation: ${starFloat} 2s ease-in-out infinite;
+    transition: all var(--duration-normal) var(--ease-silk);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), 0 0 20px rgba(162, 89, 255, 0.3);
+
+    .star-icon {
+      filter: brightness(2) drop-shadow(0 0 8px rgba(0, 255, 240, 0.8));
+      animation-duration: 1s;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Star Divider Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const starGlow = keyframes`
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.4)); }
+  50% { filter: drop-shadow(0 0 16px rgba(162, 89, 255, 0.6)); }
+`
+
+export const StarDividerContainer = styled.div<{
+  $compact?: boolean
+}>`
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  width: 100%;
+  margin: ${({ $compact }) => ($compact ? 'var(--space-6) 0' : 'var(--space-12) 0')};
+
+  .divider-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--color-primary) 30%,
+      var(--color-secondary) 50%,
+      var(--color-primary) 70%,
+      transparent 100%
+    );
+    opacity: 0.6;
+  }
+
+  .star-icon {
+    width: ${({ $compact }) => ($compact ? '32px' : '48px')};
+    height: auto;
+    animation: ${starGlow} 3s ease-in-out infinite;
+    transition: all var(--duration-normal) var(--ease-silk);
+
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
 `
