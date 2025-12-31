@@ -227,11 +227,7 @@ interface SparklingNameProps {
   className?: string
 }
 
-export const SparklingName: React.FC<SparklingNameProps> = ({
-  name,
-  sparkleCount = 12,
-  className
-}) => {
+export const SparklingName: React.FC<SparklingNameProps> = ({ name, sparkleCount = 12, className }) => {
   const [sparkles, setSparkles] = useState<SparkleType[]>([])
 
   useEffect(() => {
@@ -248,10 +244,7 @@ export const SparklingName: React.FC<SparklingNameProps> = ({
 
   return (
     <SparkleWrapper className={className}>
-      <HighlightedName
-        transition={{ damping: 10, stiffness: 300, type: 'spring' }}
-        whileHover={{ scale: 1.05 }}
-      >
+      <HighlightedName transition={{ damping: 10, stiffness: 300, type: 'spring' }} whileHover={{ scale: 1.05 }}>
         {name}
       </HighlightedName>
       {sparkles.map((sparkle) => (

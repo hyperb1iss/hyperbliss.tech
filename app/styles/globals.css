@@ -28,7 +28,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   font-family: var(--font-body);
-  font-size: 1.6rem; /* 16px */
+  font-size: 1.4rem; /* 14px */
   line-height: var(--leading-relaxed);
   color: var(--text-primary);
   background-color: var(--silk-void-black);

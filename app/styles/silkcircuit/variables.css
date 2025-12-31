@@ -94,11 +94,13 @@
      Typography
      ═══════════════════════════════════════════════════════════════ */
 
-  /* Font Stacks - Cyberpunk/Futuristic
-     Powered by `next/font` CSS variables (see `app/styles/fonts.ts`). */
-  --font-display: var(--font-orbitron, system-ui), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-orbitron, system-ui), system-ui, -apple-system, sans-serif;
-  --font-body: var(--font-rajdhani, system-ui), system-ui, -apple-system, sans-serif;
+  /* Font Stacks - Femme Future
+     Jura (headings) + Exo 2 (body) + Space Mono (code)
+     Powered by `next/font` CSS variables (see `app/styles/fonts.ts`).
+  */
+  --font-display: var(--font-jura, system-ui), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-jura, system-ui), system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-exo2, system-ui), system-ui, -apple-system, sans-serif;
   --font-mono:
     var(--font-space-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
@@ -119,7 +121,7 @@
   /* Fluid Typography - Balanced scale for readability */
   --text-fluid-xs: clamp(1.2rem, 1.1rem + 0.5vw, 1.4rem);
   --text-fluid-sm: clamp(1.4rem, 1.3rem + 0.5vw, 1.6rem);
-  --text-fluid-base: clamp(1.6rem, 1.5rem + 0.5vw, 1.9rem);
+  --text-fluid-base: clamp(1.3rem, 1.2rem + 0.35vw, 1.6rem);
   --text-fluid-lg: clamp(1.9rem, 1.8rem + 0.5vw, 2.2rem);
   --text-fluid-xl: clamp(2.2rem, 2rem + 1vw, 2.6rem);
   --text-fluid-2xl: clamp(2.6rem, 2.4rem + 1vw, 3.2rem);

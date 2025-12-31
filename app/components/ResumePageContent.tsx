@@ -531,13 +531,13 @@ const DownloadButton = styled(motion.a)`
     transform: translateY(-4px) scale(1.05);
     background: linear-gradient(
       135deg,
-      rgba(255, 117, 216, 0.9),
-      rgba(0, 255, 240, 0.9)
+      rgba(162, 89, 255, 1),
+      rgba(255, 117, 216, 1)
     );
-    border-color: var(--silk-circuit-cyan);
-    box-shadow: 
-      0 0 40px rgba(0, 255, 240, 0.6),
-      0 15px 50px rgba(255, 117, 216, 0.4);
+    border-color: var(--silk-quantum-purple);
+    box-shadow:
+      0 0 25px rgba(162, 89, 255, 0.5),
+      0 15px 40px rgba(255, 117, 216, 0.35);
   }
   
   @media (max-width: 768px) {
