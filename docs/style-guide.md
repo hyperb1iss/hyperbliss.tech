@@ -483,38 +483,52 @@ animation: gradientShift 5s ease infinite;
 
 ## ⚙️ 𝙏𝙚𝙘𝙝𝙣𝙞𝙘𝙖𝙡 𝙄𝙢𝙥𝙡𝙚𝙢𝙚𝙣𝙩𝙖𝙩𝙞𝙤𝙣 ⚙️
 
-### 𝙎𝙩𝙮𝙡𝙚𝙙 𝙃𝙚𝙡𝙥𝙚𝙧𝙨
+### 𝙋𝙖𝙣𝙙𝙖 𝘾𝙎𝙎 𝙃𝙚𝙡𝙥𝙚𝙧𝙨
 
-When implementing new components, use these patterns:
+When implementing new components, use these Panda CSS patterns:
 
 ```jsx
-// Importing styled-components
-import styled from 'styled-components'
+// Importing Panda CSS utilities
+import { css } from '../styled-system/css'
+import { styled } from '../styled-system/jsx'
 
-// Base component with props
-const MyComponent =
-  styled.div <
-  { $color: string } >
-  `
-  color: ${(props) => `rgb(${props.$color})`};
-  background: rgba(255, 255, 255, 0.025);
-  
-  /* Add hover effects */
-  &:hover {
-    color: ${(props) => `rgb(${props.$color})`};
-    transform: translateY(-2px);
-  }
-`
+// Using the css function for inline styles
+const myComponentStyles = css({
+  color: 'rgb(var(--color))',
+  background: 'rgba(255, 255, 255, 0.025)',
+  _hover: {
+    transform: 'translateY(-2px)',
+  },
+})
 
-// Responsive adjustments
-const ResponsiveComponent = styled.div`
-  font-size: clamp(1.4rem, 1.6vw, 2rem);
-  width: 100%;
+// Using the styled factory for reusable components
+const MyComponent = styled('div', {
+  base: {
+    color: 'primary',
+    background: 'rgba(255, 255, 255, 0.025)',
+    _hover: {
+      transform: 'translateY(-2px)',
+    },
+  },
+  variants: {
+    color: {
+      primary: { color: 'cosmicPurple' },
+      secondary: { color: 'neonPink' },
+      accent: { color: 'digitalCyan' },
+    },
+  },
+})
 
-  @media (min-width: 768px) {
-    width: 85%;
-  }
-`
+// Responsive adjustments using Panda CSS responsive syntax
+const ResponsiveComponent = styled('div', {
+  base: {
+    fontSize: 'clamp(1.4rem, 1.6vw, 2rem)',
+    width: '100%',
+    md: {
+      width: '85%',
+    },
+  },
+})
 ```
 
 ### 𝘼𝙣𝙞𝙢𝙖𝙩𝙞𝙤𝙣 𝙄𝙢𝙥𝙡𝙚𝙢𝙚𝙣𝙩𝙖𝙩𝙞𝙤𝙣
@@ -607,23 +621,27 @@ We use React Icons, primarily from the `Fa` and `Io` collections. Icons should:
 - **Styled Components**: PascalCase with descriptive names (e.g.,
   `StyledButton`)
 - **CSS Variables**: kebab-case (e.g., `--color-primary`)
-- **Props**: camelCase, with `$` prefix for styled-component props (e.g.,
-  `$color`)
+- **Recipe Variants**: camelCase for variant names and options
 
-### 𝙎𝙩𝙮𝙡𝙚𝙙 𝘾𝙤𝙢𝙥𝙤𝙣𝙚𝙣𝙩𝙨 𝙋𝙖𝙩𝙩𝙚𝙧𝙣
+### 𝙋𝙖𝙣𝙙𝙖 𝘾𝙎𝙎 𝘾𝙤𝙢𝙥𝙤𝙣𝙚𝙣𝙩 𝙋𝙖𝙩𝙩𝙚𝙧𝙣
 
 ```jsx
-// Component structure
-import styled from 'styled-components'
+// Component structure with Panda CSS
+import { css } from '../styled-system/css'
+import { styled } from '../styled-system/jsx'
 
-// Base components
-const ComponentWrapper = styled.div`
-  /* Base styles */
-`
+// Base components using styled factory
+const ComponentWrapper = styled('div', {
+  base: {
+    /* Base styles */
+  },
+})
 
-const ComponentTitle = styled.h2`
-  /* Title styles */
-`
+const ComponentTitle = styled('h2', {
+  base: {
+    /* Title styles */
+  },
+})
 
 // Component implementation
 const MyComponent = ({ title, children }) => {
@@ -641,31 +659,31 @@ export default MyComponent
 ### 𝙍𝙚𝙨𝙥𝙤𝙣𝙨𝙞𝙫𝙚 𝙋𝙖𝙩𝙩𝙚𝙧𝙣𝙨
 
 ```jsx
-// Using clamp for fluid typography
-const Title = styled.h1`
-  font-size: clamp(3rem, 5vw, 6rem);
+// Using clamp for fluid typography with Panda CSS
+const Title = styled('h1', {
+  base: {
+    fontSize: 'clamp(3rem, 5vw, 6rem)',
+    md: {
+      marginBottom: '1rem',
+    },
+  },
+})
 
-  /* Additional media queries as needed */
-  @media (max-width: 768px) {
-    margin-bottom: 1rem;
-  }
-`
-
-// Responsive containers
-const Container = styled.div`
-  width: 85%;
-  max-width: 1400px;
-  margin: 0 auto;
-
-  @media (max-width: 1200px) {
-    width: 90%;
-  }
-
-  @media (max-width: 768px) {
-    width: 95%;
-    padding: 1rem;
-  }
-`
+// Responsive containers using Panda CSS breakpoint syntax
+const Container = styled('div', {
+  base: {
+    width: '85%',
+    maxWidth: '1400px',
+    margin: '0 auto',
+    lg: {
+      width: '90%',
+    },
+    md: {
+      width: '95%',
+      padding: '1rem',
+    },
+  },
+})
 ```
 
 ## ✧･ﾟ: ✧･ﾟ 𝙁𝙞𝙣𝙖𝙡 𝙉𝙤𝙩𝙚𝙨 ･ﾟ✧:･ﾟ✧

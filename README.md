@@ -6,7 +6,7 @@
 [![TYPESCRIPT](https://img.shields.io/badge/TYPESCRIPT-5.8-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![NEXT.JS](https://img.shields.io/badge/NEXT.JS-15.2-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![JEST](https://img.shields.io/badge/JEST-29.7-d11aff?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
-[![STYLED](https://img.shields.io/badge/STYLED-COMPONENTS-ff57e8?style=for-the-badge&logo=styled-components&logoColor=white)](https://styled-components.com/)
+[![PANDA CSS](https://img.shields.io/badge/PANDA-CSS-ff57e8?style=for-the-badge&logo=css3&logoColor=white)](https://panda-css.com/)
 [![REACT](https://img.shields.io/badge/REACT-19.0-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
 [![LICENSE](https://img.shields.io/badge/LICENSE-CC_BY--NC--SA-00fff0?style=for-the-badge)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
@@ -55,7 +55,7 @@ holistic software experiences that are as beautiful as they are powerful.
 
 - **Framework**: Next.js 16.0 with TypeScript 5.9
 - **Frontend**: React 19.2
-- **Styling**: Styled Components 6.1
+- **Styling**: Panda CSS (zero-runtime CSS-in-JS)
 - **Routing**: Next.js App Router
 - **Content Management**: Markdown files with gray-matter and react-markdown
   10.1
@@ -240,9 +240,10 @@ and visually stunning backdrop for the hyperbliss.tech experience.
 
 ## 🎨 Styling
 
-The project uses Styled Components for styling, with global styles and variables
-defined in `src/app/styles/globals.css`. The color scheme focuses on purple hues
-with complementary colors:
+The project uses Panda CSS, a zero-runtime CSS-in-JS library with template
+literal syntax, for styling. Global styles and design tokens are defined in the
+Panda configuration and `src/app/styles/globals.css`. The color scheme focuses
+on purple hues with complementary colors:
 
 - Primary: `#a259ff`
 - Secondary: `#ff75d8`

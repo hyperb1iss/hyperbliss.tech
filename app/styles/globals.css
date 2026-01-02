@@ -10,404 +10,402 @@
 
 /* Base layer: Reset and global styles (lower priority than utilities) */
 @layer base {
-
-/* Reset and base styles */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  margin: 0;
-  font-size: 62.5%; /* Sets 1rem to 10px for easier calculations */
-  scroll-behavior: smooth;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  font-family: var(--font-body);
-  font-size: 1.4rem; /* 14px */
-  line-height: var(--leading-relaxed);
-  color: var(--text-primary);
-  background-color: var(--silk-void-black);
-
-  /* Use the new background image */
-  background-image: url("/images/background2.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
-
-  overflow-x: hidden;
-  position: relative;
-  z-index: 0;
-}
-
-@supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
-  body {
-    background-image: image-set(
-      url("/images/background2.avif") type("image/avif"),
-      url("/images/background2.webp") type("image/webp"),
-      url("/images/background2.png") type("image/png")
-    );
-  }
-}
-
-/* Subtle overlay for better text readability */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%);
-  z-index: -1;
-  pointer-events: none;
-}
-
-/* Typography styles with SilkCircuit - Futuristic */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-heading);
-  font-weight: var(--font-bold);
-  line-height: var(--leading-tight);
-  color: var(--text-primary);
-  margin-bottom: var(--space-4);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(162, 89, 255, 0.3);
-}
-
-h1 {
-  font-size: var(--text-fluid-5xl);
-  font-weight: var(--font-black);
-}
-
-h2 {
-  font-size: var(--text-fluid-4xl);
-  font-weight: var(--font-bold);
-}
-
-h3 {
-  font-size: var(--text-fluid-3xl);
-  font-weight: var(--font-semibold);
-}
-
-h4 {
-  font-size: var(--text-fluid-2xl);
-}
-
-h5 {
-  font-size: var(--text-fluid-xl);
-}
-
-h6 {
-  font-size: var(--text-fluid-lg);
-}
-
-/* Link styles */
-a {
-  color: var(--silk-circuit-cyan);
-  text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-silk);
-  position: relative;
-}
-
-a:hover {
-  color: var(--silk-circuit-teal);
-}
-
-a:focus-visible {
-  outline: 2px solid var(--silk-quantum-purple);
-  outline-offset: 2px;
-  border-radius: var(--radius-sm);
-}
-
-/* Paragraph styles */
-p {
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  line-height: var(--leading-relaxed);
-  margin-bottom: var(--space-4);
-  color: var(--text-secondary);
-  font-weight: 500;
-  letter-spacing: 0.03em;
-}
-
-/* Code styles */
-code {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  padding: var(--space-1) var(--space-2);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  color: var(--silk-circuit-cyan);
-}
-
-pre {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: var(--leading-relaxed);
-  padding: var(--space-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  margin-bottom: var(--space-6);
-}
-
-pre code {
-  padding: 0;
-  background: transparent;
-  border: none;
-  font-size: inherit;
-}
-
-/* Selection styles */
-::selection {
-  background: rgba(162, 89, 255, 0.3);
-  color: var(--silk-white);
-}
-
-::-moz-selection {
-  background: rgba(162, 89, 255, 0.3);
-  color: var(--silk-white);
-}
-
-/* Scrollbar styles */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--surface-base);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--silk-steel-700);
-  border-radius: var(--radius-full);
-  border: 2px solid var(--surface-base);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--silk-steel-600);
-}
-
-/* Focus visible utilities */
-.focus-visible:focus-visible {
-  outline: 2px solid var(--silk-quantum-purple);
-  outline-offset: 2px;
-}
-
-/* Utility classes - SilkCircuit enhanced */
-.glow {
-  color: var(--silk-quantum-purple);
-  text-shadow: var(--glow-purple);
-}
-
-.page-exit {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition:
-    opacity var(--duration-slow) var(--ease-silk),
-    transform var(--duration-slow) var(--ease-silk);
-}
-
-/* Logo styling - SilkCircuit evolution */
-.logo {
-  font-family: var(--font-display);
-  font-size: 3.6rem;
-  font-weight: var(--font-bold);
-  color: var(--silk-circuit-cyan);
-  text-shadow: var(--glow-cyan);
-  letter-spacing: var(--tracking-wider);
-  transition: all var(--duration-normal) var(--ease-silk);
-  display: inline-block;
-  text-decoration: none;
-}
-
-.logo:hover {
-  color: var(--silk-quantum-purple);
-  text-shadow: var(--glow-purple);
-  transform: scale(1.05) translateY(-1px);
-}
-
-/* Container utilities */
-.container {
-  width: 100%;
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: 0 var(--space-6);
-}
-
-/* Section spacing */
-section {
-  padding: var(--space-16) 0;
-}
-
-/* Card base styles */
-.card {
-  background: var(--surface-raised);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6);
-  transition: all var(--duration-normal) var(--ease-silk);
-}
-
-.card:hover {
-  border-color: var(--border-default);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-/* Button base styles */
-button {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  font-weight: var(--font-medium);
-  cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-silk);
-}
-
-/* Input base styles */
-input,
-textarea,
-select {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  color: var(--text-primary);
-  background: var(--surface-raised);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-lg);
-  padding: var(--space-3) var(--space-4);
-  transition: all var(--duration-fast) var(--ease-silk);
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  outline: none;
-  border-color: var(--silk-quantum-purple);
-  box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.1);
-}
-
-/* Responsive Typography */
-@media (max-width: 768px) {
-  html {
-    font-size: 60%; /* Mobile base: 9.6px per rem */
-  }
-
-  body {
-    font-size: 1.5rem;
-  }
-
-  section {
-    padding: var(--space-12) 0;
-  }
-
-  .container {
-    padding: 0 var(--space-4);
-  }
-}
-
-/* REMOVED: background-attachment: fixed causes severe scroll jank
-   even on modern browsers. The repaint cost isn't worth the parallax effect. */
-
-/* Print styles */
-@media print {
-  body {
-    background: white;
-    color: black;
-  }
-
-  a {
-    color: black;
-    text-decoration: underline;
-  }
-}
-
-/* Animation utilities */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn var(--duration-normal) var(--ease-silk) forwards;
-}
-
-.animate-slideIn {
-  animation: slideIn var(--duration-normal) var(--ease-silk) forwards;
-}
-
-/* Accessibility utilities */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* High contrast mode adjustments */
-@media (prefers-contrast: high) {
-  :root {
-    --silk-quantum-purple: #b366ff;
-    --silk-circuit-cyan: #33ffff;
-    --silk-plasma-pink: #ff99e6;
-  }
-}
-
-/* Respect reduced motion preferences (also helps on lower-power devices). */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
+  /* Reset and base styles */
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms;
-    animation-iteration-count: 1;
-    transition-duration: 0.001ms;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    margin: 0;
+    font-size: 62.5%; /* Sets 1rem to 10px for easier calculations */
+    scroll-behavior: smooth;
   }
 
   body {
-    background-attachment: scroll;
-  }
-}
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    font-size: 1.4rem; /* 14px */
+    line-height: var(--leading-relaxed);
+    color: var(--text-primary);
+    background-color: var(--silk-void-black);
 
+    /* Use the new background image */
+    background-image: url("/images/background2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+
+    overflow-x: hidden;
+    position: relative;
+    z-index: 0;
+  }
+
+  @supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
+    body {
+      background-image: image-set(
+        url("/images/background2.avif") type("image/avif"),
+        url("/images/background2.webp") type("image/webp"),
+        url("/images/background2.png") type("image/png")
+      );
+    }
+  }
+
+  /* Subtle overlay for better text readability */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Typography styles with SilkCircuit - Futuristic */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    font-weight: var(--font-bold);
+    line-height: var(--leading-tight);
+    color: var(--text-primary);
+    margin-bottom: var(--space-4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(162, 89, 255, 0.3);
+  }
+
+  h1 {
+    font-size: var(--text-fluid-5xl);
+    font-weight: var(--font-black);
+  }
+
+  h2 {
+    font-size: var(--text-fluid-4xl);
+    font-weight: var(--font-bold);
+  }
+
+  h3 {
+    font-size: var(--text-fluid-3xl);
+    font-weight: var(--font-semibold);
+  }
+
+  h4 {
+    font-size: var(--text-fluid-2xl);
+  }
+
+  h5 {
+    font-size: var(--text-fluid-xl);
+  }
+
+  h6 {
+    font-size: var(--text-fluid-lg);
+  }
+
+  /* Link styles */
+  a {
+    color: var(--silk-circuit-cyan);
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease-silk);
+    position: relative;
+  }
+
+  a:hover {
+    color: var(--silk-circuit-teal);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--silk-quantum-purple);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Paragraph styles */
+  p {
+    font-family: var(--font-body);
+    font-size: var(--text-fluid-base);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-4);
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+
+  /* Code styles */
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    padding: var(--space-1) var(--space-2);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--silk-circuit-cyan);
+  }
+
+  pre {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    padding: var(--space-4);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    margin-bottom: var(--space-6);
+  }
+
+  pre code {
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-size: inherit;
+  }
+
+  /* Selection styles */
+  ::selection {
+    background: rgba(162, 89, 255, 0.3);
+    color: var(--silk-white);
+  }
+
+  ::-moz-selection {
+    background: rgba(162, 89, 255, 0.3);
+    color: var(--silk-white);
+  }
+
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface-base);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--silk-steel-700);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--surface-base);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--silk-steel-600);
+  }
+
+  /* Focus visible utilities */
+  .focus-visible:focus-visible {
+    outline: 2px solid var(--silk-quantum-purple);
+    outline-offset: 2px;
+  }
+
+  /* Utility classes - SilkCircuit enhanced */
+  .glow {
+    color: var(--silk-quantum-purple);
+    text-shadow: var(--glow-purple);
+  }
+
+  .page-exit {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition:
+      opacity var(--duration-slow) var(--ease-silk),
+      transform var(--duration-slow) var(--ease-silk);
+  }
+
+  /* Logo styling - SilkCircuit evolution */
+  .logo {
+    font-family: var(--font-display);
+    font-size: 3.6rem;
+    font-weight: var(--font-bold);
+    color: var(--silk-circuit-cyan);
+    text-shadow: var(--glow-cyan);
+    letter-spacing: var(--tracking-wider);
+    transition: all var(--duration-normal) var(--ease-silk);
+    display: inline-block;
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    color: var(--silk-quantum-purple);
+    text-shadow: var(--glow-purple);
+    transform: scale(1.05) translateY(-1px);
+  }
+
+  /* Container utilities */
+  .container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: 0 var(--space-6);
+  }
+
+  /* Section spacing */
+  section {
+    padding: var(--space-16) 0;
+  }
+
+  /* Card base styles */
+  .card {
+    background: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    transition: all var(--duration-normal) var(--ease-silk);
+  }
+
+  .card:hover {
+    border-color: var(--border-default);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  /* Button base styles */
+  button {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-silk);
+  }
+
+  /* Input base styles */
+  input,
+  textarea,
+  select {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--text-primary);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3) var(--space-4);
+    transition: all var(--duration-fast) var(--ease-silk);
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--silk-quantum-purple);
+    box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.1);
+  }
+
+  /* Responsive Typography */
+  @media (max-width: 768px) {
+    html {
+      font-size: 60%; /* Mobile base: 9.6px per rem */
+    }
+
+    body {
+      font-size: 1.5rem;
+    }
+
+    section {
+      padding: var(--space-12) 0;
+    }
+
+    .container {
+      padding: 0 var(--space-4);
+    }
+  }
+
+  /* REMOVED: background-attachment: fixed causes severe scroll jank
+   even on modern browsers. The repaint cost isn't worth the parallax effect. */
+
+  /* Print styles */
+  @media print {
+    body {
+      background: white;
+      color: black;
+    }
+
+    a {
+      color: black;
+      text-decoration: underline;
+    }
+  }
+
+  /* Animation utilities */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn var(--duration-normal) var(--ease-silk) forwards;
+  }
+
+  .animate-slideIn {
+    animation: slideIn var(--duration-normal) var(--ease-silk) forwards;
+  }
+
+  /* Accessibility utilities */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* High contrast mode adjustments */
+  @media (prefers-contrast: high) {
+    :root {
+      --silk-quantum-purple: #b366ff;
+      --silk-circuit-cyan: #33ffff;
+      --silk-plasma-pink: #ff99e6;
+    }
+  }
+
+  /* Respect reduced motion preferences (also helps on lower-power devices). */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms;
+      animation-iteration-count: 1;
+      transition-duration: 0.001ms;
+    }
+
+    body {
+      background-attachment: scroll;
+    }
+  }
 } /* End @layer base */

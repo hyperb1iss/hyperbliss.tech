@@ -7,7 +7,7 @@ alwaysApply: false
 
 ## 🌠 Overview
 
-Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* 🌠) showcasing projects, blog posts, and technical skills. Built with TypeScript, Styled Components, and custom animations including an interactive CyberScape background.
+Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* 🌠) showcasing projects, blog posts, and technical skills. Built with TypeScript, Panda CSS, and custom animations including an interactive CyberScape background.
 
 ## 🏗️ Key Directories
 
@@ -32,7 +32,7 @@ Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* �
 
 - **Framework**: Next.js 16.0.0
 - **Language**: TypeScript 5.9
-- **Styling**: Styled Components 6.1
+- **Styling**: Panda CSS (zero-runtime CSS-in-JS)
 - **State Management**: React built-in hooks
 - **Content**: Markdown with gray-matter and react-markdown
 - **Animations**: Framer Motion 12.7

@@ -9,7 +9,7 @@ import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Panda CSS Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const LogoWrapper = styled.div`

@@ -6,10 +6,9 @@ import Link from 'next/link'
 import { FaRss } from 'react-icons/fa6'
 import { styled } from '../../styled-system/jsx'
 import { SOCIAL_LINKS } from '../lib/socials'
-import { SparklingName } from './SparklingName'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Panda CSS Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const FooterContainer = styled.footer`
@@ -239,7 +238,7 @@ const Footer: React.FC = () => {
 
         <InfoSection>
           <Copyright>
-            <CopyrightYear>&copy; {currentYear}</CopyrightYear> <SparklingName name="Stefanie Jane" sparkleCount={4} />
+            <CopyrightYear>&copy; {currentYear}</CopyrightYear>
           </Copyright>
         </InfoSection>
       </FooterContent>

@@ -16,7 +16,7 @@ export default defineConfig({
   // Disable preflight - we have our own base styles in globals.css
   preflight: false,
 
-  // Use template literal syntax (closest to styled-components)
+  // Use template literal syntax for familiar CSS-in-JS authoring
   syntax: 'template-literal',
 
   // No tokens - we use SilkCircuit CSS variables directly

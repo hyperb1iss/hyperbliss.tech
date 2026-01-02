@@ -414,7 +414,7 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
   const skills = {
     Backend: ['Node.js', 'Python', 'Rust', 'GraphQL', 'PostgreSQL'],
     'Cloud & DevOps': ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform'],
-    Frontend: ['React', 'TypeScript', 'Next.js', 'WebGL', 'Styled Components'],
+    Frontend: ['React', 'TypeScript', 'Next.js', 'WebGL', 'Panda CSS'],
     Specialties: ['AI/ML', 'Android', 'Performance', 'Architecture', 'Open Source'],
   }
 

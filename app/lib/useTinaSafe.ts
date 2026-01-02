@@ -1,7 +1,7 @@
 // app/lib/useTinaSafe.ts
 // Passthrough that preserves useTina's interface
 // The data-tina-field attributes still work for click-to-edit in Tina admin
-// TODO: Test if real useTina works now that styled-components is removed
+// TODO: Test if real useTina works now that we migrated to Panda CSS
 
 'use client'
 

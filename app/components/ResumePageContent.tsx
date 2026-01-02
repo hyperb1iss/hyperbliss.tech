@@ -245,7 +245,7 @@ const downloadButtonStyles = css`
 `
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Static styled components
+// Static Panda CSS styles
 // ═══════════════════════════════════════════════════════════════════════════
 
 const ContactTitle = styled.h3`

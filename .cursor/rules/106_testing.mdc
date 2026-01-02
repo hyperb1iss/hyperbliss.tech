@@ -190,7 +190,7 @@ Focus on testing:
 - Implementation details (use component behavior testing instead)
 - Third-party libraries
 - Constant files or static configurations
-- CSS in Styled Components (test the function, not the styles)
+- CSS in Panda CSS (test the function, not the styles)
 
 ## ♿ Accessibility Testing
 

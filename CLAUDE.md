@@ -7,9 +7,9 @@ through interactive cyberpunk aesthetics. The site features a living particle
 system (CyberScape) that responds to content, user behavior, and environmental
 context.
 
-**Tech Stack**: Next.js 16.0, React 19.2, TypeScript 5.9, Styled Components,
-WebGL/Three.js **Architecture**: App Router, Server Components, Edge Functions
-**Deployment**: Netlify with performance optimization
+**Tech Stack**: Next.js 16.0, React 19.2, TypeScript 5.9, Panda CSS
+(zero-runtime CSS-in-JS), WebGL/Three.js **Architecture**: App Router, Server
+Components, Edge Functions **Deployment**: Netlify with performance optimization
 
 ## 🎯 Current State
 

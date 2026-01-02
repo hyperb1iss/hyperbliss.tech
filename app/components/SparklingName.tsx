@@ -9,7 +9,7 @@ import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Panda CSS Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const SparkleWrapper = styled.span`

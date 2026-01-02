@@ -28,7 +28,7 @@ app/components/
 
 ```tsx
 import React from 'react';
-import styled from 'styled-components';
+import { css } from 'styled-system/css';
 
 // Define types/interfaces for props
 interface ButtonProps {
@@ -36,7 +36,7 @@ interface ButtonProps {
   onClick: () => void;
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large';
-  $customColor?: string; // Prop for styled-components (with $ prefix)
+  customColor?: string;
 }
 
 // Component implementation
@@ -45,17 +45,15 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   variant = 'primary',
   size = 'medium',
-  $customColor,
+  customColor,
 }) => {
   return (
-    <StyledButton 
-      onClick={onClick} 
-      $variant={variant} 
-      $size={size}
-      $customColor={$customColor}
+    <button
+      onClick={onClick}
+      className={buttonStyles({ variant, size, customColor })}
     >
       {label}
-    </StyledButton>
+    </button>
   );
 };
 
@@ -64,53 +62,76 @@ export default Button;
 
 ## 🎨 Styling Approach
 
-Components use styled-components with these patterns:
+Components use Panda CSS (zero-runtime CSS-in-JS) with these patterns:
 
-### Styled Component Definitions
+### Panda CSS Styling with Template Literals
 
 ```tsx
-// Base components with typed props
-const StyledButton = styled.button<{
-  $variant: 'primary' | 'secondary' | 'ghost';
-  $size: 'small' | 'medium' | 'large';
-  $customColor?: string;
-}>`
+import { css } from 'styled-system/css';
+
+// Style function using template literal syntax
+const buttonStyles = (props: {
+  variant: 'primary' | 'secondary' | 'ghost';
+  size: 'small' | 'medium' | 'large';
+  customColor?: string;
+}) => css`
   /* Base styles */
   border-radius: 50px;
   border: 2px solid var(--color-primary);
   transition: all 0.3s ease;
-  
+  cursor: pointer;
+
   /* Size variations */
-  padding: ${(props) => {
-    switch (props.$size) {
-      case 'small': return '0.5rem 1rem';
-      case 'large': return '1.5rem 3rem';
-      default: return '1rem 2rem';
-    }
-  }};
-  
+  padding: ${props.size === 'small' ? '0.5rem 1rem' :
+             props.size === 'large' ? '1.5rem 3rem' : '1rem 2rem'};
+
   /* Variant styles */
-  background-color: ${(props) => {
-    switch (props.$variant) {
-      case 'primary': return 'var(--color-primary)';
-      case 'secondary': return 'transparent';
-      case 'ghost': return 'transparent';
-      default: return 'var(--color-primary)';
-    }
-  }};
-  
+  background-color: ${props.variant === 'primary' ? 'var(--color-primary)' : 'transparent'};
+
   /* Custom color override if provided */
-  ${(props) => props.$customColor && `
-    color: ${props.$customColor};
-    border-color: ${props.$customColor};
-  `}
-  
+  ${props.customColor ? `
+    color: ${props.customColor};
+    border-color: ${props.customColor};
+  ` : ''}
+
   /* Hover effects */
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(162, 89, 255, 0.4);
   }
 `;
+
+// Alternative: Using Panda CSS recipes for type-safe variants
+import { cva } from 'styled-system/css';
+
+const buttonRecipe = cva({
+  base: {
+    borderRadius: '50px',
+    border: '2px solid var(--color-primary)',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer',
+    _hover: {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 8px rgba(162, 89, 255, 0.4)',
+    },
+  },
+  variants: {
+    variant: {
+      primary: { backgroundColor: 'var(--color-primary)' },
+      secondary: { backgroundColor: 'transparent' },
+      ghost: { backgroundColor: 'transparent', border: 'none' },
+    },
+    size: {
+      small: { padding: '0.5rem 1rem' },
+      medium: { padding: '1rem 2rem' },
+      large: { padding: '1.5rem 3rem' },
+    },
+  },
+  defaultVariants: {
+    variant: 'primary',
+    size: 'medium',
+  },
+});
 ```
 
 ## 🧰 Custom Hooks

@@ -49,7 +49,7 @@ interface CodeComponentProps {
   children?: React.ReactNode
 }
 
-// Styled components for the copy button
+// Panda CSS styles for the copy button
 const CopyButton = styled.button`
   position: absolute;
   top: 0.8rem;
@@ -279,7 +279,7 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
 
 /**
  * ProjectMarkdownRenderer Component
- * Renders Markdown content with custom cyan/teal styled components for projects.
+ * Renders Markdown content with custom cyan/teal Panda CSS styles for projects.
  */
 const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content }) => {
   return (

@@ -23,7 +23,7 @@ experiences and thoughtful design.
   maintaining visual integrity
 - 📝 **Dynamic Content**: Markdown-powered blog posts and project pages with
   syntax highlighting
-- 🎨 **Styled Components**: Scoped, dynamic styling with theme consistency
+- 🎨 **Panda CSS**: Zero-runtime CSS-in-JS with type-safe styling
 - 🚀 **Performance Optimized**: Fast loading times with efficient code splitting
   and lazy loading
 - 🔍 **SEO Ready**: Comprehensive metadata management and optimization
@@ -35,7 +35,7 @@ experiences and thoughtful design.
 ### Core Technologies
 
 - **Framework**: Next.js 14 with TypeScript
-- **Styling**: Styled Components
+- **Styling**: Panda CSS
 - **Animations**: Framer Motion
 - **Content**: Markdown with gray-matter and react-markdown
 - **Icons**: React Icons
@@ -77,8 +77,8 @@ Posts and project pages are powered by a flexible Markdown system:
 
 The website uses a sophisticated styling approach:
 
-- Scoped Styled Components
-- Theme context provider
+- Zero-runtime Panda CSS
+- Type-safe design tokens
 - Dynamic color management
 - Responsive design system
 - Animation integration
