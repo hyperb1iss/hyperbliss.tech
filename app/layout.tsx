@@ -4,6 +4,7 @@ import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
 import { exo2, jura, spaceMono } from './styles/fonts'
+import '../styled-system/styles.css'
 import './styles/globals.css'
 import './styles/silkcircuit-syntax.css'
 

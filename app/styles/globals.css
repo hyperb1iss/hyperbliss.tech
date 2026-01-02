@@ -4,12 +4,12 @@
  * Global styles integrated with SilkCircuit Design System
  */
 
-/* Panda CSS cascade layers */
-@layer reset, base, tokens, recipes, utilities;
+/* Import SilkCircuit Design System - these go into base layer */
+@import "./silkcircuit/variables.css" layer(base);
+@import "./silkcircuit/utilities.css" layer(base);
 
-/* Import SilkCircuit Design System */
-@import "./silkcircuit/variables.css";
-@import "./silkcircuit/utilities.css";
+/* Base layer: Reset and global styles (lower priority than utilities) */
+@layer base {
 
 /* Reset and base styles */
 *,
@@ -409,3 +409,5 @@ select:focus {
     background-attachment: scroll;
   }
 }
+
+} /* End @layer base */

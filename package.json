@@ -6,9 +6,9 @@
   "private": true,
   "scripts": {
     "prepare": "panda codegen",
-    "dev": "panda codegen && tinacms dev -c \"next dev\"",
+    "dev": "panda codegen && panda cssgen --outfile styled-system/styles.css && tinacms dev -c \"next dev\"",
     "prebuild": "bash -c 'set -a; [ -f .env.local ] && source .env.local; set +a; if [ -n \"${NEXT_PUBLIC_TINA_CLIENT_ID}\" ] && [ -n \"${TINA_TOKEN}\" ]; then tinacms build --skip-search-index --skip-cloud-checks; else echo \"Skipping tinacms build (missing Tina credentials)\"; fi'",
-    "build": "next build",
+    "build": "panda codegen && panda cssgen --outfile styled-system/styles.css && next build",
     "build:local": "tinacms build --local --skip-cloud-checks --skip-search-index && (tinacms dev --port 4001 --noWatch & sleep 1 && next build; kill $(lsof -t -i:4001) 2>/dev/null)",
     "start": "next start",
     "lint": "biome check . && prettier --check '**/*.{md,yml,yaml}'",
