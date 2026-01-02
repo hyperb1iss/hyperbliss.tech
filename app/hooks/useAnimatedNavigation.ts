@@ -8,6 +8,8 @@ export const useAnimatedNavigation = () => {
 
   const animateAndNavigate = useCallback(
     (href: string) => {
+      // Scroll to top before navigation to prevent title hiding behind header
+      window.scrollTo({ top: 0, behavior: 'instant' })
       // The animation is now handled by Framer Motion in the MainContent component
       router.push(href)
     },
