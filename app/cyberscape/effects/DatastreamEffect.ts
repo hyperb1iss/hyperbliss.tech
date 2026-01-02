@@ -115,6 +115,9 @@ export class DatastreamEffect {
     intensity: number,
     hue: number,
   ) {
+    // Guard against zero-sized canvas
+    if (width <= 0 || height <= 0) return
+
     ctx.save()
     ctx.globalAlpha = intensity * 0.2
     const noiseSize = 4

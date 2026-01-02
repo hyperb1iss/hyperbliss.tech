@@ -13,10 +13,6 @@ export const metadata: Metadata = siteMetadata
 /**
  * RootLayout component
  * The main layout component that wraps the entire application.
- * Provides global context, headers, and scripts.
- * CRITICAL: StyledComponentsRegistry must wrap the entire app for SSR
- * @param {React.ReactNode} children - Child components
- * @returns {JSX.Element} Rendered root layout
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const structuredData = [generateWebsiteSchema(), generatePersonSchema()]

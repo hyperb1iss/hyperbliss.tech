@@ -2,6 +2,9 @@
 const isProd = process.env.NODE_ENV === 'production'
 
 const nextConfig = {
+  // Externalize packages to prevent HMR/bundling issues with Turbopack
+  serverExternalPackages: ['@tinacms/mdx', 'tinacms'],
+
   compiler: {
     styledComponents: {
       displayName: !isProd,

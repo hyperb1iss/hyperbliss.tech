@@ -247,9 +247,13 @@ export async function getPost(slug: string): Promise<PostDetail> {
   const response = await client.queries.posts({ relativePath })
   const post = response.data.posts
 
+  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
+  const bodyContent = extractBodyContent(post.body)
+  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+
   return {
     author: post.author ?? null,
-    body: extractBodyContent(post.body),
+    body: bodyString,
     coverImage: post.coverImage ?? null,
     date: post.date ?? null,
     displayTitle: formatDisplayTitle(post.emoji, post.title),
@@ -348,8 +352,12 @@ export async function getProject(slug: string): Promise<ProjectDetail> {
   const response = await client.queries.projects({ relativePath })
   const project = response.data.projects
 
+  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
+  const bodyContent = extractBodyContent(project.body)
+  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+
   return {
-    body: extractBodyContent(project.body),
+    body: bodyString,
     category: project.category ?? null,
     coverImage: project.coverImage ?? null,
     date: project.date ?? null,
@@ -504,8 +512,12 @@ export async function getResume(): Promise<ResumeData> {
   const response = await client.queries.resume({ relativePath: 'resume.md' })
   const resume = response.data.resume
 
+  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
+  const bodyContent = extractBodyContent(resume.body)
+  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+
   return {
-    body: extractBodyContent(resume.body),
+    body: bodyString,
     description: resume.description ?? null,
     title: resume.title,
   }

@@ -475,7 +475,16 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             <BioTitle>
               <FaCode /> {intro?.greeting ?? 'Hey there!'}
             </BioTitle>
-            <BioContent>{bio && <MarkdownRenderer content={bio} />}</BioContent>
+            <BioContent>
+              {intro && (intro.highlightText || intro.introText) && (
+                <p>
+                  I&apos;ve been building technology for{' '}
+                  {intro.highlightText && <strong>{intro.highlightText}</strong>}
+                  {intro.introText && ` ${intro.introText}`}
+                </p>
+              )}
+              {bio && <MarkdownRenderer content={bio} />}
+            </BioContent>
           </BioCard>
 
           {/* Technical Arsenal */}

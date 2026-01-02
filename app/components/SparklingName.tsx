@@ -159,7 +159,7 @@ const HighlightedName = styled(motion.span)`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${shimmer} 3s linear infinite;
+  animation: ${shimmer} 8s linear infinite;
   font-weight: bold;
   position: relative;
   cursor: pointer;
