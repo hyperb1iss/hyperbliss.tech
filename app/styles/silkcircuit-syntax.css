@@ -1,0 +1,239 @@
+/**
+ * SilkCircuit Glow Syntax Theme
+ * Based on the SilkCircuit Glow VSCode theme
+ * Applies vibrant neon colors with glowing effects
+ */
+
+/* Base code block styles */
+pre code {
+  /* General text */
+  color: #ffffff;
+}
+
+pre code .hljs-comment,
+pre code .hljs-quote,
+pre code .hljs-meta {
+  color: #cc66ff;
+  font-style: italic;
+  text-shadow: 0 0 5px rgba(204, 102, 255, 0.3);
+}
+
+/* Keywords, Storage, Control */
+pre code .hljs-keyword,
+pre code .hljs-selector-tag,
+pre code .hljs-literal,
+pre code .hljs-type,
+pre code .hljs-section {
+  color: #ff00ff;
+  font-weight: bold;
+  text-shadow:
+    0 0 10px rgba(255, 0, 255, 0.5),
+    0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+/* Functions, Methods */
+pre code .hljs-title,
+pre code .hljs-function .hljs-title,
+pre code .hljs-title.function_,
+pre code .hljs-title.class_,
+pre code .hljs-title.class_.inherited__ {
+  color: #00ffff;
+  font-weight: 600;
+  text-shadow:
+    0 0 10px rgba(0, 255, 255, 0.5),
+    0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+/* Strings */
+pre code .hljs-string,
+pre code .hljs-regexp,
+pre code .hljs-addition,
+pre code .hljs-attribute,
+pre code .hljs-meta-string {
+  color: #ff99ff;
+  text-shadow: 0 0 8px rgba(255, 153, 255, 0.4);
+}
+
+/* Numbers, Constants, Built-ins */
+pre code .hljs-number,
+pre code .hljs-built_in,
+pre code .hljs-builtin-name,
+pre code .hljs-constant,
+pre code .hljs-params {
+  color: #ff66ff;
+  text-shadow: 0 0 8px rgba(255, 102, 255, 0.4);
+}
+
+/* Classes, Types */
+pre code .hljs-class,
+pre code .hljs-symbol,
+pre code .hljs-bullet,
+pre code .hljs-subst,
+pre code .hljs-meta .hljs-keyword,
+pre code .hljs-selector-attr,
+pre code .hljs-selector-pseudo,
+pre code .hljs-link {
+  color: #ffff00;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+}
+
+/* Variables */
+pre code .hljs-variable,
+pre code .hljs-template-variable,
+pre code .hljs-selector-id,
+pre code .hljs-selector-class {
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+/* Tags (HTML, XML) */
+pre code .hljs-tag,
+pre code .hljs-name,
+pre code .hljs-selector {
+  color: #ff00ff;
+  text-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+}
+
+/* Attributes */
+pre code .hljs-attr {
+  color: #ffff00;
+  font-style: italic;
+  text-shadow: 0 0 6px rgba(255, 255, 0, 0.3);
+}
+
+/* Operators, Punctuation */
+pre code .hljs-operator,
+pre code .hljs-punctuation {
+  color: #00ffff;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+/* Deletion */
+pre code .hljs-deletion {
+  color: #ff0066;
+  text-shadow: 0 0 8px rgba(255, 0, 102, 0.5);
+}
+
+/* Insertion */
+pre code .hljs-addition {
+  color: #00ff00;
+  text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+}
+
+/* Strong emphasis */
+pre code .hljs-strong {
+  font-weight: bold;
+  color: #ff00ff;
+}
+
+/* Emphasis */
+pre code .hljs-emphasis {
+  font-style: italic;
+  color: #ff00ff;
+}
+
+/* Links */
+pre code .hljs-link {
+  text-decoration: underline;
+}
+
+/* Blog-specific purple/magenta theme overrides */
+.blog-syntax pre code .hljs-comment,
+.blog-syntax pre code .hljs-quote,
+.blog-syntax pre code .hljs-meta {
+  color: #a855f7;
+  text-shadow: 0 0 5px rgba(168, 85, 247, 0.3);
+}
+
+.blog-syntax pre code .hljs-keyword,
+.blog-syntax pre code .hljs-selector-tag,
+.blog-syntax pre code .hljs-type {
+  color: #d946ef;
+  text-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+}
+
+.blog-syntax pre code .hljs-title,
+.blog-syntax pre code .hljs-function .hljs-title {
+  color: #ec4899;
+  text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+.blog-syntax pre code .hljs-string,
+.blog-syntax pre code .hljs-regexp {
+  color: #ff75d8;
+  text-shadow: 0 0 8px rgba(255, 117, 216, 0.4);
+}
+
+.blog-syntax pre code .hljs-number,
+.blog-syntax pre code .hljs-built_in,
+.blog-syntax pre code .hljs-constant {
+  color: #e0aaff;
+  text-shadow: 0 0 8px rgba(224, 170, 255, 0.4);
+}
+
+.blog-syntax pre code .hljs-operator,
+.blog-syntax pre code .hljs-punctuation {
+  color: #ff75d8;
+  opacity: 0.8;
+  text-shadow: 0 0 5px rgba(255, 117, 216, 0.3);
+}
+
+/* Project-specific cyan/teal theme overrides */
+.project-syntax pre code .hljs-comment,
+.project-syntax pre code .hljs-quote,
+.project-syntax pre code .hljs-meta {
+  color: #00acc1;
+  text-shadow: 0 0 5px rgba(0, 172, 193, 0.3);
+}
+
+.project-syntax pre code .hljs-keyword,
+.project-syntax pre code .hljs-selector-tag,
+.project-syntax pre code .hljs-type {
+  color: #00fff0;
+  text-shadow: 0 0 10px rgba(0, 255, 240, 0.5);
+}
+
+.project-syntax pre code .hljs-title,
+.project-syntax pre code .hljs-function .hljs-title {
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.project-syntax pre code .hljs-string,
+.project-syntax pre code .hljs-regexp {
+  color: #26c6da;
+  text-shadow: 0 0 8px rgba(38, 198, 218, 0.4);
+}
+
+.project-syntax pre code .hljs-number,
+.project-syntax pre code .hljs-built_in,
+.project-syntax pre code .hljs-constant {
+  color: #00fff0;
+  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
+}
+
+.project-syntax pre code .hljs-operator,
+.project-syntax pre code .hljs-punctuation {
+  color: #00e5ff;
+  opacity: 0.8;
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+}
+
+/* Inline code styling for general use */
+code:not(pre code) {
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.05));
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  color: #ff00ff;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+code:not(pre code):hover {
+  background: linear-gradient(135deg, rgba(255, 0, 255, 0.15), rgba(0, 255, 255, 0.08));
+  border-color: #00ffff;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+}

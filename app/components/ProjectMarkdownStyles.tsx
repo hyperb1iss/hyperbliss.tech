@@ -1,5 +1,5 @@
 // app/components/ProjectMarkdownStyles.tsx
-import styled from 'styled-components'
+import { styled } from '../../styled-system/jsx'
 
 // Project-specific styles with cyan/teal dominance contrasting with blog's purple/magenta
 // Headings
@@ -24,7 +24,7 @@ export const ProjectH1 = styled.h1`
   text-align: left;
   font-weight: 700;
   line-height: 1.2;
-  
+
   @keyframes shimmerCyan {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -49,7 +49,7 @@ export const ProjectH2 = styled.h2`
   text-align: left;
   font-weight: 600;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -72,7 +72,7 @@ export const ProjectH3 = styled.h3`
   font-weight: 600;
   position: relative;
   padding-left: 1.2rem;
-  
+
   &::before {
     content: '◆';
     position: absolute;
@@ -93,13 +93,13 @@ export const ProjectParagraph = styled.p`
   margin-bottom: 1.2rem;
   font-weight: 400;
   letter-spacing: 0.02em;
-  
+
   strong {
     color: #00fff0;
     font-weight: 600;
     text-shadow: 0 0 8px rgba(0, 255, 240, 0.3);
   }
-  
+
   em {
     color: #26c6da;
     font-style: italic;
@@ -115,7 +115,7 @@ export const ProjectLink = styled.a`
   transition: all 0.3s var(--ease-silk);
   font-weight: 500;
   text-shadow: 0 0 8px rgba(0, 172, 193, 0.2);
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -138,7 +138,7 @@ export const ProjectLink = styled.a`
     color: #00fff0;
     text-shadow: 0 0 15px rgba(0, 255, 240, 0.6),
                  0 0 8px rgba(0, 229, 255, 0.4);
-    
+
     &::after {
       transform: scaleX(1);
       transform-origin: left;
@@ -166,12 +166,12 @@ export const ProjectBlockquote = styled.blockquote`
   font-style: italic;
   border-radius: var(--radius-lg);
   position: relative;
-  box-shadow: 
+  box-shadow:
     0 0 30px rgba(0, 229, 255, 0.2),
     0 0 60px rgba(0, 255, 240, 0.1),
     inset 0 0 30px rgba(0, 172, 193, 0.05);
   text-shadow: 0 0 10px rgba(38, 198, 218, 0.3);
-  
+
   &::before {
     content: '❝';
     position: absolute;
@@ -182,7 +182,7 @@ export const ProjectBlockquote = styled.blockquote`
     text-shadow: 0 0 20px rgba(0, 255, 240, 0.6);
     opacity: 0.6;
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -200,7 +200,7 @@ export const ProjectBlockquote = styled.blockquote`
     border-radius: 2px;
     animation: pulseCyan 3s ease infinite;
   }
-  
+
   @keyframes pulseCyan {
     0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 240, 0.5); }
     50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.8); }
@@ -221,7 +221,7 @@ export const ProjectHr = styled.hr`
   );
   margin: 3rem 0;
   position: relative;
-  
+
   &::after {
     content: '◈';
     position: absolute;
@@ -252,7 +252,7 @@ export const ProjectInlineCode = styled.code`
   border: 1px solid rgba(0, 255, 240, 0.3);
   text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
   transition: all 0.2s var(--ease-silk);
-  
+
   &:hover {
     border-color: #00e5ff;
     background: linear-gradient(
@@ -273,11 +273,11 @@ export const ProjectUl = styled.ul`
   list-style-type: none;
   padding-left: 2rem;
   margin-bottom: 1.5rem;
-  
+
   li {
     position: relative;
     padding-left: 1.8rem;
-    
+
     &::before {
       content: '◉';
       position: absolute;
@@ -289,7 +289,7 @@ export const ProjectUl = styled.ul`
                    0 0 6px rgba(0, 255, 240, 0.4);
       animation: pulseDot 2s ease infinite;
     }
-    
+
     @keyframes pulseDot {
       0%, 100% { transform: scale(1); opacity: 0.8; }
       50% { transform: scale(1.1); opacity: 1; }
@@ -303,12 +303,12 @@ export const ProjectOl = styled.ol`
   padding-left: 2rem;
   margin-bottom: 1.5rem;
   counter-reset: list-counter;
-  
+
   li {
     position: relative;
     padding-left: 2.5rem;
     counter-increment: list-counter;
-    
+
     &::before {
       content: counter(list-counter);
       position: absolute;
@@ -346,7 +346,7 @@ export const ProjectImage = styled.img`
   box-shadow: 0 0 30px rgba(0, 255, 240, 0.2),
               0 0 60px rgba(0, 229, 255, 0.1);
   transition: all 0.3s var(--ease-silk);
-  
+
   &:hover {
     border-color: rgba(0, 255, 240, 0.4);
     box-shadow: 0 0 40px rgba(0, 255, 240, 0.3),

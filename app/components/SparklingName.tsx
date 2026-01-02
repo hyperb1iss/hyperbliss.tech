@@ -5,77 +5,8 @@
 
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import styled, { css, keyframes } from 'styled-components'
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Animations
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const twinkle = keyframes`
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  25% {
-    opacity: 1;
-    transform: scale(1) rotate(45deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(0.8) rotate(90deg);
-  }
-  75% {
-    opacity: 1;
-    transform: scale(1.1) rotate(135deg);
-  }
-`
-
-const sparkleFloat = keyframes`
-  0%, 100% {
-    transform: translateY(0) scale(1);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-8px) scale(1.2);
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-`
-
-const starBurst = keyframes`
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-    filter: blur(0px);
-  }
-  20% {
-    opacity: 1;
-    transform: scale(1.2) rotate(72deg);
-    filter: blur(0px);
-  }
-  40% {
-    opacity: 0.9;
-    transform: scale(0.9) rotate(144deg);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.1) rotate(216deg);
-  }
-  80% {
-    opacity: 0.8;
-    transform: scale(1) rotate(288deg);
-  }
-`
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styled Components
@@ -106,47 +37,77 @@ const getSparkleClipPath = (shape: SparkleShape) => {
   }
 }
 
-const getAnimation = (animationType: 'twinkle' | 'float' | 'burst') => {
-  switch (animationType) {
-    case 'twinkle':
-      return css`${twinkle}`
-    case 'float':
-      return css`${sparkleFloat}`
-    case 'burst':
-      return css`${starBurst}`
-    default:
-      return css`${twinkle}`
-  }
-}
-
-const Sparkle = styled.span<{
-  $size: number
-  $top: number
-  $left: number
-  $delay: number
-  $duration: number
-  $color: string
-  $shape: SparkleShape
-  $animationType: 'twinkle' | 'float' | 'burst'
-  $blur: number
-}>`
+// Base sparkle styles
+const sparkleBaseStyles = css`
   position: absolute;
   display: block;
-  width: ${(props) => props.$size}px;
-  height: ${(props) => props.$size}px;
-  top: ${(props) => props.$top}%;
-  left: ${(props) => props.$left}%;
-  background: ${(props) => props.$color};
-  clip-path: ${(props) => getSparkleClipPath(props.$shape)};
   opacity: 0;
-  animation: ${(props) => getAnimation(props.$animationType)} ${(props) => props.$duration}s ease-in-out infinite;
-  animation-delay: ${(props) => props.$delay}s;
-  filter: blur(${(props) => props.$blur}px) drop-shadow(0 0 ${(props) => props.$size / 2}px ${(props) => props.$color});
   pointer-events: none;
   z-index: 10;
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0) rotate(0deg);
+    }
+    25% {
+      opacity: 1;
+      transform: scale(1) rotate(45deg);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(0.8) rotate(90deg);
+    }
+    75% {
+      opacity: 1;
+      transform: scale(1.1) rotate(135deg);
+    }
+  }
+
+  @keyframes sparkleFloat {
+    0%, 100% {
+      transform: translateY(0) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-8px) scale(1.2);
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes starBurst {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0) rotate(0deg);
+      filter: blur(0px);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.2) rotate(72deg);
+      filter: blur(0px);
+    }
+    40% {
+      opacity: 0.9;
+      transform: scale(0.9) rotate(144deg);
+    }
+    60% {
+      opacity: 1;
+      transform: scale(1.1) rotate(216deg);
+    }
+    80% {
+      opacity: 0.8;
+      transform: scale(1) rotate(288deg);
+    }
+  }
 `
 
-const HighlightedName = styled(motion.span)`
+const highlightedNameStyles = css`
   background: linear-gradient(
     90deg,
     var(--silk-plasma-pink) 0%,
@@ -159,13 +120,18 @@ const HighlightedName = styled(motion.span)`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${shimmer} 8s linear infinite;
+  animation: shimmer 8s linear infinite;
   font-weight: bold;
   position: relative;
   cursor: pointer;
   filter: drop-shadow(0 0 8px rgba(255, 117, 216, 0.4))
           drop-shadow(0 0 16px rgba(0, 255, 240, 0.2));
   transition: filter 0.3s ease;
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
 
   &:hover {
     filter: drop-shadow(0 0 12px rgba(255, 117, 216, 0.6))
@@ -206,16 +172,53 @@ const ANIMATION_TYPES: ('twinkle' | 'float' | 'burst')[] = ['twinkle', 'float', 
 const createSparkles = (count: number): SparkleType[] =>
   Array.from({ length: count }, (_, i) => ({
     animationType: ANIMATION_TYPES[Math.floor(Math.random() * ANIMATION_TYPES.length)],
-    blur: Math.random() * 0.5, // subtle blur for some sparkles
+    blur: Math.random() * 0.5,
     color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
     delay: Math.random() * 3,
-    duration: 3 + Math.random() * 3, // 3-6s duration - slower & dreamy
+    duration: 3 + Math.random() * 3,
     id: i,
-    left: Math.random() * 110, // centered spread
+    left: Math.random() * 110,
     shape: SPARKLE_SHAPES[Math.floor(Math.random() * SPARKLE_SHAPES.length)],
-    size: 4 + Math.random() * 6, // 4-10px - dainty
-    top: -20 + Math.random() * 115, // nudged up a hair
+    size: 4 + Math.random() * 6,
+    top: -20 + Math.random() * 115,
   }))
+
+const getAnimationName = (animationType: 'twinkle' | 'float' | 'burst') => {
+  switch (animationType) {
+    case 'twinkle':
+      return 'twinkle'
+    case 'float':
+      return 'sparkleFloat'
+    case 'burst':
+      return 'starBurst'
+    default:
+      return 'twinkle'
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Sparkle Component (using inline styles for dynamic values)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface SparkleProps {
+  sparkle: SparkleType
+}
+
+const Sparkle: React.FC<SparkleProps> = ({ sparkle }) => {
+  const style: React.CSSProperties = {
+    animation: `${getAnimationName(sparkle.animationType)} ${sparkle.duration}s ease-in-out infinite`,
+    animationDelay: `${sparkle.delay}s`,
+    background: sparkle.color,
+    clipPath: getSparkleClipPath(sparkle.shape),
+    filter: `blur(${sparkle.blur}px) drop-shadow(0 0 ${sparkle.size / 2}px ${sparkle.color})`,
+    height: `${sparkle.size}px`,
+    left: `${sparkle.left}%`,
+    top: `${sparkle.top}%`,
+    width: `${sparkle.size}px`,
+  }
+
+  return <span className={sparkleBaseStyles} style={style} />
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
@@ -244,22 +247,15 @@ export const SparklingName: React.FC<SparklingNameProps> = ({ name, sparkleCount
 
   return (
     <SparkleWrapper className={className}>
-      <HighlightedName transition={{ damping: 10, stiffness: 300, type: 'spring' }} whileHover={{ scale: 1.05 }}>
+      <motion.span
+        className={highlightedNameStyles}
+        transition={{ damping: 10, stiffness: 300, type: 'spring' }}
+        whileHover={{ scale: 1.05 }}
+      >
         {name}
-      </HighlightedName>
+      </motion.span>
       {sparkles.map((sparkle) => (
-        <Sparkle
-          $animationType={sparkle.animationType}
-          $blur={sparkle.blur}
-          $color={sparkle.color}
-          $delay={sparkle.delay}
-          $duration={sparkle.duration}
-          $left={sparkle.left}
-          $shape={sparkle.shape}
-          $size={sparkle.size}
-          $top={sparkle.top}
-          key={sparkle.id}
-        />
+        <Sparkle key={sparkle.id} sparkle={sparkle} />
       ))}
     </SparkleWrapper>
   )

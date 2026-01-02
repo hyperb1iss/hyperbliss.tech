@@ -2,12 +2,9 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { styled } from 'styled-components'
+import { css } from '../../styled-system/css'
 
-/**
- * Styled component for the mobile menu icon container.
- */
-const MobileMenuIconContainer = styled(motion.div)`
+const mobileMenuIconContainerStyles = css`
   display: none;
   width: 30px;
   height: 30px;
@@ -23,10 +20,7 @@ const MobileMenuIconContainer = styled(motion.div)`
   }
 `
 
-/**
- * Styled component for the menu lines.
- */
-const MenuLine = styled(motion.span)`
+const menuLineStyles = css`
   width: 100%;
   height: 3px;
   background-color: var(--color-accent);
@@ -65,18 +59,33 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
   }
 
   return (
-    <MobileMenuIconContainer
+    <motion.div
       aria-label="Toggle menu"
-      className="mobile-menu-icon"
+      className={mobileMenuIconContainerStyles}
       onClick={toggleMenu}
       role="button"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
-      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={topLineVariants} />
-      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={middleLineVariants} />
-      <MenuLine animate={menuOpen ? 'open' : 'closed'} transition={{ duration: 0.3 }} variants={bottomLineVariants} />
-    </MobileMenuIconContainer>
+      <motion.span
+        animate={menuOpen ? 'open' : 'closed'}
+        className={menuLineStyles}
+        transition={{ duration: 0.3 }}
+        variants={topLineVariants}
+      />
+      <motion.span
+        animate={menuOpen ? 'open' : 'closed'}
+        className={menuLineStyles}
+        transition={{ duration: 0.3 }}
+        variants={middleLineVariants}
+      />
+      <motion.span
+        animate={menuOpen ? 'open' : 'closed'}
+        className={menuLineStyles}
+        transition={{ duration: 0.3 }}
+        variants={bottomLineVariants}
+      />
+    </motion.div>
   )
 }
 

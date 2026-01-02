@@ -3,11 +3,11 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
-import styled from 'styled-components'
 import { tinaField } from 'tinacms/dist/react'
 import type { HeroSection } from '@/lib/tina'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import type { PagesQuery } from '../../tina/__generated__/types'
-import { SilkButton } from '../styles/silkcircuit/components'
 import { usePageLoad } from './PageLoadOrchestrator'
 import { SparklingName } from './SparklingName'
 import { StarButton } from './StarComponents'
@@ -15,11 +15,11 @@ import { StarButton } from './StarComponents'
 interface HeroSectionSilkProps {
   hero?: HeroSection | null
   techTags?: string[] | null
-  tinaPage?: PagesQuery['pages'] | null // For visual editing markers
+  tinaPage?: PagesQuery['pages'] | null
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const HeroWrapper = styled.section`
@@ -30,7 +30,7 @@ const HeroWrapper = styled.section`
   justify-content: center;
   padding: var(--space-24) var(--space-6) var(--space-16);
   overflow: hidden;
-  
+
   @media (max-width: 768px) {
     padding: var(--space-20) var(--space-4) var(--space-12);
   }
@@ -46,7 +46,8 @@ const BackgroundCanvas = styled.canvas`
   opacity: 0.4;
 `
 
-const BackgroundGradient = styled(motion.div)`
+// Motion component styles (using css function for className)
+const backgroundGradientStyles = css`
   position: absolute;
   top: 0;
   left: 0;
@@ -62,7 +63,7 @@ const BackgroundGradient = styled(motion.div)`
   backface-visibility: hidden;
 `
 
-const ContentContainer = styled(motion.div)`
+const contentContainerStyles = css`
   width: 100%;
   z-index: 1;
   display: flex;
@@ -70,20 +71,20 @@ const ContentContainer = styled(motion.div)`
   align-items: center;
   text-align: center;
   padding: 0 var(--space-6);
-  
+
   @media (max-width: 768px) {
     padding: 0 var(--space-4);
   }
 `
 
-const Title = styled(motion.h1)`
+const titleStyles = css`
   font-family: var(--font-heading);
   font-size: var(--text-fluid-5xl);
   font-weight: var(--font-black);
   line-height: var(--leading-tight);
   margin-bottom: var(--space-8);
   position: relative;
-  
+
   @media (max-width: 768px) {
     font-size: var(--text-fluid-4xl);
   }
@@ -101,7 +102,7 @@ const TitleGradient = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradientShift 4s ease infinite;
-  
+
   @keyframes gradientShift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -112,7 +113,7 @@ const TitleStatic = styled.span`
   color: var(--text-primary);
 `
 
-const Subtitle = styled(motion.p)`
+const subtitleStyles = css`
   font-family: var(--font-body);
   font-size: var(--text-fluid-xl);
   font-weight: var(--font-normal);
@@ -120,13 +121,13 @@ const Subtitle = styled(motion.p)`
   color: var(--text-secondary);
   max-width: 800px;
   margin: 0 auto var(--space-10);
-  
+
   @media (max-width: 768px) {
     font-size: var(--text-fluid-lg);
   }
 `
 
-const TagCloud = styled(motion.div)`
+const tagCloudStyles = css`
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
@@ -135,7 +136,7 @@ const TagCloud = styled(motion.div)`
   max-width: 900px;
 `
 
-const SkillTag = styled(motion.div)<{ $index: number }>`
+const skillTagStyles = css`
   padding: var(--space-2) var(--space-4);
   background: rgba(20, 20, 35, 0.85);
   border: 1px solid var(--border-subtle);
@@ -147,47 +148,9 @@ const SkillTag = styled(motion.div)<{ $index: number }>`
   cursor: default;
   position: relative;
   overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, 
-      ${({ $index }) =>
-        $index % 3 === 0
-          ? 'var(--silk-quantum-purple)'
-          : $index % 3 === 1
-            ? 'var(--silk-circuit-cyan)'
-            : 'var(--silk-plasma-pink)'} 0%, 
-      transparent 70%
-    );
-    opacity: 0;
-    transition: all var(--duration-normal) var(--ease-silk);
-  }
-  
-  &:hover {
-    color: var(--text-primary);
-    border-color: ${({ $index }) =>
-      $index % 3 === 0
-        ? 'var(--silk-quantum-purple)'
-        : $index % 3 === 1
-          ? 'var(--silk-circuit-cyan)'
-          : 'var(--silk-plasma-pink)'};
-    transform: translateY(-2px) scale(1.05);
-    
-    &::before {
-      width: 100%;
-      height: 100%;
-      opacity: 0.1;
-    }
-  }
 `
 
-const CTASection = styled(motion.div)`
+const ctaSectionStyles = css`
   display: flex;
   gap: var(--space-4);
   align-items: center;
@@ -195,7 +158,34 @@ const CTASection = styled(motion.div)`
   justify-content: center;
 `
 
-const ScrollIndicator = styled(motion.div)`
+const secondaryButtonStyles = css`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
+  font-weight: var(--font-medium);
+  line-height: var(--leading-snug);
+  border-radius: var(--radius-lg);
+  transition: all var(--duration-normal) var(--ease-silk);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  text-decoration: none;
+  min-height: 56px;
+  background: var(--surface-raised);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+
+  &:hover {
+    background: rgba(0, 255, 240, 0.1);
+    box-shadow: var(--glow-cyan);
+  }
+`
+
+const scrollIndicatorStyles = css`
   position: absolute;
   bottom: var(--space-8);
   left: 50%;
@@ -208,13 +198,13 @@ const ScrollIndicator = styled(motion.div)`
   font-size: var(--text-sm);
 `
 
-const ScrollMouse = styled(motion.div)`
+const scrollMouseStyles = css`
   width: 24px;
   height: 36px;
   border: 2px solid var(--border-default);
   border-radius: 12px;
   position: relative;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -227,13 +217,13 @@ const ScrollMouse = styled(motion.div)`
     border-radius: 2px;
     animation: scrollWheel 2s ease-in-out infinite;
   }
-  
+
   @keyframes scrollWheel {
-    0% { 
+    0% {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-    100% { 
+    100% {
       opacity: 0;
       transform: translateX(-50%) translateY(10px);
     }
@@ -241,7 +231,7 @@ const ScrollMouse = styled(motion.div)`
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Particle System (Simplified)
+// Particle System
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface Particle {
@@ -270,7 +260,6 @@ const createParticles = (count: number, width: number, height: number): Particle
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Default values for hero content
 const DEFAULT_HERO: HeroSection = {
   name: 'Stefanie Jane',
   primaryCtaLink: '/projects',
@@ -321,14 +310,8 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { isInitialLoad } = usePageLoad()
 
-  // Merge provided hero with defaults
-  const heroContent = {
-    ...DEFAULT_HERO,
-    ...hero,
-  }
+  const heroContent = { ...DEFAULT_HERO, ...hero }
   const tags = techTags ?? DEFAULT_TECH_TAGS
-
-  // Get tina hero object for field markers
   const tinaHero = tinaPage?.hero
 
   // Particle animation
@@ -357,18 +340,15 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
         particle.x += particle.vx
         particle.y += particle.vy
 
-        // Bounce off walls
         if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
         if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
 
-        // Draw particle
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2)
         ctx.fillStyle = particle.color
         ctx.globalAlpha = particle.opacity
         ctx.fill()
 
-        // Draw connections
         particles.forEach((other) => {
           const dx = particle.x - other.x
           const dy = particle.y - other.y
@@ -396,7 +376,6 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
     }
   }, [])
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -423,29 +402,37 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
   return (
     <HeroWrapper>
       <BackgroundCanvas ref={canvasRef} />
-      <BackgroundGradient />
+      <motion.div className={backgroundGradientStyles} />
 
-      <ContentContainer animate="visible" initial="hidden" variants={containerVariants}>
-        <Title data-tina-field={tinaHero ? tinaField(tinaHero, 'welcomeText') : undefined} variants={itemVariants}>
+      <motion.div animate="visible" className={contentContainerStyles} initial="hidden" variants={containerVariants}>
+        <motion.h1
+          className={titleStyles}
+          data-tina-field={tinaHero ? tinaField(tinaHero, 'welcomeText') : undefined}
+          variants={itemVariants}
+        >
           <TitleStatic>{heroContent.welcomeText} </TitleStatic>
           <TitleGradient>hyperbliss</TitleGradient>
-        </Title>
+        </motion.h1>
 
-        <Subtitle data-tina-field={tinaHero ? tinaField(tinaHero, 'subtitle') : undefined} variants={itemVariants}>
+        <motion.p
+          className={subtitleStyles}
+          data-tina-field={tinaHero ? tinaField(tinaHero, 'subtitle') : undefined}
+          variants={itemVariants}
+        >
           I'm{' '}
           <span data-tina-field={tinaHero ? tinaField(tinaHero, 'name') : undefined}>
             <SparklingName name={heroContent.name ?? 'Stefanie Jane'} sparkleCount={8} />
           </span>
           ,{' '}
           {heroContent.subtitle?.replace(/^I'm [^,]+, /, '') ??
-            "a full-stack engineer crafting elegant solutions at the intersection of art and technology. I build experiences that push the boundaries of what's possible on the web."}
-        </Subtitle>
+            'a full-stack engineer crafting elegant solutions at the intersection of art and technology.'}
+        </motion.p>
 
-        <TagCloud variants={itemVariants}>
+        <motion.div className={tagCloudStyles} variants={itemVariants}>
           {tags.map((tag, index) => (
-            <SkillTag
-              $index={index}
+            <motion.div
               animate={{ opacity: 1, scale: 1 }}
+              className={skillTagStyles}
               initial={{ opacity: 0, scale: 0.8 }}
               key={tag}
               transition={{
@@ -457,11 +444,11 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
               whileTap={{ scale: 0.95 }}
             >
               {tag}
-            </SkillTag>
+            </motion.div>
           ))}
-        </TagCloud>
+        </motion.div>
 
-        <CTASection variants={itemVariants}>
+        <motion.div className={ctaSectionStyles} variants={itemVariants}>
           <Link
             data-tina-field={tinaHero ? tinaField(tinaHero, 'primaryCtaText') : undefined}
             href={heroContent.primaryCtaLink ?? '/projects'}
@@ -477,25 +464,24 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
             href={heroContent.secondaryCtaLink ?? '/about'}
             style={{ textDecoration: 'none' }}
           >
-            <SilkButton
-              $size="lg"
-              $variant="secondary"
-              as={motion.div}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div className={secondaryButtonStyles} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               {heroContent.secondaryCtaText ?? 'Learn More'}
-            </SilkButton>
+            </motion.div>
           </Link>
-        </CTASection>
-      </ContentContainer>
+        </motion.div>
+      </motion.div>
 
-      <ScrollIndicator animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 1.5 }}>
-        <ScrollMouse />
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={scrollIndicatorStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 1.5 }}
+      >
+        <motion.div className={scrollMouseStyles} />
         <span data-tina-field={tinaHero ? tinaField(tinaHero, 'scrollText') : undefined}>
           {heroContent.scrollText ?? 'Scroll to explore'}
         </span>
-      </ScrollIndicator>
+      </motion.div>
     </HeroWrapper>
   )
 }

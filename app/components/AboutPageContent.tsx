@@ -7,9 +7,10 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
 import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaMicrochip, FaRocket } from 'react-icons/fa6'
-import styled, { keyframes } from 'styled-components'
 import type { AboutSection } from '@/lib/tina'
 import defaultProfileImage from '../../public/images/profile-image.jpg'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import MarkdownRenderer from './MarkdownRenderer'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
@@ -20,19 +21,10 @@ interface AboutPageContentProps {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Animations
+// Styles
 // ═══════════════════════════════════════════════════════════════════════════
 
-const _gradientShift = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-`
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Layout Components
-// ═══════════════════════════════════════════════════════════════════════════
-
-const ContentGrid = styled(motion.div)`
+const contentGridStyles = css`
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-10);
@@ -45,13 +37,13 @@ const ContentGrid = styled(motion.div)`
   }
 `
 
-const ProfileSection = styled(motion.div)`
+const profileSectionStyles = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 `
 
-const ProfileCard = styled(motion.div)`
+const profileCardStyles = css`
   background: linear-gradient(
     135deg,
     rgba(162, 89, 255, 0.08) 0%,
@@ -109,7 +101,7 @@ const ProfileImageFrame = styled.div`
   }
 `
 
-const ProfileImage = styled(Image)`
+const profileImageStyles = css`
   object-fit: cover;
 `
 
@@ -172,13 +164,13 @@ const SocialLink = styled.a`
   }
 `
 
-const ContentSection = styled(motion.div)`
+const contentSectionStyles = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
 `
 
-const BioCard = styled(motion.div)`
+const bioCardStyles = css`
   background: linear-gradient(
     135deg,
     rgba(139, 92, 246, 0.06) 0%,
@@ -290,7 +282,7 @@ const SkillsGrid = styled.div`
   gap: var(--space-6);
 `
 
-const SkillCategory = styled(motion.div)`
+const skillCategoryStyles = css`
   background: linear-gradient(
     135deg,
     rgba(30, 41, 59, 0.6) 0%,
@@ -375,7 +367,7 @@ const ContactGrid = styled.div`
   margin-top: var(--space-4);
 `
 
-const ContactCard = styled(motion.div)`
+const contactCardStyles = css`
   background: linear-gradient(
     135deg,
     rgba(30, 41, 59, 0.6) 0%,
@@ -430,16 +422,18 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
     <PageLayout>
       <PageTitle>About</PageTitle>
 
-      <ContentGrid>
-        <ProfileSection>
-          <ProfileCard
+      <motion.div className={contentGridStyles}>
+        <motion.div className={profileSectionStyles}>
+          <motion.div
             animate={{ opacity: 1, x: 0 }}
+            className={profileCardStyles}
             initial={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
             <ProfileImageFrame>
-              <ProfileImage
+              <Image
                 alt={profileImageAlt ?? 'Stefanie Jane'}
+                className={profileImageStyles}
                 fill={true}
                 placeholder={profilePlaceholder}
                 sizes="(min-width: 1024px) 380px, 80vw"
@@ -462,13 +456,14 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
                 <FaEnvelope />
               </SocialLink>
             </SocialLinks>
-          </ProfileCard>
-        </ProfileSection>
+          </motion.div>
+        </motion.div>
 
-        <ContentSection>
+        <motion.div className={contentSectionStyles}>
           {/* Main Bio Card */}
-          <BioCard
+          <motion.div
             animate={{ opacity: 1, y: 0 }}
+            className={bioCardStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
@@ -478,18 +473,18 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             <BioContent>
               {intro && (intro.highlightText || intro.introText) && (
                 <p>
-                  I&apos;ve been building technology for{' '}
-                  {intro.highlightText && <strong>{intro.highlightText}</strong>}
+                  I&apos;ve been building technology for {intro.highlightText && <strong>{intro.highlightText}</strong>}
                   {intro.introText && ` ${intro.introText}`}
                 </p>
               )}
               {bio && <MarkdownRenderer content={bio} />}
             </BioContent>
-          </BioCard>
+          </motion.div>
 
           {/* Technical Arsenal */}
-          <BioCard
+          <motion.div
             animate={{ opacity: 1, y: 0 }}
+            className={bioCardStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
@@ -498,8 +493,9 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             </BioTitle>
             <SkillsGrid>
               {Object.entries(skills).map(([category, items], index) => (
-                <SkillCategory
+                <motion.div
                   animate={{ opacity: 1, scale: 1 }}
+                  className={skillCategoryStyles}
                   initial={{ opacity: 0, scale: 0.95 }}
                   key={category}
                   transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
@@ -510,15 +506,16 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
                       <SkillChip key={skill}>{skill}</SkillChip>
                     ))}
                   </SkillList>
-                </SkillCategory>
+                </motion.div>
               ))}
             </SkillsGrid>
-          </BioCard>
+          </motion.div>
 
           {/* Connect Section */}
           {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
-            <BioCard
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
+              className={bioCardStyles}
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
@@ -533,22 +530,23 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
               {contactReasons && contactReasons.length > 0 && (
                 <ContactGrid>
                   {contactReasons.map((reason, index) => (
-                    <ContactCard
+                    <motion.div
                       animate={{ opacity: 1, y: 0 }}
+                      className={contactCardStyles}
                       initial={{ opacity: 0, y: 10 }}
                       key={reason.title}
                       transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
                     >
                       <h4>{reason.title}</h4>
                       <p>{reason.description}</p>
-                    </ContactCard>
+                    </motion.div>
                   ))}
                 </ContactGrid>
               )}
-            </BioCard>
+            </motion.div>
           )}
-        </ContentSection>
-      </ContentGrid>
+        </motion.div>
+      </motion.div>
     </PageLayout>
   )
 }

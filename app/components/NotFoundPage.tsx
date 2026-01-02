@@ -2,41 +2,15 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import styled, { keyframes } from 'styled-components'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import PageWrapper from './PageWrapper'
 import { StarButton } from './StarComponents'
 import StyledLink from './StyledLink'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Animations
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const glow = keyframes`
-  0%, 100% {
-    filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.6))
-            drop-shadow(0 0 40px rgba(0, 255, 240, 0.4));
-    opacity: 0.9;
-  }
-  50% {
-    filter: drop-shadow(0 0 30px rgba(162, 89, 255, 0.8))
-            drop-shadow(0 0 60px rgba(0, 255, 240, 0.6));
-    opacity: 1;
-  }
-`
-
-const gradientShift = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-`
-
-const sparkle = keyframes`
-  0%, 100% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1); }
-`
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const Container = styled.div`
@@ -66,15 +40,15 @@ const StarFieldCanvas = styled.canvas`
   pointer-events: none;
 `
 
-const LostStarContainer = styled(motion.div)`
+const lostStarContainerStyles = css`
   position: relative;
   margin-bottom: var(--space-8);
 `
 
-const LostStar = styled.div`
+const lostStarStyles = css`
   width: 180px;
   height: auto;
-  animation: ${glow} 3s ease-in-out infinite;
+  animation: glow 3s ease-in-out infinite;
 
   img {
     width: 100%;
@@ -84,22 +58,37 @@ const LostStar = styled.div`
   @media (max-width: 768px) {
     width: 140px;
   }
+
+  @keyframes glow {
+    0%, 100% {
+      filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.6))
+              drop-shadow(0 0 40px rgba(0, 255, 240, 0.4));
+      opacity: 0.9;
+    }
+    50% {
+      filter: drop-shadow(0 0 30px rgba(162, 89, 255, 0.8))
+              drop-shadow(0 0 60px rgba(0, 255, 240, 0.6));
+      opacity: 1;
+    }
+  }
 `
 
-const Sparkle = styled.div<{ $x: number; $y: number; $delay: number }>`
+const sparkleBaseStyles = css`
   position: absolute;
-  left: ${({ $x }) => $x}%;
-  top: ${({ $y }) => $y}%;
   width: 8px;
   height: 8px;
   background: var(--color-secondary);
   border-radius: 50%;
-  animation: ${sparkle} 2s ease-in-out infinite;
-  animation-delay: ${({ $delay }) => $delay}s;
   box-shadow: 0 0 10px var(--color-secondary);
+  animation: sparkle 2s ease-in-out infinite;
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+  }
 `
 
-const ContentWrapper = styled(motion.div)`
+const contentWrapperStyles = css`
   position: relative;
   z-index: 1;
   display: flex;
@@ -109,7 +98,7 @@ const ContentWrapper = styled(motion.div)`
   max-width: 700px;
 `
 
-const ErrorCode = styled(motion.h1)`
+const errorCodeStyles = css`
   font-family: var(--font-heading);
   font-size: clamp(8rem, 15vw, 14rem);
   font-weight: var(--font-black);
@@ -124,12 +113,17 @@ const ErrorCode = styled(motion.h1)`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${gradientShift} 4s ease infinite;
+  animation: gradientShift 4s ease infinite;
   text-shadow: none;
   line-height: 1;
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 `
 
-const Title = styled(motion.h2)`
+const titleStyles = css`
   font-family: var(--font-heading);
   font-size: clamp(2.4rem, 4vw, 3.6rem);
   font-weight: var(--font-bold);
@@ -139,7 +133,7 @@ const Title = styled(motion.h2)`
   letter-spacing: 0.2em;
 `
 
-const Message = styled(motion.p)`
+const messageStyles = css`
   font-family: var(--font-body);
   font-size: clamp(1.6rem, 2vw, 2rem);
   color: var(--text-secondary);
@@ -148,17 +142,7 @@ const Message = styled(motion.p)`
   max-width: 500px;
 `
 
-const Highlight = styled.span<{ $color?: 'purple' | 'cyan' | 'pink' }>`
-  color: ${({ $color = 'cyan' }) =>
-    $color === 'purple'
-      ? 'var(--color-primary)'
-      : $color === 'pink'
-        ? 'var(--color-accent)'
-        : 'var(--color-secondary)'};
-  font-weight: var(--font-medium);
-`
-
-const ButtonContainer = styled(motion.div)`
+const buttonContainerStyles = css`
   display: flex;
   gap: var(--space-4);
   flex-wrap: wrap;
@@ -174,7 +158,7 @@ const ButtonContainer = styled(motion.div)`
   }
 `
 
-const SecondaryButton = styled(motion.button)`
+const secondaryButtonStyles = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -198,8 +182,29 @@ const SecondaryButton = styled(motion.button)`
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Lost Messages
+// Types and Constants
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+interface SparkleData {
+  x: number
+  y: number
+  delay: number
+}
+
+interface HighlightProps {
+  $color?: 'purple' | 'cyan' | 'pink'
+  children: React.ReactNode
+}
+
+const Highlight: React.FC<HighlightProps> = ({ $color = 'cyan', children }) => {
+  const colorMap = {
+    cyan: 'var(--color-secondary)',
+    pink: 'var(--color-accent)',
+    purple: 'var(--color-primary)',
+  }
+
+  return <span style={{ color: colorMap[$color], fontWeight: 'var(--font-medium)' }}>{children}</span>
+}
 
 const LOST_MESSAGES = [
   'This star got lost searching for that page...',
@@ -212,12 +217,7 @@ const LOST_MESSAGES = [
   'Not all who wander are lost... but this page is.',
 ]
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Component
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-// Generate sparkles around the lost star
-const SPARKLES = [
+const SPARKLES: SparkleData[] = [
   { delay: 0, x: -20, y: 10 },
   { delay: 0.5, x: 110, y: 20 },
   { delay: 1, x: 90, y: 90 },
@@ -233,6 +233,10 @@ interface WarpStar {
   prevX: number
   prevY: number
 }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 export default function NotFoundPage() {
   const [message, setMessage] = useState('')
@@ -373,47 +377,60 @@ export default function NotFoundPage() {
       <Container>
         <StarFieldCanvas ref={canvasRef} />
 
-        <ContentWrapper>
-          <LostStarContainer
+        <motion.div className={contentWrapperStyles}>
+          <motion.div
             animate={{ opacity: 1, y: 0 }}
+            className={lostStarContainerStyles}
             initial={{ opacity: 0, y: -30 }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
           >
-            <LostStar>
+            <div className={lostStarStyles}>
               <Image alt="Lost shooting star" height={180} priority={true} src="/images/star-icon.png" width={180} />
-            </LostStar>
+            </div>
             {SPARKLES.map((sparkle, i) => (
-              <Sparkle $delay={sparkle.delay} $x={sparkle.x} $y={sparkle.y} key={i} />
+              <span
+                className={sparkleBaseStyles}
+                key={i}
+                style={{
+                  animationDelay: `${sparkle.delay}s`,
+                  left: `${sparkle.x}%`,
+                  top: `${sparkle.y}%`,
+                }}
+              />
             ))}
-          </LostStarContainer>
+          </motion.div>
 
-          <ErrorCode
+          <motion.h1
             animate={{ opacity: 1, scale: 1 }}
+            className={errorCodeStyles}
             initial={{ opacity: 0, scale: 0.8 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
             404
-          </ErrorCode>
+          </motion.h1>
 
-          <Title
+          <motion.h2
             animate={{ opacity: 1, y: 0 }}
+            className={titleStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 0.6, duration: 0.5 }}
           >
             Lost in Space
-          </Title>
+          </motion.h2>
 
-          <Message
+          <motion.p
             animate={{ opacity: 1, y: 0 }}
+            className={messageStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 0.8, duration: 0.5 }}
           >
             {message} <Highlight $color="cyan">Let&apos;s guide you back</Highlight> to{' '}
             <Highlight $color="purple">familiar territory</Highlight>.
-          </Message>
+          </motion.p>
 
-          <ButtonContainer
+          <motion.div
             animate={{ opacity: 1, y: 0 }}
+            className={buttonContainerStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
@@ -423,12 +440,12 @@ export default function NotFoundPage() {
               </StarButton>
             </StyledLink>
             <StyledLink href="/projects">
-              <SecondaryButton whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <motion.button className={secondaryButtonStyles} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 Explore Projects
-              </SecondaryButton>
+              </motion.button>
             </StyledLink>
-          </ButtonContainer>
-        </ContentWrapper>
+          </motion.div>
+        </motion.div>
       </Container>
     </PageWrapper>
   )

@@ -4,8 +4,9 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 import { FaGithub } from 'react-icons/fa6'
-import styled, { keyframes } from 'styled-components'
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { StarDivider } from './StarComponents'
 import TinaContent from './TinaContent'
 
@@ -16,20 +17,6 @@ interface ProjectDetailTinaProps {
   author?: string
   tags?: string[]
 }
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Animations
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const gradientShift = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-`
-
-const pulse = keyframes`
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-`
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styled Components
@@ -56,7 +43,7 @@ const HeroSection = styled.div`
   position: relative;
 `
 
-const TitleWrapper = styled(motion.div)`
+const titleWrapperStyles = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,13 +66,18 @@ const Title = styled.h1`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${gradientShift} 6s ease infinite;
+  animation: gradientShift 6s ease infinite;
   filter: drop-shadow(0 0 30px rgba(0, 255, 240, 0.3));
   text-transform: uppercase;
   letter-spacing: 0.05em;
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 `
 
-const TagsContainer = styled(motion.div)`
+const tagsContainerStyles = css`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -120,17 +112,17 @@ const Tag = styled.span`
   }
 `
 
-const DividerWrapper = styled(motion.div)`
+const dividerWrapperStyles = css`
   margin: 2rem 0 3rem;
 `
 
-const Content = styled(motion.div)`
+const contentStyles = css`
   font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.7;
   color: var(--color-text);
 `
 
-const ActionsWrapper = styled(motion.div)`
+const actionsWrapperStyles = css`
   display: flex;
   justify-content: center;
   gap: var(--space-4);
@@ -209,7 +201,7 @@ const Decoration = styled.div`
     rgba(0, 255, 240, 0.1) 0%,
     transparent 70%
   );
-  animation: ${pulse} 4s ease-in-out infinite;
+  animation: pulse 4s ease-in-out infinite;
   pointer-events: none;
 
   &:nth-child(1) {
@@ -227,6 +219,11 @@ const Decoration = styled.div`
       transparent 70%
     );
   }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -240,30 +237,51 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
         <Decoration />
         <Decoration />
 
-        <TitleWrapper animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: -20 }} transition={{ duration: 0.6 }}>
+        <motion.div
+          animate={{ opacity: 1, y: 0 }}
+          className={titleWrapperStyles}
+          initial={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6 }}
+        >
           <Title>{title}</Title>
-        </TitleWrapper>
+        </motion.div>
 
         {tags && tags.length > 0 && (
-          <TagsContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.3, duration: 0.6 }}>
+          <motion.div
+            animate={{ opacity: 1 }}
+            className={tagsContainerStyles}
+            initial={{ opacity: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
             {tags.map((tag) => (
               <Tag key={tag}>{tag}</Tag>
             ))}
-          </TagsContainer>
+          </motion.div>
         )}
       </HeroSection>
 
-      <DividerWrapper animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={dividerWrapperStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+      >
         <StarDivider compact={true} />
-      </DividerWrapper>
+      </motion.div>
 
-      <Content animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={contentStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+      >
         <TinaContent content={body} />
-      </Content>
+      </motion.div>
 
       {github && (
-        <ActionsWrapper
+        <motion.div
           animate={{ opacity: 1, y: 0 }}
+          className={actionsWrapperStyles}
           initial={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.7, duration: 0.6 }}
         >
@@ -271,7 +289,7 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
             <FaGithub />
             <span>View on GitHub</span>
           </GitHubButton>
-        </ActionsWrapper>
+        </motion.div>
       )}
     </Container>
   )

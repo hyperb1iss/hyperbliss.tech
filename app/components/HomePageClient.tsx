@@ -2,8 +2,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { tinaField } from 'tinacms/dist/react'
+import { styled } from '../../styled-system/jsx'
 import type {
   PagesQuery,
   PostsConnectionQuery,

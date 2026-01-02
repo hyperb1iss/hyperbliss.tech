@@ -1,7 +1,8 @@
+// app/components/StyledTitle.tsx
 import { motion } from 'framer-motion'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 
-const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
+const styledTitleStyles = css`
   font-size: clamp(2.2rem, 1.8vw, 3rem);
   color: #00ffff;
   margin-bottom: 2rem;
@@ -57,5 +58,14 @@ const StyledTitle = styled(motion.h2)<{ $isMobile?: boolean }>`
     }
   }
 `
+
+interface StyledTitleProps {
+  children: React.ReactNode
+  isMobile?: boolean
+}
+
+const StyledTitle: React.FC<StyledTitleProps> = ({ children }) => {
+  return <motion.h2 className={styledTitleStyles}>{children}</motion.h2>
+}
 
 export default StyledTitle

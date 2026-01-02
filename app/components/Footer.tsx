@@ -4,27 +4,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaRss } from 'react-icons/fa6'
-import styled, { keyframes } from 'styled-components'
+import { styled } from '../../styled-system/jsx'
 import { SOCIAL_LINKS } from '../lib/socials'
 import { SparklingName } from './SparklingName'
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Animations
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const starGlow = keyframes`
-  0%, 100% {
-    filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.4));
-  }
-  50% {
-    filter: drop-shadow(0 0 16px rgba(162, 89, 255, 0.6));
-  }
-`
-
-const gradientShift = keyframes`
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-`
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styled Components
@@ -84,7 +66,16 @@ const BrandSection = styled.div`
   .star-icon {
     width: 36px;
     height: auto;
-    animation: ${starGlow} 3s ease-in-out infinite;
+    animation: starGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes starGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.4));
+    }
+    50% {
+      filter: drop-shadow(0 0 16px rgba(162, 89, 255, 0.6));
+    }
   }
 
   @media (max-width: 900px) {
@@ -108,7 +99,12 @@ const BrandText = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${gradientShift} 4s ease infinite;
+  animation: gradientShift 4s ease infinite;
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 `
 
 const SocialSection = styled.div`
@@ -203,7 +199,12 @@ const CopyrightYear = styled.span`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ${gradientShift} 4s ease infinite;
+  animation: gradientShift 4s ease infinite;
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

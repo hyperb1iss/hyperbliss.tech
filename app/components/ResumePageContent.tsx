@@ -16,44 +16,36 @@ import {
   FiMail,
 } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
-import styled, { keyframes } from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { parseResume } from '../lib/resumeParser'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 
-// Animations
-const shimmer = keyframes`
-  0% { background-position: -1000px 0; }
-  100% { background-position: 1000px 0; }
-`
+// ═══════════════════════════════════════════════════════════════════════════
+// Motion component styles (using css function)
+// ═══════════════════════════════════════════════════════════════════════════
 
-const glow = keyframes`
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-`
-
-// Main container
-const ResumeWrapper = styled(motion.div)`
+const resumeWrapperStyles = css`
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-10);
-  
+
   @media (min-width: 1024px) {
     grid-template-columns: 350px 1fr;
     gap: var(--space-12);
   }
 `
 
-// Left sidebar
-const Sidebar = styled(motion.div)`
+const sidebarStyles = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 `
 
-const ContactCard = styled(motion.div)`
+const contactCardStyles = css`
   background: linear-gradient(
     135deg,
     rgba(139, 92, 246, 0.08) 0%,
@@ -67,11 +59,11 @@ const ContactCard = styled(motion.div)`
   padding: var(--space-8);
   position: relative;
   overflow: hidden;
-  box-shadow: 
+  box-shadow:
     0 0 30px rgba(139, 92, 246, 0.2),
     0 0 50px rgba(0, 255, 240, 0.1),
     inset 0 0 20px rgba(224, 170, 255, 0.05);
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -89,9 +81,172 @@ const ContactCard = styled(motion.div)`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0.6;
-    animation: ${glow} 3s ease-in-out infinite;
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
   }
 `
+
+const skillsCardStyles = css`
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.6) 0%,
+    rgba(217, 70, 239, 0.05) 100%
+  );
+  backdrop-filter: blur(15px) saturate(1.1);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 25px rgba(217, 70, 239, 0.15),
+    inset 0 0 20px rgba(139, 92, 246, 0.03);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      rgba(217, 70, 239, 0.4),
+      transparent,
+      rgba(139, 92, 246, 0.4)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+  }
+`
+
+const mainContentStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+`
+
+const contentSectionStyles = css`
+  background: linear-gradient(
+    135deg,
+    rgba(162, 89, 255, 0.06) 0%,
+    rgba(30, 41, 59, 0.5) 50%,
+    rgba(0, 255, 240, 0.04) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.15);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 30px rgba(162, 89, 255, 0.15),
+    0 0 50px rgba(0, 255, 240, 0.08),
+    inset 0 0 25px rgba(139, 92, 246, 0.04);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-xl);
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      rgba(162, 89, 255, 0.3),
+      transparent 40%,
+      rgba(0, 255, 240, 0.3)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent
+    );
+    animation: shimmer 8s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+`
+
+const downloadButtonStyles = css`
+  position: fixed;
+  bottom: var(--space-8);
+  right: var(--space-8);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.9),
+    rgba(255, 117, 216, 0.9)
+  );
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--silk-plasma-pink);
+  border-radius: var(--radius-full);
+  color: var(--silk-white);
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  box-shadow:
+    0 0 30px rgba(255, 117, 216, 0.5),
+    0 10px 40px rgba(139, 92, 246, 0.3);
+  transition: all var(--duration-normal) var(--ease-silk);
+  z-index: 100;
+
+  svg {
+    font-size: 2rem;
+  }
+
+  &:hover {
+    transform: translateY(-4px) scale(1.05);
+    background: linear-gradient(
+      135deg,
+      rgba(162, 89, 255, 1),
+      rgba(255, 117, 216, 1)
+    );
+    border-color: var(--silk-quantum-purple);
+    box-shadow:
+      0 0 25px rgba(162, 89, 255, 0.5),
+      0 15px 40px rgba(255, 117, 216, 0.35);
+  }
+
+  @media (max-width: 768px) {
+    bottom: var(--space-6);
+    right: var(--space-6);
+    padding: var(--space-3) var(--space-5);
+    font-size: 1.4rem;
+  }
+`
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Static styled components
+// ═══════════════════════════════════════════════════════════════════════════
 
 const ContactTitle = styled.h3`
   font-family: var(--font-heading);
@@ -133,18 +288,18 @@ const ContactItem = styled.a`
   transition: all var(--duration-normal) var(--ease-silk);
   position: relative;
   z-index: 1;
-  
+
   svg {
     color: var(--silk-circuit-cyan);
     font-size: 1.8rem;
     filter: drop-shadow(0 0 6px rgba(0, 255, 240, 0.4));
   }
-  
+
   span {
     font-family: var(--font-body);
     font-size: 1.5rem;
   }
-  
+
   &:hover {
     transform: translateX(5px);
     border-color: var(--silk-circuit-cyan);
@@ -155,7 +310,7 @@ const ContactItem = styled.a`
     );
     color: var(--silk-lavender);
     box-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
-    
+
     svg {
       color: var(--silk-plasma-pink);
       filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.6));
@@ -163,47 +318,11 @@ const ContactItem = styled.a`
   }
 `
 
-const SkillsCard = styled(motion.div)`
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.6) 0%,
-    rgba(217, 70, 239, 0.05) 100%
-  );
-  backdrop-filter: blur(15px) saturate(1.1);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 0 25px rgba(217, 70, 239, 0.15),
-    inset 0 0 20px rgba(139, 92, 246, 0.03);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(217, 70, 239, 0.4),
-      transparent,
-      rgba(139, 92, 246, 0.4)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.4;
-  }
-`
-
 const SkillCategory = styled.div`
   margin-bottom: var(--space-6);
   position: relative;
   z-index: 1;
-  
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -241,7 +360,7 @@ const SkillTag = styled.a`
   font-size: 1.2rem;
   color: var(--silk-lavender);
   transition: all var(--duration-fast) var(--ease-silk);
-  
+
   &:hover {
     transform: translateY(-2px);
     border-color: var(--silk-circuit-cyan);
@@ -252,68 +371,6 @@ const SkillTag = styled.a`
       rgba(139, 92, 246, 0.1)
     );
     text-shadow: 0 0 6px rgba(0, 255, 240, 0.5);
-  }
-`
-
-// Main content area
-const MainContent = styled(motion.div)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-`
-
-const ContentSection = styled(motion.div)`
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.06) 0%,
-    rgba(30, 41, 59, 0.5) 50%,
-    rgba(0, 255, 240, 0.04) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.15);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-10);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 0 30px rgba(162, 89, 255, 0.15),
-    0 0 50px rgba(0, 255, 240, 0.08),
-    inset 0 0 25px rgba(139, 92, 246, 0.04);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(162, 89, 255, 0.3),
-      transparent 40%,
-      rgba(0, 255, 240, 0.3)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
-  }
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.03),
-      transparent
-    );
-    animation: ${shimmer} 8s infinite;
-    pointer-events: none;
   }
 `
 
@@ -371,7 +428,7 @@ const TimelineItem = styled.div`
   padding-left: var(--space-10);
   margin-bottom: var(--space-8);
   z-index: 1;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -386,11 +443,11 @@ const TimelineItem = styled.div`
     );
     opacity: 0.3;
   }
-  
+
   &:last-child::before {
     display: none;
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -416,12 +473,12 @@ const CompanyName = styled.h3`
   color: var(--silk-plasma-pink);
   margin-bottom: var(--space-1);
   text-shadow: 0 0 10px rgba(255, 117, 216, 0.4);
-  
+
   a {
     color: inherit;
     text-decoration: none;
     transition: all var(--duration-fast) var(--ease-silk);
-    
+
     &:hover {
       color: var(--silk-circuit-cyan);
       text-shadow: 0 0 15px rgba(0, 255, 240, 0.6);
@@ -451,102 +508,53 @@ const TimelineContent = styled.div`
   font-size: var(--text-fluid-base);
   line-height: var(--leading-relaxed);
   color: var(--text-secondary);
-  
+
   ul {
     list-style: none;
     padding: 0;
     margin: var(--space-2) 0;
   }
-  
+
   li {
     position: relative;
     padding-left: var(--space-6);
     margin-bottom: var(--space-2);
-    
+
     &::before {
-      content: '▸';
+      content: '\u25B8';
       position: absolute;
       left: 0;
       color: var(--silk-circuit-cyan);
       text-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
     }
   }
-  
+
   strong {
     color: var(--silk-lavender);
     font-weight: var(--font-semibold);
   }
-  
+
   a {
     color: var(--silk-circuit-cyan);
     text-decoration: none;
     border-bottom: 1px solid transparent;
     transition: all var(--duration-fast) var(--ease-silk);
-    
+
     &:hover {
       color: var(--silk-plasma-pink);
       border-bottom-color: var(--silk-plasma-pink);
       text-shadow: 0 0 6px rgba(255, 117, 216, 0.4);
     }
   }
-  
+
   p {
     margin: 0 0 var(--space-2) 0;
   }
 `
 
-// Download button
-const DownloadButton = styled(motion.a)`
-  position: fixed;
-  bottom: var(--space-8);
-  right: var(--space-8);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-6);
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.9),
-    rgba(255, 117, 216, 0.9)
-  );
-  backdrop-filter: blur(10px);
-  border: 2px solid var(--silk-plasma-pink);
-  border-radius: var(--radius-full);
-  color: var(--silk-white);
-  font-family: var(--font-body);
-  font-size: 1.6rem;
-  font-weight: var(--font-semibold);
-  text-decoration: none;
-  box-shadow: 
-    0 0 30px rgba(255, 117, 216, 0.5),
-    0 10px 40px rgba(139, 92, 246, 0.3);
-  transition: all var(--duration-normal) var(--ease-silk);
-  z-index: 100;
-  
-  svg {
-    font-size: 2rem;
-  }
-  
-  &:hover {
-    transform: translateY(-4px) scale(1.05);
-    background: linear-gradient(
-      135deg,
-      rgba(162, 89, 255, 1),
-      rgba(255, 117, 216, 1)
-    );
-    border-color: var(--silk-quantum-purple);
-    box-shadow:
-      0 0 25px rgba(162, 89, 255, 0.5),
-      0 15px 40px rgba(255, 117, 216, 0.35);
-  }
-  
-  @media (max-width: 768px) {
-    bottom: var(--space-6);
-    right: var(--space-6);
-    padding: var(--space-3) var(--space-5);
-    font-size: 1.4rem;
-  }
-`
+// ═══════════════════════════════════════════════════════════════════════════
+// Helper Components
+// ═══════════════════════════════════════════════════════════════════════════
 
 // Helper component to render markdown content with links
 const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
@@ -585,7 +593,10 @@ const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
   )
 }
 
+// ═══════════════════════════════════════════════════════════════════════════
 // Component
+// ═══════════════════════════════════════════════════════════════════════════
+
 const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
   // Parse the resume markdown
   const resumeData = useMemo(() => parseResume(content), [content])
@@ -599,10 +610,11 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
     <PageLayout>
       <PageTitle>Resume</PageTitle>
 
-      <ResumeWrapper>
-        <Sidebar>
-          <ContactCard
+      <motion.div className={resumeWrapperStyles}>
+        <motion.div className={sidebarStyles}>
+          <motion.div
             animate={{ opacity: 1, x: 0 }}
+            className={contactCardStyles}
             initial={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
@@ -637,10 +649,11 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                 <span>Links</span>
               </ContactItem>
             )}
-          </ContactCard>
+          </motion.div>
 
-          <SkillsCard
+          <motion.div
             animate={{ opacity: 1, x: 0 }}
+            className={skillsCardStyles}
             initial={{ opacity: 0, x: -20 }}
             transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
@@ -663,13 +676,14 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                 </SkillTags>
               </SkillCategory>
             ))}
-          </SkillsCard>
-        </Sidebar>
+          </motion.div>
+        </motion.div>
 
-        <MainContent>
+        <motion.div className={mainContentStyles}>
           {summary && (
-            <ContentSection
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
+              className={contentSectionStyles}
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
@@ -691,11 +705,12 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </p>
                 ))}
               </TimelineContent>
-            </ContentSection>
+            </motion.div>
           )}
 
-          <ContentSection
+          <motion.div
             animate={{ opacity: 1, y: 0 }}
+            className={contentSectionStyles}
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
           >
@@ -774,11 +789,12 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                 </TimelineContent>
               </TimelineItem>
             ))}
-          </ContentSection>
+          </motion.div>
 
           {projects.length > 0 && (
-            <ContentSection
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
+              className={contentSectionStyles}
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
@@ -816,12 +832,13 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </TimelineItem>
                 ))}
               </TimelineContent>
-            </ContentSection>
+            </motion.div>
           )}
 
           {(speaking.length > 0 || awards.length > 0) && (
-            <ContentSection
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
+              className={contentSectionStyles}
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.5, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
@@ -861,12 +878,13 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </div>
                 )}
               </TimelineContent>
-            </ContentSection>
+            </motion.div>
           )}
 
           {interests.length > 0 && (
-            <ContentSection
+            <motion.div
               animate={{ opacity: 1, y: 0 }}
+              className={contentSectionStyles}
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.6, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
@@ -886,15 +904,21 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   ))}
                 </ul>
               </TimelineContent>
-            </ContentSection>
+            </motion.div>
           )}
-        </MainContent>
-      </ResumeWrapper>
+        </motion.div>
+      </motion.div>
 
-      <DownloadButton download={true} href="/resume.pdf" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <motion.a
+        className={downloadButtonStyles}
+        download={true}
+        href="/resume.pdf"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
         <FiDownload />
         <span>Download PDF</span>
-      </DownloadButton>
+      </motion.a>
     </PageLayout>
   )
 }

@@ -3,9 +3,9 @@
 
 import { motion } from 'framer-motion'
 import React, { ReactNode } from 'react'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 
-const MainContentWrapper = styled(motion.main)`
+const mainContentWrapperStyles = css`
   flex: 1;
   padding-top: 10px;
 `
@@ -34,15 +34,16 @@ interface MainContentProps {
  */
 const MainContent: React.FC<MainContentProps> = ({ children }) => {
   return (
-    <MainContentWrapper
+    <motion.main
       animate="animate"
+      className={mainContentWrapperStyles}
       exit="exit"
       initial="initial"
       transition={pageTransition}
       variants={pageVariants}
     >
       {children}
-    </MainContentWrapper>
+    </motion.main>
   )
 }
 

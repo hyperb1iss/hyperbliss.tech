@@ -9,6 +9,8 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 
 // Custom schema that allows code highlighting classes
 const sanitizeSchema = {
@@ -20,7 +22,6 @@ const sanitizeSchema = {
   },
 }
 
-import styled, { StyleSheetManager } from 'styled-components'
 import {
   ProjectBlockquote,
   ProjectH1,
@@ -48,13 +49,7 @@ interface CodeComponentProps {
   children?: React.ReactNode
 }
 
-// Function to filter out props that shouldn't be forwarded to DOM elements
-const shouldForwardProp = (prop: string): boolean => {
-  const invalidProps = ['node']
-  return !invalidProps.includes(prop)
-}
-
-// Styled components for the copy button and wrapper
+// Styled components for the copy button
 const CopyButton = styled.button`
   position: absolute;
   top: 0.8rem;
@@ -94,15 +89,10 @@ const CopyButton = styled.button`
 `
 
 // Code block wrapper with cyan theme
-const CodeBlockPreWrapper = styled.pre`
+const codeBlockPreWrapperStyles = css`
   position: relative;
-  
-  /* Add project-syntax class for theme targeting */
-  &.project-syntax {
-    /* Class added via props */
-  }
 
-  &:hover ${CopyButton} {
+  &:hover button {
     opacity: 1;
   }
 
@@ -252,8 +242,11 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
     }
   }
 
+  // Filter out node prop before spreading to DOM
+  const { node: _node, ...domProps } = rest as PreWithCopyProps & { node?: Element }
+
   return (
-    <CodeBlockPreWrapper className="project-syntax" {...rest}>
+    <pre className={`project-syntax ${codeBlockPreWrapperStyles}`} {...domProps}>
       {children}
       <CopyButton
         disabled={!isClipboardApiAvailable || isCopying}
@@ -262,12 +255,12 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
       >
         {isCopying ? '...' : isCopied ? <FiCheck /> : <FiCopy />}
       </CopyButton>
-    </CodeBlockPreWrapper>
+    </pre>
   )
 }
 
 // Safe link wrapper component
-const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
+const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   const safeProps = {
     href,
     rel: 'noopener noreferrer',
@@ -290,58 +283,56 @@ const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
  */
 const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content }) => {
   return (
-    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <ReactMarkdown
-        components={{
-          // Links
-          a: SafeLink,
+    <ReactMarkdown
+      components={{
+        // Links
+        a: SafeLink,
 
-          // Blockquote
-          blockquote: (props) => <ProjectBlockquote {...props} />,
+        // Blockquote
+        blockquote: ({ node: _node, ...props }) => <ProjectBlockquote {...props} />,
 
-          // Code component
-          code: ({ inline, className, children, ...props }: CodeComponentProps) => {
-            if (inline) {
-              return <ProjectInlineCode {...props}>{children}</ProjectInlineCode>
-            }
+        // Code component
+        code: ({ inline, className, children, node: _node, ...props }: CodeComponentProps & { node?: Element }) => {
+          if (inline) {
+            return <ProjectInlineCode {...props}>{children}</ProjectInlineCode>
+          }
 
-            return (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            )
-          },
+          return (
+            <code className={className} {...props}>
+              {children}
+            </code>
+          )
+        },
 
-          // Headings
-          h1: (props) => <ProjectH1 {...props} />,
-          h2: (props) => <ProjectH2 {...props} />,
-          h3: (props) => <ProjectH3 {...props} />,
+        // Headings
+        h1: ({ node: _node, ...props }) => <ProjectH1 {...props} />,
+        h2: ({ node: _node, ...props }) => <ProjectH2 {...props} />,
+        h3: ({ node: _node, ...props }) => <ProjectH3 {...props} />,
 
-          // Horizontal Rule
-          hr: (props) => <ProjectHr {...props} />,
+        // Horizontal Rule
+        hr: ({ node: _node, ...props }) => <ProjectHr {...props} />,
 
-          // Images
-          img: (props) => <ProjectImage {...props} />,
-          li: (props) => <ProjectLi {...props} />,
-          ol: (props) => <ProjectOl {...props} />,
+        // Images
+        img: ({ node: _node, ...props }) => <ProjectImage {...props} />,
+        li: ({ node: _node, ...props }) => <ProjectLi {...props} />,
+        ol: ({ node: _node, ...props }) => <ProjectOl {...props} />,
 
-          // Paragraph
-          p: (props) => <ProjectParagraph {...props} />,
+        // Paragraph
+        p: ({ node: _node, ...props }) => <ProjectParagraph {...props} />,
 
-          // Pre component with copy button
-          pre: (props) => {
-            return <PreWithCopy {...props} />
-          },
+        // Pre component with copy button
+        pre: (props) => {
+          return <PreWithCopy {...props} />
+        },
 
-          // Lists
-          ul: (props) => <ProjectUl {...props} />,
-        }}
-        rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
-        remarkPlugins={[remarkGfm]}
-      >
-        {content}
-      </ReactMarkdown>
-    </StyleSheetManager>
+        // Lists
+        ul: ({ node: _node, ...props }) => <ProjectUl {...props} />,
+      }}
+      rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
+      remarkPlugins={[remarkGfm]}
+    >
+      {content}
+    </ReactMarkdown>
   )
 }
 

@@ -3,10 +3,10 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 import { useHeaderContext } from './HeaderContext'
 
-const StyledWrapper = styled(motion.div)`
+const styledWrapperStyles = css`
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -22,13 +22,14 @@ const MainContentWrapper: React.FC<{ children: React.ReactNode }> = ({ children 
   const { isExpanded } = useHeaderContext()
 
   return (
-    <StyledWrapper
+    <motion.div
       animate={{ paddingTop: isExpanded ? '160px' : '80px' }}
+      className={styledWrapperStyles}
       initial={false}
       transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
       {children}
-    </StyledWrapper>
+    </motion.div>
   )
 }
 

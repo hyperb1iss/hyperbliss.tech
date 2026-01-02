@@ -4,17 +4,18 @@
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
-import { styled } from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Styled Components
+// Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const NavPanel = styled(motion.nav)`
+const navPanelStyles = css`
   position: fixed;
   top: 76px;
   right: var(--space-3);
@@ -63,11 +64,7 @@ const NavList = styled.ul`
   gap: var(--space-1);
 `
 
-const NavItem = styled(motion.li)`
-  width: 100%;
-`
-
-const NavLink = styled(motion.a)<{ $active: boolean }>`
+const navLinkStyles = css`
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -84,15 +81,6 @@ const NavLink = styled(motion.a)<{ $active: boolean }>`
   position: relative;
   transition: all 0.2s ease;
 
-  color: ${({ $active }) => ($active ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)')};
-  background: ${({ $active }) => ($active ? 'rgba(0, 255, 240, 0.08)' : 'transparent')};
-
-  ${({ $active }) =>
-    $active &&
-    `
-    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
-  `}
-
   &:hover {
     color: var(--text-primary);
     background: rgba(255, 255, 255, 0.05);
@@ -108,19 +96,14 @@ const NavLink = styled(motion.a)<{ $active: boolean }>`
   }
 `
 
-const NavIcon = styled.span<{ $active: boolean }>`
+const navIconStyles = css`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
   font-size: 1rem;
-  opacity: ${({ $active }) => ($active ? 1 : 0.5)};
   transition: opacity 0.2s ease;
-
-  ${NavLink}:hover & {
-    opacity: 1;
-  }
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -207,27 +190,41 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   }, [handleClickOutside])
 
   return (
-    <NavPanel animate={open ? 'open' : 'closed'} initial="closed" ref={panelRef} variants={panelVariants}>
+    <motion.nav
+      animate={open ? 'open' : 'closed'}
+      className={navPanelStyles}
+      initial="closed"
+      ref={panelRef}
+      variants={panelVariants}
+    >
       <NavList>
         {NAV_ITEMS.map((item) => {
           const href = `/${item.toLowerCase()}`
           const isActive = pathname === href
+
           return (
-            <NavItem key={item} variants={itemVariants}>
-              <NavLink
-                $active={isActive}
+            <motion.li key={item} style={{ width: '100%' }} variants={itemVariants}>
+              <motion.a
                 aria-current={isActive ? 'page' : undefined}
+                className={navLinkStyles}
                 href={href}
                 onClick={(e) => handleNavigation(href, e)}
+                style={{
+                  background: isActive ? 'rgba(0, 255, 240, 0.08)' : 'transparent',
+                  color: isActive ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)',
+                  textShadow: isActive ? '0 0 20px rgba(0, 255, 240, 0.5)' : 'none',
+                }}
               >
-                <NavIcon $active={isActive}>{NAV_ICONS[item]}</NavIcon>
+                <span className={navIconStyles} style={{ opacity: isActive ? 1 : 0.5 }}>
+                  {NAV_ICONS[item]}
+                </span>
                 {item}
-              </NavLink>
-            </NavItem>
+              </motion.a>
+            </motion.li>
           )
         })}
       </NavList>
-    </NavPanel>
+    </motion.nav>
   )
 }
 

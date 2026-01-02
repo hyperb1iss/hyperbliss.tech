@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from '../../styled-system/jsx'
 
 const GlitchSpan = styled.span`
   display: inline-block;

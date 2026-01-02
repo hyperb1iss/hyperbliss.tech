@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import React from 'react'
 import { FaArrowRight, FaGithub } from 'react-icons/fa6'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -13,9 +14,7 @@ const StyledLink = styled(Link)`
   width: 100%;
 `
 
-const CardWrapper = styled(motion.div).withConfig({
-  shouldForwardProp: (prop) => !['$isHovered', '$mouseX', '$mouseY'].includes(prop),
-})`
+const cardWrapperStyles = css`
   background: linear-gradient(
     135deg,
     rgba(0, 255, 240, 0.12) 0%,
@@ -38,12 +37,12 @@ const CardWrapper = styled(motion.div).withConfig({
   justify-content: space-between;
   transition: all var(--duration-normal) var(--ease-silk);
   cursor: pointer;
-  box-shadow: 
+  box-shadow:
     0 0 20px rgba(0, 255, 240, 0.2),
     0 0 40px rgba(0, 229, 255, 0.15),
     0 0 15px rgba(38, 198, 218, 0.18),
     inset 0 0 20px rgba(0, 172, 193, 0.08);
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -67,14 +66,10 @@ const CardWrapper = styled(motion.div).withConfig({
     background-size: 200% 200%;
     animation: borderFlow 8s ease infinite;
   }
-  
+
   @keyframes borderFlow {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
-  }
-  
-  &::after {
-    content: none;
   }
 
   &:hover {
@@ -87,16 +82,21 @@ const CardWrapper = styled(motion.div).withConfig({
       rgba(38, 198, 218, 0.1) 75%,
       rgba(0, 172, 193, 0.18) 100%
     );
-    box-shadow: 
+    box-shadow:
       0 10px 40px rgba(0, 255, 240, 0.35),
       0 20px 60px rgba(0, 229, 255, 0.25),
       0 5px 25px rgba(38, 198, 218, 0.2),
       inset 0 0 30px rgba(0, 172, 193, 0.12);
-    
+
     &::before {
       opacity: 1;
     }
-    
+
+    .card-title {
+      background-position: 100% 50%;
+      filter: drop-shadow(0 0 20px rgba(0, 255, 240, 0.7))
+              drop-shadow(0 0 35px rgba(0, 229, 255, 0.4));
+    }
   }
 `
 
@@ -123,12 +123,6 @@ const CardTitle = styled.h3`
   letter-spacing: 0.08em;
   filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.3));
   transition: all var(--duration-normal) var(--ease-silk);
-  
-  ${CardWrapper}:hover & {
-    background-position: 100% 50%;
-    filter: drop-shadow(0 0 20px rgba(0, 255, 240, 0.7))
-            drop-shadow(0 0 35px rgba(0, 229, 255, 0.4));
-  }
 `
 
 const CardMeta = styled.div`
@@ -187,7 +181,7 @@ const Tag = styled.span`
   backdrop-filter: blur(8px);
   transition: all var(--duration-fast) var(--ease-silk);
   text-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
-  
+
   &:hover {
     background: linear-gradient(
       135deg,
@@ -230,12 +224,12 @@ const CardButton = styled.div`
     #00acc1
   );
   border: none;
-  box-shadow: 
+  box-shadow:
     0 4px 15px rgba(0, 255, 240, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -249,23 +243,23 @@ const CardButton = styled.div`
     opacity: 0;
     transition: opacity var(--duration-normal) var(--ease-silk);
   }
-  
+
   &:hover {
     transform: translateX(4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
       0 6px 25px rgba(0, 255, 240, 0.6),
       0 0 40px rgba(0, 172, 193, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    
+
     &::before {
       opacity: 0.3;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
   }
-  
+
   svg {
     transition: transform var(--duration-normal) var(--ease-silk);
     position: relative;
@@ -293,7 +287,7 @@ const GithubLink = styled.button`
   outline: none;
   box-shadow: 0 2px 10px rgba(0, 255, 240, 0.4);
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -307,15 +301,15 @@ const GithubLink = styled.button`
     opacity: 0;
     transition: opacity var(--duration-normal) var(--ease-silk);
   }
-  
+
   &:hover {
     transform: scale(1.15) rotate(10deg);
     box-shadow: 0 4px 20px rgba(0, 255, 240, 0.6);
-    
+
     &::before {
       opacity: 0.3;
     }
-    
+
     svg {
       position: relative;
       z-index: 1;
@@ -356,9 +350,9 @@ export const SilkCard: React.FC<SilkCardProps> = ({
 }) => {
   return (
     <StyledLink href={link}>
-      <CardWrapper
+      <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className={className}
+        className={`${cardWrapperStyles} ${className || ''}`}
         initial={{ opacity: 0, y: 20 }}
         style={style}
         transition={{
@@ -370,7 +364,7 @@ export const SilkCard: React.FC<SilkCardProps> = ({
         whileTap={{ scale: 0.98 }}
       >
         <CardContent>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="card-title">{title}</CardTitle>
           {meta && <CardMeta>{meta}</CardMeta>}
           <CardDescription>{description}</CardDescription>
           {tags && tags.length > 0 && (
@@ -399,7 +393,7 @@ export const SilkCard: React.FC<SilkCardProps> = ({
             </GithubLink>
           )}
         </CardFooter>
-      </CardWrapper>
+      </motion.div>
     </StyledLink>
   )
 }

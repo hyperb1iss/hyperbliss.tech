@@ -1,8 +1,8 @@
 // app/components/PageLayout.tsx
 import { motion } from 'framer-motion'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 
-const MainContentWrapper = styled(motion.main)`
+const mainContentWrapperStyles = css`
   flex: 1;
   width: 100%;
   max-width: var(--container-xl);
@@ -34,13 +34,14 @@ interface PageLayoutProps {
  */
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
-    <MainContentWrapper
+    <motion.main
       animate={{ opacity: 1 }}
+      className={mainContentWrapperStyles}
       initial={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: 'easeInOut' }}
     >
       {children}
-    </MainContentWrapper>
+    </motion.main>
   )
 }
 

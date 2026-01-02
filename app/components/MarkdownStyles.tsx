@@ -1,5 +1,5 @@
 // app/components/MarkdownStyles.tsx
-import styled from 'styled-components'
+import { styled } from '../../styled-system/jsx'
 
 // Headings
 export const StyledH1 = styled.h1`
@@ -23,7 +23,7 @@ export const StyledH1 = styled.h1`
   text-align: left;
   font-weight: 700;
   line-height: 1.2;
-  
+
   @keyframes shimmerGradient {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -48,7 +48,7 @@ export const StyledH2 = styled.h2`
   text-align: left;
   font-weight: 600;
   position: relative;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -94,13 +94,13 @@ export const StyledParagraph = styled.p`
   margin-bottom: 1.2rem;
   font-weight: 400;
   letter-spacing: 0.02em;
-  
+
   strong {
     color: #e0aaff;
     font-weight: 600;
     text-shadow: 0 0 8px rgba(224, 170, 255, 0.3);
   }
-  
+
   em {
     color: #ff75d8;
     font-style: italic;
@@ -116,7 +116,7 @@ export const StyledLink = styled.a`
   transition: all 0.3s var(--ease-silk);
   font-weight: 500;
   text-shadow: 0 0 8px rgba(217, 70, 239, 0.2);
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -139,7 +139,7 @@ export const StyledLink = styled.a`
     color: #ff75d8;
     text-shadow: 0 0 15px rgba(255, 117, 216, 0.6),
                  0 0 8px rgba(236, 72, 153, 0.4);
-    
+
     &::after {
       transform: scaleX(1);
       transform-origin: left;
@@ -269,12 +269,12 @@ export const StyledBlockquote = styled.blockquote`
   font-style: italic;
   border-radius: var(--radius-lg);
   position: relative;
-  box-shadow: 
+  box-shadow:
     0 0 30px rgba(217, 70, 239, 0.2),
     0 0 60px rgba(255, 117, 216, 0.1),
     inset 0 0 30px rgba(236, 72, 153, 0.05);
   text-shadow: 0 0 10px rgba(224, 170, 255, 0.3);
-  
+
   &::before {
     content: '❝';
     position: absolute;
@@ -285,7 +285,7 @@ export const StyledBlockquote = styled.blockquote`
     text-shadow: 0 0 20px rgba(255, 117, 216, 0.6);
     opacity: 0.6;
   }
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -303,7 +303,7 @@ export const StyledBlockquote = styled.blockquote`
     border-radius: 2px;
     animation: pulseGlow 3s ease infinite;
   }
-  
+
   @keyframes pulseGlow {
     0%, 100% { box-shadow: 0 0 10px rgba(255, 117, 216, 0.5); }
     50% { box-shadow: 0 0 20px rgba(217, 70, 239, 0.8); }
@@ -371,7 +371,7 @@ export const StyledInlineCode = styled.code`
   border: 1px solid rgba(255, 117, 216, 0.3);
   text-shadow: 0 0 8px rgba(255, 117, 216, 0.4);
   transition: all 0.2s var(--ease-silk);
-  
+
   &:hover {
     border-color: #d946ef;
     background: linear-gradient(

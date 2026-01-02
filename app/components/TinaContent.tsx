@@ -1,8 +1,8 @@
 // app/components/TinaContent.tsx
 'use client'
 
-import styled from 'styled-components'
 import { TinaMarkdown, TinaMarkdownContent } from 'tinacms/dist/rich-text'
+import { styled } from '../../styled-system/jsx'
 import MarkdownRenderer from './MarkdownRenderer'
 
 interface TinaContentProps {

@@ -3,11 +3,12 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { usePageLoad } from './PageLoadOrchestrator'
 import SilkCard from './SilkCard'
 
-const SectionWrapper = styled(motion.section)`
+const sectionWrapperStyles = css`
   padding: var(--space-16) var(--space-4);
   position: relative;
   overflow: hidden;
@@ -24,12 +25,12 @@ const Container = styled.div`
   margin: 0 auto;
 `
 
-const SectionHeader = styled(motion.div)`
+const sectionHeaderStyles = css`
   text-align: center;
   margin-bottom: var(--space-12);
 `
 
-const Title = styled(motion.h2)`
+const titleStyles = css`
   font-family: var(--font-display);
   font-size: var(--text-fluid-3xl);
   font-weight: var(--font-black);
@@ -43,7 +44,7 @@ const TitleLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   position: relative;
-  
+
   &::after {
     content: '→';
     position: absolute;
@@ -53,7 +54,7 @@ const TitleLink = styled(Link)`
     opacity: 0;
     transition: all var(--duration-normal) var(--ease-silk);
   }
-  
+
   &:hover {
     &::after {
       opacity: 1;
@@ -74,7 +75,7 @@ const TitleGradient = styled.span`
   position: relative;
 `
 
-const Subtitle = styled(motion.p)`
+const subtitleStyles = css`
   font-family: var(--font-body);
   font-size: var(--text-fluid-lg);
   color: var(--text-secondary);
@@ -83,11 +84,11 @@ const Subtitle = styled(motion.p)`
   line-height: var(--leading-relaxed);
 `
 
-const ProjectsGrid = styled(motion.div)`
+const projectsGridStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: var(--space-10);
-  
+
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: var(--space-8);
@@ -98,16 +99,9 @@ const ProjectsGrid = styled(motion.div)`
   }
 `
 
-const FloatingOrb = styled(motion.div)<{ $color: string; $size: number }>`
+const floatingOrbBaseStyles = css`
   position: absolute;
-  width: ${(props) => props.$size}px;
-  height: ${(props) => props.$size}px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    ${(props) => props.$color},
-    transparent 70%
-  );
   filter: blur(40px);
   opacity: 0.3;
   pointer-events: none;
@@ -172,30 +166,39 @@ export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjec
   }
 
   return (
-    <SectionWrapper animate="visible" initial="hidden" variants={containerVariants}>
+    <motion.section animate="visible" className={sectionWrapperStyles} initial="hidden" variants={containerVariants}>
       {/* Floating orbs for ambiance */}
-      <FloatingOrb
-        $color="var(--silk-quantum-purple)"
-        $size={400}
+      <motion.div
         animate={{
           x: [-200, 200, -200],
           y: [-100, 100, -100],
         }}
+        className={floatingOrbBaseStyles}
         initial={{ x: -200, y: -100 }}
+        style={{
+          background: 'radial-gradient(circle at 30% 30%, var(--silk-quantum-purple), transparent 70%)',
+          height: 400,
+          width: 400,
+        }}
         transition={{
           duration: 20,
           ease: 'easeInOut',
           repeat: Number.POSITIVE_INFINITY,
         }}
       />
-      <FloatingOrb
-        $color="var(--silk-circuit-cyan)"
-        $size={300}
+      <motion.div
         animate={{
           x: [0, -100, 0],
           y: [0, 50, 0],
         }}
-        initial={{ right: -150, top: 200 }}
+        className={floatingOrbBaseStyles}
+        style={{
+          background: 'radial-gradient(circle at 30% 30%, var(--silk-circuit-cyan), transparent 70%)',
+          height: 300,
+          right: -150,
+          top: 200,
+          width: 300,
+        }}
         transition={{
           duration: 15,
           ease: 'easeInOut',
@@ -204,19 +207,19 @@ export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjec
       />
 
       <Container>
-        <SectionHeader variants={itemVariants}>
-          <Title>
+        <motion.div className={sectionHeaderStyles} variants={itemVariants}>
+          <motion.h2 className={titleStyles}>
             <TitleLink href="/projects">
               <TitleGradient>Featured Projects</TitleGradient>
             </TitleLink>
-          </Title>
-          <Subtitle>
+          </motion.h2>
+          <motion.p className={subtitleStyles}>
             Exploring the intersection of creativity and technology through innovative solutions and experimental
             interfaces.
-          </Subtitle>
-        </SectionHeader>
+          </motion.p>
+        </motion.div>
 
-        <ProjectsGrid variants={containerVariants}>
+        <motion.div className={projectsGridStyles} variants={containerVariants}>
           {displayedProjects.map((project, index) => (
             <SilkCard
               description={project.frontmatter.description}
@@ -229,8 +232,8 @@ export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjec
               title={project.frontmatter.title}
             />
           ))}
-        </ProjectsGrid>
+        </motion.div>
       </Container>
-    </SectionWrapper>
+    </motion.section>
   )
 }

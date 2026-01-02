@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import React from 'react'
 import { FaArrowRight, FaCalendar, FaUser } from 'react-icons/fa6'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -13,7 +14,7 @@ const StyledLink = styled(Link)`
   width: 100%;
 `
 
-const CardWrapper = styled(motion.div)`
+const cardWrapperStyles = css`
   background: linear-gradient(
     135deg,
     rgba(139, 92, 246, 0.08) 0%,
@@ -34,11 +35,11 @@ const CardWrapper = styled(motion.div)`
   justify-content: space-between;
   transition: all var(--duration-normal) var(--ease-silk);
   cursor: pointer;
-  box-shadow: 
+  box-shadow:
     0 0 25px rgba(139, 92, 246, 0.2),
     0 0 40px rgba(0, 255, 240, 0.1),
     inset 0 0 20px rgba(224, 170, 255, 0.05);
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -57,10 +58,6 @@ const CardWrapper = styled(motion.div)`
     opacity: 0.4;
     transition: opacity var(--duration-normal) var(--ease-silk);
   }
-  
-  &::after {
-    content: none;
-  }
 
   &:hover {
     transform: translateY(-8px) scale(1.02);
@@ -72,15 +69,23 @@ const CardWrapper = styled(motion.div)`
       rgba(236, 72, 153, 0.1) 75%,
       rgba(255, 117, 216, 0.12) 100%
     );
-    box-shadow: 
+    box-shadow:
       0 10px 40px rgba(255, 117, 216, 0.35),
       0 20px 60px rgba(217, 70, 239, 0.25),
       inset 0 0 30px rgba(236, 72, 153, 0.1);
-    
+
     &::before {
       opacity: 0.7;
     }
-    
+
+    .card-title {
+      background-position: 100% 50%;
+      filter: drop-shadow(0 0 15px rgba(0, 255, 240, 0.6));
+    }
+
+    .card-description {
+      color: var(--text-primary);
+    }
   }
 `
 
@@ -106,11 +111,6 @@ const CardTitle = styled.h3`
   letter-spacing: 0.08em;
   filter: drop-shadow(0 0 10px rgba(224, 170, 255, 0.4));
   transition: all var(--duration-normal) var(--ease-silk);
-  
-  ${CardWrapper}:hover & {
-    background-position: 100% 50%;
-    filter: drop-shadow(0 0 15px rgba(0, 255, 240, 0.6));
-  }
 `
 
 const CardMeta = styled.div`
@@ -124,13 +124,13 @@ const CardMeta = styled.div`
   gap: var(--space-4);
   position: relative;
   z-index: 1;
-  
+
   span {
     display: flex;
     align-items: center;
     gap: var(--space-2);
   }
-  
+
   svg {
     font-size: 1.2rem;
     color: #00fff0;
@@ -149,10 +149,6 @@ const CardDescription = styled.p`
   z-index: 1;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   transition: color var(--duration-fast) var(--ease-silk);
-  
-  ${CardWrapper}:hover & {
-    color: var(--text-primary);
-  }
 `
 
 const TagsContainer = styled.div`
@@ -179,7 +175,7 @@ const Tag = styled.span`
   backdrop-filter: blur(8px);
   transition: all var(--duration-fast) var(--ease-silk);
   text-shadow: 0 0 8px rgba(255, 117, 216, 0.5);
-  
+
   &:hover {
     background: linear-gradient(
       135deg,
@@ -222,12 +218,12 @@ const CardButton = styled.div`
     #ec4899
   );
   border: none;
-  box-shadow: 
+  box-shadow:
     0 4px 15px rgba(255, 117, 216, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -241,23 +237,23 @@ const CardButton = styled.div`
     opacity: 0;
     transition: opacity var(--duration-normal) var(--ease-silk);
   }
-  
+
   &:hover {
     transform: translateX(4px) scale(1.02);
-    box-shadow: 
+    box-shadow:
       0 6px 25px rgba(255, 117, 216, 0.6),
       0 0 40px rgba(217, 70, 239, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    
+
     &::before {
       opacity: 0.3;
     }
-    
+
     svg {
       transform: translateX(4px);
     }
   }
-  
+
   svg {
     transition: transform var(--duration-normal) var(--ease-silk);
     position: relative;
@@ -298,9 +294,9 @@ export const BlogCard: React.FC<BlogCardProps> = ({
 }) => {
   return (
     <StyledLink href={link}>
-      <CardWrapper
+      <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className={className}
+        className={`${cardWrapperStyles} ${className || ''}`}
         initial={{ opacity: 0, y: 20 }}
         style={style}
         transition={{
@@ -312,7 +308,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
         whileTap={{ scale: 0.98 }}
       >
         <CardContent>
-          <CardTitle>{title}</CardTitle>
+          <CardTitle className="card-title">{title}</CardTitle>
           {(date || author) && (
             <CardMeta>
               {date && (
@@ -329,7 +325,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               )}
             </CardMeta>
           )}
-          <CardDescription>{description}</CardDescription>
+          <CardDescription className="card-description">{description}</CardDescription>
           {tags && tags.length > 0 && (
             <TagsContainer>
               {tags.map((tag) => (
@@ -343,7 +339,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
             {linkText} <FaArrowRight />
           </CardButton>
         </CardFooter>
-      </CardWrapper>
+      </motion.div>
     </StyledLink>
   )
 }

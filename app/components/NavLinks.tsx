@@ -3,11 +3,16 @@
 
 import { type Easing, motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { styled } from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
 
 export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styles
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const NavLinksContainer = styled.ul`
   list-style: none;
@@ -28,7 +33,7 @@ const NavItem = styled.li`
   align-items: center;
 `
 
-const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
+const navLinkBaseStyles = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -46,10 +51,6 @@ const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
   background: transparent;
   border: none;
 
-  color: ${({ $active }) => ($active ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)')};
-  text-shadow: ${({ $active }) =>
-    $active ? '0 0 20px rgba(0, 255, 240, 0.6), 0 0 40px rgba(0, 255, 240, 0.3)' : 'none'};
-
   transition:
     color var(--duration-fast) var(--ease-silk),
     text-shadow var(--duration-fast) var(--ease-silk),
@@ -61,13 +62,10 @@ const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
     position: absolute;
     bottom: 0;
     left: 50%;
-    width: ${({ $active }) => ($active ? '80%' : '0')};
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--silk-circuit-cyan), transparent);
     transform: translateX(-50%);
     transition: width var(--duration-normal) var(--ease-silk);
-    box-shadow: ${({ $active }) =>
-      $active ? '0 0 10px var(--silk-circuit-cyan), 0 0 20px rgba(0, 255, 240, 0.4)' : 'none'};
   }
 
   &:hover,
@@ -84,13 +82,15 @@ const StyledNavLink = styled(motion.a)<{ $active: boolean }>`
     outline: 2px solid rgba(0, 255, 240, 0.5);
     outline-offset: 4px;
   }
-
 `
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
  * NavLinks component
  * Renders the desktop navigation links.
- * @returns {JSX.Element} Rendered navigation links
  */
 const NavLinks: React.FC = () => {
   const pathname = usePathname()
@@ -106,17 +106,36 @@ const NavLinks: React.FC = () => {
       {NAV_ITEMS.map((item) => {
         const href = `/${item.toLowerCase()}`
         const isActive = pathname === href
+
+        // Dynamic styles for active state
+        const dynamicStyles: React.CSSProperties = {
+          color: isActive ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)',
+          textShadow: isActive ? '0 0 20px rgba(0, 255, 240, 0.6), 0 0 40px rgba(0, 255, 240, 0.3)' : 'none',
+        }
+
         return (
           <NavItem key={item}>
-            <StyledNavLink
-              $active={isActive}
+            <motion.a
               aria-current={isActive ? 'page' : undefined}
+              className={navLinkBaseStyles}
               href={href}
               onClick={(e) => handleNavigation(href, e)}
+              style={{
+                ...dynamicStyles,
+                // CSS custom property for underline width
+                // @ts-expect-error CSS custom property
+                '--underline-width': isActive ? '80%' : '0',
+              }}
               whileTap={{ scale: 0.98 }}
             >
+              <style>{`
+                .${navLinkBaseStyles.split(' ')[0]}::after {
+                  width: var(--underline-width, 0);
+                  box-shadow: ${isActive ? '0 0 10px var(--silk-circuit-cyan), 0 0 20px rgba(0, 255, 240, 0.4)' : 'none'};
+                }
+              `}</style>
               {item}
-            </StyledNavLink>
+            </motion.a>
           </NavItem>
         )
       })}

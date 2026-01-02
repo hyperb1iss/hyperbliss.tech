@@ -4,6 +4,9 @@
  * Global styles integrated with SilkCircuit Design System
  */
 
+/* Panda CSS cascade layers */
+@layer reset, base, tokens, recipes, utilities;
+
 /* Import SilkCircuit Design System */
 @import "./silkcircuit/variables.css";
 @import "./silkcircuit/utilities.css";

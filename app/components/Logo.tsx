@@ -4,141 +4,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRef } from 'react'
-import { keyframes, styled } from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 
-/**
- * Keyframe animations for the logo
- */
-
-// Define the keyframes for the gradient animation
-const animateGradient = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-`
-
-// Flicker keyframe animation
-const _flicker = keyframes`
-  0%, 5%, 10%, 15%, 20%, 25%, 30%, 35%, 40%, 45%, 50%, 55%, 60%, 65%, 70%, 75%, 80%, 85%, 90%, 95%, 100% {
-    opacity: 1;
-    text-shadow: 
-      0 0 1px #fff,
-      0 0 2px #fff,
-      0 0 3px #a259ff,
-      0 0 4px #a259ff,
-      0 0 5px #a259ff,
-      0 0 6px #a259ff,
-      0 0 7px #a259ff;
-  }
-  1%, 7%, 33%, 47%, 78%, 93% {
-    opacity: 0.8;
-    text-shadow: 
-      0 0 1px #000,
-      0 0 2px #000,
-      0 0 3px #a259ff,
-      0 0 4px #a259ff,
-      0 0 5px #a259ff;
-  }
-  2%, 8%, 34%, 48%, 79%, 94% {
-    opacity: 0.9;
-    text-shadow: 
-      1px 0 1px #00fff0,
-      -1px 0 1px #ff00ff,
-      0 0 3px #a259ff,
-      0 0 5px #a259ff,
-      0 0 7px #a259ff;
-  }
-`
-
-// Keyframe for chromatic aberration
-const chromaticAberration = keyframes`
-  0%, 95%, 100% {
-    text-shadow: 
-      0 0 1px #fff,
-      0 0 2px #fff,
-      0 0 3px #a259ff,
-      0 0 4px #a259ff,
-      0 0 5px #a259ff;
-  }
-  50% {
-    text-shadow: 
-      -1px 0 1px #00fff0,
-      1px 0 1px #ff00ff,
-      0 0 3px #a259ff,
-      0 0 5px #a259ff;
-  }
-`
-
-// Keyframe for the color-shifting glow effect
-const shiftingGlow = keyframes`
-  0%, 100% {
-    text-shadow: 
-      1px 0 1px #00fff0,
-      -1px 0 1px #ff00ff,
-      0 0 3px #00fff0,
-      0 0 5px #00fff0,
-      0 0 7px #00fff0;
-  }
-  25% {
-    text-shadow: 
-      1px 0 1px #ff00ff,
-      -1px 0 1px #00fff0,
-      0 0 3px #ff00ff,
-      0 0 5px #ff00ff,
-      0 0 7px #ff00ff;
-  }
-  50% {
-    text-shadow: 
-      1px 0 1px #a259ff,
-      -1px 0 1px #00fff0,
-      0 0 3px #a259ff,
-      0 0 5px #a259ff,
-      0 0 7px #a259ff;
-  }
-  75% {
-    text-shadow: 
-      1px 0 1px #00fff0,
-      -1px 0 1px #a259ff,
-      0 0 3px #00fff0,
-      0 0 5px #00fff0,
-      0 0 7px #00fff0;
-  }
-`
-
-// Keyframes for the sparkle and shimmer effect
-const sparkle = keyframes`
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(0.95); }
-`
-
-const shimmer = keyframes`
-  0% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
-  25% { text-shadow: 1px -1px 2px rgba(255,255,255,0.3), -1px 1px 2px rgba(255,255,255,0.3); }
-  50% { text-shadow: 1px 1px 2px rgba(255,255,255,0.3), -1px -1px 2px rgba(255,255,255,0.3); }
-  75% { text-shadow: -1px 1px 2px rgba(255,255,255,0.3), 1px -1px 2px rgba(255,255,255,0.3); }
-  100% { text-shadow: -1px -1px 2px rgba(255,255,255,0.3), 1px 1px 2px rgba(255,255,255,0.3); }
-`
-
-/**
- * Styled components for the Logo
- */
-
-// Subtle glow animation for the logo
-const subtleGlow = keyframes`
-  0%, 100% {
-    filter: drop-shadow(0 0 8px rgba(162, 89, 255, 0.4));
-  }
-  50% {
-    filter: drop-shadow(0 0 12px rgba(0, 255, 240, 0.5));
-  }
-`
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styled Components
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const LogoWrapper = styled.div`
   display: flex;
@@ -147,14 +19,14 @@ const LogoWrapper = styled.div`
   gap: 1.5rem;
   overflow: visible;
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: scale(1.05);
-    
+
     img {
       filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.8));
     }
-    
+
     span {
       filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.8));
       transform: translateX(5px);
@@ -162,12 +34,21 @@ const LogoWrapper = styled.div`
   }
 `
 
-const LogoImage = styled(Image)`
+const logoImageStyles = css`
   height: 70px;
   width: auto;
   object-fit: contain;
-  animation: ${subtleGlow} 3s ease-in-out infinite;
+  animation: subtleGlow 3s ease-in-out infinite;
   transition: all 0.3s ease;
+
+  @keyframes subtleGlow {
+    0%, 100% {
+      filter: drop-shadow(0 0 8px rgba(162, 89, 255, 0.4));
+    }
+    50% {
+      filter: drop-shadow(0 0 12px rgba(0, 255, 240, 0.5));
+    }
+  }
 
   @media (max-width: 768px) {
     height: 50px;
@@ -175,56 +56,6 @@ const LogoImage = styled(Image)`
 
   @media (min-width: 1200px) {
     height: 80px;
-  }
-`
-
-// Technologies text animations
-const glitchText = keyframes`
-  0%, 100% {
-    text-shadow: 
-      0 0 2px rgba(0, 255, 240, 0.8),
-      -1px 0 rgba(255, 0, 255, 0.5),
-      1px 0 rgba(0, 255, 240, 0.5);
-  }
-  25% {
-    text-shadow: 
-      0 0 2px rgba(162, 89, 255, 0.8),
-      -2px 0 rgba(0, 255, 240, 0.5),
-      2px 0 rgba(255, 117, 216, 0.5);
-  }
-  50% {
-    text-shadow: 
-      0 0 2px rgba(255, 117, 216, 0.8),
-      -1px 0 rgba(162, 89, 255, 0.5),
-      1px 0 rgba(0, 255, 240, 0.5);
-  }
-  75% {
-    text-shadow: 
-      0 0 2px rgba(0, 255, 240, 0.8),
-      -2px 0 rgba(255, 117, 216, 0.5),
-      1px 0 rgba(162, 89, 255, 0.5);
-  }
-`
-
-const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-    letter-spacing: 0.5em;
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-    letter-spacing: 0.15em;
-  }
-`
-
-const scanline = keyframes`
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 10px;
   }
 `
 
@@ -247,13 +78,59 @@ const TechnologiesText = styled.span`
   text-transform: uppercase;
   position: relative;
   white-space: nowrap;
-  animation: 
-    ${slideIn} 0.8s ease-out 0.3s both,
-    ${glitchText} 4s ease-in-out infinite,
-    ${animateGradient} 6s linear infinite;
+  animation:
+    slideIn 0.8s ease-out 0.3s both,
+    glitchText 4s ease-in-out infinite,
+    animateGradient 6s linear infinite;
   align-self: flex-end;
   margin-bottom: 0.8rem;
-  
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+      letter-spacing: 0.5em;
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+      letter-spacing: 0.15em;
+    }
+  }
+
+  @keyframes glitchText {
+    0%, 100% {
+      text-shadow:
+        0 0 2px rgba(0, 255, 240, 0.8),
+        -1px 0 rgba(255, 0, 255, 0.5),
+        1px 0 rgba(0, 255, 240, 0.5);
+    }
+    25% {
+      text-shadow:
+        0 0 2px rgba(162, 89, 255, 0.8),
+        -2px 0 rgba(0, 255, 240, 0.5),
+        2px 0 rgba(255, 117, 216, 0.5);
+    }
+    50% {
+      text-shadow:
+        0 0 2px rgba(255, 117, 216, 0.8),
+        -1px 0 rgba(162, 89, 255, 0.5),
+        1px 0 rgba(0, 255, 240, 0.5);
+    }
+    75% {
+      text-shadow:
+        0 0 2px rgba(0, 255, 240, 0.8),
+        -2px 0 rgba(255, 117, 216, 0.5),
+        1px 0 rgba(162, 89, 255, 0.5);
+    }
+  }
+
+  @keyframes animateGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   &::before {
     content: 'technologies';
     position: absolute;
@@ -268,56 +145,20 @@ const TechnologiesText = styled.span`
       transparent 100%
     );
     background-size: 100% 5px;
-    animation: ${scanline} 8s linear infinite;
+    animation: scanline 8s linear infinite;
     opacity: 0.5;
     mix-blend-mode: overlay;
     pointer-events: none;
   }
 
+  @keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 10px; }
+  }
+
   @media (max-width: 768px) {
     font-size: 1.1rem;
-    display: none; // Hide on mobile for space
-  }
-`
-
-const LogoEmojis = styled.span`
-  font-size: 1.8rem; // Baseline size (matches mobile view)
-  margin: 0 0.5rem;
-  flex-shrink: 0;
-  animation:
-    ${sparkle} 3s ease-in-out infinite,
-    ${shimmer} 5s linear infinite;
-  display: inline-block;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.1);
-    animation: ${shimmer} 2s linear infinite;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-    position: relative;
-    z-index: 1;
-    padding-top: 5px;
-  }
-
-  @media (min-width: 769px) {
-    font-size: calc(1.6rem + 0.4vw); // Increased base size for desktop
-  }
-
-  @media (min-width: 1200px) {
-    font-size: calc(1.8rem + 0.4vw); // Further increase for very large screens
-  }
-`
-
-const _GlowingEmoji = styled(LogoEmojis)`
-  animation: ${chromaticAberration} 3s ease-in-out infinite;
-  transition: text-shadow 0.3s ease;
-  display: inline-block;
-
-  &:hover {
-    animation: ${shiftingGlow} 4s linear infinite;
+    display: none;
   }
 `
 
@@ -328,7 +169,7 @@ const LogoContainer = styled.div`
   margin-right: auto;
   overflow: visible;
   padding-left: 2rem;
-  
+
   @media (max-width: 768px) {
     padding-left: 1rem;
   }
@@ -346,10 +187,13 @@ const LogoLink = styled(Link)`
   padding: 0.5rem;
 `
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 /**
  * Logo component
  * Renders the animated logo with emojis and text.
- * @returns {JSX.Element} Rendered logo component
  */
 const Logo: React.FC = () => {
   const logoRef = useRef<HTMLAnchorElement>(null)
@@ -364,7 +208,14 @@ const Logo: React.FC = () => {
     <LogoContainer>
       <LogoLink href="/" onClick={handleNavigation} ref={logoRef}>
         <LogoWrapper>
-          <LogoImage alt="hyperbliss" height={70} priority={true} src="/images/logo.png" width={350} />
+          <Image
+            alt="hyperbliss"
+            className={logoImageStyles}
+            height={70}
+            priority={true}
+            src="/images/logo.png"
+            width={350}
+          />
           <TechnologiesText>technologies</TechnologiesText>
         </LogoWrapper>
       </LogoLink>

@@ -3,8 +3,9 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import styled from 'styled-components'
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { SparklingName } from './SparklingName'
 import TinaContent from './TinaContent'
 
@@ -31,7 +32,7 @@ const Container = styled.div`
   }
 `
 
-const Title = styled(motion.h1)`
+const titleStyles = css`
   font-size: clamp(2.5rem, 3.5vw, 4.5rem);
   color: var(--color-secondary);
   margin-bottom: 1rem;
@@ -39,7 +40,7 @@ const Title = styled(motion.h1)`
   text-align: center;
 `
 
-const Meta = styled(motion.div)`
+const metaStyles = css`
   font-size: clamp(1.4rem, 1.5vw, 2rem);
   color: var(--color-muted);
   margin: 2rem 0;
@@ -75,7 +76,7 @@ const Meta = styled(motion.div)`
   }
 `
 
-const TagsContainer = styled(motion.div)`
+const tagsContainerStyles = css`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -99,7 +100,7 @@ const Tag = styled.span`
   }
 `
 
-const Content = styled(motion.div)`
+const contentStyles = css`
   font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.6;
   color: var(--color-text);
@@ -108,10 +109,20 @@ const Content = styled(motion.div)`
 const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, tags }) => {
   return (
     <Container>
-      <Title animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: -20 }} transition={{ duration: 0.6 }}>
+      <motion.h1
+        animate={{ opacity: 1, y: 0 }}
+        className={titleStyles}
+        initial={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6 }}
+      >
         {title}
-      </Title>
-      <Meta animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
+      </motion.h1>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={metaStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+      >
         {date && <span className="date">{new Date(date).toLocaleDateString()}</span>}
         {author && (
           <>
@@ -121,17 +132,27 @@ const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, 
             </span>
           </>
         )}
-      </Meta>
+      </motion.div>
       {tags && tags.length > 0 && (
-        <TagsContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
+        <motion.div
+          animate={{ opacity: 1 }}
+          className={tagsContainerStyles}
+          initial={{ opacity: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
           {tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
           ))}
-        </TagsContainer>
+        </motion.div>
       )}
-      <Content animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={contentStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.6, duration: 0.6 }}
+      >
         <TinaContent content={body} />
-      </Content>
+      </motion.div>
     </Container>
   )
 }

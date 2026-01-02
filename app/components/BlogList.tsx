@@ -3,12 +3,12 @@
 
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 import BlogCard from './BlogCard'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 
-const PostList = styled(motion.div)`
+const postListStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: var(--space-10);
@@ -58,8 +58,9 @@ export default function BlogList({ posts }: BlogListProps) {
   return (
     <PageLayout>
       <PageTitle>Blog</PageTitle>
-      <PostList
+      <motion.div
         animate="visible"
+        className={postListStyles}
         initial="hidden"
         variants={{
           hidden: { opacity: 0 },
@@ -85,7 +86,7 @@ export default function BlogList({ posts }: BlogListProps) {
             title={frontmatter.title}
           />
         ))}
-      </PostList>
+      </motion.div>
     </PageLayout>
   )
 }

@@ -2,10 +2,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
 import SilkCard from './SilkCard'
 
-const ProjectsGrid = styled(motion.div)`
+const projectsGridStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
   gap: var(--space-10);
@@ -37,12 +37,10 @@ interface ProjectListProps {
 }
 
 const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
-  // Remove mounted state - let SSR handle initial render properly
-  // The StyledComponentsRegistry at root level handles hydration
-
   return (
-    <ProjectsGrid
+    <motion.div
       animate="visible"
+      className={projectsGridStyles}
       initial="hidden"
       variants={{
         hidden: { opacity: 0 },
@@ -68,7 +66,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
           title={project.frontmatter.title}
         />
       ))}
-    </ProjectsGrid>
+    </motion.div>
   )
 }
 

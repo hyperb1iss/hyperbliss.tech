@@ -3,7 +3,8 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import BlogCard from './BlogCard'
 import { usePageLoad } from './PageLoadOrchestrator'
 
@@ -22,7 +23,7 @@ interface LatestBlogPostsSilkProps {
   posts: BlogPost[]
 }
 
-const SectionWrapper = styled(motion.section)`
+const sectionWrapperStyles = css`
   padding: var(--space-16) var(--space-4);
   width: 100%;
 `
@@ -32,11 +33,11 @@ const Container = styled.div`
   margin: 0 auto;
 `
 
-const SidebarHeader = styled(motion.div)`
+const sidebarHeaderStyles = css`
   margin-bottom: var(--space-8);
 `
 
-const Title = styled(motion.h2)`
+const titleStyles = css`
   font-family: var(--font-display);
   font-size: var(--text-fluid-2xl);
   font-weight: var(--font-bold);
@@ -49,7 +50,7 @@ const TitleLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   position: relative;
-  
+
   &::after {
     content: '→';
     position: absolute;
@@ -60,7 +61,7 @@ const TitleLink = styled(Link)`
     font-size: 0.8em;
     transition: all var(--duration-normal) var(--ease-silk);
   }
-  
+
   &:hover {
     &::after {
       opacity: 1;
@@ -80,7 +81,7 @@ const TitleGradient = styled.span`
   -webkit-text-fill-color: transparent;
 `
 
-const PostsGrid = styled(motion.div)`
+const postsGridStyles = css`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: var(--space-10);
@@ -95,7 +96,7 @@ const PostsGrid = styled(motion.div)`
   }
 `
 
-const EmptyState = styled(motion.div)`
+const emptyStateStyles = css`
   padding: var(--space-12) var(--space-8);
   background: var(--surface-glass);
   backdrop-filter: blur(var(--blur-lg));
@@ -116,7 +117,7 @@ const EmptyStateLink = styled(Link)`
   text-decoration: none;
   font-weight: var(--font-semibold);
   transition: all var(--duration-fast) var(--ease-silk);
-  
+
   &:hover {
     text-decoration: underline;
     text-decoration-color: var(--silk-quantum-purple);
@@ -124,7 +125,7 @@ const EmptyStateLink = styled(Link)`
   }
 `
 
-const FloatingShape = styled(motion.div)`
+const floatingShapeStyles = css`
   position: absolute;
   width: 200px;
   height: 200px;
@@ -175,14 +176,16 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
   }
 
   return (
-    <SectionWrapper animate="visible" initial="hidden" variants={containerVariants}>
+    <motion.section animate="visible" className={sectionWrapperStyles} initial="hidden" variants={containerVariants}>
       {/* Floating decorative shape */}
-      <FloatingShape
+      <motion.div
         animate={{
           rotate: [0, 180, 360],
           y: [0, 30, 0],
         }}
+        className={floatingShapeStyles}
         initial={{ right: -100, top: -100 }}
+        style={{ right: -100, top: -100 }}
         transition={{
           duration: 20,
           ease: 'easeInOut',
@@ -191,15 +194,15 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
       />
 
       <Container>
-        <SidebarHeader variants={itemVariants}>
-          <Title>
+        <motion.div className={sidebarHeaderStyles} variants={itemVariants}>
+          <motion.h2 className={titleStyles}>
             <TitleLink href="/blog">
               <TitleGradient>Latest Posts</TitleGradient>
             </TitleLink>
-          </Title>
-        </SidebarHeader>
+          </motion.h2>
+        </motion.div>
 
-        <PostsGrid>
+        <motion.div className={postsGridStyles}>
           {posts.length > 0 ? (
             posts.map((post, index) => (
               <motion.div key={post.slug} variants={itemVariants}>
@@ -215,7 +218,7 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
               </motion.div>
             ))
           ) : (
-            <EmptyState variants={itemVariants}>
+            <motion.div className={emptyStateStyles} variants={itemVariants}>
               <EmptyStateText>
                 No posts available yet. Check back soon for exciting content about web development, design systems, and
                 creative coding!
@@ -223,10 +226,10 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
               <EmptyStateText>
                 <EmptyStateLink href="/about">Learn more about me</EmptyStateLink>
               </EmptyStateText>
-            </EmptyState>
+            </motion.div>
           )}
-        </PostsGrid>
+        </motion.div>
       </Container>
-    </SectionWrapper>
+    </motion.section>
   )
 }

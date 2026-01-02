@@ -6,7 +6,6 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { tokens } from './tokens'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -23,6 +22,7 @@ interface ThemeContextValue {
   setContrast: (contrast: ContrastMode) => void
   toggleMode: () => void
   effectiveMode: 'dark' | 'light'
+  theme: typeof tokens & { mode: 'dark' | 'light'; contrast: ContrastMode }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -130,27 +130,24 @@ export function SilkCircuitProvider({
     })
   }
 
+  // Create theme object
+  const theme = {
+    ...tokens,
+    contrast,
+    mode: effectiveMode,
+  }
+
   const contextValue: ThemeContextValue = {
     contrast,
     effectiveMode,
     mode,
     setContrast,
     setMode,
+    theme,
     toggleMode,
   }
 
-  // Create styled-components theme object
-  const styledTheme = {
-    ...tokens,
-    contrast,
-    mode: effectiveMode,
-  }
-
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      <StyledThemeProvider theme={styledTheme}>{children}</StyledThemeProvider>
-    </ThemeContext.Provider>
-  )
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

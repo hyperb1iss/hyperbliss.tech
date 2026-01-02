@@ -3,7 +3,8 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
 
 interface ProjectDetailProps {
@@ -29,13 +30,8 @@ const Container = styled.div`
   }
 `
 
-/**
- * Title component
- * Centered title with responsive font size and enhanced styling.
- * Shrunk the font size slightly for better visual balance.
- */
-const Title = styled(motion.h1)`
-  font-size: clamp(2.5rem, 3.5vw, 4.5rem); /* Reduced the font size */
+const titleStyles = css`
+  font-size: clamp(2.5rem, 3.5vw, 4.5rem);
   color: #00ffff;
   margin-bottom: 1rem;
   text-shadow: 0 0 7px #00ffff;
@@ -54,11 +50,7 @@ const Title = styled(motion.h1)`
   }
 `
 
-/**
- * Meta component
- * Centered meta information with responsive font size.
- */
-const Meta = styled(motion.div)`
+const metaStyles = css`
   font-size: clamp(1.4rem, 1.5vw, 2rem);
   color: var(--color-muted);
   margin-bottom: 2rem;
@@ -73,10 +65,7 @@ const Meta = styled(motion.div)`
   }
 `
 
-/**
- * Tags styling
- */
-const TagsContainer = styled(motion.div)`
+const tagsContainerStyles = css`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -94,17 +83,13 @@ const Tag = styled.span`
   cursor: pointer;
 `
 
-const Content = styled(motion.div)`
+const contentStyles = css`
   font-size: clamp(1.6rem, 1.5vw, 2.2rem);
   line-height: 1.6;
   color: var(--color-text);
 `
 
-/**
- * GitHubLink component
- * Centered GitHub link with responsive font size and enhanced styling.
- */
-const GitHubLink = styled(motion.a)`
+const githubLinkStyles = css`
   display: block;
   margin: 2rem auto 0;
   width: fit-content;
@@ -119,35 +104,48 @@ const GitHubLink = styled(motion.a)`
   }
 `
 
-/**
- * ProjectDetail component
- * Renders the detailed view of a project with animations.
- * Adjusted font sizes and layout for better widescreen support and consistency.
- * Shrunk the title font size slightly.
- * @param {ProjectDetailProps} props - The component props
- * @returns {JSX.Element} Rendered project detail
- */
 const ProjectDetail: React.FC<ProjectDetailProps> = ({ title, github, content, author, tags }) => {
   return (
     <Container>
-      <Title animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: -20 }} transition={{ duration: 0.6 }}>
+      <motion.h1
+        animate={{ opacity: 1, y: 0 }}
+        className={titleStyles}
+        initial={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.6 }}
+      >
         {title}
-      </Title>
-      <Meta animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.2, duration: 0.6 }}>
+      </motion.h1>
+      <motion.div
+        animate={{ opacity: 1 }}
+        className={metaStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+      >
         {author && <span>Author: {author}</span>}
-      </Meta>
+      </motion.div>
       {tags && tags.length > 0 && (
-        <TagsContainer animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.4, duration: 0.6 }}>
+        <motion.div
+          animate={{ opacity: 1 }}
+          className={tagsContainerStyles}
+          initial={{ opacity: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
           {tags.map((tag) => (
             <Tag key={tag}>{tag}</Tag>
           ))}
-        </TagsContainer>
+        </motion.div>
       )}
-      <Content animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
-        <ProjectMarkdownRenderer content={content} />
-      </Content>
-      <GitHubLink
+      <motion.div
         animate={{ opacity: 1 }}
+        className={contentStyles}
+        initial={{ opacity: 0 }}
+        transition={{ delay: 0.6, duration: 0.6 }}
+      >
+        <ProjectMarkdownRenderer content={content} />
+      </motion.div>
+      <motion.a
+        animate={{ opacity: 1 }}
+        className={githubLinkStyles}
         href={github}
         initial={{ opacity: 0 }}
         rel="noopener noreferrer"
@@ -155,7 +153,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ title, github, content, a
         transition={{ delay: 0.8, duration: 0.6 }}
       >
         View on GitHub
-      </GitHubLink>
+      </motion.a>
     </Container>
   )
 }

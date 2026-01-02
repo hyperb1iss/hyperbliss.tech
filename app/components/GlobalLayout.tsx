@@ -2,22 +2,22 @@
 'use client'
 
 import React from 'react'
-import styled from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import Footer from './Footer'
 import { useHeaderContext } from './HeaderContext'
 
-const LayoutContainer = styled.div<{ $isHeaderExpanded: boolean }>`
-  padding-top: ${(props) => (props.$isHeaderExpanded ? '200px' : '100px')};
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styles
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const layoutContainerStyles = css`
   transition: padding-top 0.3s ease;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: transparent;
   color: var(--text-primary);
-
-  @media (max-width: 768px) {
-    padding-top: ${(props) => (props.$isHeaderExpanded ? '180px' : '80px')};
-  }
 `
 
 const ContentWrapper = styled.main`
@@ -25,6 +25,10 @@ const ContentWrapper = styled.main`
   display: flex;
   flex-direction: column;
 `
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface GlobalLayoutProps {
   children: React.ReactNode
@@ -35,17 +39,32 @@ interface GlobalLayoutProps {
  * Wraps the application content with global styles and header state.
  * Adjusts the padding based on the header expansion state.
  * Includes the Footer at the bottom of the page.
- * @param {GlobalLayoutProps} props - The component props
- * @returns {JSX.Element} Rendered global layout
  */
 const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   const { isExpanded } = useHeaderContext()
 
+  // Dynamic padding based on header expansion
+  const paddingTop = isExpanded ? '200px' : '100px'
+  const paddingTopMobile = isExpanded ? '180px' : '80px'
+
   return (
-    <LayoutContainer $isHeaderExpanded={isExpanded}>
+    <div
+      className={layoutContainerStyles}
+      style={{
+        paddingTop,
+        // Will be overridden by media query in style tag
+      }}
+    >
+      <style>{`
+        @media (max-width: 768px) {
+          .${layoutContainerStyles.split(' ')[0]} {
+            padding-top: ${paddingTopMobile} !important;
+          }
+        }
+      `}</style>
       <ContentWrapper>{children}</ContentWrapper>
       <Footer />
-    </LayoutContainer>
+    </div>
   )
 }
 

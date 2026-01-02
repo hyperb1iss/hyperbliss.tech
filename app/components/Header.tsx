@@ -3,7 +3,8 @@
 
 import { motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { styled } from 'styled-components'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 import { useHeaderContext } from './HeaderContext'
 import Logo from './Logo'
 import MobileMenuIcon from './MobileMenuIcon'
@@ -11,15 +12,15 @@ import MobileNavLinks from './MobileNavLinks'
 import NavLinks from './NavLinks'
 import { usePageLoad } from './PageLoadOrchestrator'
 
-/**
- * Styled components for the header
- */
-const Nav = styled.nav<{ $isExpanded: boolean }>`
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Styles
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const navBaseStyles = css`
   position: fixed;
   top: 0;
   width: 100%;
   padding: var(--space-3) var(--space-3) var(--space-4);
-  height: ${(props) => (props.$isExpanded ? '200px' : '110px')};
   transition: height var(--duration-normal) var(--ease-silk);
   z-index: 1000;
   overflow: visible;
@@ -49,7 +50,6 @@ const Nav = styled.nav<{ $isExpanded: boolean }>`
 
   @media (max-width: 768px) {
     padding: var(--space-2);
-    height: ${(props) => (props.$isExpanded ? '180px' : '96px')};
   }
 `
 
@@ -99,12 +99,12 @@ const NavContent = styled.div`
   }
 `
 
-const Canvas = styled(motion.canvas)`
+const canvasStyles = css`
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%; // Ensures the canvas scales to the full width
-  height: 100%; // Ensures the canvas scales to the full height
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: -1;
   mix-blend-mode: screen;
@@ -112,7 +112,7 @@ const Canvas = styled(motion.canvas)`
   background: linear-gradient(180deg, rgba(20, 7, 43, 0.7) 0%, rgba(10, 5, 18, 0.15) 60%, transparent 100%);
 `
 
-const ChevronIcon = styled(motion.div)`
+const chevronIconStyles = css`
   position: absolute;
   bottom: 10px;
   left: 30px;
@@ -141,10 +141,13 @@ const chevronVariants = {
   expanded: { rotate: 180 },
 }
 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Component
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 /**
  * Header component
  * Renders the main navigation header with animated effects and expandable CyberScape area.
- * @returns {JSX.Element} Rendered header
  */
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -271,10 +274,30 @@ const Header: React.FC = () => {
     setIsExpanded(!isExpanded)
   }
 
+  // Dynamic height based on expansion state
+  const navHeight = isExpanded ? '200px' : '110px'
+  const navHeightMobile = isExpanded ? '180px' : '96px'
+
   return (
-    <Nav $isExpanded={isExpanded} ref={navRef}>
-      <Canvas
+    <nav
+      className={navBaseStyles}
+      ref={navRef}
+      style={{
+        // @ts-expect-error CSS custom property
+        '--nav-height-mobile': navHeightMobile,
+        height: navHeight,
+      }}
+    >
+      <style>{`
+        @media (max-width: 768px) {
+          nav.${navBaseStyles.split(' ')[0]} {
+            height: ${navHeightMobile} !important;
+          }
+        }
+      `}</style>
+      <motion.canvas
         animate={{ opacity: 1 }}
+        className={canvasStyles}
         initial={{ opacity: isInitialLoad ? 0 : 1 }}
         ref={canvasRef}
         transition={{ delay: isInitialLoad ? 0.2 : 0, duration: isInitialLoad ? 0.8 : 0 }}
@@ -288,8 +311,9 @@ const Header: React.FC = () => {
       </NavContent>
       {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} setMenuOpen={setMenuOpen} />
-      <ChevronIcon
+      <motion.div
         animate={isExpanded ? 'expanded' : 'collapsed'}
+        className={chevronIconStyles}
         initial="collapsed"
         onClick={toggleExpansion}
         transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -308,8 +332,8 @@ const Header: React.FC = () => {
           <title>Toggle header expansion</title>
           <polyline points="6 9 12 15 18 9" />
         </svg>
-      </ChevronIcon>
-    </Nav>
+      </motion.div>
+    </nav>
   )
 }
 

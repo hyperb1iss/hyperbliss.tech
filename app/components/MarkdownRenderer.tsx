@@ -1,14 +1,16 @@
 // app/components/MarkdownRenderer.tsx
 'use client'
 
-import type { Element } from 'hast' // Re-adding for proper node typing
-import { toString as hastToString } from 'hast-util-to-string' // For extracting text content
+import type { Element } from 'hast'
+import { toString as hastToString } from 'hast-util-to-string'
 import React, { useEffect, useState } from 'react'
 import { FiCheck, FiCopy } from 'react-icons/fi'
 import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
+import { css } from '../../styled-system/css'
+import { styled } from '../../styled-system/jsx'
 
 // Custom schema that allows code highlighting classes
 const sanitizeSchema = {
@@ -20,7 +22,6 @@ const sanitizeSchema = {
   },
 }
 
-import styled, { StyleSheetManager } from 'styled-components'
 import {
   StyledLink as MarkdownLink,
   StyledBlockquote,
@@ -46,14 +47,6 @@ interface CodeComponentProps {
   inline?: boolean
   className?: string
   children?: React.ReactNode
-  // Add any other props as needed
-}
-
-// Function to filter out props that shouldn't be forwarded to DOM elements
-const shouldForwardProp = (prop: string): boolean => {
-  // List of props that should not be forwarded to DOM elements
-  const invalidProps = ['node']
-  return !invalidProps.includes(prop)
 }
 
 // Styled components for the copy button and wrapper
@@ -95,16 +88,10 @@ const CopyButton = styled.button`
   }
 `
 
-// Renamed to CodeBlockPreWrapper and changed tag to pre
-const CodeBlockPreWrapper = styled.pre`
+const codeBlockPreWrapperStyles = css`
   position: relative;
-  
-  /* Add blog-syntax class for theme targeting */
-  &.blog-syntax {
-    /* Class added via props */
-  }
 
-  &:hover ${CopyButton} {
+  &:hover button {
     opacity: 1;
   }
 
@@ -138,13 +125,13 @@ const CodeBlockPreWrapper = styled.pre`
 
   /* Target code tag inside */
   code {
-    font-family: inherit; /* Use inherit now that pre is explicitly set */
+    font-family: inherit;
     background: none;
     padding: 0;
     margin: 0;
     display: block;
     color: inherit;
-    white-space: inherit; /* Inherit wrap setting */
+    white-space: inherit;
     word-spacing: inherit;
     word-break: inherit;
     word-wrap: inherit;
@@ -260,8 +247,11 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
     }
   }
 
+  // Filter out node prop before spreading to DOM
+  const { node: _node, ...domProps } = rest as PreWithCopyProps & { node?: Element }
+
   return (
-    <CodeBlockPreWrapper className="blog-syntax" suppressHydrationWarning={true} {...rest}>
+    <pre className={`blog-syntax ${codeBlockPreWrapperStyles}`} suppressHydrationWarning={true} {...domProps}>
       {children}
       <CopyButton
         disabled={!isClipboardApiAvailable || isCopying}
@@ -270,12 +260,12 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
       >
         {isCopying ? '...' : isCopied ? <FiCheck /> : <FiCopy />}
       </CopyButton>
-    </CodeBlockPreWrapper>
+    </pre>
   )
 }
 
 // Safe link wrapper component
-const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
+const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   // Create a new props object that's extensible
   const safeProps = {
     href,
@@ -301,62 +291,60 @@ const SafeLink: React.FC<any> = ({ children, href, ...rest }) => {
  */
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
-    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <ReactMarkdown
-        components={{
-          // Links
-          a: SafeLink,
+    <ReactMarkdown
+      components={{
+        // Links
+        a: SafeLink,
 
-          // Blockquote
-          blockquote: (props) => <StyledBlockquote {...props} />,
+        // Blockquote
+        blockquote: ({ node: _node, ...props }) => <StyledBlockquote {...props} />,
 
-          // UPDATED 'code' component: Only handles inline code now
-          code: ({ inline, className, children, ...props }: CodeComponentProps) => {
-            if (inline) {
-              return <StyledInlineCode {...props}>{children}</StyledInlineCode>
-            }
+        // UPDATED 'code' component: Only handles inline code now
+        code: ({ inline, className, children, node: _node, ...props }: CodeComponentProps & { node?: Element }) => {
+          if (inline) {
+            return <StyledInlineCode {...props}>{children}</StyledInlineCode>
+          }
 
-            // Block code: Render the plain code tag.
-            // Our 'pre' component above will wrap it and add the button/styles.
-            // Pass className for language detection by rehype-highlight.
-            // suppressHydrationWarning because syntax highlighting may differ between server/client
-            return (
-              <code className={className} suppressHydrationWarning={true} {...props}>
-                {children}
-              </code>
-            )
-          },
-          // Headings
-          h1: (props) => <StyledH1 {...props} />,
-          h2: (props) => <StyledH2 {...props} />,
-          h3: (props) => <StyledH3 {...props} />,
+          // Block code: Render the plain code tag.
+          // Our 'pre' component above will wrap it and add the button/styles.
+          // Pass className for language detection by rehype-highlight.
+          // suppressHydrationWarning because syntax highlighting may differ between server/client
+          return (
+            <code className={className} suppressHydrationWarning={true} {...props}>
+              {children}
+            </code>
+          )
+        },
+        // Headings
+        h1: ({ node: _node, ...props }) => <StyledH1 {...props} />,
+        h2: ({ node: _node, ...props }) => <StyledH2 {...props} />,
+        h3: ({ node: _node, ...props }) => <StyledH3 {...props} />,
 
-          // Horizontal Rule
-          hr: (props) => <StyledHr {...props} />,
+        // Horizontal Rule
+        hr: ({ node: _node, ...props }) => <StyledHr {...props} />,
 
-          // Images
-          img: (props) => <StyledImage {...props} />,
-          li: (props) => <StyledLi {...props} />,
-          ol: (props) => <StyledOl {...props} />,
+        // Images
+        img: ({ node: _node, ...props }) => <StyledImage {...props} />,
+        li: ({ node: _node, ...props }) => <StyledLi {...props} />,
+        ol: ({ node: _node, ...props }) => <StyledOl {...props} />,
 
-          // Paragraph
-          p: (props) => <StyledParagraph {...props} />,
+        // Paragraph
+        p: ({ node: _node, ...props }) => <StyledParagraph {...props} />,
 
-          // UPDATED Custom 'pre' component implementation
-          pre: (props) => {
-            // Render the component that contains the hook logic
-            return <PreWithCopy {...props} />
-          },
+        // UPDATED Custom 'pre' component implementation
+        pre: (props) => {
+          // Render the component that contains the hook logic
+          return <PreWithCopy {...props} />
+        },
 
-          // Lists
-          ul: (props) => <StyledUl {...props} />,
-        }}
-        rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
-        remarkPlugins={[remarkGfm]}
-      >
-        {content}
-      </ReactMarkdown>
-    </StyleSheetManager>
+        // Lists
+        ul: ({ node: _node, ...props }) => <StyledUl {...props} />,
+      }}
+      rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
+      remarkPlugins={[remarkGfm]}
+    >
+      {content}
+    </ReactMarkdown>
   )
 }
 

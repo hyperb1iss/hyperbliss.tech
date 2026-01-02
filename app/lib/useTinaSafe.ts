@@ -1,14 +1,14 @@
 // app/lib/useTinaSafe.ts
-// Passthrough that preserves useTina's interface without the SSR issues
+// Passthrough that preserves useTina's interface
 // The data-tina-field attributes still work for click-to-edit in Tina admin
-// Live preview updates are disabled until TinaCMS fixes React 19 SSR compatibility
+// TODO: Test if real useTina works now that styled-components is removed
 
 'use client'
 
 /**
  * A passthrough that mimics useTina's interface.
  * Click-to-edit still works via data-tina-field attributes.
- * Live preview is disabled due to React 19 + styled-components SSR issues.
+ * Live preview updates are kept disabled for now (can test useTina later).
  */
 export function useTinaSafe<T extends object>(props: {
   data: T
