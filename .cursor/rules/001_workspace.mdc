@@ -40,11 +40,11 @@ Next.js-based personal website/portfolio for Stefanie Jane Kondik (aka *Bliss* �
 
 ## ⚡ Development Workflow
 
-- `npm run dev`: Start development server
-- `npm run build`: Build for production
-- `npm run test`: Run tests
-- `npm run lint`: Lint code
-- `npm run format`: Format code with Prettier
+- `pnpm dev`: Start development server
+- `pnpm build`: Build for production
+- `pnpm test`: Run tests
+- `pnpm lint`: Lint code with Biome
+- `pnpm format`: Format code with Biome + Prettier
 
 ## 🔐 Constraints
 

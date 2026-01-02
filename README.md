@@ -119,7 +119,7 @@ Key directories:
 ### Prerequisites
 
 - Node.js (v18 or later recommended)
-- npm or yarn
+- pnpm (v10+)
 
 ### Installation
 
@@ -133,17 +133,13 @@ Key directories:
 2. Install dependencies:
 
    ```
-   npm install
-   # or
-   yarn install
+   pnpm install
    ```
 
 3. Run the development server:
 
    ```
-   npm run dev
-   # or
-   yarn dev
+   pnpm dev
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser to see
@@ -158,10 +154,10 @@ in the `tests/` directory.
 
 Available test commands:
 
-- `npm test` or `yarn test`: Run all tests
-- `npm run test:watch` or `yarn test:watch`: Run tests in watch mode
-- `npm run test:seo` or `yarn test:seo`: Run SEO-specific tests
-- `npm run test:seo:watch` or `yarn test:seo:watch`: Run SEO tests in watch mode
+- `pnpm test`: Run all tests
+- `pnpm test:watch`: Run tests in watch mode
+- `pnpm test:seo`: Run SEO-specific tests
+- `pnpm test:seo:watch`: Run SEO tests in watch mode
 
 ### Linting
 
@@ -170,10 +166,10 @@ Next.js ESLint configuration as a base with TypeScript support.
 
 Available lint commands:
 
-- `npm run lint` or `yarn lint`: Lint the app and tests directories
-- `npm run lint:fix` or `yarn lint:fix`: Automatically fix linting issues
-- `npm run format` or `yarn format`: Format code with Prettier
-- `npm run format:check` or `yarn format:check`: Check formatting with Prettier
+- `pnpm lint`: Check code with Biome
+- `pnpm lint:fix`: Automatically fix linting issues
+- `pnpm format`: Format code with Biome + Prettier
+- `pnpm format:check`: Check formatting
 
 ### Test Setup
 
@@ -305,7 +301,7 @@ Displays resume information from Markdown content.
 The site is configured for deployment on Netlify with a standalone output mode:
 
 1. Connect your GitHub repository to Netlify.
-2. Set the build command to `npm run build` or `yarn build`.
+2. Set the build command to `pnpm build`.
 3. Set the publish directory to `out`.
 4. Configure environment variables as needed.
 

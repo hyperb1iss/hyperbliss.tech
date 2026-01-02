@@ -66,7 +66,7 @@ function restoreConfig() {
 async function installBundleAnalyzer() {
   return new Promise((resolve, reject) => {
     console.log('📦 Installing @next/bundle-analyzer...')
-    exec('npm install --save-dev @next/bundle-analyzer', (error, stdout, stderr) => {
+    exec('pnpm add -D @next/bundle-analyzer', (error, stdout, stderr) => {
       if (error) {
         console.error(`❌ Error: ${error.message}`)
         reject(error)
@@ -86,7 +86,7 @@ async function installBundleAnalyzer() {
 async function runAnalysis() {
   return new Promise((resolve, reject) => {
     console.log('🔍 Running bundle analysis...')
-    exec('ANALYZE=true npm run build', (error, stdout, stderr) => {
+    exec('ANALYZE=true pnpm build', (error, stdout, stderr) => {
       if (error) {
         console.error(`❌ Error: ${error.message}`)
         reject(error)

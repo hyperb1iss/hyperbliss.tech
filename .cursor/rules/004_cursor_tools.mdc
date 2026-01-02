@@ -12,5 +12,5 @@ Organization:
 - Follow naming convention: category-action.js
 
 Execution:
-- Run scripts via npm: npm run tool [script-name]
+- Run scripts via pnpm: pnpm tool [script-name]
 - Track script execution stats in .cursor/tools/stats/

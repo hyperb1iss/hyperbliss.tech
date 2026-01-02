@@ -23,26 +23,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: 🎨 Check formatting
-        run: npm run format:check
+        run: pnpm format:check
 
       - name: 🧹 Run linter
-        run: npm run lint
+        run: pnpm lint
 
       - name: 🔎 TypeScript check
-        run: npx tsc --noEmit
+        run: pnpm typecheck
 
       - name: 🧪 Run tests
-        run: npm test
+        run: pnpm test
 
       - name: 🔍 Run SEO tests
-        run: npm run test:seo
+        run: pnpm test:seo
 
   build:
     name: 🏗️ Build
@@ -56,14 +57,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: "**/package-lock.json"
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: 📦 Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: 🏗️ Build project
-        run: npm run build
+        run: pnpm build
 
       - name: 📊 Report build success
         if: success()

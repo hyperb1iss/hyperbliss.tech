@@ -88,19 +88,19 @@ interface ParticleSystemProps<T extends ParticleType> {
 
 ```bash
 # Development
-npm run dev          # Start Next.js dev server
+pnpm dev             # Start Next.js dev server
 
 # Testing
-npm test            # Run Jest test suite
-npm run test:seo    # SEO-specific tests
+pnpm test            # Run test suite
+pnpm test:seo        # SEO-specific tests
 
 # Build & Analysis
-npm run build       # Production build
-npm run analyze     # Bundle size analysis
+pnpm build           # Production build
+pnpm analyze         # Bundle size analysis
 
 # Code Quality
-npm run lint        # ESLint check
-npm run format      # Prettier formatting
+pnpm lint            # Biome check
+pnpm format          # Biome + Prettier formatting
 ```
 
 ## 📁 Important Files
