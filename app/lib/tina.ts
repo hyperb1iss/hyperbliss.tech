@@ -195,8 +195,9 @@ export interface PostSummary {
 }
 
 export async function getAllPosts(): Promise<PostSummary[]> {
+  // Request all posts without server-side sort (items without dates get excluded)
   const response = await client.queries.postsConnection({
-    sort: 'date',
+    first: 100,
   })
 
   const posts: PostSummary[] = []
@@ -287,7 +288,7 @@ export async function getPostWithQuery(slug: string): Promise<{
 }
 
 export async function getAllPostSlugs(): Promise<string[]> {
-  const response = await client.queries.postsConnection()
+  const response = await client.queries.postsConnection({ first: 100 })
 
   return (response.data.postsConnection.edges ?? [])
     .map((edge) => edge?.node?._sys.relativePath)
@@ -315,8 +316,9 @@ export interface ProjectSummary {
 }
 
 export async function getAllProjects(): Promise<ProjectSummary[]> {
+  // Request all projects without server-side sort (items without dates get excluded)
   const response = await client.queries.projectsConnection({
-    sort: 'date',
+    first: 100,
   })
 
   const projects: ProjectSummary[] = []
@@ -416,7 +418,7 @@ export async function getProjectWithQuery(slug: string): Promise<{
 }
 
 export async function getAllProjectSlugs(): Promise<string[]> {
-  const response = await client.queries.projectsConnection()
+  const response = await client.queries.projectsConnection({ first: 100 })
 
   return (response.data.projectsConnection.edges ?? [])
     .map((edge) => edge?.node?._sys.relativePath)
