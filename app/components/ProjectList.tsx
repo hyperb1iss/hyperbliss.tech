@@ -58,9 +58,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
     >
       {projects.map((project, index) => {
         // Format version meta string
-        const versionMeta = project.frontmatter.latestVersion
-          ? `v${project.frontmatter.latestVersion}`
-          : undefined
+        const versionMeta = project.frontmatter.latestVersion ? `v${project.frontmatter.latestVersion}` : undefined
 
         // Debug: log meta value for each project
         console.log(`[ProjectList] ${project.slug}: meta=${versionMeta}`)

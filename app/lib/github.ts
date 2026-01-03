@@ -46,20 +46,17 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
   }
 
   try {
-    const response = await fetch(
-      `https://api.github.com/repos/${parsed.owner}/${parsed.repo}/releases/latest`,
-      {
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-          // Add token if available for higher rate limits
-          ...(process.env.GITHUB_TOKEN && {
-            Authorization: `token ${process.env.GITHUB_TOKEN}`,
-          }),
-        },
-        // Cache for 1 hour in Next.js fetch cache
-        next: { revalidate: 3600 },
+    const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}/releases/latest`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        // Add token if available for higher rate limits
+        ...(process.env.GITHUB_TOKEN && {
+          Authorization: `token ${process.env.GITHUB_TOKEN}`,
+        }),
       },
-    )
+      // Cache for 1 hour in Next.js fetch cache
+      next: { revalidate: 3600 },
+    })
 
     if (!response.ok) {
       // No releases or repo not found - cache the null result
@@ -70,9 +67,9 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
     const release: GitHubRelease = await response.json()
 
     const releaseInfo: ReleaseInfo = {
-      version: release.tag_name.replace(/^v/, ''),
       publishedAt: release.published_at,
       url: release.html_url,
+      version: release.tag_name.replace(/^v/, ''),
     }
 
     // Cache the result
@@ -96,9 +93,9 @@ export async function getReleasesForProjects(
 
   const results = await Promise.all(
     projects.map(async (project) => {
-      if (!project.github) return { slug: project.slug, release: null }
+      if (!project.github) return { release: null, slug: project.slug }
       const release = await getLatestRelease(project.github)
-      return { slug: project.slug, release }
+      return { release, slug: project.slug }
     }),
   )
 

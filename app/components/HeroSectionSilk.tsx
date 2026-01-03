@@ -139,7 +139,7 @@ const tagCloudStyles = css`
 const skillTagStyles = css`
   padding: var(--space-2) var(--space-4);
   background: rgba(20, 20, 35, 0.85);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(162, 89, 255, 0.3);
   border-radius: var(--radius-full);
   font-size: clamp(1.1rem, 1rem + 0.2vw, 1.3rem);
   font-weight: var(--font-medium);
@@ -148,6 +148,12 @@ const skillTagStyles = css`
   cursor: default;
   position: relative;
   overflow: hidden;
+
+  &:hover {
+    border-color: var(--silk-quantum-purple);
+    color: var(--text-primary);
+    box-shadow: 0 0 15px rgba(162, 89, 255, 0.25);
+  }
 `
 
 const ctaSectionStyles = css`

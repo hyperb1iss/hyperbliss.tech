@@ -7,9 +7,7 @@ export default async function Projects() {
   const projects = await getAllProjects()
 
   // Fetch GitHub release info for all projects
-  const releases = await getReleasesForProjects(
-    projects.map((p) => ({ slug: p.slug, github: p.github })),
-  )
+  const releases = await getReleasesForProjects(projects.map((p) => ({ github: p.github, slug: p.slug })))
 
   // Debug: log release data
   console.log('[Projects] Releases fetched:', releases.size, 'projects with releases')
