@@ -4,9 +4,12 @@
 import { motion } from 'framer-motion'
 import React from 'react'
 import { FaGithub } from 'react-icons/fa6'
+import { tinaField } from 'tinacms/dist/react'
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import { Projects } from '../../tina/__generated__/types'
+import { useTinaSafe } from '../lib/useTinaSafe'
 import { StarDivider } from './StarComponents'
 import TinaContent from './TinaContent'
 
@@ -14,8 +17,11 @@ interface ProjectDetailTinaProps {
   title: string
   github: string
   body: TinaMarkdownContent | string | null
-  author?: string
   tags?: string[]
+  // Visual editing props
+  query: string
+  variables: { relativePath: string }
+  data: object
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -230,7 +236,30 @@ const Decoration = styled.div`
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, body, tags }) => {
+const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({
+  title: initialTitle,
+  github: initialGithub,
+  body: initialBody,
+  tags: initialTags,
+  query,
+  variables,
+  data: initialData,
+}) => {
+  // Use TinaCMS hook for live editing in visual editor
+  const { data } = useTinaSafe({
+    data: initialData,
+    query,
+    variables,
+  })
+
+  // Extract live data from the response (falls back to initial data when not in editor)
+  const project = (data as { projects: Projects })?.projects
+  const title = project?.title ?? initialTitle
+  const github = project?.github ?? initialGithub
+  const tags = (project?.tags?.filter((t): t is string => t !== null) ?? initialTags) || []
+  // Note: body requires special handling since we pre-process it server-side
+  const body = initialBody
+
   return (
     <Container>
       <HeroSection>
@@ -240,6 +269,7 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
         <motion.div
           animate={{ opacity: 1, y: 0 }}
           className={titleWrapperStyles}
+          data-tina-field={project ? tinaField(project, 'title') : undefined}
           initial={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.6 }}
         >
@@ -250,6 +280,7 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
           <motion.div
             animate={{ opacity: 1 }}
             className={tagsContainerStyles}
+            data-tina-field={project ? tinaField(project, 'tags') : undefined}
             initial={{ opacity: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
@@ -272,6 +303,7 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
       <motion.div
         animate={{ opacity: 1 }}
         className={contentStyles}
+        data-tina-field={project ? tinaField(project, 'body') : undefined}
         initial={{ opacity: 0 }}
         transition={{ delay: 0.5, duration: 0.6 }}
       >
@@ -282,6 +314,7 @@ const ProjectDetailTina: React.FC<ProjectDetailTinaProps> = ({ title, github, bo
         <motion.div
           animate={{ opacity: 1, y: 0 }}
           className={actionsWrapperStyles}
+          data-tina-field={project ? tinaField(project, 'github') : undefined}
           initial={{ opacity: 0, y: 20 }}
           transition={{ delay: 0.7, duration: 0.6 }}
         >

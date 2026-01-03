@@ -1,17 +1,5 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production'
-
 const nextConfig = {
-  compiler: {
-    styledComponents: {
-      displayName: !isProd,
-      fileName: !isProd,
-      minify: isProd,
-      pure: true,
-      ssr: true,
-      transpileTemplateLiterals: true,
-    },
-  },
   compress: true,
 
   // Environment variables for analytics
@@ -114,5 +102,8 @@ const nextConfig = {
 
   // Ensure consistent URL format (with or without trailing slashes)
   trailingSlash: true,
+
+  // Force all packages to use our React (prevents TinaCMS bundled React conflicts)
+  // pnpm overrides handle this at install time; Turbopack respects those
 }
 export default nextConfig

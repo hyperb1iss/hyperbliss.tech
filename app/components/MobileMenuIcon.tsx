@@ -12,6 +12,13 @@ const mobileMenuIconContainerStyles = css`
   margin-right: 1rem;
   z-index: 1100;
   filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.7));
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
 
   @media (max-width: 768px) {
     display: flex;
@@ -61,8 +68,11 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
   return (
     <motion.div
       aria-label="Toggle menu"
-      className={mobileMenuIconContainerStyles}
-      onClick={toggleMenu}
+      className={`${mobileMenuIconContainerStyles} mobile-menu-icon`}
+      onClick={(e) => {
+        e.stopPropagation()
+        toggleMenu()
+      }}
       role="button"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}

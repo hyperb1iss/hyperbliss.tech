@@ -2,7 +2,7 @@
 import { ResolvingMetadata } from 'next'
 import ProjectDetailTina from '../../../components/ProjectDetailTina'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getAllProjectSlugs, getProject } from '../../../lib/tina'
+import { getAllProjectSlugs, getProjectWithQuery } from '../../../lib/tina'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps, parent: ResolvingM
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const project = await getProject(slug)
+  const { project } = await getProjectWithQuery(slug)
 
   const frontmatter: ProjectFrontmatter = {
     description: project.description ?? '',
@@ -30,14 +30,17 @@ export default async function ProjectPage({ params }: PageProps) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const project = await getProject(slug)
+  const { project, query, variables, data } = await getProjectWithQuery(slug)
 
   return (
     <ProjectDetailTina
       body={project.body}
+      data={data}
       github={project.github ?? ''}
+      query={query}
       tags={(project.tags ?? []).filter((t): t is string => t !== null)}
       title={project.displayTitle}
+      variables={variables}
     />
   )
 }

@@ -1,11 +1,10 @@
 import { defineConfig } from '@pandacss/dev'
 
 export default defineConfig({
-  // Where to look for your css declarations
-  include: ['./app/**/*.{js,jsx,ts,tsx}'],
-
   // Files to exclude
   exclude: [],
+  // Where to look for your css declarations
+  include: ['./app/**/*.{js,jsx,ts,tsx}'],
 
   // Generate JS utilities for React
   jsxFramework: 'react',

@@ -243,25 +243,46 @@ export interface PostDetail {
 }
 
 export async function getPost(slug: string): Promise<PostDetail> {
+  const result = await getPostWithQuery(slug)
+  return result.post
+}
+
+/**
+ * Get post with raw query data for visual editing support.
+ * Returns both processed post data and the raw query/variables for useTina.
+ */
+export async function getPostWithQuery(slug: string): Promise<{
+  post: PostDetail
+  query: string
+  variables: { relativePath: string }
+  data: object
+}> {
   const relativePath = `${slug}.md`
   const response = await client.queries.posts({ relativePath })
-  const post = response.data.posts
+  const postData = response.data.posts
 
   // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
-  const bodyContent = extractBodyContent(post.body)
+  const bodyContent = extractBodyContent(postData.body)
   const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
 
-  return {
-    author: post.author ?? null,
+  const post: PostDetail = {
+    author: postData.author ?? null,
     body: bodyString,
-    coverImage: post.coverImage ?? null,
-    date: post.date ?? null,
-    displayTitle: formatDisplayTitle(post.emoji, post.title),
-    emoji: post.emoji ?? null,
-    excerpt: post.excerpt ?? null,
+    coverImage: postData.coverImage ?? null,
+    date: postData.date ?? null,
+    displayTitle: formatDisplayTitle(postData.emoji, postData.title),
+    emoji: postData.emoji ?? null,
+    excerpt: postData.excerpt ?? null,
     slug,
-    tags: post.tags ?? null,
-    title: post.title,
+    tags: postData.tags ?? null,
+    title: postData.title,
+  }
+
+  return {
+    data: response.data,
+    post,
+    query: response.query,
+    variables: { relativePath },
   }
 }
 
@@ -348,28 +369,49 @@ export interface ProjectDetail {
 }
 
 export async function getProject(slug: string): Promise<ProjectDetail> {
+  const result = await getProjectWithQuery(slug)
+  return result.project
+}
+
+/**
+ * Get project with raw query data for visual editing support.
+ * Returns both processed project data and the raw query/variables for useTina.
+ */
+export async function getProjectWithQuery(slug: string): Promise<{
+  project: ProjectDetail
+  query: string
+  variables: { relativePath: string }
+  data: object
+}> {
   const relativePath = `${slug}.md`
   const response = await client.queries.projects({ relativePath })
-  const project = response.data.projects
+  const projectData = response.data.projects
 
   // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
-  const bodyContent = extractBodyContent(project.body)
+  const bodyContent = extractBodyContent(projectData.body)
   const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
 
-  return {
+  const project: ProjectDetail = {
     body: bodyString,
-    category: project.category ?? null,
-    coverImage: project.coverImage ?? null,
-    date: project.date ?? null,
-    description: project.description ?? null,
-    displayTitle: formatDisplayTitle(project.emoji, project.title),
-    emoji: project.emoji ?? null,
-    github: project.github ?? null,
-    image: project.image ?? null,
+    category: projectData.category ?? null,
+    coverImage: projectData.coverImage ?? null,
+    date: projectData.date ?? null,
+    description: projectData.description ?? null,
+    displayTitle: formatDisplayTitle(projectData.emoji, projectData.title),
+    emoji: projectData.emoji ?? null,
+    github: projectData.github ?? null,
+    image: projectData.image ?? null,
     slug,
-    status: project.status ?? null,
-    tags: project.tags ?? null,
-    title: project.title,
+    status: projectData.status ?? null,
+    tags: projectData.tags ?? null,
+    title: projectData.title,
+  }
+
+  return {
+    data: response.data,
+    project,
+    query: response.query,
+    variables: { relativePath },
   }
 }
 

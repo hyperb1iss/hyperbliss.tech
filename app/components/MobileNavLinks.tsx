@@ -5,7 +5,6 @@ import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useRef } from 'react'
 import { css } from '../../styled-system/css'
-import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
 
@@ -22,11 +21,10 @@ const navPanelStyles = css`
   width: min(260px, calc(100vw - var(--space-6)));
   z-index: 1001;
 
-  /* Glass panel */
-  background: rgba(10, 10, 18, 0.95);
-  backdrop-filter: blur(16px);
+  /* Solid background - no backdrop-filter to avoid rendering bugs */
+  background: rgb(12, 12, 20);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(0, 255, 240, 0.15);
 
   /* Gradient top accent */
   &::before {
@@ -48,20 +46,23 @@ const navPanelStyles = css`
 
   /* Soft shadow */
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+    0 0 60px rgba(0, 0, 0, 0.4);
 
   @media (min-width: 769px) {
-    display: none;
+    display: none !important;
   }
 `
 
-const NavList = styled.ul`
+const navListStyles = css`
   list-style: none;
   padding: var(--space-3);
+  padding-bottom: var(--space-4);
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
 `
 
 const navLinkStyles = css`
@@ -80,10 +81,12 @@ const navLinkStyles = css`
   pointer-events: auto;
   position: relative;
   transition: all 0.2s ease;
+  background: rgb(12, 12, 20);
+  color: var(--text-secondary);
 
   &:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(30, 30, 45, 1);
   }
 
   &:active {
@@ -93,6 +96,12 @@ const navLinkStyles = css`
   &:focus-visible {
     outline: 2px solid var(--silk-quantum-purple);
     outline-offset: 2px;
+  }
+
+  &[aria-current='page'] {
+    color: var(--silk-circuit-cyan);
+    background: rgba(0, 255, 240, 0.08);
+    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
   }
 `
 
@@ -135,17 +144,15 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     closed: {
       opacity: 0,
       pointerEvents: 'none' as const,
-      scale: 0.95,
-      transition: { duration: 0.2, ease: silkEase },
-      y: -10,
+      transition: { duration: 0.15, ease: silkEase },
+      y: -8,
     },
     open: {
       opacity: 1,
       pointerEvents: 'auto' as const,
-      scale: 1,
       transition: {
         delayChildren: 0.05,
-        duration: 0.25,
+        duration: 0.2,
         ease: silkEase,
         staggerChildren: 0.04,
       },
@@ -195,9 +202,10 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       className={navPanelStyles}
       initial="closed"
       ref={panelRef}
+      style={{ background: 'rgb(12, 12, 20)' }}
       variants={panelVariants}
     >
-      <NavList>
+      <ul className={navListStyles}>
         {NAV_ITEMS.map((item) => {
           const href = `/${item.toLowerCase()}`
           const isActive = pathname === href
@@ -209,11 +217,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
                 className={navLinkStyles}
                 href={href}
                 onClick={(e) => handleNavigation(href, e)}
-                style={{
-                  background: isActive ? 'rgba(0, 255, 240, 0.08)' : 'transparent',
-                  color: isActive ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)',
-                  textShadow: isActive ? '0 0 20px rgba(0, 255, 240, 0.5)' : 'none',
-                }}
               >
                 <span className={navIconStyles} style={{ opacity: isActive ? 1 : 0.5 }}>
                   {NAV_ICONS[item]}
@@ -223,7 +226,7 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
             </motion.li>
           )
         })}
-      </NavList>
+      </ul>
     </motion.nav>
   )
 }

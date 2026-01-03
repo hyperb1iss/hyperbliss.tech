@@ -56,28 +56,6 @@ const navLinkBaseStyles = css`
     text-shadow var(--duration-fast) var(--ease-silk),
     transform var(--duration-fast) var(--ease-silk);
 
-  /* Underline indicator */
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--silk-circuit-cyan), transparent);
-    transform: translateX(-50%);
-    transition: width var(--duration-normal) var(--ease-silk);
-  }
-
-  &:hover,
-  &:focus-visible {
-    color: var(--silk-circuit-cyan);
-    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
-
-    &::after {
-      width: 60%;
-    }
-  }
-
   &:focus-visible {
     outline: 2px solid rgba(0, 255, 240, 0.5);
     outline-offset: 4px;
@@ -120,18 +98,37 @@ const NavLinks: React.FC = () => {
               className={navLinkBaseStyles}
               href={href}
               onClick={(e) => handleNavigation(href, e)}
-              style={{
-                ...dynamicStyles,
-                // CSS custom property for underline width
-                // @ts-expect-error CSS custom property
-                '--underline-width': isActive ? '80%' : '0',
-              }}
+              style={dynamicStyles}
               whileTap={{ scale: 0.98 }}
             >
               <style>{`
+                @keyframes shimmer {
+                  0%, 100% { background-position: 200% 0; }
+                  50% { background-position: -200% 0; }
+                }
                 .${navLinkBaseStyles.split(' ')[0]}::after {
-                  width: var(--underline-width, 0);
-                  box-shadow: ${isActive ? '0 0 10px var(--silk-circuit-cyan), 0 0 20px rgba(0, 255, 240, 0.4)' : 'none'};
+                  content: '';
+                  position: absolute;
+                  bottom: -2px;
+                  left: 50%;
+                  width: ${isActive ? '100%' : '0'};
+                  height: 2px;
+                  background: linear-gradient(90deg, transparent, var(--silk-circuit-cyan) 20%, var(--silk-quantum-purple) 50%, var(--silk-circuit-cyan) 80%, transparent);
+                  background-size: 200% 100%;
+                  box-shadow: 0 0 8px var(--silk-circuit-cyan), 0 0 16px rgba(0, 255, 240, 0.4);
+                  transform: translateX(-50%);
+                  opacity: ${isActive ? '1' : '0'};
+                  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
+                  ${isActive ? 'animation: shimmer 6s ease-in-out infinite;' : ''}
+                }
+                .${navLinkBaseStyles.split(' ')[0]}:hover::after {
+                  width: 100%;
+                  opacity: 1;
+                  animation: shimmer 6s ease-in-out infinite;
+                }
+                .${navLinkBaseStyles.split(' ')[0]}:hover {
+                  color: var(--silk-circuit-cyan);
+                  text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
                 }
               `}</style>
               {item}

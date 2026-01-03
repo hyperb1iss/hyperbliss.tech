@@ -1,20 +1,26 @@
 // app/lib/useTinaSafe.ts
-// Passthrough that preserves useTina's interface
-// The data-tina-field attributes still work for click-to-edit in Tina admin
-// TODO: Test if real useTina works now that we migrated to Panda CSS
+// Passthrough for TinaCMS data - avoids React version conflicts
+// Click-to-edit (tinaField) still works without the live hook
 
 'use client'
 
-/**
- * A passthrough that mimics useTina's interface.
- * Click-to-edit still works via data-tina-field attributes.
- * Live preview updates are kept disabled for now (can test useTina later).
- */
-export function useTinaSafe<T extends object>(props: {
-  data: T
+interface UseTinaInput<T> {
   query: string
   variables: Record<string, unknown>
-}): { data: T } {
-  // Just return the raw data - click-to-edit still works via tinaField markers
+  data: T
+}
+
+/**
+ * Passthrough that returns initial data unchanged.
+ *
+ * TinaCMS bundles its own React which conflicts with React 19.
+ * This passthrough preserves compatibility while still enabling:
+ * - Click-to-edit via data-tina-field attributes (tinaField helper)
+ * - Static data rendering from server components
+ *
+ * Live content updates in the visual editor require TinaCMS to
+ * update their React bundling for React 19 compatibility.
+ */
+export function useTinaSafe<T extends object>(props: UseTinaInput<T>): { data: T } {
   return { data: props.data }
 }

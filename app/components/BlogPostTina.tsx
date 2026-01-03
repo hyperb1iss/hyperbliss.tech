@@ -3,9 +3,12 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
+import { tinaField } from 'tinacms/dist/react'
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import { Posts } from '../../tina/__generated__/types'
+import { useTinaSafe } from '../lib/useTinaSafe'
 import { SparklingName } from './SparklingName'
 import TinaContent from './TinaContent'
 
@@ -15,6 +18,10 @@ interface BlogPostTinaProps {
   body: TinaMarkdownContent | string | null
   author?: string
   tags?: string[]
+  // Visual editing props
+  query: string
+  variables: { relativePath: string }
+  data: object
 }
 
 const Container = styled.div`
@@ -106,12 +113,39 @@ const contentStyles = css`
   color: var(--color-text);
 `
 
-const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, tags }) => {
+const BlogPostTina: React.FC<BlogPostTinaProps> = ({
+  title: initialTitle,
+  date: initialDate,
+  body: initialBody,
+  author: initialAuthor,
+  tags: initialTags,
+  query,
+  variables,
+  data: initialData,
+}) => {
+  // Use TinaCMS hook for live editing in visual editor
+  const { data } = useTinaSafe({
+    data: initialData,
+    query,
+    variables,
+  })
+
+  // Extract live data from the response (falls back to initial data when not in editor)
+  const post = (data as { posts: Posts })?.posts
+  const title = post?.title ?? initialTitle
+  const date = post?.date ?? initialDate
+  const author = post?.author ?? initialAuthor
+  const tags = (post?.tags?.filter((t): t is string => t !== null) ?? initialTags) || []
+  // Note: body requires special handling since we pre-process it server-side
+  // For live editing of body content, we'd need to handle the AST directly
+  const body = initialBody
+
   return (
     <Container>
       <motion.h1
         animate={{ opacity: 1, y: 0 }}
         className={titleStyles}
+        data-tina-field={post ? tinaField(post, 'title') : undefined}
         initial={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.6 }}
       >
@@ -123,11 +157,15 @@ const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, 
         initial={{ opacity: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
-        {date && <span className="date">{new Date(date).toLocaleDateString()}</span>}
+        {date && (
+          <span className="date" data-tina-field={post ? tinaField(post, 'date') : undefined}>
+            {new Date(date).toLocaleDateString()}
+          </span>
+        )}
         {author && (
           <>
             <span className="separator">•</span>
-            <span className="author-wrapper">
+            <span className="author-wrapper" data-tina-field={post ? tinaField(post, 'author') : undefined}>
               <SparklingName name={author} sparkleCount={3} />
             </span>
           </>
@@ -137,6 +175,7 @@ const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, 
         <motion.div
           animate={{ opacity: 1 }}
           className={tagsContainerStyles}
+          data-tina-field={post ? tinaField(post, 'tags') : undefined}
           initial={{ opacity: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
@@ -148,6 +187,7 @@ const BlogPostTina: React.FC<BlogPostTinaProps> = ({ title, date, body, author, 
       <motion.div
         animate={{ opacity: 1 }}
         className={contentStyles}
+        data-tina-field={post ? tinaField(post, 'body') : undefined}
         initial={{ opacity: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
       >

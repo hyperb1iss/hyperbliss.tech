@@ -4,7 +4,7 @@ import BlogPostTina from '../../../components/BlogPostTina'
 import StructuredData from '../../../components/StructuredData'
 import { type BlogFrontmatter, generateBlogMetadata } from '../../../lib/generateMetadata'
 import { generateArticleSchema, generateBreadcrumbSchema } from '../../../lib/structuredData'
-import { getAllPostSlugs, getPost } from '../../../lib/tina'
+import { getAllPostSlugs, getPostWithQuery } from '../../../lib/tina'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps, parent: ResolvingM
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const post = await getPost(slug)
+  const { post } = await getPostWithQuery(slug)
 
   const frontmatter: BlogFrontmatter = {
     author: post.author ?? undefined,
@@ -33,7 +33,7 @@ export default async function PostPage({ params }: PageProps) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const post = await getPost(slug)
+  const { post, query, variables, data } = await getPostWithQuery(slug)
 
   const articleSchema = generateArticleSchema(
     post.displayTitle,
@@ -56,9 +56,12 @@ export default async function PostPage({ params }: PageProps) {
       <BlogPostTina
         author={post.author ?? undefined}
         body={post.body}
+        data={data}
         date={post.date ?? ''}
+        query={query}
         tags={(post.tags ?? []).filter((t): t is string => t !== null)}
         title={post.displayTitle}
+        variables={variables}
       />
     </>
   )
