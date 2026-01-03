@@ -115,7 +115,9 @@ const canvasStyles = css`
 const chevronIconStyles = css`
   position: absolute;
   bottom: 10px;
-  left: 30px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   width: 28px;
   height: 28px;
   cursor: pointer;
@@ -127,7 +129,6 @@ const chevronIconStyles = css`
 
   &:hover {
     opacity: 1;
-    transform: translateY(-2px) scale(1.05);
   }
 
   svg {
