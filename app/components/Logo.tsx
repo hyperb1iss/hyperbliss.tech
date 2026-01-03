@@ -51,7 +51,7 @@ const logoImageStyles = css`
   }
 
   @media (max-width: 768px) {
-    height: 50px;
+    height: 60px;
   }
 
   @media (min-width: 1200px) {

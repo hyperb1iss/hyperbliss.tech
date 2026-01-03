@@ -17,6 +17,9 @@ interface Project {
     github: string
     author?: string
     tags?: string[]
+    latestVersion?: string | null
+    releaseDate?: string | null
+    releaseUrl?: string | null
   }
 }
 

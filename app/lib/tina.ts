@@ -71,7 +71,8 @@ function astNodeToMarkdown(node: Record<string, unknown>, depth = 0): string {
       return `> ${childContent.trim()}\n\n`
     case 'code_block': {
       const lang = (node.lang as string) || ''
-      return `\`\`\`${lang}\n${value || childContent}\`\`\`\n\n`
+      const code = (value || childContent).replace(/\n$/, '') // Remove trailing newline if present
+      return `\`\`\`${lang}\n${code}\n\`\`\`\n\n`
     }
     case 'a': {
       const url = node.url as string
@@ -313,6 +314,10 @@ export interface ProjectSummary {
   status: string | null
   image: string | null
   coverImage: string | null
+  // GitHub release info (populated separately)
+  latestVersion?: string | null
+  releaseDate?: string | null
+  releaseUrl?: string | null
 }
 
 export async function getAllProjects(): Promise<ProjectSummary[]> {

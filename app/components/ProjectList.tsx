@@ -29,6 +29,9 @@ interface Project {
     github: string
     author?: string
     tags?: string[]
+    latestVersion?: string | null
+    releaseDate?: string | null
+    releaseUrl?: string | null
   }
 }
 
@@ -53,19 +56,29 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
         },
       }}
     >
-      {projects.map((project, index) => (
-        <SilkCard
-          description={project.frontmatter.description}
-          githubLink={project.frontmatter.github}
-          index={index}
-          key={project.slug}
-          link={`/projects/${project.slug}`}
-          linkText="Explore Project"
-          meta={project.frontmatter.author ? `Author: ${project.frontmatter.author}` : undefined}
-          tags={project.frontmatter.tags}
-          title={project.frontmatter.title}
-        />
-      ))}
+      {projects.map((project, index) => {
+        // Format version meta string
+        const versionMeta = project.frontmatter.latestVersion
+          ? `v${project.frontmatter.latestVersion}`
+          : undefined
+
+        // Debug: log meta value for each project
+        console.log(`[ProjectList] ${project.slug}: meta=${versionMeta}`)
+
+        return (
+          <SilkCard
+            description={project.frontmatter.description}
+            githubLink={project.frontmatter.github}
+            index={index}
+            key={project.slug}
+            link={`/projects/${project.slug}`}
+            linkText="Explore Project"
+            meta={versionMeta}
+            tags={project.frontmatter.tags}
+            title={project.frontmatter.title}
+          />
+        )
+      })}
     </motion.div>
   )
 }

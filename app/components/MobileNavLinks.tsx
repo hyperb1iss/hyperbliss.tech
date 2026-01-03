@@ -69,6 +69,7 @@ const navLinkStyles = css`
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  width: 100%;
   padding: var(--space-3) var(--space-4);
   font-family: var(--font-body);
   font-size: 1.8rem;
@@ -81,7 +82,7 @@ const navLinkStyles = css`
   pointer-events: auto;
   position: relative;
   transition: all 0.2s ease;
-  background: rgb(12, 12, 20);
+  background: transparent;
   color: var(--text-secondary);
 
   &:hover {
