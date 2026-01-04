@@ -1,14 +1,10 @@
 'use client'
 
-import dynamic from 'next/dynamic'
-
-const Analytics = dynamic(() => import('./Analytics'), {
-  ssr: false,
-})
+import Analytics from './Analytics'
 
 /**
  * ClientComponents
- * A client component that handles dynamic imports with ssr: false
+ * A client component wrapper for client-only components
  * @returns {JSX.Element} Rendered client components
  */
 export default function ClientComponents() {

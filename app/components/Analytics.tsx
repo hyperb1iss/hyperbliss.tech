@@ -5,6 +5,9 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { event, GoogleAnalytics, usePageViews } from 'nextjs-google-analytics'
 import { useEffect } from 'react'
 
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? ''
+const GA_DEBUG_MODE = process.env.NEXT_PUBLIC_GA_DEBUG_MODE === 'true'
+
 /**
  * Analytics component
  * Implements Google Analytics tracking for the application
@@ -33,10 +36,12 @@ export default function Analytics() {
     }
   }, [searchParams, pathname])
 
+  if (!GA_MEASUREMENT_ID) return null
+
   return (
     <GoogleAnalytics
-      debugMode={process.env.GA_DEBUG_MODE === 'true'}
-      gaMeasurementId={process.env.GA_MEASUREMENT_ID}
+      debugMode={GA_DEBUG_MODE}
+      gaMeasurementId={GA_MEASUREMENT_ID}
       strategy="lazyOnload"
       trackPageViews={true}
     />
