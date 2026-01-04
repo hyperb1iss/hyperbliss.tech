@@ -1,5 +1,6 @@
 'use client'
 
+import { Suspense } from 'react'
 import Analytics from './Analytics'
 
 /**
@@ -8,5 +9,9 @@ import Analytics from './Analytics'
  * @returns {JSX.Element} Rendered client components
  */
 export default function ClientComponents() {
-  return <Analytics />
+  return (
+    <Suspense fallback={null}>
+      <Analytics />
+    </Suspense>
+  )
 }
