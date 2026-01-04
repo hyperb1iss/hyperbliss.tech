@@ -2,71 +2,38 @@ name: ✨ hyperbliss.tech CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 env:
-  NODE_VERSION: "20" # Latest LTS version
+  NODE_VERSION: "22"
 
 jobs:
-  validate:
-    name: 🔍 Validation & Testing
+  ci:
+    name: 🔮 Validate & Build
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v4
 
       - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v4
+          cache: pnpm
 
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: 🎨 Check formatting
-        run: pnpm format:check
-
-      - name: 🧹 Run linter
-        run: pnpm lint
-
-      - name: 🔎 TypeScript check
-        run: pnpm typecheck
+      - name: 🎨 Format & Lint
+        run: pnpm run ci
 
       - name: 🧪 Run tests
         run: pnpm test
 
-      - name: 🔍 Run SEO tests
-        run: pnpm test:seo
-
-  build:
-    name: 🏗️ Build
-    needs: [validate]
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🔧 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: 🏗️ Build project
+      - name: 🏗️ Build
         run: pnpm build
-
-      - name: 📊 Report build success
-        if: success()
-        run: echo "✅ Build completed successfully! Netlify will handle deployment."
