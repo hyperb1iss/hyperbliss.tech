@@ -1,36 +1,10 @@
 {
-  "footer": {
-    "brandText": "hyperbliss",
-    "copyrightName": "Stefanie Jane",
-    "madeWithText": "crafted with </> + ♥"
-  },
-  "navigation": [
-    { "href": "/about/", "label": "About" },
-    { "href": "/blog/", "label": "Blog" },
-    { "href": "/projects/", "label": "Projects" },
-    { "href": "/resume/", "label": "Resume" }
-  ],
-  "notFound": {
-    "description": "Let's guide you back to familiar territory.",
-    "messages": [
-      "This star got lost searching for that page...",
-      "Even shooting stars miss their targets sometimes.",
-      "The cosmic winds blew this page into the void.",
-      "This star wandered off the beaten path.",
-      "Some destinations exist only in dreams.",
-      "The universe hid this page from us.",
-      "This star took a wrong turn at the nebula.",
-      "Not all who wander are lost... but this page is."
-    ],
-    "primaryButtonLink": "/",
-    "primaryButtonText": "Return Home",
-    "secondaryButtonLink": "/projects/",
-    "secondaryButtonText": "Explore Projects",
-    "subtitle": "Lost in Space",
-    "title": "404"
-  },
   "seo": {
+    "siteTitle": "@hyperb1iss | Stefanie Jane",
+    "siteDescription": "The personal website of Stefanie Jane—creative technologist",
+    "siteName": "🌠 𝓱 𝔂 𝓹 𝓮 𝔯 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹",
     "authorName": "Stefanie Jane",
+    "twitterHandle": "@hyperb1iss",
     "keywords": [
       "Stefanie Jane",
       "hyperb1iss",
@@ -47,19 +21,57 @@
       "tech blog",
       "portfolio"
     ],
-    "ogImage": "/images/og-image.png",
-    "siteDescription": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
-    "siteName": "🌠 𝓱 𝔂 𝓹 𝓮 𝔯 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹",
-    "siteTitle": "@hyperb1iss | Stefanie Jane",
-    "twitterHandle": "@hyperb1iss"
+    "ogImage": "/images/og-image.png"
   },
+  "navigation": [
+    {
+      "label": "About",
+      "href": "/about/"
+    },
+    {
+      "label": "Blog",
+      "href": "/blog/"
+    },
+    {
+      "label": "Projects",
+      "href": "/projects/"
+    },
+    {
+      "label": "Resume",
+      "href": "/resume/"
+    }
+  ],
   "socialLinks": [
-    { "href": "https://bsky.app/profile/hyperbliss.tech", "icon": "FaBluesky", "label": "Bluesky" },
-    { "href": "https://hachyderm.io/@bliss", "icon": "FaMastodon", "label": "Mastodon" },
-    { "href": "https://instagram.com/hyperb1iss", "icon": "FaInstagram", "label": "Instagram" },
-    { "href": "https://linkedin.com/in/hyperb1iss", "icon": "FaLinkedin", "label": "LinkedIn" },
-    { "href": "https://github.com/hyperb1iss", "icon": "FaGithub", "label": "GitHub" },
-    { "href": "https://open.spotify.com/user/12173574470", "icon": "FaSpotify", "label": "Spotify" }
+    {
+      "label": "Bluesky",
+      "href": "https://bsky.app/profile/hyperbliss.tech",
+      "icon": "FaBluesky"
+    },
+    {
+      "label": "Mastodon",
+      "href": "https://hachyderm.io/@bliss",
+      "icon": "FaMastodon"
+    },
+    {
+      "label": "Instagram",
+      "href": "https://instagram.com/hyperb1iss",
+      "icon": "FaInstagram"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://linkedin.com/in/hyperb1iss",
+      "icon": "FaLinkedin"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/hyperb1iss",
+      "icon": "FaGithub"
+    },
+    {
+      "label": "Spotify",
+      "href": "https://open.spotify.com/user/12173574470",
+      "icon": "FaSpotify"
+    }
   ],
   "techTags": [
     "AI/ML",
@@ -93,5 +105,29 @@
     "System Architecture",
     "Team Leadership",
     "TypeScript"
-  ]
+  ],
+  "notFound": {
+    "title": "404",
+    "subtitle": "Lost in Space",
+    "description": "Let's guide you back to familiar territory.",
+    "messages": [
+      "This star got lost searching for that page...",
+      "Even shooting stars miss their targets sometimes.",
+      "The cosmic winds blew this page into the void.",
+      "This star wandered off the beaten path.",
+      "Some destinations exist only in dreams.",
+      "The universe hid this page from us.",
+      "This star took a wrong turn at the nebula.",
+      "Not all who wander are lost... but this page is."
+    ],
+    "primaryButtonText": "Return Home",
+    "primaryButtonLink": "/",
+    "secondaryButtonText": "Explore Projects",
+    "secondaryButtonLink": "/projects/"
+  },
+  "footer": {
+    "brandText": "hyperbliss",
+    "copyrightName": "Stefanie Jane",
+    "madeWithText": "crafted with </> + ♥"
+  }
 }
