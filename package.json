@@ -5,9 +5,9 @@
   "author": "Stefanie Jane",
   "private": true,
   "scripts": {
-    "prepare": "panda codegen",
+    "prepare": "panda",
     "dev": "tinacms dev -c \"next dev\"",
-    "build": "tinacms build && next build",
+    "build": "panda && tinacms build --skip-cloud-checks && next build",
     "build:local": "tinacms build --local --skip-cloud-checks --skip-search-index && (tinacms dev --port 4001 --noWatch & sleep 1 && next build; kill $(lsof -t -i:4001) 2>/dev/null)",
     "start": "next start",
     "lint": "biome check . && prettier --check '**/*.{md,yml,yaml}'",
