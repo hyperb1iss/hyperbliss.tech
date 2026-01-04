@@ -23,7 +23,7 @@ const navBaseStyles = css`
   max-width: 100vw;
   padding: var(--space-3) var(--space-3) var(--space-4);
   transition: height var(--duration-normal) var(--ease-silk);
-  z-index: 1000;
+  z-index: 100;
   overflow: visible;
   display: flex;
   justify-content: center;

@@ -3,7 +3,8 @@
 
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { css } from '../../styled-system/css'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
 import { NAV_ITEMS } from '../lib/navigation'
@@ -20,7 +21,8 @@ const navPanelStyles = css`
   right: var(--space-3);
   width: min(260px, calc(100% - var(--space-6)));
   max-width: calc(100vw - var(--space-6));
-  z-index: 1001;
+  z-index: 9999 !important;
+  isolation: isolate;
 
   /* Solid background - no backdrop-filter to avoid rendering bugs */
   background: rgb(12, 12, 20);
@@ -141,6 +143,12 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   const pathname = usePathname()
   const animateAndNavigate = useAnimatedNavigation()
   const panelRef = useRef<HTMLElement>(null)
+  const [mounted, setMounted] = useState(false)
+
+  // Portal needs to wait for client-side mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const panelVariants = {
     closed: {
@@ -198,7 +206,10 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     }
   }, [handleClickOutside])
 
-  return (
+  // Don't render on server, wait for portal target
+  if (!mounted) return null
+
+  const content = (
     <motion.nav
       animate={open ? 'open' : 'closed'}
       className={navPanelStyles}
@@ -231,6 +242,9 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       </ul>
     </motion.nav>
   )
+
+  // Portal to body to escape nav's transform containing block
+  return createPortal(content, document.body)
 }
 
 export default MobileNavLinks
