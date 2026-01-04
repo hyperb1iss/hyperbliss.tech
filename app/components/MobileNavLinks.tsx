@@ -3,7 +3,7 @@
 
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { css } from '../../styled-system/css'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
@@ -143,12 +143,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
   const pathname = usePathname()
   const animateAndNavigate = useAnimatedNavigation()
   const panelRef = useRef<HTMLElement>(null)
-  const [mounted, setMounted] = useState(false)
-
-  // Portal needs to wait for client-side mount
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const panelVariants = {
     closed: {
@@ -205,9 +199,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [handleClickOutside])
-
-  // Don't render on server, wait for portal target
-  if (!mounted) return null
 
   const content = (
     <motion.nav

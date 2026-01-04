@@ -4,7 +4,7 @@
 // Magical sparkle effect for names - gentle and whimsical
 
 import { motion } from 'framer-motion'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { styled } from '../../styled-system/jsx'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -46,26 +46,39 @@ const SPARKLE_COLORS = [
   '#e0aaff', // soft purple
 ]
 
-const generateSparkle = (id: number): SparkleType => ({
-  color: SPARKLE_COLORS[Math.floor(Math.random() * SPARKLE_COLORS.length)],
-  delay: Math.random() * 2,
-  duration: 2 + Math.random() * 2,
-  id,
-  left: -5 + Math.random() * 110,
-  size: 6 + Math.random() * 8,
-  top: -15 + Math.random() * 130,
-})
+// Seeded random for consistent sparkle generation
+const seededRandom = (seed: number) => {
+  const x = Math.sin(seed * 9999) * 10000
+  return x - Math.floor(x)
+}
+
+const generateSparkle = (id: number, seed: number): SparkleType => {
+  const r1 = seededRandom(seed)
+  const r2 = seededRandom(seed + 1)
+  const r3 = seededRandom(seed + 2)
+  const r4 = seededRandom(seed + 3)
+  const r5 = seededRandom(seed + 4)
+
+  return {
+    color: SPARKLE_COLORS[Math.floor(r1 * SPARKLE_COLORS.length)],
+    delay: r2 * 3, // Staggered delays up to 3s
+    duration: 2.5 + r3 * 1.5, // 2.5-4s duration
+    id,
+    left: -5 + r4 * 110,
+    size: 6 + r5 * 8,
+    top: -15 + seededRandom(seed + 5) * 130,
+  }
+}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Sparkle Component (Framer Motion for reliable animations)
+// Sparkle Component (Infinite looping animation)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 interface SparkleProps {
   sparkle: SparkleType
-  onComplete: () => void
 }
 
-const Sparkle: React.FC<SparkleProps> = ({ sparkle, onComplete }) => {
+const Sparkle: React.FC<SparkleProps> = ({ sparkle }) => {
   return (
     <motion.span
       animate={{
@@ -74,7 +87,6 @@ const Sparkle: React.FC<SparkleProps> = ({ sparkle, onComplete }) => {
         scale: [0, 1, 0.8, 0],
       }}
       initial={{ opacity: 0, scale: 0 }}
-      onAnimationComplete={onComplete}
       style={{
         background: sparkle.color,
         borderRadius: '1px',
@@ -92,6 +104,8 @@ const Sparkle: React.FC<SparkleProps> = ({ sparkle, onComplete }) => {
         delay: sparkle.delay,
         duration: sparkle.duration,
         ease: 'easeInOut',
+        repeat: Number.POSITIVE_INFINITY,
+        repeatDelay: 1 + sparkle.delay, // Variable gap between loops
       }}
     />
   )
@@ -108,37 +122,31 @@ interface SparklingNameProps {
 }
 
 export const SparklingName: React.FC<SparklingNameProps> = ({ name, sparkleCount = 8, className }) => {
-  const [sparkles, setSparkles] = useState<SparkleType[]>([])
-  const idCounterRef = useRef(0)
+  const [mounted, setMounted] = useState(false)
 
-  // Only generate sparkles client-side to avoid hydration mismatch
+  // Generate sparkles with stable seeds based on index
+  const sparkles = useMemo(() => {
+    if (!mounted) return []
+    return Array.from({ length: sparkleCount }, (_, i) => generateSparkle(i, i * 100))
+  }, [sparkleCount, mounted])
+
+  // Only render sparkles client-side to avoid hydration mismatch
   useEffect(() => {
-    const initialSparkles = Array.from({ length: sparkleCount }, (_, i) => generateSparkle(i))
-    setSparkles(initialSparkles)
-    idCounterRef.current = sparkleCount
-  }, [sparkleCount])
-
-  // When a sparkle completes, regenerate it with new random values
-  const handleSparkleComplete = (id: number) => {
-    const newId = idCounterRef.current++
-    setSparkles((prev) => {
-      const newSparkles = prev.filter((s) => s.id !== id)
-      const newSparkle = generateSparkle(newId)
-      return [...newSparkles, newSparkle]
-    })
-  }
+    setMounted(true)
+  }, [])
 
   return (
     <SparkleWrapper className={className}>
       <motion.span
         style={nameStyles}
+        suppressHydrationWarning={true}
         transition={{ damping: 15, stiffness: 200, type: 'spring' }}
         whileHover={{ scale: 1.02 }}
       >
         {name}
       </motion.span>
       {sparkles.map((sparkle) => (
-        <Sparkle key={sparkle.id} onComplete={() => handleSparkleComplete(sparkle.id)} sparkle={sparkle} />
+        <Sparkle key={sparkle.id} sparkle={sparkle} />
       ))}
     </SparkleWrapper>
   )

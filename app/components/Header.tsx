@@ -2,15 +2,18 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import { useHeaderContext } from './HeaderContext'
 import Logo from './Logo'
 import MobileMenuIcon from './MobileMenuIcon'
-import MobileNavLinks from './MobileNavLinks'
 import NavLinks from './NavLinks'
 import { usePageLoad } from './PageLoadOrchestrator'
+
+// Dynamic import to avoid hydration mismatch (portal can't render on server)
+const MobileNavLinks = dynamic(() => import('./MobileNavLinks'), { ssr: false })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styles
