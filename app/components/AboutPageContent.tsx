@@ -6,7 +6,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
-import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaMicrochip, FaRocket } from 'react-icons/fa6'
+import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaRocket } from 'react-icons/fa6'
 import type { AboutSection } from '@/lib/tina'
 import defaultProfileImage from '../../public/images/profile-image.jpg'
 import { css } from '../../styled-system/css'
@@ -276,90 +276,6 @@ const BioContent = styled.div`
   }
 `
 
-const SkillsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-6);
-`
-
-const skillCategoryStyles = css`
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.6) 0%,
-    rgba(139, 92, 246, 0.05) 100%
-  );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(
-      135deg,
-      transparent,
-      rgba(139, 92, 246, 0.1)
-    );
-    opacity: 0;
-    transition: opacity var(--duration-normal) var(--ease-silk);
-  }
-
-  &:hover {
-    border-color: rgba(0, 255, 240, 0.3);
-
-    &::before {
-      opacity: 1;
-    }
-  }
-`
-
-const SkillTitle = styled.h4`
-  font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: var(--font-semibold);
-  color: var(--silk-circuit-cyan);
-  margin-bottom: var(--space-3);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-`
-
-const SkillList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-`
-
-const SkillChip = styled.span`
-  padding: var(--space-1-5) var(--space-3);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 117, 216, 0.1),
-    rgba(139, 92, 246, 0.08)
-  );
-  border: 1px solid rgba(255, 117, 216, 0.2);
-  border-radius: var(--radius-full);
-  font-size: 1.3rem;
-  color: var(--silk-lavender);
-  transition: all var(--duration-fast) var(--ease-silk);
-
-  &:hover {
-    border-color: var(--silk-circuit-cyan);
-    color: var(--silk-circuit-cyan);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(139, 92, 246, 0.1)
-    );
-    transform: translateY(-2px);
-    text-shadow: 0 0 6px rgba(0, 255, 240, 0.5);
-  }
-`
-
 const ContactGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -410,13 +326,6 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
   const profileImageSrc =
     profileImage === '/images/profile-image.jpg' || !profileImage ? defaultProfileImage : profileImage
   const profilePlaceholder = profileImageSrc === defaultProfileImage ? 'blur' : 'empty'
-
-  const skills = {
-    Backend: ['Node.js', 'Python', 'Rust', 'GraphQL', 'PostgreSQL'],
-    'Cloud & DevOps': ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Terraform'],
-    Frontend: ['React', 'TypeScript', 'Next.js', 'WebGL', 'Panda CSS'],
-    Specialties: ['AI/ML', 'Android', 'Performance', 'Architecture', 'Open Source'],
-  }
 
   return (
     <PageLayout>
@@ -481,43 +390,13 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             </BioContent>
           </motion.div>
 
-          {/* Technical Arsenal */}
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className={bioCardStyles}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle>
-              <FaMicrochip /> Technical Arsenal
-            </BioTitle>
-            <SkillsGrid>
-              {Object.entries(skills).map(([category, items], index) => (
-                <motion.div
-                  animate={{ opacity: 1, scale: 1 }}
-                  className={skillCategoryStyles}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  key={category}
-                  transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
-                >
-                  <SkillTitle>{category}</SkillTitle>
-                  <SkillList>
-                    {items.map((skill) => (
-                      <SkillChip key={skill}>{skill}</SkillChip>
-                    ))}
-                  </SkillList>
-                </motion.div>
-              ))}
-            </SkillsGrid>
-          </motion.div>
-
           {/* Connect Section */}
           {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
             <motion.div
               animate={{ opacity: 1, y: 0 }}
               className={bioCardStyles}
               initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
             >
               <BioTitle>
                 <FaRocket /> Let&apos;s Connect
@@ -535,7 +414,7 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
                       className={contactCardStyles}
                       initial={{ opacity: 0, y: 10 }}
                       key={reason.title}
-                      transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                      transition={{ delay: 0.4 + index * 0.1, duration: 0.4 }}
                     >
                       <h4>{reason.title}</h4>
                       <p>{reason.description}</p>
