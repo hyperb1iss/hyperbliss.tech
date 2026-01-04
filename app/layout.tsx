@@ -1,5 +1,5 @@
 // app/layout.tsx
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
@@ -9,6 +9,14 @@ import './styles/globals.css'
 import './styles/silkcircuit-syntax.css'
 
 export const metadata: Metadata = siteMetadata
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0a0a14',
+  userScalable: true,
+  width: 'device-width',
+}
 
 /**
  * RootLayout component

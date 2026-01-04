@@ -18,7 +18,8 @@ const navPanelStyles = css`
   position: fixed;
   top: 76px;
   right: var(--space-3);
-  width: min(260px, calc(100vw - var(--space-6)));
+  width: min(260px, calc(100% - var(--space-6)));
+  max-width: calc(100vw - var(--space-6));
   z-index: 1001;
 
   /* Solid background - no backdrop-filter to avoid rendering bugs */
