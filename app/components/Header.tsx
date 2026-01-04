@@ -50,6 +50,7 @@ const navBaseStyles = css`
 
   @media (max-width: 768px) {
     padding: var(--space-2);
+    height: var(--nav-height-mobile, 96px) !important;
   }
 `
 
@@ -289,13 +290,6 @@ const Header: React.FC = () => {
         height: navHeight,
       }}
     >
-      <style>{`
-        @media (max-width: 768px) {
-          nav.${navBaseStyles.split(' ')[0]} {
-            height: ${navHeightMobile} !important;
-          }
-        }
-      `}</style>
       <motion.canvas
         animate={{ opacity: 1 }}
         className={canvasStyles}
