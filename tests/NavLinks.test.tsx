@@ -32,17 +32,16 @@ describe('NavLinks', () => {
     })
   })
 
-  it('applies active class to the current page link', () => {
+  it('marks the current page link as active with aria-current', () => {
     render(<NavLinks />)
 
     const activeItem = NAV_ITEMS[0]
     const activeLink = screen.getByText(activeItem)
-    expect(activeLink).toHaveClass('active')
+    expect(activeLink).toHaveAttribute('aria-current', 'page')
 
     const otherLinks = NAV_ITEMS.slice(1).map((item) => screen.getByText(item))
-
     otherLinks.forEach((link) => {
-      expect(link).not.toHaveClass('active')
+      expect(link).not.toHaveAttribute('aria-current')
     })
   })
 
@@ -52,8 +51,5 @@ describe('NavLinks', () => {
 
     const aboutLink = screen.getByText('About')
     await user.click(aboutLink)
-
-    // In a real scenario, we'd check if the navigation function was called with the correct path
-    // Since we've mocked useAnimatedNavigation, we're just ensuring the link is clickable
   })
 })

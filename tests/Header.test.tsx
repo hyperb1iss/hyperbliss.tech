@@ -16,8 +16,8 @@ vi.mock('@/hooks/useAnimatedNavigation', () => ({
 describe('Header', () => {
   it('renders the logo', () => {
     render(<Header />)
-    const logo = screen.getByRole('link', { name: /𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼/i })
-    expect(logo).toBeInTheDocument()
+    const logoImage = screen.getByAltText('hyperbliss')
+    expect(logoImage).toBeInTheDocument()
   })
 
   it('renders navigation links', () => {
@@ -45,22 +45,20 @@ describe('Header', () => {
     Object.defineProperty(window, 'matchMedia', {
       value: vi.fn().mockImplementation((query) => ({
         addEventListener: vi.fn(),
-        addListener: vi.fn(), // Deprecated
+        addListener: vi.fn(),
         dispatchEvent: vi.fn(),
         matches: false,
         media: query,
         onchange: null,
         removeEventListener: vi.fn(),
-        removeListener: vi.fn(), // Deprecated
+        removeListener: vi.fn(),
       })),
       writable: true,
     })
 
-    // Trigger a resize event
     window.dispatchEvent(new Event('resize'))
 
-    const { container } = render(<Header />)
-    console.log(container.innerHTML)
+    render(<Header />)
 
     const mobileMenuIcon = screen.getByLabelText('Toggle menu')
     expect(mobileMenuIcon).toBeInTheDocument()

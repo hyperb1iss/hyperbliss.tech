@@ -10,22 +10,19 @@ vi.mock('@/hooks/useAnimatedNavigation', () => ({
 }))
 
 describe('Logo', () => {
-  it('renders the logo text and emojis', () => {
+  it('renders the logo image and technologies text', () => {
     render(<Logo />)
 
-    // Check for the main logo text
-    expect(screen.getByText('𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼')).toBeInTheDocument()
+    // Check for the logo image
+    const logoImage = screen.getByAltText('hyperbliss')
+    expect(logoImage).toBeInTheDocument()
+    expect(logoImage).toHaveAttribute('src', expect.stringContaining('logo.png'))
 
-    // Check for the emojis
-    expect(screen.getByText('🌠')).toBeInTheDocument()
-    expect(screen.getByText('✨')).toBeInTheDocument()
-    expect(screen.getByText('⎊')).toBeInTheDocument()
-    expect(screen.getByText('⨳')).toBeInTheDocument()
-    expect(screen.getByText('✵')).toBeInTheDocument()
-    expect(screen.getByText('⊹')).toBeInTheDocument()
+    // Check for the technologies text
+    expect(screen.getByText('technologies')).toBeInTheDocument()
   })
 
-  it('has a clickable link', async () => {
+  it('has a clickable link to home', async () => {
     const user = userEvent.setup()
     render(<Logo />)
 
@@ -33,25 +30,17 @@ describe('Logo', () => {
     expect(link).toHaveAttribute('href', '/')
 
     await user.click(link)
-    // Since we've mocked useAnimatedNavigation, we're just ensuring the link is clickable
-    // In a real scenario, we'd check if the navigation function was called
   })
 
-  it('applies correct styling', () => {
+  it('applies correct structure', () => {
     render(<Logo />)
 
-    const logoText = screen.getByText('𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼')
-    expect(logoText).toHaveStyle(`
-      font-family: var(--font-logo);
-      font-size: 2.6rem;
-    `)
-
-    // Check if the link has the correct styling
+    // Check link structure
     const link = screen.getByRole('link')
-    expect(link).toHaveStyle(`
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    `)
+    expect(link).toHaveAttribute('href', '/')
+
+    // Check image is present with correct alt
+    const image = screen.getByAltText('hyperbliss')
+    expect(image).toBeInTheDocument()
   })
 })
