@@ -20,6 +20,7 @@ const navBaseStyles = css`
   position: fixed;
   top: 0;
   width: 100%;
+  max-width: 100vw;
   padding: var(--space-3) var(--space-3) var(--space-4);
   transition: height var(--duration-normal) var(--ease-silk);
   z-index: 1000;
@@ -51,6 +52,7 @@ const navBaseStyles = css`
   @media (max-width: 768px) {
     padding: var(--space-2);
     height: var(--nav-height-mobile, 96px) !important;
+    overflow: hidden;
   }
 `
 
@@ -111,6 +113,14 @@ const canvasStyles = css`
   mix-blend-mode: screen;
   filter: saturate(1.15) brightness(1.05);
   background: linear-gradient(180deg, rgba(20, 7, 43, 0.7) 0%, rgba(10, 5, 18, 0.15) 60%, transparent 100%);
+  will-change: opacity;
+
+  @media (max-width: 768px) {
+    /* Reduce GPU load on mobile - disable blend mode and filters */
+    mix-blend-mode: normal;
+    filter: none;
+    opacity: 0.7;
+  }
 `
 
 const chevronIconStyles = css`

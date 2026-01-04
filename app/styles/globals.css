@@ -23,6 +23,7 @@
     margin: 0;
     font-size: 62.5%; /* Sets 1rem to 10px for easier calculations */
     scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevent horizontal scroll on mobile */
   }
 
   body {

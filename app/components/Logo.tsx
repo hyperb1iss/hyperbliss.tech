@@ -20,6 +20,11 @@ const LogoWrapper = styled.div`
   overflow: visible;
   transition: all 0.3s ease;
 
+  @media (max-width: 768px) {
+    overflow: hidden;
+    gap: 0;
+  }
+
   &:hover {
     transform: scale(1.05);
 
@@ -37,9 +42,11 @@ const LogoWrapper = styled.div`
 const logoImageStyles = css`
   height: 70px;
   width: auto;
+  max-width: 100%;
   object-fit: contain;
   animation: subtleGlow 3s ease-in-out infinite;
   transition: all 0.3s ease;
+  will-change: filter;
 
   @keyframes subtleGlow {
     0%, 100% {
@@ -52,6 +59,10 @@ const logoImageStyles = css`
 
   @media (max-width: 768px) {
     height: 60px;
+    max-width: calc(100% - 60px); /* Leave room for menu icon */
+    /* Disable filter animation on mobile to reduce GPU load */
+    animation: none;
+    filter: drop-shadow(0 0 6px rgba(162, 89, 255, 0.3));
   }
 
   @media (min-width: 1200px) {
@@ -169,9 +180,12 @@ const LogoContainer = styled.div`
   margin-right: auto;
   overflow: visible;
   padding-left: 2rem;
+  flex-shrink: 1;
+  min-width: 0;
 
   @media (max-width: 768px) {
-    padding-left: 1rem;
+    padding-left: 0.5rem;
+    overflow: hidden;
   }
 `
 
@@ -185,6 +199,11 @@ const LogoLink = styled(Link)`
   overflow: visible;
   white-space: nowrap;
   padding: 0.5rem;
+
+  @media (max-width: 768px) {
+    overflow: hidden;
+    padding: 0.25rem;
+  }
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
