@@ -135,8 +135,16 @@ const chevronIconStyles = css`
   pointer-events: auto;
   color: rgba(0, 255, 240, 0.8);
   opacity: 0.9;
-  transition: all var(--duration-fast) var(--ease-silk);
+  transition: opacity var(--duration-fast) var(--ease-silk), transform var(--duration-fast) var(--ease-silk);
   z-index: 5;
+
+  /* Larger touch target on mobile */
+  @media (max-width: 768px) {
+    width: 44px;
+    height: 44px;
+    bottom: 5px;
+    padding: 8px;
+  }
 
   &:hover {
     opacity: 1;
@@ -282,7 +290,9 @@ const Header: React.FC = () => {
   }, [triggerMenuAnimation])
 
   // Handler for toggling header expansion
-  const toggleExpansion = () => {
+  const toggleExpansion = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
     setIsExpanded(!isExpanded)
   }
 

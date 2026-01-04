@@ -18,7 +18,7 @@ const LogoWrapper = styled.div`
   align-items: flex-end;
   gap: 1.5rem;
   overflow: visible;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
 
   @media (max-width: 768px) {
     overflow: hidden;
@@ -45,7 +45,7 @@ const logoImageStyles = css`
   max-width: 100%;
   object-fit: contain;
   animation: subtleGlow 3s ease-in-out infinite;
-  transition: all 0.3s ease;
+  transition: filter 0.3s ease;
   will-change: filter;
 
   @keyframes subtleGlow {
