@@ -1,6 +1,9 @@
 // app/lib/tina.ts
 // TinaCMS client utilities for fetching content
 
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import matter from 'gray-matter'
 import { TinaMarkdownContent } from 'tinacms/dist/rich-text'
 import client from '../../tina/__generated__/client'
 
@@ -13,170 +16,9 @@ export function formatDisplayTitle(emoji: string | null | undefined, title: stri
   return emoji ? `${emoji} ${title}` : title
 }
 
-/**
- * Convert TinaMarkdown AST node to markdown string.
- * Handles various node types that TinaCMS generates.
- */
-function astNodeToMarkdown(node: Record<string, unknown>, depth = 0): string {
-  if (!node || typeof node !== 'object') return ''
-
-  const type = node.type as string | undefined
-  const children = node.children as Record<string, unknown>[] | undefined
-  const text = node.text as string | undefined
-  const value = node.value as string | undefined
-
-  // Text node
-  if (text !== undefined) {
-    let result = text
-    if (node.bold) result = `**${result}**`
-    if (node.italic) result = `_${result}_`
-    if (node.code) result = `\`${result}\``
-    return result
-  }
-
-  // Raw markdown (invalid_markdown type from TinaCMS local mode)
-  if (type === 'invalid_markdown' && value) {
-    return value
-  }
-
-  // Process children recursively
-  const childContent = children?.map((c) => astNodeToMarkdown(c, depth)).join('') ?? ''
-
-  switch (type) {
-    case 'root':
-      return childContent
-    case 'h1':
-      return `# ${childContent}\n\n`
-    case 'h2':
-      return `## ${childContent}\n\n`
-    case 'h3':
-      return `### ${childContent}\n\n`
-    case 'h4':
-      return `#### ${childContent}\n\n`
-    case 'h5':
-      return `##### ${childContent}\n\n`
-    case 'h6':
-      return `###### ${childContent}\n\n`
-    case 'p':
-      return `${childContent}\n\n`
-    case 'ul':
-      return `${children?.map((c) => `- ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? ''}\n`
-    case 'ol':
-      return `${children?.map((c, i) => `${i + 1}. ${astNodeToMarkdown(c, depth + 1).trim()}\n`).join('') ?? ''}\n`
-    case 'li':
-      return childContent
-    case 'lic': // List item content
-      return childContent
-    case 'blockquote':
-      return `> ${childContent.trim()}\n\n`
-    case 'code_block': {
-      const lang = (node.lang as string) || ''
-      const code = (value || childContent).replace(/\n$/, '') // Remove trailing newline if present
-      return `\`\`\`${lang}\n${code}\n\`\`\`\n\n`
-    }
-    case 'a': {
-      const url = node.url as string
-      return `[${childContent}](${url})`
-    }
-    case 'img': {
-      const src = node.url as string
-      const alt = (node.alt as string) || ''
-      return `![${alt}](${src})`
-    }
-    case 'strong':
-      return `**${childContent}**`
-    case 'em':
-    case 'emphasis':
-      return `_${childContent}_`
-    case 'hr':
-      return '---\n\n'
-    case 'br':
-      return '\n'
-    default:
-      return childContent
-  }
-}
-
-/**
- * Convert TinaMarkdownContent AST to raw markdown string.
- * Used when we need to process markdown with custom parsers (like resume parser).
- */
-export function tinaMarkdownToString(content: TinaMarkdownContent | string | null): string {
-  if (!content) return ''
-  if (typeof content === 'string') return content
-
-  // Handle AST object
-  if (typeof content === 'object' && 'children' in content) {
-    return astNodeToMarkdown(content as Record<string, unknown>).trim()
-  }
-
-  return ''
-}
-
 // Helper to extract slug from relativePath (removes .md extension)
 export function getSlugFromRelativePath(relativePath: string): string {
   return relativePath.replace(/\.md$/, '')
-}
-
-/**
- * Extract raw markdown from TinaCMS body content.
- * When using localContentPath, TinaCMS returns an AST with type: "invalid_markdown"
- * containing raw markdown in the "value" property. This function extracts
- * that raw markdown for use with MarkdownRenderer.
- */
-function extractBodyContent(body: unknown): TinaMarkdownContent | string | null {
-  if (!body) return null
-  if (typeof body === 'string') return body
-  if (typeof body !== 'object') return null
-
-  const obj = body as Record<string, unknown>
-
-  // Check for AST structure with children
-  if ('children' in obj && Array.isArray(obj.children)) {
-    const children = obj.children as Array<Record<string, unknown>>
-
-    // Check for "invalid_markdown" type - TinaCMS returns this when markdown isn't parsed
-    for (const child of children) {
-      if (
-        child &&
-        typeof child === 'object' &&
-        'type' in child &&
-        child.type === 'invalid_markdown' &&
-        'value' in child &&
-        typeof child.value === 'string'
-      ) {
-        // Found raw markdown - return it as a string
-        return child.value
-      }
-    }
-
-    // Check if this is a proper parsed AST (has type: 'p', 'h1', etc.)
-    const hasTypedNodes = children.some(
-      (child) =>
-        child &&
-        typeof child === 'object' &&
-        'type' in child &&
-        typeof child.type === 'string' &&
-        ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'blockquote', 'code_block'].includes(child.type),
-    )
-
-    if (hasTypedNodes) {
-      return body as TinaMarkdownContent
-    }
-
-    // Also check for text nodes (another possible format)
-    for (const child of children) {
-      if (child && typeof child === 'object' && 'text' in child && typeof child.text === 'string') {
-        const text = child.text
-        if (text.includes('##') || text.includes('**') || text.includes('```')) {
-          return text
-        }
-      }
-    }
-  }
-
-  // Return as-is if it seems like a proper AST
-  return body as TinaMarkdownContent
 }
 
 // ============================================================
@@ -250,6 +92,17 @@ export async function getPost(slug: string): Promise<PostDetail> {
 }
 
 /**
+ * Read raw markdown body content directly from the file.
+ * This bypasses TinaCMS's AST parsing which can mangle GFM tables.
+ */
+async function getRawMarkdownBody(directory: string, filename: string): Promise<string> {
+  const filePath = path.join(process.cwd(), directory, filename)
+  const fileContents = await fs.readFile(filePath, 'utf-8')
+  const { content } = matter(fileContents)
+  return content
+}
+
+/**
  * Get post with raw query data for visual editing support.
  * Returns both processed post data and the raw query/variables for useTina.
  */
@@ -263,9 +116,9 @@ export async function getPostWithQuery(slug: string): Promise<{
   const response = await client.queries.posts({ relativePath })
   const postData = response.data.posts
 
-  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
-  const bodyContent = extractBodyContent(postData.body)
-  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+  // Read raw markdown body directly from file to preserve GFM tables
+  // TinaCMS's AST parsing can mangle table syntax
+  const bodyString = await getRawMarkdownBody('content/posts', relativePath)
 
   const post: PostDetail = {
     author: postData.author ?? null,
@@ -394,9 +247,8 @@ export async function getProjectWithQuery(slug: string): Promise<{
   const response = await client.queries.projects({ relativePath })
   const projectData = response.data.projects
 
-  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
-  const bodyContent = extractBodyContent(projectData.body)
-  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+  // Read raw markdown body directly from file to preserve GFM tables
+  const bodyString = await getRawMarkdownBody('content/projects', relativePath)
 
   const project: ProjectDetail = {
     body: bodyString,
@@ -561,9 +413,8 @@ export async function getResume(): Promise<ResumeData> {
   const response = await client.queries.resume({ relativePath: 'resume.md' })
   const resume = response.data.resume
 
-  // Always convert body to string to avoid TinaMarkdown React 19 SSG issues
-  const bodyContent = extractBodyContent(resume.body)
-  const bodyString = typeof bodyContent === 'string' ? bodyContent : tinaMarkdownToString(bodyContent)
+  // Read raw markdown body directly from file to preserve GFM tables
+  const bodyString = await getRawMarkdownBody('content/resume', 'resume.md')
 
   return {
     body: bodyString,

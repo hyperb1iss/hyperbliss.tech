@@ -392,3 +392,72 @@ export const StyledImage = styled.img`
   border-radius: 8px;
   margin: 1rem 0;
 `
+
+// Table
+export const StyledTable = styled.table`
+  width: 100%;
+  margin: 2rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: clamp(1.4rem, 1.1vw, 1.8rem);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 117, 216, 0.06) 0%,
+    rgba(217, 70, 239, 0.04) 25%,
+    rgba(30, 25, 45, 0.8) 50%,
+    rgba(236, 72, 153, 0.04) 75%,
+    rgba(224, 170, 255, 0.05) 100%
+  );
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 117, 216, 0.2);
+  overflow: hidden;
+  box-shadow:
+    0 0 30px rgba(217, 70, 239, 0.15),
+    0 0 60px rgba(255, 117, 216, 0.08);
+`
+
+export const StyledThead = styled.thead`
+  background: linear-gradient(
+    135deg,
+    rgba(255, 117, 216, 0.15) 0%,
+    rgba(217, 70, 239, 0.12) 50%,
+    rgba(168, 85, 247, 0.1) 100%
+  );
+`
+
+export const StyledTbody = styled.tbody`
+  tr:nth-child(even) {
+    background: rgba(217, 70, 239, 0.04);
+  }
+
+  tr:hover {
+    background: rgba(255, 117, 216, 0.08);
+  }
+`
+
+export const StyledTr = styled.tr`
+  transition: background 0.2s var(--ease-silk);
+`
+
+export const StyledTh = styled.th`
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: #ff75d8;
+  text-shadow: 0 0 10px rgba(255, 117, 216, 0.4);
+  border-bottom: 2px solid rgba(255, 117, 216, 0.3);
+  font-family: var(--font-heading);
+  letter-spacing: 0.03em;
+`
+
+export const StyledTd = styled.td`
+  padding: 1rem 1.5rem;
+  color: rgba(224, 224, 224, 0.9);
+  border-bottom: 1px solid rgba(224, 170, 255, 0.1);
+
+  strong {
+    color: #e0aaff;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(224, 170, 255, 0.3);
+  }
+`

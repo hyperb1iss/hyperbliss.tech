@@ -12,7 +12,7 @@ import remarkGfm from 'remark-gfm'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 
-// Custom schema that allows code highlighting classes
+// Custom schema that allows code highlighting classes and table elements
 const sanitizeSchema = {
   ...defaultSchema,
   attributes: {
@@ -20,6 +20,7 @@ const sanitizeSchema = {
     code: [...(defaultSchema.attributes?.code || []), 'className'],
     span: [...(defaultSchema.attributes?.span || []), 'className'],
   },
+  tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
 }
 
 import {
@@ -34,6 +35,12 @@ import {
   StyledLi,
   StyledOl,
   StyledParagraph,
+  StyledTable,
+  StyledTbody,
+  StyledTd,
+  StyledTh,
+  StyledThead,
+  StyledTr,
   StyledUl,
 } from './MarkdownStyles'
 
@@ -336,6 +343,14 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           // Render the component that contains the hook logic
           return <PreWithCopy {...props} />
         },
+
+        // Tables
+        table: ({ node: _node, ...props }) => <StyledTable {...props} />,
+        tbody: ({ node: _node, ...props }) => <StyledTbody {...props} />,
+        td: ({ node: _node, ...props }) => <StyledTd {...props} />,
+        th: ({ node: _node, ...props }) => <StyledTh {...props} />,
+        thead: ({ node: _node, ...props }) => <StyledThead {...props} />,
+        tr: ({ node: _node, ...props }) => <StyledTr {...props} />,
 
         // Lists
         ul: ({ node: _node, ...props }) => <StyledUl {...props} />,
