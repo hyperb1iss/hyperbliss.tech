@@ -1,86 +1,104 @@
 ---
 emoji: '🔮'
-title: 'Git-Iris: AI-Powered Git Workflow Assistant'
+title: 'Git-Iris: Your Agentic Git Companion'
 description:
-  'A comprehensive AI-powered Git workflow assistant that enhances your
-  development process from start to finish.'
+  'An intelligent agent that understands your code and crafts perfect Git
+  artifacts—commits, reviews, changelogs, and more.'
+date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/git-iris'
 tags:
   [
-    'rust',
-    'git',
-    'ai',
-    'cli',
-    'developer-tools',
-    'automation',
-    'openai',
-    'anthropic',
+    'Rust',
+    'Git',
+    'AI',
+    'CLI',
+    'Developer Tools',
+    'OpenAI',
+    'Anthropic',
+    'GitHub Action',
   ]
 ---
 
-Git-Iris is a comprehensive AI-powered Git workflow assistant that enhances your
-development process from start to finish. By leveraging advanced AI models,
-Git-Iris boosts your productivity and improves the quality of your project
-documentation.
+## 💜 Overview
 
-## Features
+Git-Iris is powered by **Iris**, an intelligent agent that actively explores
+your codebase to understand what you're building. Rather than dumping context
+and hoping for the best, Iris uses tools to gather precisely the information she
+needs—analyzing diffs, exploring file relationships, and building understanding
+iteratively.
 
-- 🤖 **Intelligent Commit Messages**: Generate context-aware, meaningful commit
-  messages
-- 📜 **Dynamic Changelog Generation**: Create structured, detailed changelogs
-  between any two Git references
-- 📋 **Comprehensive Release Notes**: Automatically generate release notes with
-  summaries and key changes
-- 🔄 **Multi-Provider AI Support**: Leverage OpenAI GPT-4o, Anthropic Claude, or
-  Ollama for AI capabilities
-- 🎨 **Gitmoji Integration**: Add expressive emojis to your commits, changelogs,
-  and release notes
-- 🖥️ **Interactive CLI**: Refine AI-generated content through an intuitive
-  command-line interface
-- 🔧 **Customizable Workflows**: Tailor AI behavior with custom instructions and
-  presets
-- 📚 **Flexible Instruction Presets**: Quickly switch between different
-  documentation styles
-- 🧠 **Smart Context Extraction**: Analyze repository changes for more accurate
-  AI-generated content
-- 📊 **Intelligent Code Analysis**: Provide context-aware suggestions based on
-  your codebase
+## 🪄 What Iris Can Do
 
-## Installation
+| Capability             | Description                                                     |
+| ---------------------- | --------------------------------------------------------------- |
+| ✍️ **Commit Messages** | Context-aware messages that capture the essence of your changes |
+| 🔬 **Code Reviews**    | Multi-dimensional analysis covering security and performance    |
+| 📜 **Pull Requests**   | Comprehensive PR descriptions for branches or commits           |
+| 🗂️ **Changelogs**      | Keep a Changelog format with intelligent categorization         |
+| 🎊 **Release Notes**   | User-focused documentation highlighting impact and benefits     |
+| 🔭 **Semantic Blame**  | Ask "why does this code exist?" and get real answers            |
 
-You can install Git-Iris using Cargo:
+## 🌌 Iris Studio
+
+**Studio** is a stunning terminal interface built with the **SilkCircuit Neon**
+design language. Press `/` to chat with Iris, ask her to refine your commit
+message or explain changes—she can update content directly through intelligent
+tool calls!
+
+## 📦 Installation
 
 ```bash
+# Quick install
+curl -fsSL https://raw.githubusercontent.com/hyperb1iss/git-iris/main/install.sh | sh
+
+# Homebrew
+brew tap hyperb1iss/tap && brew install git-iris
+
+# Cargo
 cargo install git-iris
 ```
 
-## Quick Start
-
-1. Configure Git-Iris:
+## 🚀 Quick Start
 
 ```bash
-git-iris config --provider openai --api-key YOUR_API_KEY
+# Launch Studio (auto-detects context)
+git-iris
+
+# Generate commit messages
+git add . && git-iris gen
+
+# Review code
+git-iris review --from main --to feature
+
+# Generate changelogs
+git-iris changelog --from v1.0.0 --update
+
+# PR descriptions
+git-iris pr --from main --to feature-branch
 ```
 
-2. Generate a commit message:
+## 🤖 GitHub Action
+
+Automate release notes and changelogs in your CI/CD:
+
+```yaml
+- name: Generate release notes
+  uses: hyperb1iss/git-iris@v1
+  with:
+    from: v1.0.0
+    to: v1.1.0
+    api-key: ${{ secrets.OPENAI_API_KEY }}
+    output-file: RELEASE_NOTES.md
+```
+
+## 🎨 Multi-Provider Support
+
+Supports **OpenAI**, **Anthropic**, and **Google** AI providers. Configure once:
 
 ```bash
-git-iris gen
+git-iris config --provider anthropic --api-key YOUR_API_KEY
 ```
 
-3. Generate a changelog:
+---
 
-```bash
-git-iris changelog --from v1.0.0 --to v1.1.0
-```
-
-4. Generate release notes:
-
-```bash
-git-iris release-notes --from v1.0.0 --to v1.1.0
-```
-
-## Documentation
-
-For more detailed information on using Git-Iris, please refer to our
-[documentation](https://github.com/hyperb1iss/git-iris/wiki).
+**An intelligent agent that understands your code.**

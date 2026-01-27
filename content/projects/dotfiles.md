@@ -1,98 +1,98 @@
 ---
 emoji: '🌠'
 title: 'Dotfiles: A Beautiful Development Environment'
-date: '2024-09-25'
-tags: ['Shell', 'Development', 'WSL', 'Customization', 'Productivity']
 description:
-  'A meticulously crafted development environment that brings elegance and
-  efficiency to your terminal experience across Linux, WSL2, and Windows.'
+  'A meticulously crafted development environment with SilkCircuit theming,
+  cross-platform support, and AI-powered editing.'
+date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/dotfiles'
+tags:
+  [
+    'Shell',
+    'Zsh',
+    'Bash',
+    'Neovim',
+    'Tmux',
+    'WSL2',
+    'macOS',
+    'PowerShell',
+    'Android',
+  ]
 ---
+
+## 🌟 Overview
 
 Welcome to my dotfiles—a beautiful, thoughtfully designed development
 environment that transforms your terminal into a powerful and elegant workspace.
-Crafted with attention to detail, it seamlessly unifies Linux, WSL2, and Windows
-while providing a delightful and efficient user experience.
+Crafted with attention to detail, it seamlessly unifies Linux, macOS, WSL2, and
+Windows.
 
-## ✨ Key Features
+## ✨ Core Features
 
-- 🎨 **Beautiful by Design**: Carefully crafted color scheme and typography
-  that's easy on the eyes
-- 🚀 **Cross-Platform Ready**: Works seamlessly across Linux, WSL2, and Windows
-- 🔄 **Smart Integration**: Intelligent handling of cross-platform operations
-  and path conversions
-- 📱 **Android Development**: First-class support for AOSP development and
-  device management
-- 🎯 **Modern CLI Tools**: Curated selection of powerful, modern command-line
-  utilities
-- 🖥️ **HyperShell**: Enhanced PowerShell environment that brings Linux elegance
-  to Windows
-- ⚡ **Lightning Fast**: Optimized for performance with intelligent caching and
-  lazy loading
-- 🎮 **Intuitive Controls**: Streamlined keyboard shortcuts and fuzzy-finding
-  capabilities
+| Feature                    | Description                                            |
+| -------------------------- | ------------------------------------------------------ |
+| 🐚 **Shell Environment**   | Unified Bash & Zsh with modern CLI tools               |
+| 📱 **Android Development** | Complete AOSP build environment with smart device mgmt |
+| 🖥️ **Terminal Setup**      | Custom Tmux, Starship prompt, fuzzy finding            |
+| 🪟 **WSL2 Integration**    | Seamless Windows/Linux operation with path conversion  |
+| 🎨 **SilkCircuit Theme**   | Consistent cyberpunk styling across all tools          |
+| 🤖 **AI Integration**      | AstroNvim + Avante.nvim with Claude Sonnet 4           |
 
-## 🛠️ Core Components
+## 🔧 Tool Suite
 
-### Development Environment
+### Core Development
 
-- **Starship Prompt**: Beautiful, informative command prompt that adapts to your
-  context
-- **AstroNvim**: Powerful text editor configuration with IDE-like features
-- **Tmux**: Terminal multiplexer with custom styling and smart layouts
+| Tool             | Description          | Highlights                             |
+| ---------------- | -------------------- | -------------------------------------- |
+| 🚀 **Starship**  | Cross-shell prompt   | SilkCircuit theme, Git integration     |
+| 📝 **AstroNvim** | Neovim configuration | IDE features, Avante.nvim AI assistant |
+| 🖥️ **Tmux**      | Terminal multiplexer | Custom keybindings, session management |
 
-### Modern CLI Experience
+### Modern CLI Tools
 
-- **Fuzzy Finding**: Quickly locate files, navigate history, and switch
-  directories
-- **Enhanced Commands**: Modern replacements for traditional Unix tools
-- **Smart Completion**: Context-aware command completion and suggestions
+| Tool           | Description   | Features                          |
+| -------------- | ------------- | --------------------------------- |
+| 🌳 **FZF**     | Fuzzy finder  | File search, history, completion  |
+| 📂 **LSD**     | Modern ls     | Icons, SilkCircuit colors, tree   |
+| 🎨 **Bat**     | Enhanced cat  | Syntax highlighting, line numbers |
+| 🔍 **Ripgrep** | Fast searcher | Code search, regex, ignore rules  |
 
-### WSL2 Integration
+## 🎨 SilkCircuit Theme
 
-- **Seamless Navigation**: Effortlessly move between Windows and Linux
-  environments
-- **Path Handling**: Intelligent path conversion and management
-- **Shared Configuration**: Consistent experience across environments
+A cyberpunk-inspired color scheme with neon accents applied across:
 
-## 💫 Why These Dotfiles?
+- **Neovim** — Full theme with 30+ plugin support
+- **Git** — Custom log formatting with `silkcircuit` pretty format
+- **Starship** — Gradient effects and contextual styling
+- **LSDeluxe** — File type colors matching the theme
+- **Tmux** — Status bar with purple and pink accents
+- **Delta** — Git diff viewer with themed colors
 
-1. **Beauty Meets Function**: Every detail is crafted to create a cohesive,
-   beautiful experience without sacrificing functionality
-2. **Cross-Platform Done Right**: True integration between Linux and Windows,
-   not just side-by-side operation
-3. **Developer Focused**: Built by developers, for developers, with real-world
-   workflows in mind
-4. **Always Evolving**: Regular updates and improvements based on community
-   feedback
-5. **Performance First**: Optimized for speed and responsiveness, even on modest
-   hardware
-
-## 🚀 Getting Started
-
-### Linux/WSL2
+## 🛠️ Installation
 
 ```bash
+# Linux/WSL2
 git clone https://github.com/hyperb1iss/dotfiles.git ~/dev/dotfiles
-cd ~/dev/dotfiles
-make
-```
+cd ~/dev/dotfiles && make
 
-### Windows
+# macOS
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/hyperb1iss/dotfiles/main/install_macos.sh)"
 
-```powershell
+# Windows PowerShell (as admin)
 git clone https://github.com/hyperb1iss/dotfiles.git $env:USERPROFILE\dev\dotfiles
-cd $env:USERPROFILE\dev\dotfiles
-.\install.bat
+cd $env:USERPROFILE\dev\dotfiles && .\install.bat
 ```
 
-## 🎯 Perfect For
+## 🤖 HyperShell (PowerShell)
 
-- **Android Developers**: Complete AOSP development environment with smart
-  device management
-- **Cross-Platform Developers**: Seamless workflow across Linux and Windows
-- **Command-Line Enthusiasts**: Modern CLI tools with enhanced functionality
-- **Terminal Customization Fans**: Beautiful, cohesive design with extensive
-  customization options
-- **Productivity Seekers**: Efficient workflows with smart shortcuts and
-  automations
+A Linux-like experience for Windows with:
+
+- Modular architecture with 13 specialized modules
+- Linux command aliases using GNU tools
+- Kubernetes support with kubectl aliases and k9s
+- Zoxide for smart directory navigation
+- SilkCircuit branding throughout
+
+---
+
+**Beauty meets function. Cross-platform done right.**
