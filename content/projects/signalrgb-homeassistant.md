@@ -2,36 +2,30 @@
 emoji: '🏠'
 title: 'SignalRGB Home Assistant Integration'
 date: '2024-09-25'
-tags: ['home-assistant', 'iot', 'rgb-lighting', 'smart-home']
-category: 'Projects'
-image: '/images/projects/signalrgb-homeassistant.jpg'
+tags: ['Home Assistant', 'IoT', 'SignalRGB', 'Smart Home', 'Python']
 description:
-  "Seamlessly integrate SignalRGB's powerful RGB lighting control into your Home
-  Assistant setup."
+  'Custom Home Assistant component that integrates SignalRGB lighting control.
+  On/off, effect switching, brightness, and color extraction.'
 github: 'https://github.com/hyperb1iss/signalrgb-homeassistant'
 ---
 
-![SignalRGB Home Assistant Integration](/images/projects/signalrgb-homeassistant.jpg)
+## Overview
 
-## 🚀 Project Overview
+A custom Home Assistant component that brings SignalRGB's RGB lighting control
+to your home automation setup. Control SignalRGB-enabled devices through
+automation routines, scenes, and scripts.
 
-The SignalRGB Home Assistant Integration is a custom component that brings the
-power of SignalRGB's advanced RGB lighting control to your Home Assistant setup.
-This project allows smart home enthusiasts to seamlessly incorporate their
-SignalRGB-enabled devices into their home automation routines, scenes, and
-scripts.
+## Key Features
 
-## 🌟 Key Features
+- **Light entity** control in Home Assistant
+- **On/off** control
+- **Effect switching** with a wide range of lighting effects
+- **Brightness** adjustment for your entire SignalRGB setup
+- **Current effect** and available effects list
+- **Automatic effect image** and color extraction
+- **Effect parameter control** (coming soon!)
 
-- 💡 Control SignalRGB as a light entity in Home Assistant
-- 🔌 Seamless on/off control
-- 🎨 Apply a wide range of lighting effects
-- 🔆 Adjust brightness of your entire SignalRGB setup
-- 📊 View current effect and available effects list
-- 🔄 Automatic effect image and color extraction
-- 🎛️ Effect parameter control (coming soon!)
-
-## 🛠️ Technologies Used
+## Technologies Used
 
 - Python 3.12+
 - Home Assistant Custom Component API
@@ -40,11 +34,11 @@ scripts.
 - Pytest for unit testing
 - GitHub Actions for CI/CD
 
-## 💻 Installation
+## Installation
 
 1. Install [HACS](https://hacs.xyz/) in your Home Assistant instance.
 2. Add the SignalRGB integration through HACS.
 3. Configure the integration by providing your SignalRGB server details.
 
-For manual installation and detailed setup instructions, please refer to the
+For manual installation and detailed setup instructions, visit the
 [GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).

@@ -1,61 +1,52 @@
 ---
-emoji: '🌠'
-title: 'hyperbliss.tech: A Symphony of Code and Design'
+emoji: '🌃'
+title: 'hyperbliss.tech: Nerd City'
 date: '2024-09-25'
-tags: ['Next.js', 'TypeScript', 'React', 'Web Development', 'Creative Coding']
+tags: ['Next.js', 'TypeScript', 'React', 'Panda CSS', 'Framer Motion', 'WebGL']
 description:
-  'A beautifully crafted personal website that pushes the boundaries of web
-  development, featuring interactive animations, dynamic content, and seamless
-  user experiences.'
+  'The source code for this very site. Interactive CyberScape particle system,
+  Framer Motion transitions, Panda CSS, and markdown-driven content.'
 github: 'https://github.com/hyperb1iss/hyperbliss.tech'
 ---
 
 Welcome to the source code of the very website you're viewing! hyperbliss.tech
-is more than just a personal website—it's a canvas where code meets creativity,
-showcasing the possibilities of modern web development through interactive
-experiences and thoughtful design.
+is a canvas where code meets creativity, showcasing modern web development
+through interactive experiences and thoughtful design.
 
-## ✨ Key Features
+## Key Features
 
-- 🎭 **CyberScape Header**: Interactive particle system animation that responds
-  to user movement and creates dynamic connections
-- 🔄 **Smooth Transitions**: Seamless page transitions powered by Framer Motion
-- 📱 **Responsive Design**: Beautifully adapts to any screen size while
-  maintaining visual integrity
-- 📝 **Dynamic Content**: Markdown-powered blog posts and project pages with
-  syntax highlighting
-- 🎨 **Panda CSS**: Zero-runtime CSS-in-JS with type-safe styling
-- 🚀 **Performance Optimized**: Fast loading times with efficient code splitting
-  and lazy loading
-- 🔍 **SEO Ready**: Comprehensive metadata management and optimization
-- 📊 **Analytics Integration**: Privacy-focused analytics for understanding user
-  interactions
+- **CyberScape Header**: Interactive particle system that responds to mouse
+  movement and creates dynamic connections
+- **Page Transitions**: Smooth transitions powered by Framer Motion
+- **Responsive Design**: Adapts to any screen size while maintaining visual
+  integrity
+- **Dynamic Content**: Markdown-powered blog posts and project pages with syntax
+  highlighting
+- **Panda CSS**: Zero-runtime CSS-in-JS with type-safe styling
+- **Performance Optimized**: Fast loading with code splitting and lazy loading
+- **SEO Ready**: Metadata management and optimization
+- **Analytics**: Privacy-focused analytics
 
-## 🛠️ Technical Stack
+## Technical Stack
 
 ### Core Technologies
 
-- **Framework**: Next.js 14 with TypeScript
+- **Framework**: Next.js 16 with TypeScript
 - **Styling**: Panda CSS
 - **Animations**: Framer Motion
 - **Content**: Markdown with gray-matter and react-markdown
 - **Icons**: React Icons
-- **SEO**: Next SEO
-- **Analytics**: nextjs-google-analytics
 
 ### Interactive Features
 
-- **CyberScape Engine**: Custom WebGL-powered particle system
+- **CyberScape Engine**: Canvas 2D particle system with 3D projections
 - **Transition System**: Framer Motion page transitions
 - **Dynamic Theming**: Context-based theme management
-- **Responsive Images**: Next.js Image optimization
 - **Code Highlighting**: Custom-themed syntax highlighting
 
-## 💫 Implementation Highlights
+## CyberScape Animation
 
-### CyberScape Animation
-
-The signature header animation is built using the Canvas 2D API, featuring:
+The signature header animation features:
 
 - Advanced particle system with physics simulation
 - Dynamic connections between particles
@@ -64,48 +55,11 @@ The signature header animation is built using the Canvas 2D API, featuring:
 - Glitch effects and visual enhancements
 - Octree-based spatial partitioning for efficient collision detection
 
-### Content Management
-
-Posts and project pages are powered by a flexible Markdown system:
-
-- Frontmatter metadata
-- Custom components injection
-- Syntax highlighting
-- Rich media support
-- Dynamic content loading
-
-### Styling System
-
-The website uses a sophisticated styling approach:
-
-- Zero-runtime Panda CSS
-- Type-safe design tokens
-- Dynamic color management
-- Responsive design system
-- Animation integration
-
-### Navigation & Routing
-
-Leveraging Next.js App Router for optimal navigation:
-
-- Dynamic route generation
-- Smooth transitions
-- SEO optimization
-- Metadata management
-- Performance optimization
-
-## 🎯 Design Philosophy
-
-hyperbliss.tech embodies several key design principles:
+## Design Philosophy
 
 1. **Interactive Elegance**: Every interaction should feel natural and
    delightful
-2. **Performance First**: Beautiful animations shouldn't compromise speed
+2. **Performance First**: Beautiful animations don't compromise speed
 3. **Content Focus**: Design enhances rather than overshadows content
-4. **Adaptive Experience**: Seamless experience across all devices
+4. **Adaptive Experience**: Consistent across all devices
 5. **Technical Excellence**: Clean code that showcases best practices
-
-This website serves as both a personal portfolio and a testament to the
-possibilities of modern web development. It demonstrates that with careful
-attention to detail and thoughtful implementation, we can create web experiences
-that are both beautiful and performant.

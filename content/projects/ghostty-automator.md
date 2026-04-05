@@ -2,28 +2,28 @@
 emoji: '🎭'
 title: 'Ghostty Automator: Playwright for Terminals'
 description:
-  'A Playwright-style Python API for automating Ghostty terminal sessions with
-  async-first design, assertions, and screenshots.'
+  'Playwright-style terminal control for Ghostty. Async-first Python API with
+  assertions, auto-waiting, and screenshot capture.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/ghostty-automator-python'
 tags: ['Python', 'Ghostty', 'Terminal', 'Automation', 'Testing', 'asyncio']
 ---
 
-## ✨ Overview
+## Overview
 
 **ghostty-automator** brings Playwright-style terminal automation to Ghostty.
 Familiar, ergonomic API for controlling terminal sessions programmatically.
 
-## 🎯 Features
+## Features
 
-- **Playwright-style API** — Familiar, ergonomic interface
-- **Async-first** — Built on anyio for high performance with sync wrapper
-- **Strong typing** — Full type hints with strict pyright compliance
-- **Auto-waiting** — Built-in wait helpers with configurable timeouts
-- **Assertions** — Playwright-style `expect` for testing
-- **Screenshots** — Capture terminal state as PNG images
+- **Playwright-style API**: Familiar, ergonomic interface
+- **Async-first**: Built on anyio for high performance with sync wrapper
+- **Strong typing**: Full type hints with strict pyright compliance
+- **Auto-waiting**: Built-in wait helpers with configurable timeouts
+- **Assertions**: Playwright-style `expect` for testing
+- **Screenshots**: Capture terminal state as PNG images
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from ghostty_automator import Ghostty
@@ -44,7 +44,7 @@ async with Ghostty.connect() as ghostty:
     await terminal.screenshot("debug.png")
 ```
 
-## 📖 API Reference
+## API Reference
 
 ### Ghostty Client
 
@@ -80,7 +80,7 @@ async with Ghostty.connect() as ghostty:
 | `to_have_title(title)` | Assert window title      |
 | `prompt()`             | Assert prompt is visible |
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install ghostty-automator

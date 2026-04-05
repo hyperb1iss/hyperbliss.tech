@@ -1,58 +1,51 @@
 ---
-emoji: '🚀'
-title: 'Contexter: Streamlined Context Gathering for LLMs'
+emoji: '📋'
+title: 'Contexter: Code Context for LLMs'
 date: '2024-09-25'
 description:
-  'A powerful command-line and browser extension tool for gathering context from
-  files, perfect for feeding into Language Models (LLMs).'
-tags: ['Rust', 'CLI', 'Browser Extension', 'LLM', 'Context Gathering']
-categories: ['Projects', 'Developer Tools']
-image: '/images/contexter-banner.jpg'
+  'Chrome extension and CLI for quickly copying code context into LLMs. Smart
+  filtering, duplicate detection, and clipboard integration.'
+tags: ['Rust', 'CLI', 'Chrome Extension', 'LLM']
 github: 'https://github.com/hyperb1iss/contexter'
 ---
 
-## 🚀 Overview
+## Overview
 
-Contexter is a robust, dual-purpose tool designed to ease the way developers
-interact with Language Models (LLMs). It combines a powerful Rust-based CLI
-application with a sleek Chrome extension, offering a seamless experience for
-gathering and managing context from your projects.
+Contexter is a dual-purpose tool for gathering code context to feed into
+Language Models. It combines a Rust-based CLI with a Chrome extension, making it
+quick to collect, filter, and copy project files for LLM prompts.
 
-## ✨ Key Features
+## Key Features
 
-- 🗂️ **Smart Directory Traversal**: Recursively walks through directories to
-  gather relevant files.
-- 🔍 **Flexible Filtering**: Includes files based on specified extensions and
-  excludes patterns using regex.
-- 📋 **Clipboard Integration**: Easily copy concatenated content to your
-  clipboard.
-- 🔄 **Duplicate Detection**: Skips duplicate file contents based on content
-  hashes for efficiency.
-- 📑 **Consistent Output**: Ensures a reliable, ordered output of files.
-- 🌓 **Dark Mode Support**: Comfortable viewing in any lighting condition.
-- 🔐 **Secure API Key Management**: Keeps your interaction with the server safe
-  and authenticated.
+- **Smart Directory Traversal**: Recursively walks through directories to gather
+  relevant files
+- **Flexible Filtering**: Include by extension, exclude by regex pattern
+- **Clipboard Integration**: Copy concatenated content to your clipboard
+- **Duplicate Detection**: Skips duplicate file contents based on content hashes
+- **Consistent Output**: Reliable, ordered output of files
+- **Dark Mode Support**: Comfortable viewing in any lighting condition
+- **Secure API Key Management**: SHA-256 hashed API keys for authenticated
+  access
 
-## 🛠️ Technical Stack
+## Technical Stack
 
 - **Backend**: Rust
 - **Frontend**: HTML, CSS, JavaScript
 - **Browser Extension**: Chrome Extension API
-- **API**: RESTful API with JSON communication
-- **Security**: SHA-256 hashing for API keys
+- **API**: RESTful with JSON communication
 
-## 💡 Use Cases
+## Use Cases
 
 1. **Code Review Assistance**: Quickly gather context from specific parts of
-   your project to ask an LLM for code review suggestions.
-2. **Documentation Generation**: Collect information about your project
-   structure to help LLMs generate or update documentation.
-3. **Bug Analysis**: Provide relevant code snippets and file structures to LLMs
-   for more accurate bug analysis and potential solutions.
+   your project for LLM-powered review suggestions
+2. **Documentation Generation**: Collect project structure info to help LLMs
+   generate or update documentation
+3. **Bug Analysis**: Provide relevant code snippets for more accurate bug
+   analysis and solutions
 4. **Refactoring Support**: Gather context about related files and functions to
-   assist LLMs in suggesting refactoring strategies.
+   assist with refactoring strategies
 
-## 🚀 Getting Started
+## Getting Started
 
 ### CLI Installation
 
@@ -69,7 +62,7 @@ cargo build --release
 3. Click "Load unpacked" and select the `extension` directory from the Contexter
    project
 
-## 📖 Usage Example
+## Usage Example
 
 ### CLI
 

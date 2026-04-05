@@ -2,19 +2,19 @@
 emoji: '⚡'
 title: 'q: The Tiniest Claude Code CLI'
 description:
-  'A minimal, elegant CLI for Claude. Ask, pipe, chat—one letter, infinite
+  'A minimal, elegant CLI for Claude. Ask, pipe, chat: one letter, infinite
   answers.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/q'
-tags: ['TypeScript', 'Bun', 'Claude', 'CLI', 'AI', 'Developer Tools']
+tags: ['TypeScript', 'Bun', 'Ink', 'Claude', 'CLI', 'AI', 'Developer Tools']
 ---
 
-## 💎 Overview
+## Overview
 
 **q** is a minimal, elegant CLI for Claude. Ask your question, get back to work.
 One letter. Infinite answers.
 
-## 🌀 Modes
+## Modes
 
 | Mode            | Trigger                   | What It Does                           |
 | --------------- | ------------------------- | -------------------------------------- |
@@ -23,7 +23,7 @@ One letter. Infinite answers.
 | **Interactive** | `q -i`                    | TUI chat with full context             |
 | **Agent**       | `q -x "task"`             | Execute with tools (read, write, bash) |
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # Install
@@ -36,7 +36,7 @@ export ANTHROPIC_API_KEY="sk-ant-..."
 q "how do I find large files in this directory"
 ```
 
-## 🔀 Pipe Mode
+## Pipe Mode
 
 A true Unix pipeline citizen. Pipe content in, get raw output back.
 
@@ -51,7 +51,7 @@ cat server.log | q "extract all IP addresses" | sort -u
 git diff | q "summarize" | q "translate to spanish"
 ```
 
-## 🦋 Shell Integration
+## Shell Integration
 
 ```bash
 # Add to your shell config
@@ -61,7 +61,7 @@ eval "$(q --shell-init zsh)"
 This gives you `qq`, `qctx`, `qerr`, `qx`, `qr`, and Ctrl+Q for quick queries
 with context from your last command or error.
 
-## 🤖 Agent Mode
+## Agent Mode
 
 Let Claude execute tools to complete tasks with intelligent approval prompts:
 

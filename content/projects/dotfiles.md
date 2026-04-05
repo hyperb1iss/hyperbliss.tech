@@ -1,9 +1,9 @@
 ---
 emoji: '🌠'
-title: 'Dotfiles: A Beautiful Development Environment'
+title: "Stefanie's Dotfiles"
 description:
-  'A meticulously crafted development environment with SilkCircuit theming,
-  cross-platform support, and AI-powered editing.'
+  'A cross-platform development environment with SilkCircuit theming, AI-powered
+  editing, and unified shell config for Linux, macOS, WSL2, and Windows.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/dotfiles'
 tags:
@@ -20,55 +20,54 @@ tags:
   ]
 ---
 
-## 🌟 Overview
+## Overview
 
-Welcome to my dotfiles—a beautiful, thoughtfully designed development
-environment that transforms your terminal into a powerful and elegant workspace.
-Crafted with attention to detail, it seamlessly unifies Linux, macOS, WSL2, and
-Windows.
+Welcome to my dotfiles: a cross-platform development environment that transforms
+your terminal into an elegant workspace. Unified config for Linux, macOS, WSL2,
+and Windows, with the SilkCircuit theme tying it all together.
 
-## ✨ Core Features
+## Core Features
 
-| Feature                    | Description                                            |
-| -------------------------- | ------------------------------------------------------ |
-| 🐚 **Shell Environment**   | Unified Bash & Zsh with modern CLI tools               |
-| 📱 **Android Development** | Complete AOSP build environment with smart device mgmt |
-| 🖥️ **Terminal Setup**      | Custom Tmux, Starship prompt, fuzzy finding            |
-| 🪟 **WSL2 Integration**    | Seamless Windows/Linux operation with path conversion  |
-| 🎨 **SilkCircuit Theme**   | Consistent cyberpunk styling across all tools          |
-| 🤖 **AI Integration**      | AstroNvim + Avante.nvim with Claude Sonnet 4           |
+| Feature                 | Description                                            |
+| ----------------------- | ------------------------------------------------------ |
+| **Shell Environment**   | Unified Bash & Zsh with modern CLI tools               |
+| **Android Development** | Complete AOSP build environment with smart device mgmt |
+| **Terminal Setup**      | Custom Tmux, Starship prompt, fuzzy finding            |
+| **WSL2 Integration**    | Windows/Linux operation with path conversion           |
+| **SilkCircuit Theme**   | Consistent cyberpunk styling across all tools          |
+| **AI Integration**      | AstroNvim + Avante.nvim with Claude Sonnet 4           |
 
-## 🔧 Tool Suite
+## Tool Suite
 
 ### Core Development
 
-| Tool             | Description          | Highlights                             |
-| ---------------- | -------------------- | -------------------------------------- |
-| 🚀 **Starship**  | Cross-shell prompt   | SilkCircuit theme, Git integration     |
-| 📝 **AstroNvim** | Neovim configuration | IDE features, Avante.nvim AI assistant |
-| 🖥️ **Tmux**      | Terminal multiplexer | Custom keybindings, session management |
+| Tool          | Description          | Highlights                             |
+| ------------- | -------------------- | -------------------------------------- |
+| **Starship**  | Cross-shell prompt   | SilkCircuit theme, Git integration     |
+| **AstroNvim** | Neovim configuration | IDE features, Avante.nvim AI assistant |
+| **Tmux**      | Terminal multiplexer | Custom keybindings, session management |
 
 ### Modern CLI Tools
 
-| Tool           | Description   | Features                          |
-| -------------- | ------------- | --------------------------------- |
-| 🌳 **FZF**     | Fuzzy finder  | File search, history, completion  |
-| 📂 **LSD**     | Modern ls     | Icons, SilkCircuit colors, tree   |
-| 🎨 **Bat**     | Enhanced cat  | Syntax highlighting, line numbers |
-| 🔍 **Ripgrep** | Fast searcher | Code search, regex, ignore rules  |
+| Tool        | Description   | Features                          |
+| ----------- | ------------- | --------------------------------- |
+| **FZF**     | Fuzzy finder  | File search, history, completion  |
+| **LSD**     | Modern ls     | Icons, SilkCircuit colors, tree   |
+| **Bat**     | Enhanced cat  | Syntax highlighting, line numbers |
+| **Ripgrep** | Fast searcher | Code search, regex, ignore rules  |
 
-## 🎨 SilkCircuit Theme
+## SilkCircuit Theme
 
 A cyberpunk-inspired color scheme with neon accents applied across:
 
-- **Neovim** — Full theme with 30+ plugin support
-- **Git** — Custom log formatting with `silkcircuit` pretty format
-- **Starship** — Gradient effects and contextual styling
-- **LSDeluxe** — File type colors matching the theme
-- **Tmux** — Status bar with purple and pink accents
-- **Delta** — Git diff viewer with themed colors
+- **Neovim**: Full theme with 30+ plugin support
+- **Git**: Custom log formatting with `silkcircuit` pretty format
+- **Starship**: Gradient effects and contextual styling
+- **LSDeluxe**: File type colors matching the theme
+- **Tmux**: Status bar with purple and pink accents
+- **Delta**: Git diff viewer with themed colors
 
-## 🛠️ Installation
+## Installation
 
 ```bash
 # Linux/WSL2
@@ -83,7 +82,7 @@ git clone https://github.com/hyperb1iss/dotfiles.git $env:USERPROFILE\dev\dotfil
 cd $env:USERPROFILE\dev\dotfiles && .\install.bat
 ```
 
-## 🤖 HyperShell (PowerShell)
+## HyperShell (PowerShell)
 
 A Linux-like experience for Windows with:
 

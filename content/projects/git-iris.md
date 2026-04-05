@@ -3,7 +3,7 @@ emoji: '🔮'
 title: 'Git-Iris: Your Agentic Git Companion'
 description:
   'An intelligent agent that understands your code and crafts perfect Git
-  artifacts—commits, reviews, changelogs, and more.'
+  artifacts: commits, reviews, changelogs, and more.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/git-iris'
 tags:
@@ -19,33 +19,32 @@ tags:
   ]
 ---
 
-## 💜 Overview
+## Overview
 
 Git-Iris is powered by **Iris**, an intelligent agent that actively explores
 your codebase to understand what you're building. Rather than dumping context
 and hoping for the best, Iris uses tools to gather precisely the information she
-needs—analyzing diffs, exploring file relationships, and building understanding
+needs: analyzing diffs, exploring file relationships, and building understanding
 iteratively.
 
-## 🪄 What Iris Can Do
+## What Iris Can Do
 
-| Capability             | Description                                                     |
-| ---------------------- | --------------------------------------------------------------- |
-| ✍️ **Commit Messages** | Context-aware messages that capture the essence of your changes |
-| 🔬 **Code Reviews**    | Multi-dimensional analysis covering security and performance    |
-| 📜 **Pull Requests**   | Comprehensive PR descriptions for branches or commits           |
-| 🗂️ **Changelogs**      | Keep a Changelog format with intelligent categorization         |
-| 🎊 **Release Notes**   | User-focused documentation highlighting impact and benefits     |
-| 🔭 **Semantic Blame**  | Ask "why does this code exist?" and get real answers            |
+| Capability          | Description                                                     |
+| ------------------- | --------------------------------------------------------------- |
+| **Commit Messages** | Context-aware messages that capture the essence of your changes |
+| **Code Reviews**    | Multi-dimensional analysis covering security and performance    |
+| **Pull Requests**   | PR descriptions for branches or commits                         |
+| **Changelogs**      | Keep a Changelog format with intelligent categorization         |
+| **Release Notes**   | User-focused documentation highlighting impact and benefits     |
+| **Semantic Blame**  | Ask "why does this code exist?" and get real answers            |
 
-## 🌌 Iris Studio
+## Iris Studio
 
-**Studio** is a stunning terminal interface built with the **SilkCircuit Neon**
-design language. Press `/` to chat with Iris, ask her to refine your commit
-message or explain changes—she can update content directly through intelligent
-tool calls!
+**Studio** is a terminal interface built with the **SilkCircuit Neon** design
+language. Press `/` to chat with Iris, ask her to refine your commit message or
+explain changes. She can update content directly through intelligent tool calls.
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Quick install
@@ -58,7 +57,7 @@ brew tap hyperb1iss/tap && brew install git-iris
 cargo install git-iris
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Launch Studio (auto-detects context)
@@ -77,7 +76,7 @@ git-iris changelog --from v1.0.0 --update
 git-iris pr --from main --to feature-branch
 ```
 
-## 🤖 GitHub Action
+## GitHub Action
 
 Automate release notes and changelogs in your CI/CD:
 
@@ -91,7 +90,7 @@ Automate release notes and changelogs in your CI/CD:
     output-file: RELEASE_NOTES.md
 ```
 
-## 🎨 Multi-Provider Support
+## Multi-Provider Support
 
 Supports **OpenAI**, **Anthropic**, and **Google** AI providers. Configure once:
 

@@ -1,15 +1,16 @@
 ---
 emoji: '🪐'
 title: 'Cosmosys: Stellar Release Management'
+date: '2024-09-25'
 description:
-  'A powerful, flexible, and customizable release management tool designed to
-  streamline your software deployment process.'
+  'Customizable release management tool for automating version bumps,
+  changelogs, tagging, and CI/CD integration across languages.'
 github: 'https://github.com/hyperb1iss/cosmosys'
 tags:
   [
+    'Python',
     'DevOps',
     'CLI',
-    'Python',
     'Release Management',
     'Automation',
     'Git',
@@ -17,49 +18,27 @@ tags:
   ]
 ---
 
-## Key Features 🚀
+## Key Features
 
-- **🌈 Multiple Color Schemes**: Customize your CLI experience with built-in and
-  custom color themes.
-- **🎨 ASCII Art Logo**: Add a touch of personality to your release process with
-  customizable ASCII art.
-- **🔧 Modular Release Flow**: Configure your release steps to match your
-  project's needs.
-- **🖥️ Cross-Platform Compatibility**: Works seamlessly on Windows, macOS, and
-  Linux.
-- **🏷️ Version Management**: Automatically handle version bumping and tagging.
-- **🐙 Git Integration**: Commit changes, create tags, and push to remote
-  repositories.
-- **🔍 Customizable Pre-Release Checks**: Ensure your project is ready for
-  release with configurable checks.
-- **📝 Release Notes Generation**: Automatically generate and manage release
-  notes.
-- **📜 Changelog Management**: Keep your changelog up-to-date with each release.
-- **🔗 CI/CD Integration**: Easily integrate with popular CI/CD platforms.
-- **🧩 Plugin System**: Extend functionality with custom plugins.
-- **🏜️ Dry-Run Mode**: Test your release process without making any changes.
-- **↩️ Rollback Functionality**: Safely undo changes if something goes wrong.
-- **🌐 Multi-Language Support**: Manage releases for projects in different
-  programming languages.
+- **Multiple Color Schemes**: Customize your CLI with built-in and custom color
+  themes
+- **ASCII Art Logo**: Add personality to your release process with customizable
+  ASCII art
+- **Modular Release Flow**: Configure release steps to match your project
+- **Cross-Platform**: Works on Windows, macOS, and Linux
+- **Version Management**: Automatic version bumping and tagging
+- **Git Integration**: Commit changes, create tags, and push to remote repos
+- **Pre-Release Checks**: Configurable checks to ensure release readiness
+- **Release Notes Generation**: Automatic release notes and changelog management
+- **CI/CD Integration**: Hooks into popular CI/CD platforms
+- **Plugin System**: Extend functionality with custom plugins
+- **Dry-Run Mode**: Test your release process without making changes
+- **Rollback**: Safely undo changes if something goes wrong
+- **Multi-Language**: Manage releases for projects in different languages
 
-## Why Choose Cosmosys? 🤔
-
-1. **Flexibility**: Cosmosys adapts to your project's unique requirements,
-   supporting various languages and frameworks.
-2. **Consistency**: Ensure a standardized release process across all your
-   projects.
-3. **Automation**: Reduce manual work and potential for errors with automated
-   release steps.
-4. **Customization**: Tailor the release process, themes, and plugins to fit
-   your team's workflow.
-5. **Developer-Friendly**: Designed with developers in mind, Cosmosys integrates
-   seamlessly with your existing tools and practices.
-
-## Getting Started 🚀
+## Getting Started
 
 ### Installation
-
-Cosmosys can be easily installed using pip or Poetry:
 
 ```bash
 # Using pip
@@ -85,13 +64,13 @@ poetry add cosmosys
    cosmosys release
    ```
 
-## Customization and Extensibility 🛠️
+## Customization
 
-Cosmosys is designed to be highly customizable:
+Cosmosys is highly customizable:
 
 - **Themes**: Choose from built-in themes or create your own to match your
-  project's branding.
-- **Plugins**: Extend Cosmosys's functionality with custom plugins to integrate
-  with your tools and workflows.
+  project's branding
+- **Plugins**: Extend functionality with custom plugins to integrate with your
+  tools and workflows
 - **Release Steps**: Define and order your release steps to create the perfect
-  release process for your project.
+  release process for your project

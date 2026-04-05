@@ -2,32 +2,28 @@
 emoji: '🌟'
 title: 'Hyper Light Card'
 description:
-  'A beautifully designed custom card for controlling SignalRGB in Home
-  Assistant'
+  'A dazzling custom card for controlling SignalRGB through Home Assistant.
+  Dynamic color adaptation, effect switching, and brightness control.'
 date: '2024-09-25'
-tags: ['home-assistant', 'custom-card', 'signalrgb', 'smart-home']
-image: '/images/hyper-light-card-preview.jpg'
+tags: ['Home Assistant', 'Custom Card', 'SignalRGB', 'Smart Home']
 github: 'https://github.com/hyperb1iss/hyper-light-card'
 ---
 
-Elevate your Home Assistant dashboard with the Hyper Light Card – a stunningly
-beautiful and highly functional custom card designed specifically for
-controlling SignalRGB through Home Assistant.
+A custom Home Assistant card for controlling SignalRGB with dynamic color
+adaptation, effect switching, and brightness control.
 
-![Hyper Light Card Preview](/images/hyper-light-card-preview.jpg)
+## Features
 
-## ✨ Features
+- **Dynamic color adaptation** based on the current SignalRGB effect
+- **On/off toggle** with visual feedback
+- **Effect switching** with a sleek dropdown menu
+- **Brightness control** slider
+- **Detailed effect information** display
+- **Live effect preview** with background image
+- **Expandable effect parameters** section
+- **Optimized performance** with efficient rendering
 
-- 🎨 Dynamic color adaptation based on the current SignalRGB effect
-- 💡 Intuitive on/off toggle with visual feedback
-- 🔀 Easy effect switching with a sleek dropdown menu
-- 🔆 Smooth brightness control slider
-- 📊 Detailed effect information display
-- 🖼️ Live effect preview with background image
-- 🔧 Expandable effect parameters section
-- 🚀 Optimized performance with efficient rendering
-
-## 🛠️ Installation
+## Installation
 
 1. Install [HACS](https://hacs.xyz/) if you haven't already.
 2. In HACS, go to "Frontend" and click the "+" button.
@@ -38,7 +34,7 @@ controlling SignalRGB through Home Assistant.
    entity: light.signalrgb
    ```
 
-## 🎛️ Configuration
+## Configuration
 
 | Option                    | Type    | Default                   | Description                                  |
 | ------------------------- | ------- | ------------------------- | -------------------------------------------- |
@@ -51,16 +47,8 @@ controlling SignalRGB through Home Assistant.
 | `background_opacity`      | number  | `0.7`                     | Opacity of the effect image background (0-1) |
 | `allowed_effects`         | list    | All effects               | List of effects to show in the dropdown      |
 
-## 🎨 Customization
+## Customization
 
 The Hyper Light Card automatically adapts its color scheme based on the current
-SignalRGB effect, ensuring a cohesive and visually appealing dashboard. The card
-uses an advanced color extraction algorithm to determine the most suitable
-background, text, and accent colors for optimal readability and aesthetic
-appeal.
-
-## 🚀 Performance
-
-Hyper Light Card is built with performance in mind. It uses efficient rendering
-techniques and optimized state management to ensure smooth interactions, even on
-less powerful devices.
+SignalRGB effect. It uses an advanced color extraction algorithm to determine
+the most suitable background, text, and accent colors for readability.

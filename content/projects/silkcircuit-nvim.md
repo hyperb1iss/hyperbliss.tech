@@ -2,30 +2,29 @@
 emoji: '💜'
 title: 'SilkCircuit: Electric Dreams for Neovim'
 description:
-  'A cyberpunk Neovim colorscheme with vibrant purples, blazing pinks, and neon
-  accents. WCAG AA compliant with <5ms load time.'
+  'A vibrant cyberpunk-inspired Neovim colorscheme. Five variants, WCAG AA
+  compliant contrast, <5ms load time, 40+ plugin integrations.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/silkcircuit-nvim'
 tags: ['Neovim', 'Lua', 'Colorscheme', 'Theme', 'Developer Tools']
 ---
 
-## 🎭 Overview
+## Overview
 
 **SilkCircuit** pumps maximum visual voltage through your Neovim. Electric
 purples, blazing pinks, and neon cyans create a coding environment that's both
 striking and readable.
 
-## 🦄 Features
+## Features
 
-- 🎪 **Electric Color System** — Vibrant palette with semantic color mappings
-- 🏎️ **<5ms Load Time** — Bytecode compilation with intelligent caching
-- 👁️ **WCAG AA Compliant** — Validated contrast ratios for extended sessions
-- 🎛️ **5 Theme Variants** — Neon, Vibrant, Soft, Glow, and Dawn modes
-- 🔮 **40+ Plugin Integrations** — Auto-detected support for your entire
-  toolchain
-- 💾 **Persistent Preferences** — Settings survive across sessions
+- **Electric Color System**: Vibrant palette with semantic color mappings
+- **<5ms Load Time**: Bytecode compilation with intelligent caching
+- **WCAG AA Compliant**: Validated contrast ratios for extended sessions
+- **5 Theme Variants**: Neon, Vibrant, Soft, Glow, and Dawn modes
+- **40+ Plugin Integrations**: Auto-detected support for your entire toolchain
+- **Persistent Preferences**: Settings survive across sessions
 
-## 💫 Installation
+## Installation
 
 ```lua
 -- lazy.nvim
@@ -39,7 +38,7 @@ striking and readable.
 }
 ```
 
-## 🌈 Theme Variants
+## Theme Variants
 
 ```vim
 :SilkCircuit neon     " 100% intensity, dark theme
@@ -49,7 +48,7 @@ striking and readable.
 :SilkCircuit dawn     " Light theme for daytime
 ```
 
-## 💜 Color Palette
+## Color Palette
 
 | Color  | Hex       | Usage                   |
 | ------ | --------- | ----------------------- |
@@ -60,14 +59,14 @@ striking and readable.
 | Yellow | `#f1fa8c` | Warnings, attention     |
 | Orange | `#ffb86c` | Constants, numbers      |
 
-## 🌃 Complete Environment
+## Complete Environment
 
 SilkCircuit extends beyond Neovim with matching themes for:
 
-- **VSCode/Cursor** — All 5 variants included
-- **Terminal Emulators** — Alacritty, Kitty, Warp, Windows Terminal, iTerm2
-- **Git** — Custom log formatting with conventional commit highlighting
-- **AstroNvim** — Complete integration with enhanced components
+- **VSCode/Cursor**: All 5 variants included
+- **Terminal Emulators**: Alacritty, Kitty, Warp, Windows Terminal, iTerm2
+- **Git**: Custom log formatting with conventional commit highlighting
+- **AstroNvim**: Complete integration with enhanced components
 
 ---
 
