@@ -21,8 +21,8 @@ export async function GET() {
     title: 'Hyperbliss Blog',
   })
 
-  const slugs = await getAllMarkdownSlugs('src/posts')
-  const posts: MarkdownFile[] = await Promise.all(slugs.map(async (slug) => getMarkdownContent('src/posts', slug)))
+  const slugs = await getAllMarkdownSlugs('content/posts')
+  const posts: MarkdownFile[] = await Promise.all(slugs.map(async (slug) => getMarkdownContent('content/posts', slug)))
 
   // Sort posts by date
   posts.sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())

@@ -19,7 +19,7 @@ export async function GET(): Promise<Response> {
 
   // Get all blog posts and projects
   const [blogSlugs, projectSlugs] = await Promise.all([
-    getAllMarkdownSlugs('src/posts'),
+    getAllMarkdownSlugs('content/posts'),
     getAllMarkdownSlugs('content/projects'),
   ])
 
