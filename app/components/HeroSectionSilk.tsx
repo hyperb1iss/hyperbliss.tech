@@ -272,10 +272,10 @@ const DEFAULT_HERO: HeroSection = {
   primaryCtaText: 'View Projects',
   scrollText: 'Scroll to explore',
   secondaryCtaLink: '/about',
-  secondaryCtaText: 'Learn More',
+  secondaryCtaText: 'About Me',
   subtitle:
-    "I'm Stefanie Jane, a full-stack engineer crafting elegant solutions at the intersection of art and technology. I build experiences that push the boundaries of what's possible on the web.",
-  welcomeText: 'Welcome to',
+    "I'm Stefanie Jane, and I build developer tools, terminal interfaces, and AI agents in Rust, TypeScript, and Python. Open source all the way down.",
+  welcomeText: '',
 }
 
 const DEFAULT_TECH_TAGS = [
@@ -416,7 +416,7 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
           data-tina-field={tinaHero ? tinaField(tinaHero, 'welcomeText') : undefined}
           variants={itemVariants}
         >
-          <TitleStatic>{heroContent.welcomeText} </TitleStatic>
+          {heroContent.welcomeText && <TitleStatic>{heroContent.welcomeText} </TitleStatic>}
           <TitleGradient>hyperbliss</TitleGradient>
         </motion.h1>
 
