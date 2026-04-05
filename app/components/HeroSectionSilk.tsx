@@ -88,6 +88,11 @@ const titleStyles = css`
 `
 
 const TitleGradient = styled.span`
+  font-family: var(--font-heading);
+  font-size: var(--text-fluid-2xl);
+  font-weight: var(--font-bold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
   background: linear-gradient(
     135deg,
     var(--silk-quantum-purple) 0%,
@@ -99,15 +104,17 @@ const TitleGradient = styled.span`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradientShift 4s ease infinite;
+  margin-bottom: var(--space-8);
+  display: inline-block;
 
   @keyframes gradientShift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
   }
-`
 
-const TitleStatic = styled.span`
-  color: var(--text-primary);
+  @media (max-width: 768px) {
+    font-size: var(--text-fluid-xl);
+  }
 `
 
 const subtitleStyles = css`
@@ -270,43 +277,23 @@ const DEFAULT_HERO: HeroSection = {
   scrollText: 'Scroll to explore',
   secondaryCtaLink: '/about',
   secondaryCtaText: 'About Me',
-  subtitle:
-    "I'm Stefanie Jane, and I build developer tools, terminal interfaces, and AI agents in Rust, TypeScript, and Python. Open source all the way down.",
+  subtitle: 'I build software that gives people control over their technology. Open source all the way down.',
   welcomeText: '',
 }
 
 const DEFAULT_TECH_TAGS = [
-  'AI/ML',
-  'Android',
-  'AWS',
-  'Backend',
-  'BSP',
-  'C/C++',
-  'Cloud Services',
-  'DevOps',
-  'Embedded Systems',
-  'Firmware',
-  'Frontend',
-  'Full Stack',
-  'Golang',
-  'Hardware Bringup',
-  'Infrastructure',
-  'IoT',
-  'Java',
-  'JavaScript',
-  'Kotlin',
-  'Linux Kernel',
-  'Mobile Development',
-  'Node.js',
-  'Open Source',
-  'Prototyping',
-  'Python',
-  'Qualcomm Snapdragon',
-  'React',
   'Rust',
-  'System Architecture',
-  'Team Leadership',
   'TypeScript',
+  'Python',
+  'React',
+  'AI Agents',
+  'Terminal UIs',
+  'Design Systems',
+  'Linux',
+  'Android',
+  'Embedded',
+  'Smart Home',
+  'Open Source',
 ]
 
 export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps) {
@@ -408,19 +395,16 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
 
       <motion.div animate="visible" className={contentContainerStyles} initial="hidden" variants={containerVariants}>
         <motion.h1 className={titleStyles} variants={itemVariants}>
-          {heroContent.welcomeText && <TitleStatic>{heroContent.welcomeText} </TitleStatic>}
-          <TitleGradient>hyperbliss</TitleGradient>
+          <SparklingName name={heroContent.name ?? 'Stefanie Jane'} sparkleCount={8} />
         </motion.h1>
 
         <motion.p className={subtitleStyles} variants={itemVariants}>
-          I'm{' '}
-          <span>
-            <SparklingName name={heroContent.name ?? 'Stefanie Jane'} sparkleCount={8} />
-          </span>
-          ,{' '}
-          {heroContent.subtitle?.replace(/^I'm [^,]+, /, '') ??
-            'a full-stack engineer crafting elegant solutions at the intersection of art and technology.'}
+          {heroContent.subtitle ?? 'I build software that gives people control over their technology. Open source all the way down.'}
         </motion.p>
+
+        <motion.div variants={itemVariants}>
+          <TitleGradient>@hyperbliss</TitleGradient>
+        </motion.div>
 
         <motion.div className={tagCloudStyles} variants={itemVariants}>
           {tags.map((tag, index) => (

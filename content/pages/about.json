@@ -1,35 +1,31 @@
 {
   "about": {
-    "bio": "My experience spans the entire technology stack—from embedded systems, hardware bringup, and OS development to cloud services, frontend, and AI.\n\nI've successfully led both open-source and enterprise projects, helping teams achieve technical excellence and innovation. I'm proficient in multiple programming languages, and highly skilled with the use of modern AI developer tooling and practices. I thrive in hands-on leadership roles, and am committed to continuous learning and self improvement.\n\nYou might know me as the creator of [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), now [LineageOS](https://lineageos.org/), which became the largest open-source Android distribution, empowering millions of people to take control of their devices. I also co-founded the company which was formed to support its development.\n\nWhen I'm not hacking on code or flashing devices, you'll find me skating with my roller derby team, producing electronic music, or creating and contributing to open-source projects. Check out all my work on [GitHub](https://github.com/hyperb1iss).",
-    "contactIntro": "I'm always excited to connect with fellow technologists, creators, and innovators. You can reach me via email or using any of the links below. Here's how we might work together:",
+    "bio": "I work across the full stack, from embedded systems and Linux kernel to cloud infrastructure and AI agents. I write mostly Rust, TypeScript, and Python.\n\nYou might know me as the creator of [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) (now [LineageOS](https://lineageos.org/)), the largest open-source Android distribution. Millions of people used it to take control of their devices. I co-founded the company behind it.\n\nThese days I build open-source developer tools, terminal interfaces, design systems, and AI agent infrastructure. I care about software that respects its users and code that's genuinely fun to work with.\n\nWhen I'm not writing code, I'm roller skating, spinning fire (levitation wand), producing electronic music, or tinkering with smart home hardware. Everything's on [GitHub](https://github.com/hyperb1iss).",
+    "contactIntro": "Reach me via email or any of the links below.",
     "contactReasons": [
       {
-        "description": "Need help building or customizing a device, getting a BSP in shape, building a mobile app, or integrating AI? Let's discuss your technical challenges.",
-        "title": "Technical Consultation"
+        "description": "Embedded, mobile, AI, full stack. Let's talk about what you're building.",
+        "title": "Technical Work"
       },
       {
-        "description": "Looking for a keynote speaker or technical presenter? I'd love to share insights at your next event.",
-        "title": "Speaking Engagements"
+        "description": "Conferences, podcasts, panels. I talk about open source, AI tooling, and developer experience.",
+        "title": "Speaking"
       },
       {
-        "description": "Have an interesting project or idea and need help building it? I'm always open to exploring new opportunities and partnerships.",
+        "description": "Got a project that needs another brain? I'm always interested in good problems.",
         "title": "Collaboration"
-      },
-      {
-        "description": "Seeking guidance in technology leadership or system design? Let's connect and grow together.",
-        "title": "Mentorship"
       }
     ],
     "intro": {
       "greeting": "Hey there!",
-      "highlightText": "the last 25+ years",
-      "introText": "turning complex technical challenges into beautiful products.",
+      "highlightText": "over 25 years",
+      "introText": "putting people in control of their technology.",
       "name": "Stefanie Jane"
     },
     "profileImage": "/images/profile-image.jpg",
     "profileImageAlt": "Profile image of Stefanie Jane"
   },
-  "description": "Learn about Stefanie Jane—software engineer, open source advocate, and creative technologist.",
+  "description": "Stefanie Jane: open source engineer building developer tools, design systems, and AI agents.",
   "slug": "about",
   "title": "About Me | Hyperbliss"
 }
