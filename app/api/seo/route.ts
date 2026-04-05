@@ -180,10 +180,10 @@ async function getAllBlogMetadata() {
  * Fetches metadata for all project pages
  */
 async function getAllProjectMetadata() {
-  const slugs = await getAllMarkdownSlugs('src/projects')
+  const slugs = await getAllMarkdownSlugs('content/projects')
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('src/projects', slug)
+      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('content/projects', slug)
       const metadata = await generateProjectMetadata(frontmatter, slug, Promise.resolve(createMinimalMetadata()))
       return {
         metadata,
