@@ -2,8 +2,11 @@
   "name": "hyperbliss.tech",
   "version": "2.0.0",
   "description": "Stefanie's Personal Website",
-  "author": "Stefanie Jane",
+  "author": "Stefanie Jane <stef@hyperbliss.tech>",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "prepare": "panda",
     "dev": "tinacms dev -c \"next dev\"",
