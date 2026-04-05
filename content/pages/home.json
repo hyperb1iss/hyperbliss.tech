@@ -1,5 +1,5 @@
 {
-  "description": "The personal website of Stefanie Jane—developer, designer, and tech enthusiast.",
+  "description": "Stefanie Jane builds developer tools, terminal interfaces, and AI agents. Open source all the way down.",
   "featuredProjects": {
     "ctaText": "View on GitHub",
     "subtitle": "A selection of my open source work and experiments",
@@ -11,9 +11,9 @@
     "primaryCtaText": "View Projects",
     "scrollText": "Scroll to explore",
     "secondaryCtaLink": "/about",
-    "secondaryCtaText": "Learn More",
-    "subtitle": "a multifaceted software engineer and leader. I do everything from embedded systems to cloud to mobile, all the way across the stack and back. Welcome to my personal site! You'll find my blog, projects, and more about me here.",
-    "welcomeText": "Welcome to"
+    "secondaryCtaText": "About Me",
+    "subtitle": "and I build developer tools, terminal interfaces, and AI agents in Rust, TypeScript, and Python. Open source all the way down.",
+    "welcomeText": ""
   },
   "latestPosts": {
     "emptyStateText": "No posts yet. Check back soon!",
