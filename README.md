@@ -2,343 +2,123 @@
 
 <div align="center">
 
-[![NETLIFY](https://img.shields.io/badge/NETLIFY-DEPLOYED-8a2be2?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/hyperb1iss/deploys)
-[![TYPESCRIPT](https://img.shields.io/badge/TYPESCRIPT-5.8-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![NEXT.JS](https://img.shields.io/badge/NEXT.JS-15.2-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![JEST](https://img.shields.io/badge/JEST-29.7-d11aff?style=for-the-badge&logo=jest&logoColor=white)](https://jestjs.io/)
-[![PANDA CSS](https://img.shields.io/badge/PANDA-CSS-ff57e8?style=for-the-badge&logo=css3&logoColor=white)](https://panda-css.com/)
-[![REACT](https://img.shields.io/badge/REACT-19.0-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
-[![LICENSE](https://img.shields.io/badge/LICENSE-CC_BY--NC--SA-00fff0?style=for-the-badge)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Netlify](https://img.shields.io/badge/NETLIFY-DEPLOYED-8a2be2?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/hyperb1iss/deploys)
+[![TypeScript](https://img.shields.io/badge/TYPESCRIPT-6.0-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/NEXT.JS-16.2-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/REACT-19.2-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![Panda CSS](https://img.shields.io/badge/PANDA-CSS-ff57e8?style=for-the-badge&logo=css3&logoColor=white)](https://panda-css.com/)
+[![License](https://img.shields.io/badge/LICENSE-CC_BY--NC--SA-00fff0?style=for-the-badge)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 </div>
 
-Welcome to the nexus of [hyperbliss.tech](https://hyperbliss.tech), a cybernetic
-sanctuary crafted by Stefanie Jane— resident software sorceress and pixel
-enchantress. 🔮👩‍💻⚡
+Welcome to the source code of [hyperbliss.tech](https://hyperbliss.tech), a
+cybernetic sanctuary crafted by Stefanie Jane. 🔮👩‍💻⚡
 
-## 🌌 Vision
+This is home base: blog, projects, resume, and an interactive particle system
+called CyberScape that turns the header into a living, breathing neon
+dreamscape. A place for nerds, ADHD catgirls, and magical creatures.
 
-In the vast expanse of the internet, hyperbliss.tech stands as a beacon—a fusion
-of technology and creativity. This digital portfolio serves as a testament to
-the art of web development, a gallery of innovative projects, and a hub for
-nerds, ADHD catgirls, and magical creatures.
+## 🌌 What's Inside
 
-Here, you'll find:
+- 🌠 **CyberScape**: A custom Canvas2D particle system with 3D projections,
+  wireframe shapes, glitch effects, and chromatic aberration, all reacting to
+  your cursor
+- 📜 **Blog**: Technical deep-dives on creative coding, terminal design, AI
+  agent orchestration, and the demoscene
+- 🔧 **Projects**: 24 open source projects across Rust, TypeScript, and Python
+- 🎨 **SilkCircuit aesthetic**: Purple gradients, neon cyan accents, and plasma
+  pink everywhere
 
-- 🕸️ Intricately crafted code, weaving responsive designs that adapt to any
-  device
-- 📜 Insightful blog posts, exploring the ever-evolving digital landscape
-- 🔧 Innovative projects that push the boundaries of web technology
-- 🌟 Interfaces that come alive with smooth, ethereal animations
-- 🔍 Optimized pathways ensuring discoverability across the web
-- 📊 Analytics to understand and enhance user experiences
+## 🛠️ Stack
 
-Stefanie Jane, the architect of this digital sanctum, is a multi-faceted
-technology witch. Her expertise spans the entire software stack, from crafting
-captivating user interfaces with front-end sorcery, to conjuring scalable
-infrastructure, and the arcane arts of embedded systems and operating systems.
-With an alchemical blend of technical prowess and artistic vision, she creates
-holistic software experiences that are as beautiful as they are powerful.
+| Layer     | Tools                                                      |
+| --------- | ---------------------------------------------------------- |
+| Framework | Next.js 16, React 19, TypeScript 6                         |
+| Styling   | Panda CSS (zero-runtime CSS-in-JS)                         |
+| Animation | Framer Motion, CyberScape (custom particle system)         |
+| Content   | Markdown + gray-matter, read from `content/` at build time |
+| Testing   | Vitest + Testing Library                                   |
+| Linting   | Biome + Prettier (markdown/YAML only)                      |
+| Deploy    | Netlify                                                    |
 
-## ✨ Features
+## 🚀 Quick Start
 
-- 🌙 Sleek, modern design with a touch of mystique
-- 📱 Responsive layout that morphs seamlessly across all devices
-- 🔮 Interactive elements that respond to user interaction
-- 📜 A blog that serves as a conduit for insights and knowledge
-- 🖼️ A showcase of various projects demonstrating expertise
-- 🔭 SEO optimization to enhance visibility and reach
-- 🕯️ Google Analytics integration for data-driven improvements
-- 🌠 CyberScape: An immersive, interactive background animation
+```bash
+git clone https://github.com/hyperb1iss/hyperbliss.tech.git
+cd hyperbliss.tech
+pnpm install
+pnpm dev
+```
 
-## 🛠️ Technology Stack
+Open [http://localhost:3000](http://localhost:3000) and watch the particles
+dance.
 
-- **Framework**: Next.js 16.0 with TypeScript 5.9
-- **Frontend**: React 19.2
-- **Styling**: Panda CSS (zero-runtime CSS-in-JS)
-- **Routing**: Next.js App Router
-- **Content Management**: Markdown files with gray-matter and react-markdown
-  10.1
-- **Animations**: Framer Motion 12.5
-- **Icons**: React Icons 5.5
-- **SEO**: Next SEO
-- **Analytics**: Google Analytics (via nextjs-google-analytics)
-- **Interactive Background**: CyberScape (custom animation)
-- **Testing**: Jest 29.7 with Testing Library React 16.2
-- **Linting & Formatting**: ESLint 9.22 and Prettier 3.5
+## 🧪 Scripts
+
+| Command          | What it does                             |
+| ---------------- | ---------------------------------------- |
+| `pnpm dev`       | Start dev server                         |
+| `pnpm build`     | Production build (`panda && next build`) |
+| `pnpm test`      | Run tests                                |
+| `pnpm lint`      | Biome check + Prettier                   |
+| `pnpm typecheck` | TypeScript type check                    |
+| `pnpm analyze`   | Bundle size analysis                     |
 
 ## 🏗️ Project Structure
 
 ```
-.
-├── app/
-│   ├── (transition)/
-│   │   ├── about/
-│   │   ├── blog/
-│   │   ├── projects/
-│   │   └── resume/
-│   ├── api/
-│   │   └── rss/
-│   ├── components/
-│   ├── cyberscape/
-│   │   ├── utils/
-│   │   ├── handlers/
-│   │   ├── shapes/
-│   │   ├── effects/
-│   │   └── particles/
-│   ├── hooks/
-│   ├── lib/
-│   ├── styles/
-│   └── layout.tsx
-├── public/
-│   └── images/
-├── src/
-│   ├── posts/
-│   ├── projects/
-│   └── resume.md
-├── tests/
-│   ├── mocks/
-│   └── seo/
-├── scripts/
-└── various config files (.eslint.config.mjs, next.config.mjs, etc.)
+app/
+  (transition)/       Routes (home, about, blog, projects, resume)
+  components/         React components
+  cyberscape/         The particle system that makes the header glow
+  lib/                Content loading, metadata, utilities
+content/
+  posts/              Blog posts (markdown)
+  projects/           Project pages (markdown)
+  pages/              Page configs (JSON)
+  config/             Site config
+  resume/             Resume (markdown)
+tests/                Vitest tests
+styled-system/        Panda CSS generated styles
 ```
 
-Key directories:
-
-- `app/`: Next.js 13+ app directory containing the main application code
-- `app/cyberscape/`: The interactive background animation system
-- `app/components/`: Reusable React components
-- `app/lib/`: Utility functions and configurations
-- `src/`: Content files (blog posts, projects, resume)
-- `tests/`: Test files and mocks
-- `public/`: Static assets
-- `scripts/`: Utility scripts
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or later recommended)
-- pnpm (v10+)
-
-### Installation
-
-1. Clone the repository:
-
-   ```
-   git clone https://github.com/hyperb1iss/hyperbliss.tech.git
-   cd hyperbliss.tech
-   ```
-
-2. Install dependencies:
-
-   ```
-   pnpm install
-   ```
-
-3. Run the development server:
-
-   ```
-   pnpm dev
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser to see
-   the result.
-
-## 🧪 Testing and Linting
-
-### Testing
-
-The project uses Jest and React Testing Library for testing. Tests are located
-in the `tests/` directory.
-
-Available test commands:
-
-- `pnpm test`: Run all tests
-- `pnpm test:watch`: Run tests in watch mode
-- `pnpm test:seo`: Run SEO-specific tests
-- `pnpm test:seo:watch`: Run SEO tests in watch mode
-
-### Linting
-
-ESLint is configured for code quality and consistency. The project uses the
-Next.js ESLint configuration as a base with TypeScript support.
-
-Available lint commands:
-
-- `pnpm lint`: Check code with Biome
-- `pnpm lint:fix`: Automatically fix linting issues
-- `pnpm format`: Format code with Biome + Prettier
-- `pnpm format:check`: Check formatting
-
-### Test Setup
-
-The project uses the following testing libraries and configurations:
-
-- Jest with SWC for fast TypeScript transformation
-- React Testing Library for component testing
-- Jest environment jsdom for DOM simulation
-- Custom test setup with path aliases for simplified imports
-
-Test files should be placed in the `tests/` directory with the `.test.ts` or
-`.test.tsx` extension.
-
-## 🌠 CyberScape: Immersive Interactive Background
-
-CyberScape is a custom-built, interactive background animation that brings the
-cyberpunk aesthetic of hyperbliss.tech to life. It creates a dynamic, responsive
-environment that reacts to user interactions and adds depth to the overall user
-experience.
-
-### Key Features of CyberScape
-
-- **Interactive Particles**: A field of glowing particles that respond to cursor
-  movements.
-- **Vector Shapes**: 3D wireframe shapes (cubes, pyramids, stars) floating in
-  space.
-- **Dynamic Connections**: Lines connecting nearby particles to create a network
-  effect.
-- **Glitch Effects**: Occasional glitch animations for an authentic cyberpunk
-  feel.
-- **Responsive Design**: Adapts to different screen sizes and device
-  capabilities.
-
-### How CyberScape Works
-
-1. **Initialization**: The `initializeCyberScape` function sets up the canvas
-   and initializes particles and shapes.
-
-2. **Animation Loop**: A continuous loop updates and renders all elements:
-   - Particles and shapes move and rotate.
-   - Connections between particles are calculated and drawn.
-   - Glitch effects are randomly applied.
-
-3. **User Interaction**: The animation responds to mouse movements when the
-   cursor is over the header area.
-
-4. **Performance Optimization**: Various techniques are used to ensure smooth
-   performance:
-   - Throttled event listeners.
-   - Efficient rendering techniques.
-   - Adjusting the number of elements based on screen size.
-
-5. **Visual Effects**:
-   - Dynamic color transitions.
-   - Glow effects on particles and shapes.
-   - Chromatic aberration and CRT effects during glitch animations.
-
-### CyberScape Components
-
-- `CyberScape.ts`: Main controller for the animation.
-- `Particle.ts`: Defines the behavior of individual particles.
-- `VectorShape.ts`: Manages the 3D vector shapes.
-- `CyberScapeUtils.ts`: Utility functions for colors, projections, and more.
-- `glitchEffects.ts`: Implements various glitch and distortion effects.
-
-CyberScape exemplifies the fusion of art and technology, creating an engaging
-and visually stunning backdrop for the hyperbliss.tech experience.
-
-## 🎨 Styling
-
-The project uses Panda CSS, a zero-runtime CSS-in-JS library with template
-literal syntax, for styling. Global styles and design tokens are defined in the
-Panda configuration and `src/app/styles/globals.css`. The color scheme focuses
-on purple hues with complementary colors:
-
-- Primary: `#a259ff`
-- Secondary: `#ff75d8`
-- Accent: `#00fff0`
-- Background: `#0a0a14`
-- Text: `#e0e0e0`
-
-## 📝 Content Management
-
-Blog posts and project descriptions are managed through Markdown files located
-in the `src/posts/` and `src/projects/` directories respectively. Each Markdown
-file includes frontmatter for metadata.
-
-## 🔍 SEO and Analytics
-
-SEO defaults are managed with Next.js' built-in metadata API via
-`app/lib/metadata.ts`. Google Analytics is integrated using
-`nextjs-google-analytics`.
-
-## 🌟 Key Components
-
-### Header (`Header.tsx`)
-
-Main navigation component with animated logo and responsive design.
-
-### Footer (`Footer.tsx`)
-
-Displays social media links and copyright information.
-
-### PageWrapper (`PageWrapper.tsx`)
-
-Handles page transitions and layout consistency.
-
-### BlogList (`BlogList.tsx`) & BlogPost (`BlogPost.tsx`)
-
-Render blog content with a grid layout and individual post display.
-
-### ProjectList (`ProjectList.tsx`) & ProjectDetail (`ProjectDetail.tsx`)
-
-Display project information in a grid and detailed view respectively.
-
-### MainContent (`MainContent.tsx`)
-
-Manages main content area and page transitions.
-
-### AboutPageContent (`AboutPageContent.tsx`)
-
-Renders the About page with profile information.
-
-### ResumePageContent (`ResumePageContent.tsx`)
-
-Displays resume information from Markdown content.
-
-## 🚀 Deployment
-
-The site is configured for deployment on Netlify with a standalone output mode:
-
-1. Connect your GitHub repository to Netlify.
-2. Set the build command to `pnpm build`.
-3. Set the publish directory to `out`.
-4. Configure environment variables as needed.
-
-Netlify will automatically deploy the site on push to the main branch.
-
-## 🧙‍♀️ Join The Coven
-
-Contributions, issues, and feature requests are welcome! Check out the
-[issues page](https://github.com/hyperb1iss/hyperbliss.tech/issues) to join the
-quest.
+## 🌠 CyberScape
+
+The header isn't just a gradient. It's a custom particle system with roots in
+the 8-bit demoscene: gl-matrix for 3D math, Canvas2D for rendering, particles
+that drift and connect, wireframe shapes that rotate in space, glitch effects
+that fire at random, and chromatic aberration for that authentic CRT feel. The
+whole thing adapts to screen size and device capability, so it looks good
+everywhere without melting your phone.
+
+## 📝 Content
+
+Blog posts and project pages are markdown files in `content/` with YAML
+frontmatter. Page configs (home, about) are JSON. Everything is read from disk
+at build time with gray-matter and rendered with react-markdown + remark-gfm. No
+CMS, no database, no cloud dependency. Just files.
+
+## 🎨 Color Palette
+
+```
+Cosmic Purple   #a259ff    Primary brand
+Neon Pink       #ff75d8    Accent energy
+Digital Cyan    #00fff0    Tech highlight
+Void Black      #0a0a14    Background depth
+```
 
 ## 📜 License
 
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-You are free to:
-
-- **Share** — Copy and redistribute the material in any medium or format
-- **Adapt** — Remix, transform, and build upon the material
-
-Under the following terms:
-
-- **Attribution** — You must give appropriate credit, provide a link to the
-  license, and indicate if changes were made.
-- **NonCommercial** — You may not use the material for commercial purposes.
-- **ShareAlike** — If you remix, transform, or build upon the material, you must
-  distribute your contributions under the same license as the original.
-
-For the full text of this license, see the
-[complete license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ---
 
 <div align="center">
 
 Created by [Stefanie Jane 🌠](https://hyperbliss.tech)
+
+If you find this interesting,
+[check out my other projects](https://github.com/hyperb1iss) or
+[sponsor my work](https://github.com/sponsors/hyperb1iss).
 
 </div>
