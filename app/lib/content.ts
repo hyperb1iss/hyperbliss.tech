@@ -1,5 +1,5 @@
 // app/lib/content.ts
-// Filesystem-based content library — replaces TinaCMS GraphQL client
+// Filesystem-based content library
 
 import fs from 'node:fs/promises'
 import path from 'node:path'

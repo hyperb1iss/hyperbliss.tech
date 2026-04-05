@@ -10,7 +10,6 @@ export const metadata = {
 
 export default async function ResumePage() {
   // Read the raw markdown file directly to preserve formatting
-  // TinaCMS AST conversion loses complex nested markdown structures
   const resumePath = path.join(process.cwd(), 'content/resume/resume.md')
   const rawContent = await fs.readFile(resumePath, 'utf-8')
 

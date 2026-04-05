@@ -399,7 +399,8 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
         </motion.h1>
 
         <motion.p className={subtitleStyles} variants={itemVariants}>
-          {heroContent.subtitle ?? 'I build software that gives people control over their technology. Open source all the way down.'}
+          {heroContent.subtitle ??
+            'I build software that gives people control over their technology. Open source all the way down.'}
         </motion.p>
 
         <motion.div variants={itemVariants}>
