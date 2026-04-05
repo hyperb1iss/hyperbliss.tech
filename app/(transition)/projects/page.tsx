@@ -1,7 +1,7 @@
 // app/(transition)/projects/page.tsx
 import ProjectsPageContent from '../../components/ProjectsPageContent'
+import { getAllProjects } from '../../lib/content'
 import { getReleasesForProjects } from '../../lib/github'
-import { getAllProjects } from '../../lib/tina'
 
 export default async function Projects() {
   const projects = await getAllProjects()

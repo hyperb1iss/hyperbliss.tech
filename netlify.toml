@@ -9,5 +9,4 @@ package = "@netlify/plugin-nextjs"
 NEXT_PUBLIC_APP_URL = "https://hyperb1iss.netlify.app"
 NODE_VERSION = "22"
 NEXT_TELEMETRY_DISABLED = "1"
-# Exclude build artifacts from secret scanning - TinaCMS embeds token for SSR
-SECRETS_SCAN_OMIT_PATHS = "tina/__generated__/**,.next/server/**,.netlify/**"
+SECRETS_SCAN_OMIT_PATHS = ".next/server/**,.netlify/**"

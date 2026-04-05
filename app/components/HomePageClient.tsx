@@ -2,15 +2,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { tinaField } from 'tinacms/dist/react'
 import { styled } from '../../styled-system/jsx'
-import type {
-  PagesQuery,
-  PostsConnectionQuery,
-  ProjectsConnectionQuery,
-  SiteConfigQuery,
-} from '../../tina/__generated__/types'
-import { useTinaSafe } from '../lib/useTinaSafe'
+import type { PageData, PostSummary, ProjectSummary, SiteConfig } from '../lib/content'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
 import HeroSectionSilk from './HeroSectionSilk'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
@@ -20,26 +13,10 @@ import LatestBlogPostsSilk from './LatestBlogPostsSilk'
 // ═══════════════════════════════════════════════════════════════════════════
 
 interface HomePageClientProps {
-  pageData: {
-    data: PagesQuery
-    query: string
-    variables: { relativePath: string }
-  }
-  siteConfigData?: {
-    data: SiteConfigQuery
-    query: string
-    variables: { relativePath: string }
-  } | null
-  postsData: {
-    data: PostsConnectionQuery
-    query: string
-    variables: Record<string, unknown>
-  }
-  projectsData: {
-    data: ProjectsConnectionQuery
-    query: string
-    variables: Record<string, unknown>
-  }
+  pageData: PageData
+  siteConfig?: SiteConfig | null
+  posts: PostSummary[]
+  projects: ProjectSummary[]
 }
 
 interface BlogPost {
@@ -49,17 +26,6 @@ interface BlogPost {
     excerpt: string
     date: string
     tags: string[]
-  }
-}
-
-// Helper type for post transformation
-interface PostCandidate {
-  slug: string
-  frontmatter: {
-    date: string
-    excerpt: string
-    tags: string[]
-    title: string
   }
 }
 
@@ -120,77 +86,36 @@ const SidebarWrapper = styled.aside`
 `
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Helper Functions
-// ═══════════════════════════════════════════════════════════════════════════
-
-function formatDisplayTitle(emoji: string | null | undefined, title: string): string {
-  return emoji ? `${emoji} ${title}` : title
-}
-
-function getSlugFromRelativePath(relativePath: string): string {
-  return relativePath.replace(/\.md$/, '')
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // Component
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function HomePageClient({ pageData, siteConfigData, postsData, projectsData }: HomePageClientProps) {
+export function HomePageClient({ pageData, siteConfig, posts, projects }: HomePageClientProps) {
   const [isMobile, setIsMobile] = useState(false)
 
-  // Enable live editing for all data sources
-  const { data: tinaPageData } = useTinaSafe(pageData)
-  const { data: tinaSiteConfigData } = useTinaSafe(
-    siteConfigData ?? { data: {} as SiteConfigQuery, query: '', variables: { relativePath: '' } },
-  )
-  const { data: tinaPostsData } = useTinaSafe(postsData)
-  const { data: tinaProjectsData } = useTinaSafe(projectsData)
-
-  // Extract data from Tina responses
-  const page = tinaPageData.pages
-  const hero = page?.hero
-  const techTags = tinaSiteConfigData.siteConfig?.techTags?.filter((t): t is string => t !== null) ?? null
+  const hero = pageData.hero
+  const techTags = siteConfig?.techTags ?? null
 
   // Transform posts for display
-  const latestPosts: BlogPost[] = (tinaPostsData.postsConnection?.edges ?? [])
-    .slice(0, 5)
-    .map((edge): PostCandidate | null => {
-      const node = edge?.node
-      if (!node) return null
-      return {
-        frontmatter: {
-          date: node.date ?? '',
-          excerpt: node.excerpt ?? '',
-          tags: (node.tags ?? []).filter((t): t is string => t !== null),
-          title: formatDisplayTitle(node.emoji, node.title),
-        },
-        slug: getSlugFromRelativePath(node._sys.relativePath),
-      }
-    })
-    .filter((p): p is PostCandidate => p !== null)
-    .sort((a, b) => {
-      if (!a.frontmatter.date && !b.frontmatter.date) return 0
-      if (!a.frontmatter.date) return 1
-      if (!b.frontmatter.date) return -1
-      return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
-    })
+  const latestPosts: BlogPost[] = posts.slice(0, 5).map((post) => ({
+    frontmatter: {
+      date: post.date ?? '',
+      excerpt: post.excerpt ?? '',
+      tags: (post.tags ?? []).filter((t): t is string => t !== null),
+      title: post.displayTitle,
+    },
+    slug: post.slug,
+  }))
 
   // Transform projects for display
-  const projects: Project[] = (tinaProjectsData.projectsConnection?.edges ?? [])
-    .map((edge) => {
-      const node = edge?.node
-      if (!node) return null
-      return {
-        frontmatter: {
-          description: node.description ?? '',
-          github: node.github ?? '',
-          tags: (node.tags ?? []).filter((t): t is string => t !== null),
-          title: formatDisplayTitle(node.emoji, node.title),
-        },
-        slug: getSlugFromRelativePath(node._sys.relativePath),
-      }
-    })
-    .filter((p): p is Project => p !== null)
+  const projectsList: Project[] = projects.map((project) => ({
+    frontmatter: {
+      description: project.description ?? '',
+      github: project.github ?? '',
+      tags: (project.tags ?? []).filter((t): t is string => t !== null),
+      title: project.displayTitle,
+    },
+    slug: project.slug,
+  }))
 
   useEffect(() => {
     const checkIsMobile = () => {
@@ -205,7 +130,7 @@ export function HomePageClient({ pageData, siteConfigData, postsData, projectsDa
     }
   }, [])
 
-  // Prepare hero data with tinaField markers - normalize undefined to null
+  // Prepare hero data — normalize undefined to null
   const heroData = hero
     ? {
         name: hero.name ?? null,
@@ -220,18 +145,18 @@ export function HomePageClient({ pageData, siteConfigData, postsData, projectsDa
     : null
 
   return (
-    <ContentWrapper data-tina-field={tinaField(page, 'hero')}>
+    <ContentWrapper>
       {isMobile ? (
         <>
-          <HeroSectionSilk hero={heroData} techTags={techTags} tinaPage={page} />
+          <HeroSectionSilk hero={heroData} techTags={techTags} />
           <LatestBlogPostsSilk posts={latestPosts} />
-          <FeaturedProjectsSectionSilk projects={projects} />
+          <FeaturedProjectsSectionSilk projects={projectsList} />
         </>
       ) : (
         <DesktopLayout>
           <MainContent>
-            <HeroSectionSilk hero={heroData} techTags={techTags} tinaPage={page} />
-            <FeaturedProjectsSectionSilk projects={projects} />
+            <HeroSectionSilk hero={heroData} techTags={techTags} />
+            <FeaturedProjectsSectionSilk projects={projectsList} />
           </MainContent>
           <SidebarWrapper>
             <LatestBlogPostsSilk posts={latestPosts} />

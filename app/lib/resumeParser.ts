@@ -285,7 +285,7 @@ export function parseResume(markdown: string): ParsedResume {
       } else if (currentH2Section === 'projects') {
         // Parse project formats:
         // 1. Original: **[Name](url)**: Description (bold wrapping link)
-        // 2. TinaCMS converted: [**Name**](url): Description (link with bold text)
+        // 2. Alternate: [**Name**](url): Description (link with bold text)
         // 3. Complex: **[Name](url)/[Name2](url2)**: Description
 
         // Try original format: **...**: followed by description
@@ -308,7 +308,7 @@ export function parseResume(markdown: string): ParsedResume {
             })
           }
         } else {
-          // Try TinaCMS format: [**Name**](url): Description or [...](url)**:
+          // Try alternate format: [**Name**](url): Description or [...](url)**:
           // Match a markdown link followed by optional markers and colon
           const linkMatch = itemText.match(/\[([^\]]+)\]\(([^)]+)\)[^:]*:\s*(.*)/)
           if (linkMatch) {

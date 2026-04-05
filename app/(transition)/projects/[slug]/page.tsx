@@ -1,8 +1,8 @@
 // app/(transition)/projects/[slug]/page.tsx
 import { ResolvingMetadata } from 'next'
-import ProjectDetailTina from '../../../components/ProjectDetailTina'
+import ProjectDetailView from '../../../components/ProjectDetailView'
+import { getAllProjectSlugs, getProject } from '../../../lib/content'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getAllProjectSlugs, getProjectWithQuery } from '../../../lib/tina'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps, parent: ResolvingM
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { project } = await getProjectWithQuery(slug)
+  const project = await getProject(slug)
 
   const frontmatter: ProjectFrontmatter = {
     description: project.description ?? '',
@@ -30,17 +30,14 @@ export default async function ProjectPage({ params }: PageProps) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { project, query, variables, data } = await getProjectWithQuery(slug)
+  const project = await getProject(slug)
 
   return (
-    <ProjectDetailTina
+    <ProjectDetailView
       body={project.body}
-      data={data}
       github={project.github ?? ''}
-      query={query}
       tags={(project.tags ?? []).filter((t): t is string => t !== null)}
       title={project.displayTitle}
-      variables={variables}
     />
   )
 }

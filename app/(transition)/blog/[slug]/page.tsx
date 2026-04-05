@@ -1,10 +1,10 @@
 // app/(transition)/blog/[slug]/page.tsx
 import { ResolvingMetadata } from 'next'
-import BlogPostTina from '../../../components/BlogPostTina'
+import BlogPost from '../../../components/BlogPost'
 import StructuredData from '../../../components/StructuredData'
+import { getAllPostSlugs, getPost } from '../../../lib/content'
 import { type BlogFrontmatter, generateBlogMetadata } from '../../../lib/generateMetadata'
 import { generateArticleSchema, generateBreadcrumbSchema } from '../../../lib/structuredData'
-import { getAllPostSlugs, getPostWithQuery } from '../../../lib/tina'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps, parent: ResolvingM
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { post } = await getPostWithQuery(slug)
+  const post = await getPost(slug)
 
   const frontmatter: BlogFrontmatter = {
     author: post.author ?? undefined,
@@ -33,7 +33,7 @@ export default async function PostPage({ params }: PageProps) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
-  const { post, query, variables, data } = await getPostWithQuery(slug)
+  const post = await getPost(slug)
 
   const articleSchema = generateArticleSchema(
     post.displayTitle,
@@ -53,15 +53,12 @@ export default async function PostPage({ params }: PageProps) {
   return (
     <>
       <StructuredData data={[articleSchema, breadcrumbSchema]} />
-      <BlogPostTina
+      <BlogPost
         author={post.author ?? undefined}
-        body={post.body}
-        data={data}
+        content={post.body ?? ''}
         date={post.date ?? ''}
-        query={query}
         tags={(post.tags ?? []).filter((t): t is string => t !== null)}
         title={post.displayTitle}
-        variables={variables}
       />
     </>
   )

@@ -88,22 +88,7 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
-  // Rewrites for TinaCMS admin
-  async rewrites() {
-    return [
-      {
-        destination: '/admin/index.html',
-        source: '/admin/',
-      },
-    ]
-  },
-  // Externalize packages to prevent HMR/bundling issues with Turbopack
-  serverExternalPackages: ['@tinacms/mdx', 'tinacms'],
-
   // Ensure consistent URL format (with or without trailing slashes)
   trailingSlash: true,
-
-  // Force all packages to use our React (prevents TinaCMS bundled React conflicts)
-  // pnpm overrides handle this at install time; Turbopack respects those
 }
 export default nextConfig

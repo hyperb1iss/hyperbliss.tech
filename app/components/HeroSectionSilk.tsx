@@ -3,11 +3,9 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useRef } from 'react'
-import { tinaField } from 'tinacms/dist/react'
-import type { HeroSection } from '@/lib/tina'
+import type { HeroSection } from '@/lib/content'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
-import type { PagesQuery } from '../../tina/__generated__/types'
 import { usePageLoad } from './PageLoadOrchestrator'
 import { SparklingName } from './SparklingName'
 import { StarButton } from './StarComponents'
@@ -15,7 +13,6 @@ import { StarButton } from './StarComponents'
 interface HeroSectionSilkProps {
   hero?: HeroSection | null
   techTags?: string[] | null
-  tinaPage?: PagesQuery['pages'] | null
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -312,13 +309,12 @@ const DEFAULT_TECH_TAGS = [
   'TypeScript',
 ]
 
-export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectionSilkProps) {
+export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { isInitialLoad } = usePageLoad()
 
   const heroContent = { ...DEFAULT_HERO, ...hero }
   const tags = techTags ?? DEFAULT_TECH_TAGS
-  const tinaHero = tinaPage?.hero
 
   // Particle animation
   useEffect(() => {
@@ -411,22 +407,14 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
       <motion.div className={backgroundGradientStyles} />
 
       <motion.div animate="visible" className={contentContainerStyles} initial="hidden" variants={containerVariants}>
-        <motion.h1
-          className={titleStyles}
-          data-tina-field={tinaHero ? tinaField(tinaHero, 'welcomeText') : undefined}
-          variants={itemVariants}
-        >
+        <motion.h1 className={titleStyles} variants={itemVariants}>
           {heroContent.welcomeText && <TitleStatic>{heroContent.welcomeText} </TitleStatic>}
           <TitleGradient>hyperbliss</TitleGradient>
         </motion.h1>
 
-        <motion.p
-          className={subtitleStyles}
-          data-tina-field={tinaHero ? tinaField(tinaHero, 'subtitle') : undefined}
-          variants={itemVariants}
-        >
+        <motion.p className={subtitleStyles} variants={itemVariants}>
           I'm{' '}
-          <span data-tina-field={tinaHero ? tinaField(tinaHero, 'name') : undefined}>
+          <span>
             <SparklingName name={heroContent.name ?? 'Stefanie Jane'} sparkleCount={8} />
           </span>
           ,{' '}
@@ -455,21 +443,13 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
         </motion.div>
 
         <motion.div className={ctaSectionStyles} variants={itemVariants}>
-          <Link
-            data-tina-field={tinaHero ? tinaField(tinaHero, 'primaryCtaText') : undefined}
-            href={heroContent.primaryCtaLink ?? '/projects'}
-            style={{ textDecoration: 'none' }}
-          >
+          <Link href={heroContent.primaryCtaLink ?? '/projects'} style={{ textDecoration: 'none' }}>
             <StarButton size="lg" variant="primary">
               {heroContent.primaryCtaText ?? 'View Projects'}
             </StarButton>
           </Link>
 
-          <Link
-            data-tina-field={tinaHero ? tinaField(tinaHero, 'secondaryCtaText') : undefined}
-            href={heroContent.secondaryCtaLink ?? '/about'}
-            style={{ textDecoration: 'none' }}
-          >
+          <Link href={heroContent.secondaryCtaLink ?? '/about'} style={{ textDecoration: 'none' }}>
             <motion.div className={secondaryButtonStyles} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               {heroContent.secondaryCtaText ?? 'Learn More'}
             </motion.div>
@@ -484,9 +464,7 @@ export default function HeroSectionSilk({ hero, techTags, tinaPage }: HeroSectio
         transition={{ delay: 1.5 }}
       >
         <motion.div className={scrollMouseStyles} />
-        <span data-tina-field={tinaHero ? tinaField(tinaHero, 'scrollText') : undefined}>
-          {heroContent.scrollText ?? 'Scroll to explore'}
-        </span>
+        <span>{heroContent.scrollText ?? 'Scroll to explore'}</span>
       </motion.div>
     </HeroWrapper>
   )

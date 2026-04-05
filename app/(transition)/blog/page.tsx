@@ -1,6 +1,6 @@
 // app/(transition)/blog/page.tsx
 import BlogList from '../../components/BlogList'
-import { getAllPosts } from '../../lib/tina'
+import { getAllPosts } from '../../lib/content'
 
 export default async function Blog() {
   const posts = await getAllPosts()

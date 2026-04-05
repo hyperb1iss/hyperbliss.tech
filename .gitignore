@@ -136,9 +136,6 @@ target
 # Claude configuration
 .claude/
 
-# TinaCMS generated files
-tina/__generated__
-public/admin
 
 
 ## Panda
