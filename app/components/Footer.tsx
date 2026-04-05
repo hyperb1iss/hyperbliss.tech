@@ -45,14 +45,14 @@ const FooterContainer = styled.footer`
 const FooterContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-6);
 
   @media (max-width: 900px) {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    justify-items: center;
     gap: var(--space-6);
   }
 `
@@ -171,9 +171,11 @@ const RSSLink = styled(Link)`
 const InfoSection = styled.div`
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 
   @media (max-width: 900px) {
     order: 3;
+    justify-content: center;
   }
 `
 
