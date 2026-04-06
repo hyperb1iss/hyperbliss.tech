@@ -10,3 +10,8 @@ NEXT_PUBLIC_APP_URL = "https://hyperb1iss.netlify.app"
 NODE_VERSION = "22"
 NEXT_TELEMETRY_DISABLED = "1"
 SECRETS_SCAN_OMIT_PATHS = ".next/server/**,.netlify/**"
+
+[[redirects]]
+from = "/blog/2026.03.01_terminal-renaissance"
+to = "/blog/2026.04.04_terminal-renaissance"
+status = 301
