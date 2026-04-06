@@ -158,19 +158,18 @@ export const StyledUl = styled.ul`
   gap: 1.2rem;
 
   li {
-    padding: 0;
-
     &::before {
       content: '';
       width: 1rem;
       height: 1rem;
       border-radius: 0.35rem;
-      margin-top: 0.6rem;
+      position: absolute;
+      left: 0;
+      top: 0.6rem;
       background: radial-gradient(circle at 30% 30%, #fff 0%, #ff75d8 45%, rgba(162, 89, 255, 0.3) 100%);
       box-shadow:
         0 0 12px rgba(255, 117, 216, 0.65),
         0 0 24px rgba(162, 89, 255, 0.45);
-      flex-shrink: 0;
     }
   }
 
@@ -201,7 +200,7 @@ export const StyledOl = styled.ol`
   gap: 1.3rem;
 
   li {
-    padding: 0;
+    padding-left: 3.5rem;
     counter-increment: silk-counter;
 
     &::before {
@@ -220,8 +219,9 @@ export const StyledOl = styled.ol`
       box-shadow:
         0 0 20px rgba(255, 117, 216, 0.6),
         inset 0 0 12px rgba(236, 72, 153, 0.35);
-      margin-top: 0.1rem;
-      flex-shrink: 0;
+      position: absolute;
+      left: 0;
+      top: 0.1rem;
     }
   }
 
@@ -241,9 +241,8 @@ export const StyledLi = styled.li`
   line-height: 1.75;
   color: rgba(224, 224, 224, 0.92);
   letter-spacing: 0.01em;
-  display: flex;
-  gap: 1.1rem;
-  align-items: flex-start;
+  position: relative;
+  padding-left: 2.1rem;
 
   p {
     margin: 0;
