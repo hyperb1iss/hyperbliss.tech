@@ -214,8 +214,7 @@ export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjec
             </TitleLink>
           </motion.h2>
           <motion.p className={subtitleStyles}>
-            Exploring the intersection of creativity and technology through innovative solutions and experimental
-            interfaces.
+            Things I've built, broken, and shipped. Open source tools, creative experiments, and systems that do real work.
           </motion.p>
         </motion.div>
 
