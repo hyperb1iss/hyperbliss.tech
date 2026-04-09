@@ -1,6 +1,6 @@
 // app/lib/socials.ts
 import { IconType } from 'react-icons'
-import { FaBluesky, FaGithub, FaInstagram, FaLinkedin, FaMastodon, FaSpotify } from 'react-icons/fa6'
+import { FaBluesky, FaGithub, FaHeart, FaInstagram, FaLinkedin, FaMastodon, FaSpotify } from 'react-icons/fa6'
 
 /**
  * Interface for social media link objects
@@ -40,6 +40,11 @@ export const SOCIAL_LINKS: SocialLink[] = [
     href: 'https://github.com/hyperb1iss',
     icon: FaGithub,
     label: 'GitHub',
+  },
+  {
+    href: 'https://github.com/sponsors/hyperb1iss',
+    icon: FaHeart,
+    label: 'Sponsor',
   },
   {
     href: 'https://open.spotify.com/user/12173574470',

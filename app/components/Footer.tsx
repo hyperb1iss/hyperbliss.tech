@@ -229,7 +229,14 @@ const Footer: React.FC = () => {
 
         <SocialSection>
           {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
-            <SocialLink aria-label={label} href={href} key={label} rel="noopener noreferrer" target="_blank">
+            <SocialLink
+              aria-label={label}
+              href={href}
+              key={label}
+              rel="noopener noreferrer"
+              style={label === 'Sponsor' ? { color: '#ff75d8' } : undefined}
+              target="_blank"
+            >
               <Icon />
             </SocialLink>
           ))}
