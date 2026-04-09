@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { styled } from '../../styled-system/jsx'
-import type { PageData, PostSummary, ProjectSummary, SiteConfig } from '../lib/content'
+import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } from '../lib/content'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
 import HeroSectionSilk from './HeroSectionSilk'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
@@ -17,10 +17,12 @@ interface HomePageClientProps {
   siteConfig?: SiteConfig | null
   posts: PostSummary[]
   projects: ProjectSummary[]
+  labExperiments?: LabSummary[]
 }
 
 interface BlogPost {
   slug: string
+  linkPrefix?: string
   frontmatter: {
     title: string
     excerpt: string
@@ -89,22 +91,37 @@ const SidebarWrapper = styled.aside`
 // Component
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function HomePageClient({ pageData, siteConfig, posts, projects }: HomePageClientProps) {
+export function HomePageClient({ pageData, siteConfig, posts, projects, labExperiments = [] }: HomePageClientProps) {
   const [isMobile, setIsMobile] = useState(false)
 
   const hero = pageData.hero
   const techTags = siteConfig?.techTags ?? null
 
-  // Transform posts for display
-  const latestPosts: BlogPost[] = posts.slice(0, 5).map((post) => ({
-    frontmatter: {
-      date: post.date ?? '',
-      excerpt: post.excerpt ?? '',
-      tags: (post.tags ?? []).filter((t): t is string => t !== null),
-      title: post.displayTitle,
-    },
-    slug: post.slug,
-  }))
+  // Merge blog posts and lab experiments, sorted by date, take latest 5
+  const allContent = [
+    ...posts.map((post) => ({
+      frontmatter: {
+        date: post.date ?? '',
+        excerpt: post.excerpt ?? '',
+        tags: (post.tags ?? []).filter((t): t is string => t !== null),
+        title: post.displayTitle,
+      },
+      linkPrefix: '/blog',
+      slug: post.slug,
+    })),
+    ...labExperiments.map((exp) => ({
+      frontmatter: {
+        date: exp.date ?? '',
+        excerpt: exp.excerpt ?? '',
+        tags: (exp.tags ?? []).filter((t): t is string => t !== null),
+        title: exp.displayTitle,
+      },
+      linkPrefix: '/lab',
+      slug: exp.slug,
+    })),
+  ].sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+
+  const latestPosts: BlogPost[] = allContent.slice(0, 5)
 
   // Transform projects for display
   const projectsList: Project[] = projects.map((project) => ({

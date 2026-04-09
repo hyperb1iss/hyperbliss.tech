@@ -113,6 +113,86 @@ export async function getPost(slug: string): Promise<PostDetail> {
 }
 
 // ============================================================
+// Lab Experiments
+// ============================================================
+
+export interface LabSummary {
+  slug: string
+  emoji: string | null
+  title: string
+  displayTitle: string
+  date: string | null
+  author: string | null
+  excerpt: string | null
+  tags: (string | null)[] | null
+  status: string | null
+}
+
+export interface LabDetail {
+  slug: string
+  emoji: string | null
+  title: string
+  displayTitle: string
+  date: string | null
+  author: string | null
+  excerpt: string | null
+  tags: (string | null)[] | null
+  status: string | null
+  body: string | null
+}
+
+export async function getAllLabSlugs(): Promise<string[]> {
+  const files = await fs.readdir(contentPath('lab'))
+  return files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''))
+}
+
+export async function getAllLab(): Promise<LabSummary[]> {
+  const slugs = await getAllLabSlugs()
+  const experiments: LabSummary[] = []
+
+  for (const slug of slugs) {
+    const { data } = await readMarkdown(`lab/${slug}.md`)
+    experiments.push({
+      author: (data.author as string) ?? null,
+      date: (data.date as string) ?? null,
+      displayTitle: formatDisplayTitle(data.emoji as string | undefined, data.title as string),
+      emoji: (data.emoji as string) ?? null,
+      excerpt: (data.excerpt as string) ?? null,
+      slug,
+      status: (data.status as string) ?? null,
+      tags: (data.tags as string[]) ?? null,
+      title: data.title as string,
+    })
+  }
+
+  experiments.sort((a, b) => {
+    if (!a.date && !b.date) return 0
+    if (!a.date) return 1
+    if (!b.date) return -1
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
+  })
+
+  return experiments
+}
+
+export async function getLabExperiment(slug: string): Promise<LabDetail> {
+  const { data, content } = await readMarkdown(`lab/${slug}.md`)
+
+  return {
+    author: (data.author as string) ?? null,
+    body: content || null,
+    date: (data.date as string) ?? null,
+    displayTitle: formatDisplayTitle(data.emoji as string | undefined, data.title as string),
+    emoji: (data.emoji as string) ?? null,
+    excerpt: (data.excerpt as string) ?? null,
+    slug,
+    status: (data.status as string) ?? null,
+    tags: (data.tags as string[]) ?? null,
+    title: data.title as string,
+  }
+}
+
+// ============================================================
 // Projects
 // ============================================================
 

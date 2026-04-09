@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import LabList from '../../components/LabList'
+import { getAllLab } from '../../lib/content'
 
 const BASE_URL = 'https://hyperbliss.tech'
 
@@ -27,6 +28,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Lab() {
-  return <LabList />
+export default async function Lab() {
+  const experiments = await getAllLab()
+  return <LabList experiments={experiments} />
 }

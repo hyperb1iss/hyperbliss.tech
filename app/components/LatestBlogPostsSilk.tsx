@@ -10,6 +10,7 @@ import { usePageLoad } from './PageLoadOrchestrator'
 
 interface BlogPost {
   slug: string
+  linkPrefix?: string
   frontmatter: {
     title: string
     excerpt: string
@@ -211,7 +212,7 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
                   date={post.frontmatter.date}
                   description={post.frontmatter.excerpt}
                   index={index}
-                  link={`/blog/${post.slug}`}
+                  link={`${post.linkPrefix ?? '/blog'}/${post.slug}`}
                   tags={post.frontmatter.tags}
                   title={post.frontmatter.title}
                 />

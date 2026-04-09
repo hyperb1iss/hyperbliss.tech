@@ -17,13 +17,13 @@ function ensureTrailingSlash(url: string): string {
 export async function GET(): Promise<Response> {
   const baseUrl = 'https://hyperbliss.tech'
 
-  // Get all blog posts and projects
-  const [blogSlugs, projectSlugs] = await Promise.all([
+  // Get all content slugs
+  const [blogSlugs, projectSlugs, labSlugs] = await Promise.all([
     getAllMarkdownSlugs('content/posts'),
     getAllMarkdownSlugs('content/projects'),
+    getAllMarkdownSlugs('content/lab'),
   ])
 
-  // Generate URLs for blog posts
   const blogUrls = blogSlugs.map((slug) => ({
     changeFrequency: 'weekly' as const,
     lastModified: new Date(),
@@ -31,7 +31,6 @@ export async function GET(): Promise<Response> {
     url: ensureTrailingSlash(`${baseUrl}/blog/${slug}`),
   }))
 
-  // Generate URLs for projects
   const projectUrls = projectSlugs.map((slug) => ({
     changeFrequency: 'monthly' as const,
     lastModified: new Date(),
@@ -39,14 +38,15 @@ export async function GET(): Promise<Response> {
     url: ensureTrailingSlash(`${baseUrl}/projects/${slug}`),
   }))
 
-  // Static pages
+  const labUrls = labSlugs.map((slug) => ({
+    changeFrequency: 'monthly' as const,
+    lastModified: new Date(),
+    priority: 0.8,
+    url: ensureTrailingSlash(`${baseUrl}/lab/${slug}`),
+  }))
+
   const staticPages = [
-    {
-      changeFrequency: 'daily' as const,
-      lastModified: new Date(),
-      priority: 1.0,
-      url: ensureTrailingSlash(baseUrl),
-    },
+    { changeFrequency: 'daily' as const, lastModified: new Date(), priority: 1.0, url: ensureTrailingSlash(baseUrl) },
     {
       changeFrequency: 'weekly' as const,
       lastModified: new Date(),
@@ -71,15 +71,9 @@ export async function GET(): Promise<Response> {
       priority: 0.8,
       url: ensureTrailingSlash(`${baseUrl}/lab`),
     },
-    {
-      changeFrequency: 'monthly' as const,
-      lastModified: new Date(),
-      priority: 0.8,
-      url: ensureTrailingSlash(`${baseUrl}/lab/regex-nightmares`),
-    },
   ]
 
-  const sitemap = [...staticPages, ...blogUrls, ...projectUrls]
+  const sitemap = [...staticPages, ...blogUrls, ...projectUrls, ...labUrls]
 
   // Convert the sitemap array to XML string
   return new Response(

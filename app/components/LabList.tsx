@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { FaArrowRight } from 'react-icons/fa6'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
-import { EXPERIMENTS } from '../lib/experiments'
+import type { LabSummary } from '../lib/content'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 
@@ -179,7 +179,11 @@ const subtitleStyles = css`
   line-height: var(--leading-relaxed);
 `
 
-export default function LabList() {
+interface LabListProps {
+  experiments: LabSummary[]
+}
+
+export default function LabList({ experiments }: LabListProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -210,7 +214,7 @@ export default function LabList() {
           },
         }}
       >
-        {EXPERIMENTS.map((exp, index) => (
+        {experiments.map((exp, index) => (
           <StyledLink href={`/lab/${exp.slug}`} key={exp.slug}>
             <motion.div
               animate={{ opacity: 1, y: 0 }}
@@ -222,15 +226,17 @@ export default function LabList() {
             >
               <div>
                 <div className={emojiStyles}>{exp.emoji}</div>
-                <h3 className={`${titleStyles} card-title`}>{exp.title}</h3>
-                <p className={descStyles}>{exp.description}</p>
-                <div className={tagsStyles}>
-                  {exp.tags.map((tag) => (
-                    <span className={tagStyles} key={tag}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                <h3 className={`${titleStyles} card-title`}>{exp.displayTitle}</h3>
+                <p className={descStyles}>{exp.excerpt}</p>
+                {exp.tags && (
+                  <div className={tagsStyles}>
+                    {exp.tags.filter(Boolean).map((tag) => (
+                      <span className={tagStyles} key={tag}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className={footerStyles}>
                 <div className={buttonStyles}>
