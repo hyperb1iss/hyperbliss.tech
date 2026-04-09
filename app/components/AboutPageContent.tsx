@@ -390,41 +390,6 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
             </BioContent>
           </motion.div>
 
-          {/* Connect Section */}
-          {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={bioCardStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <BioTitle>
-                <FaRocket /> Let&apos;s Connect
-              </BioTitle>
-              {contactIntro && (
-                <BioContent>
-                  <p>{contactIntro}</p>
-                </BioContent>
-              )}
-              {contactReasons && contactReasons.length > 0 && (
-                <ContactGrid>
-                  {contactReasons.map((reason, index) => (
-                    <motion.div
-                      animate={{ opacity: 1, y: 0 }}
-                      className={contactCardStyles}
-                      initial={{ opacity: 0, y: 10 }}
-                      key={reason.title}
-                      transition={{ delay: 0.4 + index * 0.1, duration: 0.4 }}
-                    >
-                      <h4>{reason.title}</h4>
-                      <p>{reason.description}</p>
-                    </motion.div>
-                  ))}
-                </ContactGrid>
-              )}
-            </motion.div>
-          )}
-
           {/* Sponsor Section */}
           <motion.div
             animate={{ opacity: 1, y: 0 }}
@@ -468,6 +433,41 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
               <FaGithub /> Sponsor on GitHub
             </motion.a>
           </motion.div>
+
+          {/* Connect Section */}
+          {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className={bioCardStyles}
+              initial={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <BioTitle>
+                <FaRocket /> Let&apos;s Connect
+              </BioTitle>
+              {contactIntro && (
+                <BioContent>
+                  <p>{contactIntro}</p>
+                </BioContent>
+              )}
+              {contactReasons && contactReasons.length > 0 && (
+                <ContactGrid>
+                  {contactReasons.map((reason, index) => (
+                    <motion.div
+                      animate={{ opacity: 1, y: 0 }}
+                      className={contactCardStyles}
+                      initial={{ opacity: 0, y: 10 }}
+                      key={reason.title}
+                      transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
+                    >
+                      <h4>{reason.title}</h4>
+                      <p>{reason.description}</p>
+                    </motion.div>
+                  ))}
+                </ContactGrid>
+              )}
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </PageLayout>
