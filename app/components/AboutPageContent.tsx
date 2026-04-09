@@ -6,7 +6,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React from 'react'
-import { FaCode, FaEnvelope, FaGithub, FaLinkedin, FaRocket } from 'react-icons/fa6'
+import { FaCode, FaEnvelope, FaGithub, FaHeart, FaLinkedin, FaRocket } from 'react-icons/fa6'
 import type { AboutSection } from '@/lib/content'
 import defaultProfileImage from '../../public/images/profile-image.jpg'
 import { css } from '../../styled-system/css'
@@ -424,6 +424,50 @@ const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
               )}
             </motion.div>
           )}
+
+          {/* Sponsor Section */}
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            className={bioCardStyles}
+            initial={{ opacity: 0, y: 20 }}
+            style={{ borderColor: 'rgba(255, 117, 216, 0.12)', textAlign: 'center' }}
+            transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <BioTitle style={{ justifyContent: 'center' }}>
+              <FaHeart style={{ color: '#ff75d8' }} /> Support My Work
+            </BioTitle>
+            <BioContent>
+              <p style={{ margin: '0 auto var(--space-5)', maxWidth: '480px' }}>
+                If you dig these projects and experiments, sponsoring helps me keep building weird and wonderful open
+                source things.
+              </p>
+            </BioContent>
+            <motion.a
+              href="https://github.com/sponsors/hyperb1iss"
+              rel="noopener noreferrer"
+              style={{
+                alignItems: 'center',
+                background: 'linear-gradient(135deg, #ff75d8, #c084fc)',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: '0 4px 15px rgba(255, 117, 216, 0.3)',
+                color: '#1e1b2e',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                fontFamily: 'var(--font-body)',
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                gap: 'var(--space-2)',
+                padding: 'var(--space-3) var(--space-6)',
+                textDecoration: 'none',
+              }}
+              target="_blank"
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <FaGithub /> Sponsor on GitHub
+            </motion.a>
+          </motion.div>
         </motion.div>
       </motion.div>
     </PageLayout>

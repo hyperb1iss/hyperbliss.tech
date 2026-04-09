@@ -7,7 +7,6 @@ import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } fr
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
 import HeroSectionSilk from './HeroSectionSilk'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
-import SponsorBanner from './SponsorBanner'
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Types
@@ -169,21 +168,17 @@ export function HomePageClient({ pageData, siteConfig, posts, projects, labExper
           <HeroSectionSilk hero={heroData} techTags={techTags} />
           <LatestBlogPostsSilk posts={latestPosts} />
           <FeaturedProjectsSectionSilk projects={projectsList} />
-          <SponsorBanner />
         </>
       ) : (
-        <>
-          <DesktopLayout>
-            <MainContent>
-              <HeroSectionSilk hero={heroData} techTags={techTags} />
-              <FeaturedProjectsSectionSilk projects={projectsList} />
-            </MainContent>
-            <SidebarWrapper>
-              <LatestBlogPostsSilk posts={latestPosts} />
-            </SidebarWrapper>
-          </DesktopLayout>
-          <SponsorBanner />
-        </>
+        <DesktopLayout>
+          <MainContent>
+            <HeroSectionSilk hero={heroData} techTags={techTags} />
+            <FeaturedProjectsSectionSilk projects={projectsList} />
+          </MainContent>
+          <SidebarWrapper>
+            <LatestBlogPostsSilk posts={latestPosts} />
+          </SidebarWrapper>
+        </DesktopLayout>
       )}
     </ContentWrapper>
   )
