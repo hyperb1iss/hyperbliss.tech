@@ -194,6 +194,7 @@ interface RegexTesterProps {
   jsRegex?: string
   flags?: string
   testCases: RegexTestCase[]
+  jsValidator?: (input: string) => boolean
 }
 
 export default function RegexTester({
@@ -202,8 +203,10 @@ export default function RegexTester({
   jsRegex,
   flags = '',
   testCases,
+  jsValidator,
 }: RegexTesterProps) {
   const [input, setInput] = useState('')
+  const hasValidator = Boolean(jsValidator)
 
   const compiledRegex = useMemo(() => {
     if (!jsCompatible && !jsRegex) return null
@@ -216,7 +219,17 @@ export default function RegexTester({
   }, [rawRegex, jsRegex, jsCompatible, flags])
 
   const { matchResult, execTimeUs } = useMemo(() => {
-    if (!input || !compiledRegex) return { execTimeUs: 0, groupNames: [] as string[], matchResult: null }
+    if (!input) return { execTimeUs: 0, matchResult: null }
+    if (hasValidator && jsValidator) {
+      const t0 = performance.now()
+      const matched = jsValidator(input)
+      const t1 = performance.now()
+      return {
+        execTimeUs: Math.round((t1 - t0) * 1000),
+        matchResult: matched ? [{ end: input.length, groups: [], start: 0 }] : [],
+      }
+    }
+    if (!compiledRegex) return { execTimeUs: 0, matchResult: null }
     try {
       const re = new RegExp(compiledRegex.source, compiledRegex.flags)
       const matches: { end: number; groups: string[]; start: number }[] = []
@@ -241,18 +254,22 @@ export default function RegexTester({
     } catch {
       return { execTimeUs: 0, groupNames: [], matchResult: null }
     }
-  }, [input, compiledRegex])
+  }, [input, compiledRegex, hasValidator, jsValidator])
 
   const fullMatch = useMemo(() => {
+    if (hasValidator && jsValidator && input) return jsValidator(input)
     if (!input || !compiledRegex) return false
     try {
-      const anchoredSource = compiledRegex.source.replace(/^[\^]/, '').replace(/[$]$/, '')
-      const fullRe = new RegExp(`^(?:${anchoredSource})$`, flags?.replace('g', '') || '')
-      return fullRe.test(input)
+      const src = compiledRegex.source
+      const isAnchored = src.startsWith('^') && src.endsWith('$')
+      const testRe = isAnchored
+        ? new RegExp(src, flags?.replace('g', '') || '')
+        : new RegExp(`^(?:${src})$`, flags?.replace('g', '') || '')
+      return testRe.test(input)
     } catch {
       return false
     }
-  }, [input, compiledRegex, flags])
+  }, [input, compiledRegex, flags, hasValidator, jsValidator])
 
   const renderHighlighted = useCallback(() => {
     if (!input)
@@ -267,7 +284,7 @@ export default function RegexTester({
       const match = matchResult[mi]
       if (match.start > pos) {
         parts.push(
-          <span key={`t-${pos}`} style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+          <span key={`t-${mi}`} style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
             {input.slice(pos, match.start)}
           </span>,
         )
@@ -275,7 +292,7 @@ export default function RegexTester({
       const color = GROUP_COLORS[mi % GROUP_COLORS.length]
       parts.push(
         <span
-          key={`m-${match.start}`}
+          key={`m-${mi}`}
           style={{
             background: `${color}22`,
             borderBottom: `2px solid ${color}`,
@@ -292,7 +309,7 @@ export default function RegexTester({
     }
     if (pos < input.length) {
       parts.push(
-        <span key={`t-${pos}`} style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+        <span key="tail" style={{ color: 'rgba(255, 255, 255, 0.5)' }}>
           {input.slice(pos)}
         </span>,
       )
@@ -308,19 +325,50 @@ export default function RegexTester({
         <FaFlask /> Try It
       </div>
       <div className={bodyStyles}>
-        {!compiledRegex && (
+        {!compiledRegex && !hasValidator && (
           <div className={warningStyles}>
             <FaTriangleExclamation />
             This regex uses PCRE features that can't be emulated in JavaScript. Interactive testing is disabled.
           </div>
         )}
 
+        {testCases.length > 0 && (
+          <div style={{ marginBottom: 'var(--space-4)' }}>
+            <div className={presetsLabelStyles}>Test cases</div>
+            <div className={presetsGridStyles}>
+              {testCases.map((tc) => (
+                <motion.button
+                  className={presetButtonStyles}
+                  key={tc.input}
+                  onClick={() => setInput(tc.input)}
+                  type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {tc.shouldMatch ? (
+                    <FaCircleCheck style={{ color: '#50fa7b', fontSize: '0.9rem' }} />
+                  ) : (
+                    <FaCircleXmark style={{ color: '#ff6363', fontSize: '0.9rem' }} />
+                  )}
+                  {tc.label}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className={inputWrapperStyles}>
           <input
             className={inputStyles}
-            disabled={!compiledRegex}
+            disabled={!compiledRegex && !hasValidator}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={compiledRegex ? 'Type a test string...' : 'JS-incompatible regex'}
+            placeholder={
+              hasValidator
+                ? 'Type a test string (JS emulation)...'
+                : compiledRegex
+                  ? 'Type a test string...'
+                  : 'JS-incompatible regex'
+            }
             type="text"
             value={input}
           />
@@ -346,65 +394,52 @@ export default function RegexTester({
           </AnimatePresence>
         </div>
 
-        {compiledRegex && <div className={matchHighlightStyles}>{renderHighlighted()}</div>}
+        <AnimatePresence>
+          {(compiledRegex || hasValidator) && input && (
+            <motion.div
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              initial={{ height: 0, opacity: 0 }}
+              style={{ overflow: 'hidden' }}
+              transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <div className={matchHighlightStyles}>{renderHighlighted()}</div>
 
-        {input && matchResult && (
-          <motion.div animate={{ opacity: 1 }} className={statsRowStyles} initial={{ opacity: 0 }}>
-            <span style={{ color: matchCount > 0 ? '#50fa7b' : '#ff6363' }}>
-              <FaHashtag /> {matchCount} match{matchCount !== 1 ? 'es' : ''}
-            </span>
-            <span>
-              <FaClock /> {execTimeUs < 1000 ? `${execTimeUs}µs` : `${(execTimeUs / 1000).toFixed(1)}ms`}
-            </span>
-            {matchResult.some((m) => m.groups.length > 0) && (
-              <span style={{ color: '#c084fc' }}>
-                {matchResult[0].groups.length} group{matchResult[0].groups.length !== 1 ? 's' : ''}
-              </span>
-            )}
-          </motion.div>
-        )}
-
-        {matchResult?.some((m) => m.groups.length > 0) && (
-          <div className={groupLegendStyles}>
-            {matchResult[0].groups.map((g, i) => (
-              <div
-                className={groupTagStyles}
-                key={i}
-                style={{
-                  borderColor: `${GROUP_COLORS[i % GROUP_COLORS.length]}40`,
-                  color: GROUP_COLORS[i % GROUP_COLORS.length],
-                }}
-              >
-                <span style={{ opacity: 0.5 }}>\{i + 1}</span> {g.length > 20 ? `${g.slice(0, 20)}…` : g}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {testCases.length > 0 && (
-          <>
-            <div className={presetsLabelStyles}>Test cases</div>
-            <div className={presetsGridStyles}>
-              {testCases.map((tc) => (
-                <motion.button
-                  className={presetButtonStyles}
-                  key={tc.input}
-                  onClick={() => setInput(tc.input)}
-                  type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {tc.shouldMatch ? (
-                    <FaCircleCheck style={{ color: '#50fa7b', fontSize: '0.9rem' }} />
-                  ) : (
-                    <FaCircleXmark style={{ color: '#ff6363', fontSize: '0.9rem' }} />
+              {matchResult && (
+                <div className={statsRowStyles}>
+                  <span style={{ color: matchCount > 0 ? '#50fa7b' : '#ff6363' }}>
+                    <FaHashtag /> {matchCount} match{matchCount !== 1 ? 'es' : ''}
+                  </span>
+                  <span>
+                    <FaClock /> {execTimeUs < 1000 ? `${execTimeUs}µs` : `${(execTimeUs / 1000).toFixed(1)}ms`}
+                  </span>
+                  {matchResult.some((m) => m.groups.length > 0) && (
+                    <span style={{ color: '#c084fc' }}>
+                      {matchResult[0].groups.length} group{matchResult[0].groups.length !== 1 ? 's' : ''}
+                    </span>
                   )}
-                  {tc.label}
-                </motion.button>
-              ))}
-            </div>
-          </>
-        )}
+                </div>
+              )}
+
+              {matchResult?.some((m) => m.groups.length > 0) && (
+                <div className={groupLegendStyles}>
+                  {matchResult[0].groups.map((g, i) => (
+                    <div
+                      className={groupTagStyles}
+                      key={i}
+                      style={{
+                        borderColor: `${GROUP_COLORS[i % GROUP_COLORS.length]}40`,
+                        color: GROUP_COLORS[i % GROUP_COLORS.length],
+                      }}
+                    >
+                      <span style={{ opacity: 0.5 }}>\{i + 1}</span> {g.length > 20 ? `${g.slice(0, 20)}…` : g}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )

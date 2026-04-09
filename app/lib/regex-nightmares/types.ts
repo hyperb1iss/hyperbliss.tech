@@ -33,4 +33,6 @@ export interface RegexNightmareEntry {
   jsCompatible: boolean
   jsRegex?: string
   flags?: string
+  pcrePattern?: string
+  jsValidator?: (input: string) => boolean
 }

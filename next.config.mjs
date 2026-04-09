@@ -85,6 +85,8 @@ const nextConfig = {
     ],
   },
   output: 'standalone',
+
+  turbopack: {},
   poweredByHeader: false,
   reactStrictMode: true,
 

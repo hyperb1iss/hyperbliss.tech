@@ -6,7 +6,6 @@ import { FaLightbulb, FaSkull, FaWandMagicSparkles } from 'react-icons/fa6'
 import { css } from '../../../styled-system/css'
 import { REGEX_NIGHTMARES } from '../../lib/regex-nightmares/data'
 import type { RegexNightmareEntry } from '../../lib/regex-nightmares/types'
-import PageLayout from '../PageLayout'
 import PageTitle from '../PageTitle'
 import RegexDissector from './RegexDissector'
 import RegexTester from './RegexTester'
@@ -23,6 +22,25 @@ const DANGER_COLORS = ['#50fa7b', '#f1fa8c', '#ffb74d', '#ff6363', '#ff3333']
 // Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+const staticPageLayoutStyles = css`
+  flex: 1;
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-12) var(--space-16);
+  min-height: 100vh;
+  position: relative;
+  background: transparent;
+
+  @media (max-width: 1200px) {
+    padding: var(--space-20) var(--space-6) var(--space-12);
+  }
+
+  @media (max-width: 768px) {
+    padding: var(--space-16) var(--space-4) var(--space-8);
+  }
+`
+
 const progressBarContainerStyles = css`
   position: fixed;
   top: 0;
@@ -34,20 +52,28 @@ const progressBarContainerStyles = css`
 `
 
 const layoutStyles = css`
-  display: grid;
-  grid-template-columns: 220px 1fr;
+  display: flex;
   gap: var(--space-8);
-  align-items: start;
+  align-items: flex-start;
 
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+`
+
+const sidebarTrackStyles = css`
+  width: 220px;
+  flex-shrink: 0;
+
+  @media (max-width: 1024px) {
+    width: 100%;
   }
 `
 
 const sidebarStyles = css`
+  position: -webkit-sticky;
   position: sticky;
   top: 120px;
-  align-self: start;
   max-height: calc(100vh - 140px);
   overflow-y: auto;
   padding: var(--space-3);
@@ -134,6 +160,8 @@ const sidebarDividerStyles = css`
 `
 
 const contentStyles = css`
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-16);
@@ -533,6 +561,7 @@ function EntryCard({ entry }: { entry: RegexNightmareEntry }) {
         flags={entry.flags}
         jsCompatible={entry.jsCompatible}
         jsRegex={entry.jsRegex}
+        jsValidator={entry.jsValidator}
         regex={entry.regex}
         testCases={entry.testCases}
       />
@@ -600,16 +629,16 @@ export default function RegexNightmares() {
 
   if (!mounted) {
     return (
-      <PageLayout>
+      <main className={staticPageLayoutStyles}>
         <PageTitle>Regex Nightmares</PageTitle>
-      </PageLayout>
+      </main>
     )
   }
 
   return (
     <>
       <ProgressBar />
-      <PageLayout>
+      <main className={staticPageLayoutStyles}>
         <PageTitle>Regex Nightmares</PageTitle>
         <p className={introStyles}>
           21 regular expressions dissected down to the molecular level. Step through each one piece by piece, test them
@@ -622,51 +651,53 @@ export default function RegexNightmares() {
         </blockquote>
 
         <div className={layoutStyles}>
-          <nav className={sidebarStyles}>
-            <div className={sidebarLabelStyles}>Entries</div>
-            {mainEntries.map((e) => (
-              <button
-                className={sidebarItemStyles}
-                key={e.id}
-                onClick={() => scrollToEntry(e.id)}
-                style={
-                  activeId === e.id
-                    ? {
-                        background: 'rgba(0, 255, 240, 0.08)',
-                        color: '#00fff0',
-                        textShadow: '0 0 10px rgba(0, 255, 240, 0.4)',
-                      }
-                    : undefined
-                }
-                type="button"
-              >
-                <span>{e.emoji}</span>
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
-              </button>
-            ))}
-            <div className={sidebarDividerStyles} />
-            <div className={sidebarLabelStyles}>Cursed Appendix</div>
-            {appendixEntries.map((e) => (
-              <button
-                className={sidebarItemStyles}
-                key={e.id}
-                onClick={() => scrollToEntry(e.id)}
-                style={
-                  activeId === e.id
-                    ? {
-                        background: 'rgba(255, 117, 216, 0.08)',
-                        color: '#ff75d8',
-                        textShadow: '0 0 10px rgba(255, 117, 216, 0.4)',
-                      }
-                    : undefined
-                }
-                type="button"
-              >
-                <span>{e.emoji}</span>
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
-              </button>
-            ))}
-          </nav>
+          <div className={sidebarTrackStyles}>
+            <nav className={sidebarStyles}>
+              <div className={sidebarLabelStyles}>Entries</div>
+              {mainEntries.map((e) => (
+                <button
+                  className={sidebarItemStyles}
+                  key={e.id}
+                  onClick={() => scrollToEntry(e.id)}
+                  style={
+                    activeId === e.id
+                      ? {
+                          background: 'rgba(0, 255, 240, 0.08)',
+                          color: '#00fff0',
+                          textShadow: '0 0 10px rgba(0, 255, 240, 0.4)',
+                        }
+                      : undefined
+                  }
+                  type="button"
+                >
+                  <span>{e.emoji}</span>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
+                </button>
+              ))}
+              <div className={sidebarDividerStyles} />
+              <div className={sidebarLabelStyles}>Cursed Appendix</div>
+              {appendixEntries.map((e) => (
+                <button
+                  className={sidebarItemStyles}
+                  key={e.id}
+                  onClick={() => scrollToEntry(e.id)}
+                  style={
+                    activeId === e.id
+                      ? {
+                          background: 'rgba(255, 117, 216, 0.08)',
+                          color: '#ff75d8',
+                          textShadow: '0 0 10px rgba(255, 117, 216, 0.4)',
+                        }
+                      : undefined
+                  }
+                  type="button"
+                >
+                  <span>{e.emoji}</span>
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{e.title}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
 
           <div className={contentStyles} ref={contentRef}>
             {mainEntries.map((entry) => (
@@ -696,7 +727,7 @@ export default function RegexNightmares() {
             ))}
           </div>
         </div>
-      </PageLayout>
+      </main>
     </>
   )
 }

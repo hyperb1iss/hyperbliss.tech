@@ -1046,6 +1046,10 @@ After consuming the first half, .? skips the optional middle character (for odd-
 This is a regex simulating a two-pointer traversal through lookaheads and self-referential capture groups. Technically impressive. Categorically the wrong tool.`,
     id: 14,
     jsCompatible: false,
+    jsValidator: (input: string) => {
+      const s = input.toLowerCase().replace(/[^a-z0-9]/g, '')
+      return s.length > 0 && s === s.split('').reverse().join('')
+    },
     regex: '^(?:(?:(.)(?=.*(\\1(?(2)\\2))$)))*+.?\\2?$',
     section: 'appendix',
     segments: [
@@ -1114,8 +1118,19 @@ Each iteration carries forward enough state in capture groups to compute the nex
 
 The capture groups are functioning as CPU registers. This is not a regex. This is a program wearing a regex's skin.`,
     id: 15,
-    jsCompatible: true,
-    jsRegex: '^(xx?|(x*)\\2x(?=\\2(x+))(?=\\3*$)(?=((x*)\\6x)\\5*$)\\4)+$',
+    jsCompatible: false,
+    jsValidator: (input: string) => {
+      const n = input.length
+      if (n === 0) return false
+      let a = 1
+      let b = 2
+      while (a < n) {
+        const t = a + b
+        a = b
+        b = t
+      }
+      return a === n
+    },
     regex: '^(xx?|(x*)\\2x(?=\\2(x+))(?=\\3*$)(?=((x*)\\6x)\\5*$)\\4)+$',
     section: 'appendix',
     segments: [

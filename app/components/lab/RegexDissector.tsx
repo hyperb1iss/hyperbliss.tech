@@ -392,109 +392,102 @@ export default function RegexDissector({ regex, segments }: RegexDissectorProps)
         </motion.button>
       </div>
 
-      {isActive && (
-        <div className={progressBarStyles}>
+      <AnimatePresence>
+        {isActive && (
           <motion.div
-            animate={{ width: `${((activeIndex + 1) / segments.length) * 100}%` }}
-            style={{
-              background: activeColors
-                ? `linear-gradient(90deg, ${activeColors.text}, ${activeColors.glow})`
-                : '#00fff0',
-              height: '100%',
-            }}
-            transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-          />
-        </div>
-      )}
-
-      <div className={regexDisplayStyles}>{buildSegmentSpans()}</div>
-
-      <AnimatePresence mode="wait">
-        {isActive && activeSegment && activeColors && (
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className={explanationPanelStyles}
-            exit={{ opacity: 0, y: -8 }}
-            initial={{ opacity: 0, y: 8 }}
-            key={activeIndex}
-            transition={{ duration: 0.2 }}
+            animate={{ height: 2, opacity: 1 }}
+            className={progressBarStyles}
+            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className={segmentPatternStyles} style={{ color: activeColors.text }}>
-              {activeSegment.pattern}
-            </div>
-            <div className={segmentLabelStyles} style={{ color: activeColors.text }}>
-              {activeSegment.label}
-            </div>
-            <div className={segmentDescStyles}>{activeSegment.description}</div>
+            <motion.div
+              animate={{ width: `${((activeIndex + 1) / segments.length) * 100}%` }}
+              style={{
+                background: activeColors
+                  ? `linear-gradient(90deg, ${activeColors.text}, ${activeColors.glow})`
+                  : '#00fff0',
+                height: '100%',
+              }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+            />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {isActive && (
-        <div className={dotTrackStyles}>
-          {segments.map((seg, i) => (
-            <motion.div
-              animate={{
-                background:
-                  i === activeIndex
-                    ? SEGMENT_COLORS[seg.color].text
-                    : i < activeIndex
-                      ? 'rgba(255, 255, 255, 0.3)'
-                      : 'rgba(255, 255, 255, 0.1)',
-                scale: i === activeIndex ? 1.4 : 1,
-              }}
-              key={i}
-              onClick={() => handleSegmentClick(i)}
-              style={{
-                borderRadius: '50%',
-                cursor: 'pointer',
-                height: 6,
-                width: 6,
-              }}
-              transition={{ duration: 0.2 }}
-            />
-          ))}
-        </div>
-      )}
+      <div className={regexDisplayStyles}>{buildSegmentSpans()}</div>
+
+      <AnimatePresence>
+        {isActive && activeSegment && activeColors && (
+          <motion.div
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0 }}
+            key="explanation"
+            style={{ overflow: 'hidden' }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                animate={{ opacity: 1, y: 0 }}
+                className={explanationPanelStyles}
+                exit={{ opacity: 0, y: -8 }}
+                initial={{ opacity: 0, y: 8 }}
+                key={activeIndex}
+                transition={{ duration: 0.2 }}
+              >
+                <div className={segmentPatternStyles} style={{ color: activeColors.text }}>
+                  {activeSegment.pattern}
+                </div>
+                <div className={segmentLabelStyles} style={{ color: activeColors.text }}>
+                  {activeSegment.label}
+                </div>
+                <div className={segmentDescStyles}>{activeSegment.description}</div>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isActive && (
+          <motion.div
+            animate={{ height: 'auto', opacity: 1 }}
+            className={dotTrackStyles}
+            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0 }}
+            style={{ overflow: 'hidden' }}
+            transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+          >
+            {segments.map((seg, i) => (
+              <motion.div
+                animate={{
+                  background:
+                    i === activeIndex
+                      ? SEGMENT_COLORS[seg.color].text
+                      : i < activeIndex
+                        ? 'rgba(255, 255, 255, 0.3)'
+                        : 'rgba(255, 255, 255, 0.1)',
+                  scale: i === activeIndex ? 1.4 : 1,
+                }}
+                key={i}
+                onClick={() => handleSegmentClick(i)}
+                style={{
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  height: 6,
+                  width: 6,
+                }}
+                transition={{ duration: 0.2 }}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className={controlsStyles}>
-        {/* Primary action — always in the same spot */}
-        <motion.button
-          className={navButtonStyles}
-          onClick={!isActive ? handleStart : activeIndex >= segments.length - 1 ? handleReset : handleNext}
-          type="button"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {!isActive ? (
-            <>
-              <FaMicroscope /> Step through ({segments.length} parts)
-            </>
-          ) : activeIndex >= segments.length - 1 ? (
-            <>Done</>
-          ) : (
-            <>
-              Next <FaChevronRight />
-            </>
-          )}
-        </motion.button>
-
-        {/* Center: step counter */}
-        <span className={stepIndicatorStyles}>
-          {isActive ? (
-            <>
-              {activeIndex + 1} / {segments.length}
-            </>
-          ) : (
-            <div className={keyHintStyles}>
-              <kbd>←</kbd>
-              <kbd>→</kbd> navigate
-            </div>
-          )}
-        </span>
-
-        {/* Right: secondary controls */}
-        <div style={{ alignItems: 'center', display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        {/* Left: secondary controls */}
+        <div style={{ alignItems: 'center', display: 'flex', gap: '8px' }}>
           {isActive && (
             <>
               <motion.button
@@ -524,6 +517,43 @@ export default function RegexDissector({ regex, segments }: RegexDissectorProps)
               </motion.button>
             </>
           )}
+        </div>
+
+        {/* Center: step counter */}
+        <span className={stepIndicatorStyles}>
+          {isActive ? (
+            <>
+              {activeIndex + 1} / {segments.length}
+            </>
+          ) : (
+            <div className={keyHintStyles}>
+              <kbd>←</kbd>
+              <kbd>→</kbd> navigate
+            </div>
+          )}
+        </span>
+
+        {/* Right: primary action — always in the same spot */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <motion.button
+            className={navButtonStyles}
+            onClick={!isActive ? handleStart : activeIndex >= segments.length - 1 ? handleReset : handleNext}
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {!isActive ? (
+              <>
+                <FaMicroscope /> Step through ({segments.length})
+              </>
+            ) : activeIndex >= segments.length - 1 ? (
+              <>Done</>
+            ) : (
+              <>
+                Next <FaChevronRight />
+              </>
+            )}
+          </motion.button>
         </div>
       </div>
     </div>
