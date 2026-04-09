@@ -34,12 +34,34 @@ const mainImage = data.coverImage
   ? (data.coverImage.startsWith('http') ? data.coverImage : 'https://hyperbliss.tech/images/' + data.coverImage)
   : null;
 
+// Unwrap hard-wrapped paragraphs (Prettier wraps at ~72 cols, Redcarpet treats newlines as <br>)
+// Join lines within a paragraph but preserve intentional breaks: blank lines, headings,
+// list items, blockquotes, code fences, images, links on their own line, and HR rules.
+function unwrapParagraphs(md) {
+  const lines = md.split('\\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const next = lines[i + 1];
+    const isStructural = /^(#{1,6} |[-*+] |\\d+\\. |> |!\\[|```|---|\\.\\.\\.| {4,}|\\| )/.test(line);
+    const nextIsStructural = next != null && /^(#{1,6} |[-*+] |\\d+\\. |> |!\\[|```|---|\\.\\.\\.| {4,}|\\| |$)/.test(next);
+    // Keep the newline if: blank line, structural line, next line is structural/blank,
+    // line ends with two spaces (intentional break), or line ends with backslash
+    if (line.trim() === '' || isStructural || nextIsStructural || line.endsWith('  ') || line.endsWith('\\\\')) {
+      out.push(line);
+    } else {
+      out.push(line + ' ');
+    }
+  }
+  return out.join('\\n').replace(/ \\n/g, ' ').replace(/  +/g, ' ');
+}
+
 // Transform markdown for dev.to
-let body = content.trim()
-  .replace(/<details>\s*<summary>([^<]*)<\/summary>/g, '{% details \$1 %}')
-  .replace(/<\/details>/g, '{% enddetails %}')
-  .replace(/<\/?div[^>]*>/g, '')
-  .replace(/\\\$\\\$([^\$]*)\\\$\\\$/g, '{% katex %}\$1{% endkatex %}');
+let body = unwrapParagraphs(content.trim())
+  .replace(/<details>\\s*<summary>([^<]*)<\\/summary>/g, '{% details \$1 %}')
+  .replace(/<\\/details>/g, '{% enddetails %}')
+  .replace(/<\\/?div[^>]*>/g, '')
+  .replace(/\\\\\$\\\\\$([^\$]*)\\\\\$\\\\\$/g, '{% katex %}\$1{% endkatex %}');
 
 // Append cross-post footer
 body += '\n\n---\n\n*Originally published at [hyperbliss.tech](https://hyperbliss.tech/blog/' + slug + '/). Follow me on [GitHub](https://github.com/hyperb1iss) and [Bluesky](https://bsky.app/profile/hyperbliss.tech).*';
