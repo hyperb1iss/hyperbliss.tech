@@ -65,6 +65,18 @@ export async function GET(): Promise<Response> {
       priority: 0.9,
       url: ensureTrailingSlash(`${baseUrl}/projects`),
     },
+    {
+      changeFrequency: 'weekly' as const,
+      lastModified: new Date(),
+      priority: 0.8,
+      url: ensureTrailingSlash(`${baseUrl}/lab`),
+    },
+    {
+      changeFrequency: 'monthly' as const,
+      lastModified: new Date(),
+      priority: 0.8,
+      url: ensureTrailingSlash(`${baseUrl}/lab/regex-nightmares`),
+    },
   ]
 
   const sitemap = [...staticPages, ...blogUrls, ...projectUrls]

@@ -126,6 +126,7 @@ const navIconStyles = css`
 const NAV_ICONS: Record<string, string> = {
   About: '◆',
   Blog: '◈',
+  Lab: '◇',
   Projects: '▣',
   Resume: '◉',
 }
