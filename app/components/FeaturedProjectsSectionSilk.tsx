@@ -139,7 +139,7 @@ function getHashedProjects(projects: Project[], count: number): Project[] {
 }
 
 export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjectsSectionSilkProps) {
-  const displayedProjects = getHashedProjects(projects, 6)
+  const displayedProjects = getHashedProjects(projects, 8)
   const { isInitialLoad } = usePageLoad()
 
   const containerVariants = {
