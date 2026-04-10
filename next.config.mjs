@@ -85,12 +85,12 @@ const nextConfig = {
     ],
   },
   output: 'standalone',
-
-  turbopack: {},
   poweredByHeader: false,
   reactStrictMode: true,
 
   // Ensure consistent URL format (with or without trailing slashes)
   trailingSlash: true,
+
+  turbopack: {},
 }
 export default nextConfig

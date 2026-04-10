@@ -2,7 +2,7 @@
 
 import { Feed } from 'feed'
 import { NextResponse } from 'next/server'
-import { getAllMarkdownSlugs, getMarkdownContent, type MarkdownFile } from '@/lib/markdown'
+import { getAllMarkdownSlugs, getMarkdownContent } from '@/lib/markdown'
 
 const AUTHOR = {
   email: 'stefanie@hyperbliss.tech',
