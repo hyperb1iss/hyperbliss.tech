@@ -9,9 +9,7 @@ description:
 github: 'https://github.com/hyperb1iss/hyperbliss.tech'
 ---
 
-Welcome to the source code of the very website you're viewing! hyperbliss.tech
-is a canvas where code meets creativity, showcasing modern web development
-through interactive experiences and thoughtful design.
+Welcome to the source code of the very website you're viewing! hyperbliss.tech is a canvas where code meets creativity, showcasing modern web development through interactive experiences and thoughtful design.
 
 ## Key Features
 
@@ -63,3 +61,4 @@ The signature header animation features:
 3. **Content Focus**: Design enhances rather than overshadows content
 4. **Adaptive Experience**: Consistent across all devices
 5. **Technical Excellence**: Clean code that showcases best practices
+

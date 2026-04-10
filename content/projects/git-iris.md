@@ -21,11 +21,7 @@ tags:
 
 ## Overview
 
-Git-Iris is powered by **Iris**, an intelligent agent that actively explores
-your codebase to understand what you're building. Rather than dumping context
-and hoping for the best, Iris uses tools to gather precisely the information she
-needs: analyzing diffs, exploring file relationships, and building understanding
-iteratively.
+Git-Iris is powered by **Iris**, an intelligent agent that actively explores your codebase to understand what you're building. Rather than dumping context and hoping for the best, Iris uses tools to gather precisely the information she needs: analyzing diffs, exploring file relationships, and building understanding iteratively.
 
 ## What Iris Can Do
 
@@ -40,9 +36,7 @@ iteratively.
 
 ## Iris Studio
 
-**Studio** is a terminal interface built with the **SilkCircuit Neon** design
-language. Press `/` to chat with Iris, ask her to refine your commit message or
-explain changes. She can update content directly through intelligent tool calls.
+**Studio** is a terminal interface built with the **SilkCircuit Neon** design language. Press `/` to chat with Iris, ask her to refine your commit message or explain changes. She can update content directly through intelligent tool calls.
 
 ## Installation
 
@@ -101,3 +95,4 @@ git-iris config --provider anthropic --api-key YOUR_API_KEY
 ---
 
 **An intelligent agent that understands your code.**
+

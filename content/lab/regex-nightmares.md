@@ -10,7 +10,5 @@ status: 'live'
 author: 'Stefanie Jane'
 ---
 
-21 regular expressions that range from "impressively clever" to "someone should
-have stopped you." Each one is dissected so you can understand exactly how the
-magic works, exactly where the madness begins, and (where applicable) exactly
-which production outages resulted.
+21 regular expressions that range from "impressively clever" to "someone should have stopped you." Each one is dissected so you can understand exactly how the magic works, exactly where the madness begins, and (where applicable) exactly which production outages resulted.
+

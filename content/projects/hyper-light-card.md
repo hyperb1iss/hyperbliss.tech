@@ -9,8 +9,7 @@ tags: ['Home Assistant', 'Custom Card', 'SignalRGB', 'Smart Home']
 github: 'https://github.com/hyperb1iss/hyper-light-card'
 ---
 
-A custom Home Assistant card for controlling SignalRGB with dynamic color
-adaptation, effect switching, and brightness control.
+A custom Home Assistant card for controlling SignalRGB with dynamic color adaptation, effect switching, and brightness control.
 
 ## Features
 
@@ -49,6 +48,5 @@ adaptation, effect switching, and brightness control.
 
 ## Customization
 
-The Hyper Light Card automatically adapts its color scheme based on the current
-SignalRGB effect. It uses an advanced color extraction algorithm to determine
-the most suitable background, text, and accent colors for readability.
+The Hyper Light Card automatically adapts its color scheme based on the current SignalRGB effect. It uses an advanced color extraction algorithm to determine the most suitable background, text, and accent colors for readability.
+

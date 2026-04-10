@@ -9,10 +9,7 @@ github: 'https://github.com/hyperb1iss/opaline'
 tags: ['Rust', 'TUI', 'Ratatui', 'Theming', 'Design System', 'Open Source']
 ---
 
-Opaline is a token-based theme engine that gives Rust applications beautiful,
-consistent color systems. Define themes once with 26 semantic tokens, then
-render them anywhere: Ratatui TUIs, egui GUIs, crossterm, web via CSS, or syntax
-highlighting via syntect.
+Opaline is a token-based theme engine that gives Rust applications beautiful, consistent color systems. Define themes once with 26 semantic tokens, then render them anywhere: Ratatui TUIs, egui GUIs, crossterm, web via CSS, or syntax highlighting via syntect.
 
 ## Core Concepts
 
@@ -79,3 +76,4 @@ opaline = { version = "0.4", features = ["ratatui", "gradients", "egui", "css"] 
 ---
 
 **One theme engine, every rendering target.**
+

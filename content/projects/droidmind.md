@@ -11,9 +11,7 @@ tags: ['Python', 'ADB', 'MCP', 'FastMCP', 'UV', 'Ruff', 'Mypy']
 
 ## Overview
 
-DroidMind enables Android device control, diagnostics, and automation through
-natural language. Using the Model Context Protocol (MCP), it bridges AI
-assistants directly with Android devices for secure, structured interactions.
+DroidMind enables Android device control, diagnostics, and automation through natural language. Using the Model Context Protocol (MCP), it bridges AI assistants directly with Android devices for secure, structured interactions.
 
 ## Key Features
 
@@ -27,9 +25,7 @@ assistants directly with Android devices for secure, structured interactions.
 
 ## Technical Stack & MCP Integration
 
-Built with Python 3.13+, using UV for dependency management, Ruff for linting,
-and Mypy for type checking. At its core, DroidMind uses MCP via FastMCP for
-structured, secure AI-device interactions.
+Built with Python 3.13+, using UV for dependency management, Ruff for linting, and Mypy for type checking. At its core, DroidMind uses MCP via FastMCP for structured, secure AI-device interactions.
 
 ### MCP Resources & Tools
 
@@ -41,3 +37,4 @@ structured, secure AI-device interactions.
 ---
 
 **Where AI meets Android.** 🌠
+

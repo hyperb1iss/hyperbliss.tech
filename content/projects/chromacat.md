@@ -9,10 +9,7 @@ description:
 github: 'https://github.com/hyperb1iss/chromacat'
 ---
 
-ChromaCat is a turbocharged terminal colorizer written in Rust that brings
-gradient patterns and animations to your command-line experience. Think `lolcat`
-but with superpowers: advanced gradient patterns, smooth animations, and
-extensive customization options.
+ChromaCat is a turbocharged terminal colorizer written in Rust that brings gradient patterns and animations to your command-line experience. Think `lolcat` but with superpowers: advanced gradient patterns, smooth animations, and extensive customization options.
 
 ## Key Features
 
@@ -102,3 +99,4 @@ Energetic themes that bring celebration to your terminal:
 - **disco**: Classic party vibrancy
 - **festival**: Euphoric color combinations
 - **carnival**: Playful, festive gradients
+

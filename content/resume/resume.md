@@ -8,21 +8,11 @@ description:
 
 **Engineering Leader | Software Sorceress | Maker | Founder**
 
-📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼
-[LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙
-[GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗
-[Links](https://linktr.ee/hyperb1iss)
+📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
 
 ## 🌠 Summary
 
-As a creative technologist, I bring over two decades of transformative
-experience across the entire software stack. From pioneering open-source mobile
-innovation to leading enterprise AI initiatives, I've consistently pushed
-technological boundaries while building and mentoring high-performing teams. My
-expertise spans Android OS, embedded systems, cloud infrastructure, frontend
-development, and cutting-edge AI/ML applications. I thrive at the intersection
-of visionary leadership and hands-on technical execution, where art meets
-engineering.
+As a creative technologist, I bring over two decades of transformative experience across the entire software stack. From pioneering open-source mobile innovation to leading enterprise AI initiatives, I've consistently pushed technological boundaries while building and mentoring high-performing teams. My expertise spans Android OS, embedded systems, cloud infrastructure, frontend development, and cutting-edge AI/ML applications. I thrive at the intersection of visionary leadership and hands-on technical execution, where art meets engineering.
 
 Let's build something amazing together!
 
@@ -30,34 +20,19 @@ Let's build something amazing together!
 
 ### Programming Languages
 
-[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) |
-[C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://golang.org/) |
-[Java](https://www.java.com/) |
-[JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) |
-[Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) |
-[Perl](https://www.perl.org/) | [Python](https://www.python.org/) |
-[Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) |
-[TypeScript](https://www.typescriptlang.org/)
+[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://golang.org/) | [Java](https://www.java.com/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | [Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) | [Perl](https://www.perl.org/) | [Python](https://www.python.org/) | [Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) | [TypeScript](https://www.typescriptlang.org/)
 
 ### Technical Expertise
 
-**Mobile & Embedded**: [Android Apps](https://developer.android.com/guide) |
-[Android OS](https://www.android.com/) |
-[BSP](https://en.wikipedia.org/wiki/Board_support_package) | Device Drivers |
-Embedded Systems | Firmware | [Linux Kernel](https://www.kernel.org/) |
-[Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon)
+**Mobile & Embedded**: [Android Apps](https://developer.android.com/guide) | [Android OS](https://www.android.com/) | [BSP](https://en.wikipedia.org/wiki/Board_support_package) | Device Drivers | Embedded Systems | Firmware | [Linux Kernel](https://www.kernel.org/) | [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon)
 
-**Cloud & Infrastructure**: [AWS](https://aws.amazon.com/) | Cloud Services |
-Edge Computing | Infrastructure | [Kubernetes](https://kubernetes.io/) |
-[PostgreSQL](https://www.postgresql.org/) | System Architecture
+**Cloud & Infrastructure**: [AWS](https://aws.amazon.com/) | Cloud Services | Edge Computing | Infrastructure | [Kubernetes](https://kubernetes.io/) | [PostgreSQL](https://www.postgresql.org/) | System Architecture
 
-**Specialized Domains**: AI/ML | IoT | Performance Optimization | Realtime
-Systems
+**Specialized Domains**: AI/ML | IoT | Performance Optimization | Realtime Systems
 
 ### Engineering Leadership
 
-Mentoring | Product Strategy | Project Management | Software Development
-Lifecycle | Software Licensing | Team Management | Technical Vision
+Mentoring | Product Strategy | Project Management | Software Development Lifecycle | Software Licensing | Team Management | Technical Vision
 
 ## 🏢 Experience
 
@@ -72,8 +47,7 @@ _(May 2025 - Present)_
 - Owning developer experience, creating efficient workflows and tooling
 - Enhancing and extending AI agent capabilities 🤖
 - **Technologies:** [TypeScript](https://www.typescriptlang.org/),
-  [Next.js](https://nextjs.org/), [React](https://reactjs.org/),
-  [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
+  [Next.js](https://nextjs.org/), [React](https://reactjs.org/),   [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
 
 ### [Mason](https://www.bymason.com/)
 
@@ -83,11 +57,7 @@ _(May 2024 - May 2025)_
 
 - Led multiple new AI product initiatives 🚀
 - **Technologies:** Java, C++, Kotlin, Go, Python,
-  [Node.js](https://nodejs.org/), [React](https://reactjs.org/),
-  [Django](https://www.djangoproject.com/),
-  [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/),
-  [Kubernetes](https://kubernetes.io/),
-  [PostgreSQL](https://www.postgresql.org/)
+  [Node.js](https://nodejs.org/), [React](https://reactjs.org/),   [Django](https://www.djangoproject.com/),   [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/),   [Kubernetes](https://kubernetes.io/),   [PostgreSQL](https://www.postgresql.org/)
 
 #### Director of Software Engineering
 
@@ -145,8 +115,7 @@ _(April 2017 - March 2019)_
 _(March 2013 - November 2016)_
 
 - Co-founded Cyanogen Inc, building on the popular
-  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) open-source project,
-  which had thousands of contributors and millions of users worldwide 🌟
+  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) open-source project,   which had thousands of contributors and millions of users worldwide 🌟
 - Deeply involved in fundraising, securing venture capital, and strategic hiring
 - Launched multiple mobile phones featuring CyanogenOS with OEM partners
 - Delivered keynote presentations at international technology conferences
@@ -176,8 +145,7 @@ _(May 2010 - June 2011)_
 
 - Developed network-friendly media streaming software
 - Built cross-platform applications for
-  [MeeGo](https://en.wikipedia.org/wiki/MeeGo) ([Qt](https://www.qt.io/)) and
-  Android, including web client interfaces
+  [MeeGo](https://en.wikipedia.org/wiki/MeeGo) ([Qt](https://www.qt.io/)) and   Android, including web client interfaces
 - Enhanced media transcoding platform performance
 - **Technologies:** Ruby, Rails, C++, Java
 
@@ -196,9 +164,7 @@ _(July 2006 - May 2010)_
 - Developed custom spatial extensions for Hibernate ORM to support geospatial
   analytics
 - **Technologies:** Java, JavaScript, Groovy, [Spring](https://spring.io/),
-  [Hibernate](https://hibernate.org/),
-  [ExtJS](https://www.sencha.com/products/extjs/),
-  [PostgreSQL](https://www.postgresql.org/), Oracle
+  [Hibernate](https://hibernate.org/),   [ExtJS](https://www.sencha.com/products/extjs/),   [PostgreSQL](https://www.postgresql.org/), Oracle
 
 ### [University of Pittsburgh](https://www.pitt.edu/)
 
@@ -227,23 +193,18 @@ _(April 1998 - April 2005)_
   connectivity services
 - Maintained Fibre Channel SAN (EMC, Brocade) and backup equipment (StorageTek)
 - **Technologies:** Java, C, Python, Perl, [Postfix](https://www.postfix.org/),
-  [qmail](https://cr.yp.to/qmail.html), Oracle,
-  [Solaris](https://www.oracle.com/solaris/technologies/)
+  [qmail](https://cr.yp.to/qmail.html), Oracle,   [Solaris](https://www.oracle.com/solaris/technologies/)
 
 ## 💻 Notable Open Source Projects
 
 - **[CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod)/[LineageOS](https://lineageos.org/)**:
-  Created the world's largest custom Android ROM, empowering millions to
-  customize and extend the life of their devices
+  Created the world's largest custom Android ROM, empowering millions to   customize and extend the life of their devices
 - **[DroidMind](https://github.com/hyperb1iss/droidmind)**: A bridge between AI
-  assistants and Android devices that implements the
-  [Model Context Protocol (MCP)](https://github.com/anthropics/anthropic-cookbook/tree/main/mcp),
-  enabling control through natural language
+  assistants and Android devices that implements the   [Model Context Protocol (MCP)](https://github.com/anthropics/anthropic-cookbook/tree/main/mcp),   enabling control through natural language
 - **[git-iris](https://github.com/hyperb1iss/git-iris)**: AI-accelerated git
   workflow tool that enhances efficiency in version control management
 - **[Home Assistant](https://www.home-assistant.io/) Enhancements**: Various
-  contributions to the Home Assistant ecosystem, including themes and
-  integrations
+  contributions to the Home Assistant ecosystem, including themes and   integrations
 - **[uchroma](https://github.com/hyperb1iss/uchroma)**: Advanced driver for
   Razer Chroma hardware in Linux systems
 
@@ -252,8 +213,7 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 ## 🏆 Recognition & Achievements
 
 - Created [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), now
-  [LineageOS](https://lineageos.org/), revolutionizing Android customization for
-  millions of users
+  [LineageOS](https://lineageos.org/), revolutionizing Android customization for   millions of users
 - Established a foundation for device longevity through community-supported
   software
 - Led one of the most successful open-source projects in the mobile ecosystem
@@ -268,3 +228,4 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 - Avid roller skater and roller derby player
 - Electronic music producer
 - Flow artist and fire performer
+

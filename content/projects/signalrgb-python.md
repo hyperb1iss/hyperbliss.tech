@@ -11,10 +11,7 @@ github: 'https://github.com/hyperb1iss/signalrgb-python'
 
 ## Programmatic RGB Control
 
-signalrgb-python provides a Python interface for SignalRGB Pro, enabling
-programmatic control of your RGB lighting ecosystem. Build automation tools,
-create ambient notifications, or integrate lighting effects into your
-applications with a clean, typed API.
+signalrgb-python provides a Python interface for SignalRGB Pro, enabling programmatic control of your RGB lighting ecosystem. Build automation tools, create ambient notifications, or integrate lighting effects into your applications with a clean, typed API.
 
 ## Key Features
 
@@ -70,11 +67,9 @@ signalrgb canvas enable
 pip install signalrgb
 ```
 
-For detailed usage instructions and API documentation, visit the
-[documentation](https://hyperb1iss.github.io/signalrgb-python/).
+For detailed usage instructions and API documentation, visit the [documentation](https://hyperb1iss.github.io/signalrgb-python/).
 
 ---
 
-_signalrgb-python is an independent project and is not officially associated
-with SignalRGB. For official SignalRGB support and information, please visit
-[signalrgb.com](https://www.signalrgb.com)._
+_signalrgb-python is an independent project and is not officially associated with SignalRGB. For official SignalRGB support and information, please visit [signalrgb.com](https://www.signalrgb.com)._
+

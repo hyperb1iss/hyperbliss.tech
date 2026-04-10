@@ -12,10 +12,7 @@ tags:
 
 ## Overview
 
-Siren is a multi-language linting frontend that automatically detects your
-project's languages and runs the right linters, formatters, and type checkers.
-Smart defaults, colorful terminal output, and auto-fixing across Rust, Python,
-JavaScript, TypeScript, and HTML.
+Siren is a multi-language linting frontend that automatically detects your project's languages and runs the right linters, formatters, and type checkers. Smart defaults, colorful terminal output, and auto-fixing across Rust, Python, JavaScript, TypeScript, and HTML.
 
 ## Key Features
 
@@ -40,3 +37,4 @@ JavaScript, TypeScript, and HTML.
 | JavaScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
 | TypeScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
 | HTML/Templates | `djlint`               | `djlint`               | -             | `djlint --reformat` |
+

@@ -11,8 +11,7 @@ tags: ['Python', 'Ghostty', 'Terminal', 'Automation', 'Testing', 'asyncio']
 
 ## Overview
 
-**ghostty-automator** brings Playwright-style terminal automation to Ghostty.
-Familiar, ergonomic API for controlling terminal sessions programmatically.
+**ghostty-automator** brings Playwright-style terminal automation to Ghostty. Familiar, ergonomic API for controlling terminal sessions programmatically.
 
 ## Features
 
@@ -93,3 +92,4 @@ brew install ghostty-automator
 ---
 
 **Automate your terminal workflows with confidence.**
+

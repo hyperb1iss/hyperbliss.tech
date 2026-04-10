@@ -11,12 +11,9 @@ tags: ['TypeScript', 'WebGL', 'Three.js', 'GLSL', 'SignalRGB', 'RGB', 'Shaders']
 
 ## Overview
 
-**LightScript Workshop** is a TypeScript framework for creating custom lighting
-effects for SignalRGB, the app that unifies control of your RGB keyboards, mice,
-headsets, and other PC peripherals.
+**LightScript Workshop** is a TypeScript framework for creating custom lighting effects for SignalRGB, the app that unifies control of your RGB keyboards, mice, headsets, and other PC peripherals.
 
-Write your own effects using **WebGL shaders** or **Canvas 2D** with a modern
-development experience.
+Write your own effects using **WebGL shaders** or **Canvas 2D** with a modern development experience.
 
 ## Features
 
@@ -69,3 +66,4 @@ The shader receives your control values as uniforms, no registration needed.
 ---
 
 **If you can imagine it, you can build it.**
+

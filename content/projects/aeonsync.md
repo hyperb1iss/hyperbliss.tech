@@ -9,9 +9,7 @@ description:
 github: 'https://github.com/hyperb1iss/aeonsync'
 ---
 
-AeonSync combines the efficiency of rsync with a clean command-line interface
-for managing backups across systems. Incremental snapshots, customizable
-retention, and interactive file restoration in one tool.
+AeonSync combines the efficiency of rsync with a clean command-line interface for managing backups across systems. Incremental snapshots, customizable retention, and interactive file restoration in one tool.
 
 ## Key Features
 
@@ -56,7 +54,5 @@ aeon list-backups
 
 ## Open Source
 
-AeonSync is open-source software, licensed under the GNU General Public License
-v3.0. Contributions from the community are welcome! Check out the
-[GitHub repository](https://github.com/hyperb1iss/aeonsync) to get involved or
-report issues.
+AeonSync is open-source software, licensed under the GNU General Public License v3.0. Contributions from the community are welcome! Check out the [GitHub repository](https://github.com/hyperb1iss/aeonsync) to get involved or report issues.
+

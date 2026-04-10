@@ -11,9 +11,7 @@ tags: ['Python', 'Rust', 'Linux', 'RGB', 'Razer', 'GTK4', 'D-Bus', 'asyncio']
 
 ## Overview
 
-The Razer Chroma line of peripherals have flashy features such as embedded LED
-matrices and macro keys. **UChroma** provides rich support for these features
-under Linux without requiring kernel modifications.
+The Razer Chroma line of peripherals have flashy features such as embedded LED matrices and macro keys. **UChroma** provides rich support for these features under Linux without requiring kernel modifications.
 
 _Back after 9 years. Now with GTK4, modern Python, and Rust-powered USB/HID!_
 
@@ -63,9 +61,7 @@ uchroma -d 0 anim add ripples
 
 ## Custom Animations
 
-UChroma supports custom animations on devices with LED matrices. Multiple
-concurrent (stacked) animations are supported with alpha blending. Animations
-can run at different frame rates and trigger from input events or sound.
+UChroma supports custom animations on devices with LED matrices. Multiple concurrent (stacked) animations are supported with alpha blending. Animations can run at different frame rates and trigger from input events or sound.
 
 Included renderers: **plasma**, **rainflow**, **ripples**, and more.
 
@@ -79,3 +75,4 @@ Included renderers: **plasma**, **rainflow**, **ripples**, and more.
 ---
 
 **Make your Razer hardware shine under Linux.**
+

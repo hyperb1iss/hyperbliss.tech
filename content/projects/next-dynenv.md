@@ -11,10 +11,7 @@ tags: ['TypeScript', 'Next.js', 'React', 'Environment', 'DevOps', 'npm']
 
 ## Overview
 
-**next-dynenv** dynamically injects environment variables into your Next.js
-application at runtime. This approach adheres to the "build once, deploy many"
-principle, allowing the same build to be used across various environments
-without rebuilds.
+**next-dynenv** dynamically injects environment variables into your Next.js application at runtime. This approach adheres to the "build once, deploy many" principle, allowing the same build to be used across various environments without rebuilds.
 
 A Next.js 15/16 & React 19 compatible fork of next-runtime-env.
 
@@ -65,9 +62,9 @@ const port = envParsers.number('NEXT_PUBLIC_PORT', 3000)
 
 ## Deployment Ready
 
-Works with Docker, Vercel, Netlify, AWS Amplify, and any static hosting
-platform. Set environment variables at runtime, no rebuilds needed.
+Works with Docker, Vercel, Netlify, AWS Amplify, and any static hosting platform. Set environment variables at runtime, no rebuilds needed.
 
 ---
 
 Build once. Deploy everywhere. **Runtime environment variables done right.**
+

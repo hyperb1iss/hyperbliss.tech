@@ -22,9 +22,7 @@ tags:
 
 ## Overview
 
-Welcome to my dotfiles: a cross-platform development environment that transforms
-your terminal into an elegant workspace. Unified config for Linux, macOS, WSL2,
-and Windows, with the SilkCircuit theme tying it all together.
+Welcome to my dotfiles: a cross-platform development environment that transforms your terminal into an elegant workspace. Unified config for Linux, macOS, WSL2, and Windows, with the SilkCircuit theme tying it all together.
 
 ## Core Features
 
@@ -95,3 +93,4 @@ A Linux-like experience for Windows with:
 ---
 
 **Beauty meets function. Cross-platform done right.**
+

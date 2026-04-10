@@ -74,3 +74,4 @@ Cosmosys is highly customizable:
   tools and workflows
 - **Release Steps**: Define and order your release steps to create the perfect
   release process for your project
+

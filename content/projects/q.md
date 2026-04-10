@@ -11,8 +11,7 @@ tags: ['TypeScript', 'Bun', 'Ink', 'Claude', 'CLI', 'AI', 'Developer Tools']
 
 ## Overview
 
-**q** is a minimal, elegant CLI for Claude. Ask your question, get back to work.
-One letter. Infinite answers.
+**q** is a minimal, elegant CLI for Claude. Ask your question, get back to work. One letter. Infinite answers.
 
 ## Modes
 
@@ -58,8 +57,7 @@ git diff | q "summarize" | q "translate to spanish"
 eval "$(q --shell-init zsh)"
 ```
 
-This gives you `qq`, `qctx`, `qerr`, `qx`, `qr`, and Ctrl+Q for quick queries
-with context from your last command or error.
+This gives you `qq`, `qctx`, `qerr`, `qx`, `qr`, and Ctrl+Q for quick queries with context from your last command or error.
 
 ## Agent Mode
 
@@ -73,3 +71,4 @@ q -x "refactor this function to use async/await"
 ---
 
 Minimal by design. Powerful by default.
+

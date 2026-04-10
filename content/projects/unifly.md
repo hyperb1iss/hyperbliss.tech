@@ -9,10 +9,7 @@ github: 'https://github.com/hyperb1iss/unifly'
 tags: ['Rust', 'CLI', 'TUI', 'Ratatui', 'Networking', 'UniFi', 'Agent Skills']
 ---
 
-A complete command-line toolkit for managing Ubiquiti UniFi network controllers.
-One binary with 26 top-level commands for scripting and a built-in TUI dashboard
-for real-time monitoring, powered by a shared async engine that speaks every
-UniFi API dialect.
+A complete command-line toolkit for managing Ubiquiti UniFi network controllers. One binary with 26 top-level commands for scripting and a built-in TUI dashboard for real-time monitoring, powered by a shared async engine that speaks every UniFi API dialect.
 
 ## Features
 
@@ -30,16 +27,13 @@ UniFi API dialect.
 
 ## Dual Personality
 
-**AI agents** get a dedicated skill bundle with full CLI reference and a
-ready-made network manager agent that can provision VLANs, audit firewalls, and
-diagnose connectivity:
+**AI agents** get a dedicated skill bundle with full CLI reference and a ready-made network manager agent that can provision VLANs, audit firewalls, and diagnose connectivity:
 
 ```bash
 npx skills add hyperb1iss/unifly
 ```
 
-**Humans** get a gorgeous TUI, shell completions, pipe-friendly output, and the
-quiet satisfaction of never opening the UniFi web UI again.
+**Humans** get a gorgeous TUI, shell completions, pipe-friendly output, and the quiet satisfaction of never opening the UniFi web UI again.
 
 ## Quick Start
 
@@ -61,3 +55,4 @@ unifly tui                   # Launch the dashboard
 ---
 
 **Manage your entire network without leaving the terminal.**
+

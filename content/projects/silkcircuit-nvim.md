@@ -11,9 +11,7 @@ tags: ['Neovim', 'Lua', 'Colorscheme', 'Theme', 'Developer Tools']
 
 ## Overview
 
-**SilkCircuit** pumps maximum visual voltage through your Neovim. Electric
-purples, blazing pinks, and neon cyans create a coding environment that's both
-striking and readable.
+**SilkCircuit** pumps maximum visual voltage through your Neovim. Electric purples, blazing pinks, and neon cyans create a coding environment that's both striking and readable.
 
 ## Features
 
@@ -71,3 +69,4 @@ SilkCircuit extends beyond Neovim with matching themes for:
 ---
 
 **Pure electric energy for your editor.**
+

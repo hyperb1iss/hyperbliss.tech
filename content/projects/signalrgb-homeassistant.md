@@ -11,9 +11,7 @@ github: 'https://github.com/hyperb1iss/signalrgb-homeassistant'
 
 ## Overview
 
-A custom Home Assistant component that brings SignalRGB's RGB lighting control
-to your home automation setup. Control SignalRGB-enabled devices through
-automation routines, scenes, and scripts.
+A custom Home Assistant component that brings SignalRGB's RGB lighting control to your home automation setup. Control SignalRGB-enabled devices through automation routines, scenes, and scripts.
 
 ## Key Features
 
@@ -40,5 +38,5 @@ automation routines, scenes, and scripts.
 2. Add the SignalRGB integration through HACS.
 3. Configure the integration by providing your SignalRGB server details.
 
-For manual installation and detailed setup instructions, visit the
-[GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).
+For manual installation and detailed setup instructions, visit the [GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).
+

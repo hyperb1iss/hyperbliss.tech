@@ -19,13 +19,9 @@ tags:
   ]
 ---
 
-Models already know how to write React components and Kubernetes manifests. They
-don't need 300 lines of examples for that.
+Models already know how to write React components and Kubernetes manifests. They don't need 300 lines of examples for that.
 
-hyperskills provides skills for things that are genuinely hard to get right
-without guidance: procedural knowledge from thousands of real sessions, decision
-trees for high-stakes operations, and multi-agent orchestration patterns that
-work in production. Ten skills. Zero bloat.
+hyperskills provides skills for things that are genuinely hard to get right without guidance: procedural knowledge from thousands of real sessions, decision trees for high-stakes operations, and multi-agent orchestration patterns that work in production. Ten skills. Zero bloat.
 
 ## ✦ The Pipeline
 
@@ -85,3 +81,4 @@ npx skills add hyperbliss/hyperskills --skill implement
 ---
 
 **Skills for things models don't already know.**
+

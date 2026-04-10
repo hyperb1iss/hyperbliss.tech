@@ -11,9 +11,7 @@ github: 'https://github.com/hyperb1iss/contexter'
 
 ## Overview
 
-Contexter is a dual-purpose tool for gathering code context to feed into
-Language Models. It combines a Rust-based CLI with a Chrome extension, making it
-quick to collect, filter, and copy project files for LLM prompts.
+Contexter is a dual-purpose tool for gathering code context to feed into Language Models. It combines a Rust-based CLI with a Chrome extension, making it quick to collect, filter, and copy project files for LLM prompts.
 
 ## Key Features
 
@@ -76,3 +74,4 @@ contexter /path/to/your/project rust js --exclude ".*test.*"
 2. Select your project from the list
 3. Choose the files you want to include
 4. Click "Fetch Content" or "Copy to Clipboard"
+

@@ -22,13 +22,9 @@ tags:
 
 ## The Vision
 
-AI agents that remember everything. A collective intelligence that compounds
-with every session. Orchestration that lets you manage a fleet of autonomous
-agents, all building on shared knowledge, all tracked in one place.
+AI agents that remember everything. A collective intelligence that compounds with every session. Orchestration that lets you manage a fleet of autonomous agents, all building on shared knowledge, all tracked in one place.
 
-Today's agents have amnesia. Every session starts fresh. No memory of what
-worked, what failed, what you learned yesterday. Multiple agents across
-different features? Chaos.
+Today's agents have amnesia. Every session starts fresh. No memory of what worked, what failed, what you learned yesterday. Multiple agents across different features? Chaos.
 
 **Sibyl changes that.**
 
@@ -46,8 +42,7 @@ different features? Chaos.
 
 ## Agent Orchestration
 
-Sibyl's flagship feature: **spawn AI agents that work autonomously** while you
-review and approve their actions.
+Sibyl's flagship feature: **spawn AI agents that work autonomously** while you review and approve their actions.
 
 - **Task Assignment**: Agents claim tasks and update status automatically
 - **Git Worktrees**: Each agent works in isolation to prevent conflicts
@@ -77,11 +72,9 @@ sibyl local start
 
 ## MCP Integration
 
-Connect Claude Code, Cursor, or any MCP client to Sibyl with a simple 4-tool
-API: `search`, `explore`, `add`, and `manage`. Ships with Claude Code skills and
-hooks for easy integration.
+Connect Claude Code, Cursor, or any MCP client to Sibyl with a simple 4-tool API: `search`, `explore`, `add`, and `manage`. Ships with Claude Code skills and hooks for easy integration.
 
 ---
 
-The collective gets smarter. The orchestration gets deeper. **Build with agents
-that remember.**
+The collective gets smarter. The orchestration gets deeper. **Build with agents that remember.**
+

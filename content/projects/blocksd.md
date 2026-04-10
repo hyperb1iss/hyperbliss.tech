@@ -9,12 +9,9 @@ github: 'https://github.com/hyperb1iss/blocksd'
 tags: ['Python', 'Linux', 'MIDI', 'ROLI', 'Hardware', 'Daemon', 'asyncio']
 ---
 
-ROLI Blocks need an active host-side handshake over MIDI SysEx to enter API
-mode. Without it, they show a searching animation and power off. There's no
-official Linux support.
+ROLI Blocks need an active host-side handshake over MIDI SysEx to enter API mode. Without it, they show a searching animation and power off. There's no official Linux support.
 
-blocksd implements the full ROLI Blocks protocol so your devices stay alive and
-useful on Linux.
+blocksd implements the full ROLI Blocks protocol so your devices stay alive and useful on Linux.
 
 ## ✦ Features
 
@@ -63,3 +60,4 @@ blocksd touch --monitor
 ---
 
 **Your Blocks, alive on Linux.**
+

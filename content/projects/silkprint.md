@@ -9,9 +9,7 @@ github: 'https://github.com/hyperb1iss/silkprint'
 tags: ['Rust', 'CLI', 'Typst', 'PDF', 'Markdown', 'Typography']
 ---
 
-SilkPrint transforms Markdown into beautiful PDFs with electric elegance.
-Powered by Typst for typesetting and built in Rust for speed, it ships 40 themes
-across 8 aesthetic families, from academic papers to cyberpunk manifestos.
+SilkPrint transforms Markdown into beautiful PDFs with electric elegance. Powered by Typst for typesetting and built in Rust for speed, it ships 40 themes across 8 aesthetic families, from academic papers to cyberpunk manifestos.
 
 ## Features
 
@@ -69,3 +67,4 @@ cargo install silkprint
 ---
 
 **Beautiful documents, straight from the terminal.**
+
