@@ -3,8 +3,7 @@ emoji: '🏠'
 title: 'SignalRGB Home Assistant Integration'
 date: '2024-09-25'
 tags: ['Home Assistant', 'IoT', 'SignalRGB', 'Smart Home', 'Python']
-description:
-  'Custom Home Assistant component that integrates SignalRGB lighting control.
+description: 'Custom Home Assistant component that integrates SignalRGB lighting control.
   On/off, effect switching, brightness, and color extraction.'
 github: 'https://github.com/hyperb1iss/signalrgb-homeassistant'
 ---
@@ -39,4 +38,3 @@ A custom Home Assistant component that brings SignalRGB's RGB lighting control t
 3. Configure the integration by providing your SignalRGB server details.
 
 For manual installation and detailed setup instructions, visit the [GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).
-

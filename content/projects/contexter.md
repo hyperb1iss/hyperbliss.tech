@@ -2,8 +2,7 @@
 emoji: '📋'
 title: 'Contexter: Code Context for LLMs'
 date: '2024-09-25'
-description:
-  'Chrome extension and CLI for quickly copying code context into LLMs. Smart
+description: 'Chrome extension and CLI for quickly copying code context into LLMs. Smart
   filtering, duplicate detection, and clipboard integration.'
 tags: ['Rust', 'CLI', 'Chrome Extension', 'LLM']
 github: 'https://github.com/hyperb1iss/contexter'
@@ -74,4 +73,3 @@ contexter /path/to/your/project rust js --exclude ".*test.*"
 2. Select your project from the list
 3. Choose the files you want to include
 4. Click "Fetch Content" or "Copy to Clipboard"
-

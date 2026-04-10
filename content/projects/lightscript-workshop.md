@@ -1,8 +1,7 @@
 ---
 emoji: '💡'
 title: 'LightScript Workshop: Mind-Bending RGB Effects'
-description:
-  'Modern TypeScript framework for creating SignalRGB lightscripts. WebGL
+description: 'Modern TypeScript framework for creating SignalRGB lightscripts. WebGL
   shaders, hot reloading, audio reactivity, and decorator-based controls.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/lightscript-workshop'
@@ -66,4 +65,3 @@ The shader receives your control values as uniforms, no registration needed.
 ---
 
 **If you can imagine it, you can build it.**
-

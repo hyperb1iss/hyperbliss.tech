@@ -1,8 +1,7 @@
 ---
 emoji: '🎮'
 title: 'UChroma: RGB Control for Razer on Linux'
-description:
-  'An advanced driver for Razer Chroma hardware on Linux. Custom animations,
+description: 'An advanced driver for Razer Chroma hardware on Linux. Custom animations,
   GTK4 frontend, D-Bus API, and Rust-powered USB/HID, no kernel mods needed.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/uchroma'
@@ -75,4 +74,3 @@ Included renderers: **plasma**, **rainflow**, **ripples**, and more.
 ---
 
 **Make your Razer hardware shine under Linux.**
-

@@ -1,8 +1,7 @@
 ---
 emoji: '🌟'
 title: 'Hyper Light Card'
-description:
-  'A dazzling custom card for controlling SignalRGB through Home Assistant.
+description: 'A dazzling custom card for controlling SignalRGB through Home Assistant.
   Dynamic color adaptation, effect switching, and brightness control.'
 date: '2024-09-25'
 tags: ['Home Assistant', 'Custom Card', 'SignalRGB', 'Smart Home']
@@ -49,4 +48,3 @@ A custom Home Assistant card for controlling SignalRGB with dynamic color adapta
 ## Customization
 
 The Hyper Light Card automatically adapts its color scheme based on the current SignalRGB effect. It uses an advanced color extraction algorithm to determine the most suitable background, text, and accent colors for readability.
-

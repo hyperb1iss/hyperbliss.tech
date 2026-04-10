@@ -3,8 +3,7 @@ emoji: '🌈'
 title: 'signalrgb-python: Python Library for SignalRGB'
 date: '2024-09-25'
 tags: ['Python', 'SignalRGB', 'API', 'CLI', 'RGB', 'Lighting']
-description:
-  'Python library and CLI for programmatic control of SignalRGB Pro lighting.
+description: 'Python library and CLI for programmatic control of SignalRGB Pro lighting.
   Effect management, brightness control, layout switching, and sequencing.'
 github: 'https://github.com/hyperb1iss/signalrgb-python'
 ---
@@ -72,4 +71,3 @@ For detailed usage instructions and API documentation, visit the [documentation]
 ---
 
 _signalrgb-python is an independent project and is not officially associated with SignalRGB. For official SignalRGB support and information, please visit [signalrgb.com](https://www.signalrgb.com)._
-

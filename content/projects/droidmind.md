@@ -1,8 +1,7 @@
 ---
 emoji: '🤖'
 title: 'DroidMind'
-description:
-  'Control your Android devices with AI using Model Context Protocol. Natural
+description: 'Control your Android devices with AI using Model Context Protocol. Natural
   language device management, diagnostics, and automation.'
 date: '2025-03-07'
 github: 'https://github.com/hyperb1iss/droidmind'
@@ -37,4 +36,3 @@ Built with Python 3.13+, using UV for dependency management, Ruff for linting, a
 ---
 
 **Where AI meets Android.** 🌠
-

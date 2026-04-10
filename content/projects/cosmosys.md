@@ -2,20 +2,10 @@
 emoji: '🪐'
 title: 'Cosmosys: Stellar Release Management'
 date: '2024-09-25'
-description:
-  'Customizable release management tool for automating version bumps,
+description: 'Customizable release management tool for automating version bumps,
   changelogs, tagging, and CI/CD integration across languages.'
 github: 'https://github.com/hyperb1iss/cosmosys'
-tags:
-  [
-    'Python',
-    'DevOps',
-    'CLI',
-    'Release Management',
-    'Automation',
-    'Git',
-    'CI/CD',
-  ]
+tags: ['Python', 'DevOps', 'CLI', 'Release Management', 'Automation', 'Git', 'CI/CD']
 ---
 
 ## Key Features
@@ -74,4 +64,3 @@ Cosmosys is highly customizable:
   tools and workflows
 - **Release Steps**: Define and order your release steps to create the perfect
   release process for your project
-

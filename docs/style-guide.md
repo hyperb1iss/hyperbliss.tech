@@ -60,11 +60,7 @@ Gradients should follow these patterns:
 
 ```css
 /* Standard Gradient */
-background: linear-gradient(
-  135deg,
-  var(--color-primary),
-  var(--color-secondary)
-);
+background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
 
 /* Cosmic Gradient (Logo) */
 background: linear-gradient(270deg, #a259ff, #ff75d8, #00fff0, #a259ff);
@@ -107,8 +103,7 @@ fonts and clean sans-serif typefaces.
 ```css
 --font-heading: 'Orbitron', sans-serif; /* Futuristic, sharp, technical */
 --font-body: 'Rajdhani', sans-serif; /* Clean, readable with techno character */
---font-mono:
-  'Space Mono', monospace; /* For code blocks and technical content */
+--font-mono: 'Space Mono', monospace; /* For code blocks and technical content */
 --font-logo: 'Noto Sans', sans-serif; /* Clean base for stylized logo text */
 ```
 
@@ -449,12 +444,7 @@ box-shadow:
 ### 𝙂𝙧𝙖𝙙𝙞𝙚𝙣𝙩 𝙏𝙚𝙭𝙩
 
 ```css
-background: linear-gradient(
-  45deg,
-  var(--color-primary),
-  var(--color-accent),
-  var(--color-secondary)
-);
+background: linear-gradient(45deg, var(--color-primary), var(--color-accent), var(--color-secondary));
 background-size: 200% 200%;
 animation: gradientShift 5s ease infinite;
 -webkit-background-clip: text;
@@ -472,11 +462,7 @@ animation: gradientShift 5s ease infinite;
   right: 0;
   width: 30px;
   height: 30px;
-  background: linear-gradient(
-    45deg,
-    transparent 50%,
-    rgba(0, 255, 255, 0.1) 50%
-  );
+  background: linear-gradient(45deg, transparent 50%, rgba(0, 255, 255, 0.1) 50%);
   clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 ```

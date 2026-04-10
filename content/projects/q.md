@@ -1,8 +1,7 @@
 ---
 emoji: '⚡'
 title: 'q: The Tiniest Claude Code CLI'
-description:
-  'A minimal, elegant CLI for Claude. Ask, pipe, chat: one letter, infinite
+description: 'A minimal, elegant CLI for Claude. Ask, pipe, chat: one letter, infinite
   answers.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/q'
@@ -71,4 +70,3 @@ q -x "refactor this function to use async/await"
 ---
 
 Minimal by design. Powerful by default.
-

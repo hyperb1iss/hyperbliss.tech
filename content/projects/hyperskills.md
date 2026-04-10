@@ -1,22 +1,12 @@
 ---
 emoji: '🧠'
 title: 'hyperskills: AI Agent Skills That Actually Work'
-description:
-  'Ten focused skills for Claude Code and Codex, distilled from thousands of
+description: 'Ten focused skills for Claude Code and Codex, distilled from thousands of
   real sessions. Process workflows, multi-agent orchestration, security ops, and
   domain-specific decision trees.'
 date: '2026-02-01'
 github: 'https://github.com/hyperb1iss/hyperskills'
-tags:
-  [
-    'AI',
-    'Claude Code',
-    'Agent Skills',
-    'Developer Tools',
-    'Orchestration',
-    'Python',
-    'TypeScript',
-  ]
+tags: ['AI', 'Claude Code', 'Agent Skills', 'Developer Tools', 'Orchestration', 'Python', 'TypeScript']
 ---
 
 Models already know how to write React components and Kubernetes manifests. They don't need 300 lines of examples for that.
@@ -81,4 +71,3 @@ npx skills add hyperbliss/hyperskills --skill implement
 ---
 
 **Skills for things models don't already know.**
-

@@ -1,13 +1,11 @@
 ---
 emoji: '🧜‍♀️'
 title: 'Siren: Multi-Language Linting Frontend'
-description:
-  'A multi-language linting frontend with smart detection, auto-fixing, and
+description: 'A multi-language linting frontend with smart detection, auto-fixing, and
   colorful terminal output. Supports Rust, Python, JS/TS, and HTML.'
 date: '2025-03-07'
 github: 'https://github.com/hyperb1iss/siren'
-tags:
-  ['Python', 'Rust', 'Linting', 'ESLint', 'Prettier', 'Ruff', 'Mypy', 'Clippy']
+tags: ['Python', 'Rust', 'Linting', 'ESLint', 'Prettier', 'Ruff', 'Mypy', 'Clippy']
 ---
 
 ## Overview
@@ -37,4 +35,3 @@ Siren is a multi-language linting frontend that automatically detects your proje
 | JavaScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
 | TypeScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
 | HTML/Templates | `djlint`               | `djlint`               | -             | `djlint --reformat` |
-

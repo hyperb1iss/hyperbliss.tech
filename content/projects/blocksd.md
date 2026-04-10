@@ -1,8 +1,7 @@
 ---
 emoji: '🔌'
 title: 'blocksd: Linux Daemon for ROLI Blocks'
-description:
-  'Keeps ROLI Blocks devices alive on Linux with full protocol support:
+description: 'Keeps ROLI Blocks devices alive on Linux with full protocol support:
   topology, LED control, touch events, device config, and systemd integration.'
 date: '2026-03-15'
 github: 'https://github.com/hyperb1iss/blocksd'
@@ -60,4 +59,3 @@ blocksd touch --monitor
 ---
 
 **Your Blocks, alive on Linux.**
-

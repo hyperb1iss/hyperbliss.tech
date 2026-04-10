@@ -1,8 +1,7 @@
 ---
 emoji: '🖨️'
 title: 'SilkPrint: Markdown to PDF, Made Beautiful'
-description:
-  'Transform Markdown into beautiful PDFs with 40 built-in themes, syntax
+description: 'Transform Markdown into beautiful PDFs with 40 built-in themes, syntax
   highlighting, math support, and the SilkCircuit design language. Rust + Typst.'
 date: '2025-10-01'
 github: 'https://github.com/hyperb1iss/silkprint'
@@ -67,4 +66,3 @@ cargo install silkprint
 ---
 
 **Beautiful documents, straight from the terminal.**
-

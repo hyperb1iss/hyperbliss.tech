@@ -1,22 +1,11 @@
 ---
 emoji: '🔮'
 title: 'Git-Iris: Your Agentic Git Companion'
-description:
-  'An intelligent agent that understands your code and crafts perfect Git
+description: 'An intelligent agent that understands your code and crafts perfect Git
   artifacts: commits, reviews, changelogs, and more.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/git-iris'
-tags:
-  [
-    'Rust',
-    'Git',
-    'AI',
-    'CLI',
-    'Developer Tools',
-    'OpenAI',
-    'Anthropic',
-    'GitHub Action',
-  ]
+tags: ['Rust', 'Git', 'AI', 'CLI', 'Developer Tools', 'OpenAI', 'Anthropic', 'GitHub Action']
 ---
 
 ## Overview
@@ -95,4 +84,3 @@ git-iris config --provider anthropic --api-key YOUR_API_KEY
 ---
 
 **An intelligent agent that understands your code.**
-

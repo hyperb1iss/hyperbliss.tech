@@ -1,8 +1,7 @@
 ---
 emoji: '🌐'
 title: 'next-dynenv: Runtime Environment Variables for Next.js'
-description:
-  'Dynamic runtime environment variables for Next.js 15/16 & React 19. Build
+description: 'Dynamic runtime environment variables for Next.js 15/16 & React 19. Build
   once, deploy many.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/next-dynenv'
@@ -67,4 +66,3 @@ Works with Docker, Vercel, Netlify, AWS Amplify, and any static hosting platform
 ---
 
 Build once. Deploy everywhere. **Runtime environment variables done right.**
-

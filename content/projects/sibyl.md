@@ -1,23 +1,11 @@
 ---
 emoji: '🧿'
 title: 'Sibyl: Build With Agents That Remember'
-description:
-  'Collective intelligence runtime for AI agents. Persistent memory, agent
+description: 'Collective intelligence runtime for AI agents. Persistent memory, agent
   orchestration, and knowledge graph-powered development.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/sibyl'
-tags:
-  [
-    'Python',
-    'TypeScript',
-    'Claude',
-    'AI Agents',
-    'Knowledge Graph',
-    'FalkorDB',
-    'FastAPI',
-    'Next.js',
-    'MCP',
-  ]
+tags: ['Python', 'TypeScript', 'Claude', 'AI Agents', 'Knowledge Graph', 'FalkorDB', 'FastAPI', 'Next.js', 'MCP']
 ---
 
 ## The Vision
@@ -77,4 +65,3 @@ Connect Claude Code, Cursor, or any MCP client to Sibyl with a simple 4-tool API
 ---
 
 The collective gets smarter. The orchestration gets deeper. **Build with agents that remember.**
-

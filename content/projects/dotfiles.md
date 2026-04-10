@@ -1,23 +1,11 @@
 ---
 emoji: '🌠'
 title: "Stefanie's Dotfiles"
-description:
-  'A cross-platform development environment with SilkCircuit theming, AI-powered
+description: 'A cross-platform development environment with SilkCircuit theming, AI-powered
   editing, and unified shell config for Linux, macOS, WSL2, and Windows.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/dotfiles'
-tags:
-  [
-    'Shell',
-    'Zsh',
-    'Bash',
-    'Neovim',
-    'Tmux',
-    'WSL2',
-    'macOS',
-    'PowerShell',
-    'Android',
-  ]
+tags: ['Shell', 'Zsh', 'Bash', 'Neovim', 'Tmux', 'WSL2', 'macOS', 'PowerShell', 'Android']
 ---
 
 ## Overview
@@ -93,4 +81,3 @@ A Linux-like experience for Windows with:
 ---
 
 **Beauty meets function. Cross-platform done right.**
-

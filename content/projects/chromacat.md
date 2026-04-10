@@ -3,8 +3,7 @@ emoji: '😺'
 title: 'ChromaCat: Turbocharged Terminal Colorizer'
 date: '2024-09-25'
 tags: ['Rust', 'CLI', 'Terminal', 'Open Source']
-description:
-  'A turbocharged terminal colorizer written in Rust. Think lolcat with
+description: 'A turbocharged terminal colorizer written in Rust. Think lolcat with
   superpowers: advanced gradient patterns, smooth animations, and 40+ themes.'
 github: 'https://github.com/hyperb1iss/chromacat'
 ---
@@ -99,4 +98,3 @@ Energetic themes that bring celebration to your terminal:
 - **disco**: Classic party vibrancy
 - **festival**: Euphoric color combinations
 - **carnival**: Playful, festive gradients
-

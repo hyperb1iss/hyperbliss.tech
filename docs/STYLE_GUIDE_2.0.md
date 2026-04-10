@@ -182,8 +182,7 @@ type ParticleState =
   | { type: 'connected'; peers: Particle[]; strength: number }
 
 // Functional, not imperative
-const updateParticles = (particles: Particle[]) =>
-  particles.map(evolve).filter(isAlive).slice(0, maxParticles)
+const updateParticles = (particles: Particle[]) => particles.map(evolve).filter(isAlive).slice(0, maxParticles)
 ```
 
 ### Performance Guidelines

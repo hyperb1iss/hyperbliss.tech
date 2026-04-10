@@ -3,8 +3,7 @@ emoji: '🌃'
 title: 'hyperbliss.tech: Nerd City'
 date: '2024-09-25'
 tags: ['Next.js', 'TypeScript', 'React', 'Panda CSS', 'Framer Motion', 'WebGL']
-description:
-  'The source code for this very site. Interactive CyberScape particle system,
+description: 'The source code for this very site. Interactive CyberScape particle system,
   Framer Motion transitions, Panda CSS, and markdown-driven content.'
 github: 'https://github.com/hyperb1iss/hyperbliss.tech'
 ---
@@ -61,4 +60,3 @@ The signature header animation features:
 3. **Content Focus**: Design enhances rather than overshadows content
 4. **Adaptive Experience**: Consistent across all devices
 5. **Technical Excellence**: Clean code that showcases best practices
-

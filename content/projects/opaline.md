@@ -1,8 +1,7 @@
 ---
 emoji: '✦'
 title: 'Opaline: A Token-Based Theme Engine for Rust'
-description:
-  'Semantic color tokens, 39 builtin themes, multi-stop gradients, and deep
+description: 'Semantic color tokens, 39 builtin themes, multi-stop gradients, and deep
   integrations with Ratatui, egui, crossterm, and more.'
 date: '2026-01-15'
 github: 'https://github.com/hyperb1iss/opaline'
@@ -76,4 +75,3 @@ opaline = { version = "0.4", features = ["ratatui", "gradients", "egui", "css"] 
 ---
 
 **One theme engine, every rendering target.**
-

@@ -3,8 +3,7 @@ emoji: '🌀'
 title: 'AeonSync: Simple but Powerful Backup Manager'
 date: '2024-09-25'
 tags: ['Python', 'rsync', 'Backup', 'CLI', 'DevOps']
-description:
-  'Incremental remote backups powered by rsync with retention policies,
+description: 'Incremental remote backups powered by rsync with retention policies,
   interactive restore, and a clean CLI built on Typer.'
 github: 'https://github.com/hyperb1iss/aeonsync'
 ---
@@ -55,4 +54,3 @@ aeon list-backups
 ## Open Source
 
 AeonSync is open-source software, licensed under the GNU General Public License v3.0. Contributions from the community are welcome! Check out the [GitHub repository](https://github.com/hyperb1iss/aeonsync) to get involved or report issues.
-

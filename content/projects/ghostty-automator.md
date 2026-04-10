@@ -1,8 +1,7 @@
 ---
 emoji: '🎭'
 title: 'Ghostty Automator: Playwright for Terminals'
-description:
-  'Playwright-style terminal control for Ghostty. Async-first Python API with
+description: 'Playwright-style terminal control for Ghostty. Async-first Python API with
   assertions, auto-waiting, and screenshot capture.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/ghostty-automator-python'
@@ -92,4 +91,3 @@ brew install ghostty-automator
 ---
 
 **Automate your terminal workflows with confidence.**
-

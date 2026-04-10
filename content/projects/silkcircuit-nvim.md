@@ -1,8 +1,7 @@
 ---
 emoji: '💜'
 title: 'SilkCircuit: Electric Dreams for Neovim'
-description:
-  'A vibrant cyberpunk-inspired Neovim colorscheme. Five variants, WCAG AA
+description: 'A vibrant cyberpunk-inspired Neovim colorscheme. Five variants, WCAG AA
   compliant contrast, <5ms load time, 40+ plugin integrations.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/silkcircuit-nvim'
@@ -69,4 +68,3 @@ SilkCircuit extends beyond Neovim with matching themes for:
 ---
 
 **Pure electric energy for your editor.**
-

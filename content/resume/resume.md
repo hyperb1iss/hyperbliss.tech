@@ -1,7 +1,6 @@
 ---
 title: Resume
-description:
-  Professional resume of Stefanie Jane, full-stack developer and designer.
+description: Professional resume of Stefanie Jane, full-stack developer and designer.
 ---
 
 # Stefanie Jane
@@ -47,7 +46,7 @@ _(May 2025 - Present)_
 - Owning developer experience, creating efficient workflows and tooling
 - Enhancing and extending AI agent capabilities 🤖
 - **Technologies:** [TypeScript](https://www.typescriptlang.org/),
-  [Next.js](https://nextjs.org/), [React](https://reactjs.org/),   [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
+  [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
 
 ### [Mason](https://www.bymason.com/)
 
@@ -57,7 +56,7 @@ _(May 2024 - May 2025)_
 
 - Led multiple new AI product initiatives 🚀
 - **Technologies:** Java, C++, Kotlin, Go, Python,
-  [Node.js](https://nodejs.org/), [React](https://reactjs.org/),   [Django](https://www.djangoproject.com/),   [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/),   [Kubernetes](https://kubernetes.io/),   [PostgreSQL](https://www.postgresql.org/)
+  [Node.js](https://nodejs.org/), [React](https://reactjs.org/), [Django](https://www.djangoproject.com/), [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
 
 #### Director of Software Engineering
 
@@ -115,7 +114,7 @@ _(April 2017 - March 2019)_
 _(March 2013 - November 2016)_
 
 - Co-founded Cyanogen Inc, building on the popular
-  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) open-source project,   which had thousands of contributors and millions of users worldwide 🌟
+  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) open-source project, which had thousands of contributors and millions of users worldwide 🌟
 - Deeply involved in fundraising, securing venture capital, and strategic hiring
 - Launched multiple mobile phones featuring CyanogenOS with OEM partners
 - Delivered keynote presentations at international technology conferences
@@ -145,7 +144,7 @@ _(May 2010 - June 2011)_
 
 - Developed network-friendly media streaming software
 - Built cross-platform applications for
-  [MeeGo](https://en.wikipedia.org/wiki/MeeGo) ([Qt](https://www.qt.io/)) and   Android, including web client interfaces
+  [MeeGo](https://en.wikipedia.org/wiki/MeeGo) ([Qt](https://www.qt.io/)) and Android, including web client interfaces
 - Enhanced media transcoding platform performance
 - **Technologies:** Ruby, Rails, C++, Java
 
@@ -164,7 +163,7 @@ _(July 2006 - May 2010)_
 - Developed custom spatial extensions for Hibernate ORM to support geospatial
   analytics
 - **Technologies:** Java, JavaScript, Groovy, [Spring](https://spring.io/),
-  [Hibernate](https://hibernate.org/),   [ExtJS](https://www.sencha.com/products/extjs/),   [PostgreSQL](https://www.postgresql.org/), Oracle
+  [Hibernate](https://hibernate.org/), [ExtJS](https://www.sencha.com/products/extjs/), [PostgreSQL](https://www.postgresql.org/), Oracle
 
 ### [University of Pittsburgh](https://www.pitt.edu/)
 
@@ -193,18 +192,18 @@ _(April 1998 - April 2005)_
   connectivity services
 - Maintained Fibre Channel SAN (EMC, Brocade) and backup equipment (StorageTek)
 - **Technologies:** Java, C, Python, Perl, [Postfix](https://www.postfix.org/),
-  [qmail](https://cr.yp.to/qmail.html), Oracle,   [Solaris](https://www.oracle.com/solaris/technologies/)
+  [qmail](https://cr.yp.to/qmail.html), Oracle, [Solaris](https://www.oracle.com/solaris/technologies/)
 
 ## 💻 Notable Open Source Projects
 
 - **[CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod)/[LineageOS](https://lineageos.org/)**:
-  Created the world's largest custom Android ROM, empowering millions to   customize and extend the life of their devices
+  Created the world's largest custom Android ROM, empowering millions to customize and extend the life of their devices
 - **[DroidMind](https://github.com/hyperb1iss/droidmind)**: A bridge between AI
-  assistants and Android devices that implements the   [Model Context Protocol (MCP)](https://github.com/anthropics/anthropic-cookbook/tree/main/mcp),   enabling control through natural language
+  assistants and Android devices that implements the [Model Context Protocol (MCP)](https://github.com/anthropics/anthropic-cookbook/tree/main/mcp), enabling control through natural language
 - **[git-iris](https://github.com/hyperb1iss/git-iris)**: AI-accelerated git
   workflow tool that enhances efficiency in version control management
 - **[Home Assistant](https://www.home-assistant.io/) Enhancements**: Various
-  contributions to the Home Assistant ecosystem, including themes and   integrations
+  contributions to the Home Assistant ecosystem, including themes and integrations
 - **[uchroma](https://github.com/hyperb1iss/uchroma)**: Advanced driver for
   Razer Chroma hardware in Linux systems
 
@@ -213,7 +212,7 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 ## 🏆 Recognition & Achievements
 
 - Created [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), now
-  [LineageOS](https://lineageos.org/), revolutionizing Android customization for   millions of users
+  [LineageOS](https://lineageos.org/), revolutionizing Android customization for millions of users
 - Established a foundation for device longevity through community-supported
   software
 - Led one of the most successful open-source projects in the mobile ecosystem
@@ -228,4 +227,3 @@ _Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
 - Avid roller skater and roller derby player
 - Electronic music producer
 - Flow artist and fire performer
-

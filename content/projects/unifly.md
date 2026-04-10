@@ -1,8 +1,7 @@
 ---
 emoji: '📡'
 title: 'unifly: Your UniFi Network, at Your Fingertips'
-description:
-  'Elegant UniFi network management CLI & TUI. 26 commands, 10-screen dashboard,
+description: 'Elegant UniFi network management CLI & TUI. 26 commands, 10-screen dashboard,
   dual API engine, for humans and AI agents alike.'
 date: '2026-02-13'
 github: 'https://github.com/hyperb1iss/unifly'
@@ -55,4 +54,3 @@ unifly tui                   # Launch the dashboard
 ---
 
 **Manage your entire network without leaving the terminal.**
-
