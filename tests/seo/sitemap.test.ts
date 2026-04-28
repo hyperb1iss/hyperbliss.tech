@@ -12,6 +12,7 @@ describe('Sitemap Generation', () => {
     ;(getAllMarkdownSlugs as unknown as { mockResolvedValueOnce: (v: string[]) => unknown })
       .mockResolvedValueOnce(['post-1', 'post-2']) // Blog posts
       .mockResolvedValueOnce(['project-1']) // Projects
+      .mockResolvedValueOnce(['regex-nightmares']) // Lab entries
   })
 
   it('should generate valid sitemap XML', async () => {
@@ -35,6 +36,7 @@ describe('Sitemap Generation', () => {
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-1\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/post-2\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>/)
+    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/lab\/regex-nightmares\/<\/loc>/)
 
     // Check required elements
     expect(content).toMatch(/<lastmod>/)
@@ -59,6 +61,11 @@ describe('Sitemap Generation', () => {
     // Project pages should have high-medium priority
     expect(content).toMatch(
       /<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>[\s\S]*?<priority>0.8<\/priority>/,
+    )
+
+    // Lab pages should have high-medium priority
+    expect(content).toMatch(
+      /<loc>https:\/\/hyperbliss.tech\/lab\/regex-nightmares\/<\/loc>[\s\S]*?<priority>0.8<\/priority>/,
     )
   })
 })

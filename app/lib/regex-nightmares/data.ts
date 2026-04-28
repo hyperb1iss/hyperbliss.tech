@@ -23,7 +23,6 @@ Every group is non-capturing for performance. The whole thing still doesn't hand
     flags: 'i',
     id: 1,
     jsCompatible: true,
-    jsRegex: `(?:[a-z0-9!#$%&'*+/=?^_\`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)`,
     regex: `(?:[a-z0-9!#$%&'*+/=?^_\`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_\`{|}~-]+)*|"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])`,
     section: 'main',
     segments: [
@@ -87,6 +86,7 @@ Every group is non-capturing for performance. The whole thing still doesn't hand
     testCases: [
       { input: 'user@example.com', label: 'user@example.com', shouldMatch: true },
       { input: 'user.name+tag@domain.co.uk', label: 'dotted + tag', shouldMatch: true },
+      { input: 'user@[192.168.1.1]', label: 'IPv4 literal', shouldMatch: true },
       { input: 'not-an-email', label: 'no @ sign', shouldMatch: false },
       { input: '@missing-local.com', label: 'no local part', shouldMatch: false },
       { input: 'user@.invalid', label: 'leading dot domain', shouldMatch: false },
@@ -116,6 +116,7 @@ This is the canonical ReDoS (Regular Expression Denial of Service) attack. It wo
     id: 2,
     jsCompatible: true,
     jsRegex: '^(a+)+$',
+    maxInputLength: 24,
     regex: '^(a+)+$',
     section: 'main',
     segments: [
@@ -176,6 +177,7 @@ On input like "aaaaaaaaaaaaaaaaaac", the left branch can't match (no b to pair w
     id: 3,
     jsCompatible: true,
     jsRegex: '^((a+)(b+))+$|^((a+)+(b+)?)+$',
+    maxInputLength: 20,
     regex: '^((a+)(b+))+$|^((a+)+(b+)?)+$',
     section: 'main',
     segments: [
@@ -246,8 +248,6 @@ Someone wrote IP range validation as nested numeric alternations inside zero-wid
     flags: 'i',
     id: 4,
     jsCompatible: true,
-    jsRegex:
-      '^(?:(?:https?|ftp):\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff_-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?)(?::\\d{2,5})?(?:[/?#]\\S*)?$',
     regex:
       '^(?:(?:https?|ftp):\\/\\/)(?:\\S+(?::\\S*)?@)?(?:(?!(?:10|127)(?:\\.\\d{1,3}){3})(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z0-9\\u00a1-\\uffff][a-z0-9\\u00a1-\\uffff_-]{0,62})?[a-z0-9\\u00a1-\\uffff]\\.)+(?:[a-z\\u00a1-\\uffff]{2,}\\.?))(?::\\d{2,5})?(?:[/?#]\\S*)?$',
     section: 'main',
@@ -318,6 +318,7 @@ Someone wrote IP range validation as nested numeric alternations inside zero-wid
     testCases: [
       { input: 'https://example.com', label: 'https://example.com', shouldMatch: true },
       { input: 'http://sub.domain.co.uk/path?q=1', label: 'full URL', shouldMatch: true },
+      { input: 'http://8.8.8.8/dns-query', label: 'public IPv4', shouldMatch: true },
       { input: 'not-a-url', label: 'no protocol', shouldMatch: false },
       { input: 'http://192.168.1.1', label: 'private IP rejected', shouldMatch: false },
     ],
@@ -412,7 +413,9 @@ The eternal shame: it happily validates February 31st. It also matches P alone (
     testCases: [
       { input: '2024-01-15T10:30:00Z', label: 'UTC datetime', shouldMatch: true },
       { input: '2024-02-31T00:00:00Z', label: 'Feb 31 (oops)', shouldMatch: true },
+      { input: '2024-01-15T', label: 'date + bare T (oops)', shouldMatch: true },
       { input: 'P1Y2M3DT4H5M6S', label: 'full duration', shouldMatch: true },
+      { input: 'P', label: 'P alone (oops)', shouldMatch: true },
       { input: '2024-13-01T00:00:00Z', label: 'month 13', shouldMatch: false },
       { input: 'not-a-date', label: 'not a date', shouldMatch: false },
     ],
@@ -499,7 +502,7 @@ It fails on nested identical tags. It exists as a monument to the gap between "t
     ],
     subtitle: 'The physical manifestation of "you can\'t parse HTML with regex."',
     testCases: [
-      { input: '<div>hello</div>', label: '<div>hello</div>', shouldMatch: true },
+      { input: '<div>hello</div>', label: 'paired tag (broken)', shouldMatch: false },
       { input: '<br />', label: 'self-closing', shouldMatch: true },
       { input: '<img src="x.jpg" />', label: 'img tag', shouldMatch: true },
       { input: 'just text', label: 'no tags', shouldMatch: false },
@@ -724,6 +727,8 @@ The named color section is the neat part. Instead of listing all 148 CSS named c
     testCases: [
       { input: '#ff00ff', label: '#ff00ff', shouldMatch: true },
       { input: '#fff', label: '#fff', shouldMatch: true },
+      { input: '#abcde', label: '5-digit hex bug', shouldMatch: true },
+      { input: '#abcd', label: 'valid CSS, regex misses', shouldMatch: false },
       { input: 'rgb(255, 0, 128)', label: 'rgb()', shouldMatch: true },
       { input: 'royalblue', label: 'named color', shouldMatch: true },
       { input: 'transparent', label: 'transparent', shouldMatch: true },
@@ -1047,8 +1052,8 @@ This is a regex simulating a two-pointer traversal through lookaheads and self-r
     id: 14,
     jsCompatible: false,
     jsValidator: (input: string) => {
-      const s = input.toLowerCase().replace(/[^a-z0-9]/g, '')
-      return s.length > 0 && s === s.split('').reverse().join('')
+      const chars = Array.from(input)
+      return chars.length > 0 && input === chars.reverse().join('')
     },
     regex: '^(?:(?:(.)(?=.*(\\1(?(2)\\2))$)))*+.?\\2?$',
     section: 'appendix',
@@ -1120,8 +1125,8 @@ The capture groups are functioning as CPU registers. This is not a regex. This i
     id: 15,
     jsCompatible: false,
     jsValidator: (input: string) => {
+      if (!/^x+$/.test(input)) return false
       const n = input.length
-      if (n === 0) return false
       let a = 1
       let b = 2
       while (a < n) {
@@ -1184,6 +1189,7 @@ The capture groups are functioning as CPU registers. This is not a regex. This i
       { input: 'xxxxx', label: '5 (Fib)', shouldMatch: true },
       { input: 'xxxxxxxxxxxx', label: '12 (not Fib)', shouldMatch: false },
       { input: 'xxxxxxxxxxxxx', label: '13 (Fib)', shouldMatch: true },
+      { input: 'abcde', label: 'length 5, wrong chars', shouldMatch: false },
     ],
     title: 'Fibonacci String Matcher',
   },
@@ -1333,15 +1339,13 @@ It also handles roughly 40% of valid SQL. No subqueries in FROM. No CTEs. No win
     category: 'cursed',
     dangerLevel: 4,
     emoji: '🪞',
-    explanation: `It handles escaped characters, metacharacters, character classes with the tricky leading-] rule, groups with non-capturing/lookahead/lookbehind/named/flag/comment prefixes, quantifiers with possessive and lazy modifiers, and alternation.
+    explanation: `It handles escaped characters, metacharacters, character classes with the tricky leading-] rule, groups with non-capturing and lookahead prefixes, quantifiers with lazy and possessive modifiers, and alternation.
 
 It's necessarily incomplete. Regex syntax differs across PCRE, ECMAScript, POSIX, and others, so a "correct" meta-regex would need to target a specific engine. It also can't validate semantic correctness: \\1 without a corresponding capture group is syntactically legal but semantically broken. The meta-regex validates form, not meaning. Just like a lot of real code review.`,
     id: 18,
     jsCompatible: true,
-    jsRegex:
-      '^(?:(?:\\\\.)|[\\^$.]|[^\\\\()\\[\\]{}|*+?.\\^$]|\\[(?:\\^?\\]?(?:[^\\]\\\\]|\\\\.)*)]|\\((?:\\?(?::|!|=)|(?:(?:\\\\.)|[\\^$.]|[^\\\\()\\[\\]{}|*+?.\\^$])*))\\)[*+?]?(?:\\{\\d+(?:,\\d*)?\\})?[?+]?|\\|)*$',
-    regex:
-      '^(?:(?:\\\\.)|[\\^$.]|[^\\\\()[\\]{}|*+?.\\^$]|\\[(?:\\^?\\]?(?:[^\\]\\\\]|\\\\.)*)]|\\((?:\\?(?::|!|=|<=|<!|<[a-zA-Z]\\w*>|P<[a-zA-Z]\\w*>|[idmsuxU-]+:?|#[^)]*)|(?:(?:\\\\.)|[\\^$.]|[^\\\\()[\\]{}|*+?.\\^$]|\\[(?:\\^?\\]?(?:[^\\]\\\\]|\\\\.)*)])*))\\)[*+?]?(?:\\{(?:\\d+(?:,\\d*)?)\\})?[?+]?|\\|)*$',
+    jsRegex: String.raw`^(?:(?:(?:\\.)|[\^$.]|[^\\()\[\]{}|*+?.\^$]|\[(?:\^?\]?(?:[^\]\\]|\\.)*)\]|\((?:\?(?::|!|=))?(?:(?:\\.)|[\^$.]|[^\\()\[\]{}|*+?.\^$]|\[(?:\^?\]?(?:[^\]\\]|\\.)*)\]|\|)*\))(?:[*+?]|\{\d+(?:,\d*)?\})?[?+]?|\|)*$`,
+    regex: String.raw`^(?:(?:(?:\\.)|[\^$.]|[^\\()\[\]{}|*+?.\^$]|\[(?:\^?\]?(?:[^\]\\]|\\.)*)\]|\((?:\?(?::|!|=))?(?:(?:\\.)|[\^$.]|[^\\()\[\]{}|*+?.\^$]|\[(?:\^?\]?(?:[^\]\\]|\\.)*)\]|\|)*\))(?:[*+?]|\{\d+(?:,\d*)?\})?[?+]?|\|)*$`,
     section: 'appendix',
     segments: [
       {
@@ -1372,9 +1376,9 @@ It's necessarily incomplete. Regex syntax differs across PCRE, ECMAScript, POSIX
       {
         color: 'pink',
         description:
-          'Non-capturing (?:), lookahead (?=), lookbehind (?<=), negative versions (?!, ?<!), and named groups (?<name>).',
+          'Non-capturing (?:), positive lookahead (?=), and negative lookahead (?!). Other engines add more prefixes, which is exactly why this gets messy.',
         label: 'Group type prefixes',
-        pattern: '\\?(?::|!|=|<=|<!|<[a-zA-Z]\\w*>)',
+        pattern: '\\?(?::|!|=)',
       },
       {
         color: 'orange',
@@ -1417,6 +1421,7 @@ In practice, the engine locks up on inputs as short as 15-20 characters. This is
     id: 19,
     jsCompatible: true,
     jsRegex: '^((((a+)+)+)+)+$',
+    maxInputLength: 16,
     regex: '^((((a+)+)+)+)+$',
     section: 'appendix',
     segments: [
@@ -1538,7 +1543,7 @@ Between the catch-all's broad acceptance and the missing prefix enforcement, thi
     ],
     subtitle: "Twenty country-specific branches. Each encoding a different nation's phone format.",
     testCases: [
-      { input: '+1 (555) 123-4567', label: 'US format', shouldMatch: true },
+      { input: '+1 (555) 234-5678', label: 'US format', shouldMatch: true },
       { input: '+44 20 7946 0958', label: 'UK format', shouldMatch: true },
       { input: '+49 30 12345678', label: 'German format', shouldMatch: true },
       { input: '123', label: 'too short', shouldMatch: false },
@@ -1561,6 +1566,7 @@ It's a Rube Goldberg machine that, after 47 steps, does absolutely nothing. And 
     id: 21,
     jsCompatible: true,
     jsRegex: '(?:(?=(?:(?=(?:(?=(?:(?=.){0}){0}){0}){0}){0}).){0}){0}',
+    matchMode: 'contains',
     regex: '(?:(?=(?:(?=(?:(?=(?:(?=.){0}){0}){0}){0}){0}).){0}){0}',
     section: 'appendix',
     segments: [

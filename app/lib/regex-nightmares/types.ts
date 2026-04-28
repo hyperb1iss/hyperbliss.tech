@@ -13,6 +13,8 @@ export interface RegexTestCase {
   label: string
 }
 
+export type RegexMatchMode = 'full' | 'contains'
+
 export interface RegexNightmareEntry {
   id: number
   title: string
@@ -30,6 +32,8 @@ export interface RegexNightmareEntry {
     content: string
   }
   testCases: RegexTestCase[]
+  matchMode?: RegexMatchMode
+  maxInputLength?: number
   jsCompatible: boolean
   jsRegex?: string
   flags?: string

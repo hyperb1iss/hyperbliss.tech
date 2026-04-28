@@ -562,6 +562,8 @@ function EntryCard({ entry }: { entry: RegexNightmareEntry }) {
         jsCompatible={entry.jsCompatible}
         jsRegex={entry.jsRegex}
         jsValidator={entry.jsValidator}
+        matchMode={entry.matchMode}
+        maxInputLength={entry.maxInputLength}
         regex={entry.regex}
         testCases={entry.testCases}
       />
