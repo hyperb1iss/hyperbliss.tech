@@ -23,14 +23,11 @@ export async function GET() {
     title: 'Hyperbliss',
   })
 
-  const [postSlugs, labSlugs] = await Promise.all([
-    getAllMarkdownSlugs('content/posts'),
-    getAllMarkdownSlugs('content/lab'),
-  ])
+  const [postSlugs, labSlugs] = await Promise.all([getAllMarkdownSlugs('posts'), getAllMarkdownSlugs('lab')])
 
   const [posts, labExperiments] = await Promise.all([
-    Promise.all(postSlugs.map(async (slug) => getMarkdownContent('content/posts', slug))),
-    Promise.all(labSlugs.map(async (slug) => getMarkdownContent('content/lab', slug))),
+    Promise.all(postSlugs.map(async (slug) => getMarkdownContent('posts', slug))),
+    Promise.all(labSlugs.map(async (slug) => getMarkdownContent('lab', slug))),
   ])
 
   const allItems = [

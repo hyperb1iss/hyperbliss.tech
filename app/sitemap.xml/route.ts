@@ -19,9 +19,9 @@ export async function GET(): Promise<Response> {
 
   // Get all content slugs
   const [blogSlugs, projectSlugs, labSlugs] = await Promise.all([
-    getAllMarkdownSlugs('content/posts'),
-    getAllMarkdownSlugs('content/projects'),
-    getAllMarkdownSlugs('content/lab'),
+    getAllMarkdownSlugs('posts'),
+    getAllMarkdownSlugs('projects'),
+    getAllMarkdownSlugs('lab'),
   ])
 
   const blogUrls = blogSlugs.map((slug) => ({

@@ -163,10 +163,10 @@ const createMinimalMetadata = (): ResolvedMetadata => ({
  * Fetches metadata for all blog posts
  */
 async function getAllBlogMetadata() {
-  const slugs = await getAllMarkdownSlugs('content/posts')
+  const slugs = await getAllMarkdownSlugs('posts')
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>('content/posts', slug)
+      const { frontmatter } = await getMarkdownContent<BlogFrontmatter>('posts', slug)
       const metadata = await generateBlogMetadata(frontmatter, slug, Promise.resolve(createMinimalMetadata()))
       return {
         metadata,
@@ -180,10 +180,10 @@ async function getAllBlogMetadata() {
  * Fetches metadata for all project pages
  */
 async function getAllProjectMetadata() {
-  const slugs = await getAllMarkdownSlugs('content/projects')
+  const slugs = await getAllMarkdownSlugs('projects')
   return Promise.all(
     slugs.map(async (slug) => {
-      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('content/projects', slug)
+      const { frontmatter } = await getMarkdownContent<ProjectFrontmatter>('projects', slug)
       const metadata = await generateProjectMetadata(frontmatter, slug, Promise.resolve(createMinimalMetadata()))
       return {
         metadata,
