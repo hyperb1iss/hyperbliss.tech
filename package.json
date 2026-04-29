@@ -30,15 +30,15 @@
     "analyze:keep": "node scripts/analyze-bundle.mjs --keep"
   },
   "dependencies": {
-    "feed": "5.2.0",
+    "feed": "5.2.1",
     "framer-motion": "^12.38.0",
     "gl-matrix": "3.4.4",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
-    "next": "^16.2.2",
+    "next": "^16.2.4",
     "nextjs-google-analytics": "^2.3.7",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "react-icons": "5.6.0",
     "react-markdown": "10.1.0",
     "rehype-highlight": "7.0.2",
@@ -48,27 +48,27 @@
     "remark-gfm": "4.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
-    "@next/bundle-analyzer": "^16.2.2",
-    "@pandacss/dev": "^1.9.1",
+    "@biomejs/biome": "^2.4.13",
+    "@next/bundle-analyzer": "^16.2.4",
+    "@pandacss/dev": "^1.10.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.1",
     "@types/hast": "^3.0.4",
-    "@types/node": "25.5.2",
+    "@types/node": "25.6.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.0",
-    "jsdom": "29.0.1",
+    "jsdom": "29.1.0",
     "playwright": "^1.59.1",
-    "prettier": "3.8.1",
+    "prettier": "3.8.3",
     "schema-dts": "^2.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "6.0.2",
-    "vite": "^8.0.8",
-    "vitest": "^4.1.2"
+    "typescript": "6.0.3",
+    "vite": "^8.0.10",
+    "vitest": "^4.1.5"
   },
-  "packageManager": "pnpm@10.27.0+sha512.72d699da16b1179c14ba9e64dc71c9a40988cbdc65c264cb0e489db7de917f20dcf4d64d8723625f2969ba52d4b7e2a1170682d9ac2a5dcaeaab732b7e16f04a",
+  "packageManager": "pnpm@10.33.2",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@swc/core",
@@ -102,7 +102,8 @@
       "path-to-regexp@<0.1.13": ">=0.1.13",
       "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
       "picomatch@<2.3.2": ">=2.3.2",
-      "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
+      "picomatch@>=4.0.0 <4.0.4": ">=4.0.4",
+      "postcss@<8.5.10": ">=8.5.10"
     }
   }
 }
