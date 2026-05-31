@@ -1,5 +1,6 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { StrictMode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { Registry } from '@/components/terminal/registry'
 import { text } from '@/components/terminal/render'
@@ -72,6 +73,38 @@ describe('Terminal', () => {
     await user.type(input, 'hell')
     await user.keyboard('{Tab}')
     expect(input).toHaveValue('hello')
+  })
+
+  it('runs the boot finale exactly once, even under StrictMode', async () => {
+    const registry = new Registry()
+    const neofetch = vi.fn(() => text('NEO'))
+    registry.register({ name: 'neofetch', run: neofetch, summary: 'sys' })
+    render(
+      <StrictMode>
+        <Terminal bootPhase="skip-to-end" broadcast={testBroadcast} manifest={testManifest} registry={registry} />
+      </StrictMode>,
+    )
+    await waitFor(() => expect(neofetch).toHaveBeenCalled())
+    expect(neofetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('replays shared-session commands instead of neofetch', async () => {
+    const registry = new Registry()
+    const neofetch = vi.fn(() => text('NEO'))
+    const projects = vi.fn(() => text('PROJ'))
+    registry.register({ name: 'neofetch', run: neofetch, summary: 'sys' })
+    registry.register({ name: 'projects', run: projects, summary: 'p' })
+    render(
+      <Terminal
+        bootPhase="skip-to-end"
+        broadcast={testBroadcast}
+        manifest={testManifest}
+        registry={registry}
+        replayCommands={['projects']}
+      />,
+    )
+    await waitFor(() => expect(projects).toHaveBeenCalled())
+    expect(neofetch).not.toHaveBeenCalled()
   })
 
   it('fires a coarse analytics category, never raw input', async () => {
