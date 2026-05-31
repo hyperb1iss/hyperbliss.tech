@@ -236,7 +236,9 @@ export default function Terminal({
 
   const inputRef = useRef<HTMLInputElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
-  const idRef = useRef(initialLog.length)
+  // Seed above the highest seeded id so boot-provided initialLog entries (P3)
+  // can't collide with runtime-generated ids.
+  const idRef = useRef(initialLog.reduce((max, e) => Math.max(max, e.id), 0))
   const cwdRef = useRef('/')
   const historyRef = useRef<History>(new History())
   const runRef = useRef<(line: string) => Promise<void>>(async () => {})
