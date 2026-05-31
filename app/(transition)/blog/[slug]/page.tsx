@@ -1,5 +1,6 @@
 // app/(transition)/blog/[slug]/page.tsx
 import { ResolvingMetadata } from 'next'
+import { notFound } from 'next/navigation'
 import BlogPost from '../../../components/BlogPost'
 import StructuredData from '../../../components/StructuredData'
 import { getAllPostSlugs, getPost } from '../../../lib/content'
@@ -12,11 +13,15 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }))
 }
 
+// Content ships with the build, so any slug we didn't pre-render is a 404.
+export const dynamicParams = false
+
 export async function generateMetadata({ params }: PageProps, parent: ResolvingMetadata) {
   const resolvedParams = await params
   const slug = resolvedParams.slug as string
 
   const post = await getPost(slug)
+  if (!post) notFound()
 
   const frontmatter: BlogFrontmatter = {
     author: post.author ?? undefined,
@@ -34,6 +39,7 @@ export default async function PostPage({ params }: PageProps) {
   const slug = resolvedParams.slug as string
 
   const post = await getPost(slug)
+  if (!post) notFound()
 
   const articleSchema = generateArticleSchema(
     post.displayTitle,

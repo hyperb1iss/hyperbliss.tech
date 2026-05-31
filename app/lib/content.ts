@@ -9,9 +9,23 @@ import matter from 'gray-matter'
 // Helpers
 // ============================================================
 
-/** Resolve a content path relative to the project root */
+const CONTENT_ROOT = path.join(process.cwd(), 'content')
+
+/** A requested content file doesn't exist, or its resolved path escaped the content root. */
+class ContentNotFoundError extends Error {
+  constructor(relativePath: string) {
+    super(`Content not found: ${relativePath}`)
+    this.name = 'ContentNotFoundError'
+  }
+}
+
+/** Resolve a content path relative to the content root, refusing slugs that escape it. */
 function contentPath(...segments: string[]): string {
-  return path.join(process.cwd(), 'content', ...segments)
+  const resolved = path.resolve(CONTENT_ROOT, ...segments)
+  if (resolved !== CONTENT_ROOT && !resolved.startsWith(`${CONTENT_ROOT}${path.sep}`)) {
+    throw new ContentNotFoundError(segments.join('/'))
+  }
+  return resolved
 }
 
 /** Read and parse a JSON content file */
@@ -24,6 +38,28 @@ async function readJson<T>(relativePath: string): Promise<T> {
 async function readMarkdown(relativePath: string): Promise<{ data: Record<string, unknown>; content: string }> {
   const raw = await fs.readFile(contentPath(relativePath), 'utf-8')
   return matter(raw)
+}
+
+/**
+ * A nonexistent file (ENOENT) or an out-of-root path — i.e. the content simply
+ * isn't there, as opposed to a real IO or parse failure that must keep
+ * propagating so we surface it instead of masking it as a 404.
+ */
+function isMissingContent(err: unknown): boolean {
+  if (err instanceof ContentNotFoundError) return true
+  return typeof err === 'object' && err !== null && (err as NodeJS.ErrnoException).code === 'ENOENT'
+}
+
+/** Read markdown, returning null when the file doesn't exist. Real errors still throw. */
+async function readMarkdownOrNull(
+  relativePath: string,
+): Promise<{ data: Record<string, unknown>; content: string } | null> {
+  try {
+    return await readMarkdown(relativePath)
+  } catch (err) {
+    if (isMissingContent(err)) return null
+    throw err
+  }
 }
 
 /** Read a content file verbatim (frontmatter included) — backs `cat` in the terminal. */
@@ -100,8 +136,10 @@ export async function getAllPosts(): Promise<PostSummary[]> {
   return posts
 }
 
-export async function getPost(slug: string): Promise<PostDetail> {
-  const { data, content } = await readMarkdown(`posts/${slug}.md`)
+export async function getPost(slug: string): Promise<PostDetail | null> {
+  const parsed = await readMarkdownOrNull(`posts/${slug}.md`)
+  if (!parsed) return null
+  const { data, content } = parsed
 
   return {
     author: (data.author as string) ?? null,
@@ -180,8 +218,10 @@ export async function getAllLab(): Promise<LabSummary[]> {
   return experiments
 }
 
-export async function getLabExperiment(slug: string): Promise<LabDetail> {
-  const { data, content } = await readMarkdown(`lab/${slug}.md`)
+export async function getLabExperiment(slug: string): Promise<LabDetail | null> {
+  const parsed = await readMarkdownOrNull(`lab/${slug}.md`)
+  if (!parsed) return null
+  const { data, content } = parsed
 
   return {
     author: (data.author as string) ?? null,
@@ -273,8 +313,10 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
   return projects
 }
 
-export async function getProject(slug: string): Promise<ProjectDetail> {
-  const { data, content } = await readMarkdown(`projects/${slug}.md`)
+export async function getProject(slug: string): Promise<ProjectDetail | null> {
+  const parsed = await readMarkdownOrNull(`projects/${slug}.md`)
+  if (!parsed) return null
+  const { data, content } = parsed
 
   return {
     body: content || null,
