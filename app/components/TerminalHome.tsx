@@ -8,10 +8,10 @@
 import Link from 'next/link'
 import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
 import { toLatestContent, toProjectCards } from '@/lib/homeContent'
-import { SOCIAL_LINKS } from '@/lib/socials'
 import type { Broadcast, Manifest, ManifestEntry } from '@/lib/terminal/types'
 import { styled } from '../../styled-system/jsx'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
+import HomeFallbackContent from './HomeFallback'
 import LatestBlogPostsSilk from './LatestBlogPostsSilk'
 import TerminalHero from './terminal/TerminalHero'
 
@@ -61,27 +61,6 @@ const Teaser = styled.section`
   }
 `
 
-// Static, always-visible content for crawlers and JS-disabled visitors.
-const NoScriptContent = styled.div`
-  max-width: 720px;
-  margin: 0 auto;
-  padding: var(--space-8) var(--space-4);
-  font-family: var(--font-body);
-  color: var(--text-primary);
-
-  & h2 {
-    font-family: var(--font-heading);
-    color: var(--silk-quantum-purple);
-    margin-top: var(--space-6);
-  }
-  & a {
-    color: var(--silk-circuit-cyan);
-  }
-  & li {
-    margin: var(--space-1) 0;
-  }
-`
-
 function aboutEntry(manifest: Manifest): ManifestEntry | undefined {
   return manifest.entries.find((e) => e.kind === 'about')
 }
@@ -115,39 +94,13 @@ export default function TerminalHome({
       </Below>
 
       <noscript>
-        <NoScriptContent>
-          <h2>{about?.title ?? 'Stefanie Jane'}</h2>
-          <p>{about?.summary ?? pageData.description}</p>
-
-          <h2>Projects</h2>
-          <ul>
-            {projects.map((p) => (
-              <li key={p.slug}>
-                <a href={`/projects/${p.slug}/`}>{p.displayTitle}</a>
-                {p.description ? ` — ${p.description}` : ''}
-              </li>
-            ))}
-          </ul>
-
-          <h2>Latest writing</h2>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.slug}>
-                <a href={`/blog/${post.slug}/`}>{post.displayTitle}</a>
-              </li>
-            ))}
-          </ul>
-
-          <h2>Find me</h2>
-          <ul>
-            {SOCIAL_LINKS.map((s) => (
-              <li key={s.label}>
-                <a href={s.href}>{s.label}</a>
-              </li>
-            ))}
-          </ul>
-          {siteConfig?.seo?.siteDescription ? <p>{siteConfig.seo.siteDescription}</p> : null}
-        </NoScriptContent>
+        <HomeFallbackContent
+          aboutSummary={about?.summary ?? pageData.description}
+          aboutTitle={about?.title ?? 'Stefanie Jane'}
+          posts={posts.map((p) => ({ slug: p.slug, title: p.displayTitle }))}
+          projects={projects.map((p) => ({ description: p.description, slug: p.slug, title: p.displayTitle }))}
+          siteDescription={siteConfig?.seo?.siteDescription}
+        />
       </noscript>
     </>
   )

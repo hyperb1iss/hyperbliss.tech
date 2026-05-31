@@ -69,7 +69,9 @@ export interface Harness {
   printedText(): string
 }
 
-export function makeHarness(over: Partial<{ cwd: string; registry: Registry; history: string[] }> = {}): Harness {
+export function makeHarness(
+  over: Partial<{ cwd: string; registry: Registry; history: string[]; manifest: Manifest; broadcast: Broadcast }> = {},
+): Harness {
   const registry = over.registry ?? new Registry()
   const printed: Array<{ node: ReactNode; stream: OutputStream }> = []
   const navigated: string[] = []
@@ -78,13 +80,13 @@ export function makeHarness(over: Partial<{ cwd: string; registry: Registry; his
   let cleared = 0
 
   const ctx = createContext({
-    broadcast: testBroadcast,
+    broadcast: over.broadcast ?? testBroadcast,
     clear: () => {
       cleared += 1
     },
     cwd: over.cwd ?? '/',
     history: over.history ?? [],
-    manifest: testManifest,
+    manifest: over.manifest ?? testManifest,
     navigate: (href) => navigated.push(href),
     print: (node, stream = 'stdout') => printed.push({ node, stream }),
     registry,
