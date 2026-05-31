@@ -16,6 +16,20 @@ const Banner = styled.pre`
   text-shadow: 0 0 10px rgba(0, 255, 240, 0.4);
 `
 
+// Build the welcome box from a single inner width so the top, middle, and
+// bottom borders always line up — hand-counted box art drifts the moment a
+// label changes. The label sits inside the top border; the body line is padded
+// to the same inner width.
+function welcomeBox(): string {
+  const label = '[ welcome to hyperbliss.tech ]'
+  const body = 'you are already inside ✦'
+  const inner = label.length + 4
+  const top = `┌─${label}${'─'.repeat(inner - label.length - 1)}┐`
+  const mid = `│ ${body.padEnd(inner - 1, ' ')}│`
+  const bot = `└${'─'.repeat(inner)}┘`
+  return `${top}\n${mid}\n${bot}`
+}
+
 registry.register({
   group: 'fun',
   name: 'ssh',
@@ -26,11 +40,7 @@ registry.register({
     }
     return (
       <Block>
-        <Banner>
-          {
-            '  ┌─[ welcome to hyperbliss.tech ]─┐\n  │  you are already inside ✦       │\n  └─────────────────────────────────┘'
-          }
-        </Banner>
+        <Banner>{welcomeBox()}</Banner>
         <div>
           <Ok>Last login: just now from a browser near you</Ok>
         </div>

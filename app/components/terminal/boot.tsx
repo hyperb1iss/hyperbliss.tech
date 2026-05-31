@@ -1,6 +1,6 @@
 // Boot sequence (T3.1/T3.2). Full visit plays a staggered BIOS/POST sequence;
-// repeat or reduced-motion visits print a compact banner. Both end by auto-
-// running neofetch — the broadcast money shot. The full boot is skippable.
+// repeat or reduced-motion visits print a compact banner. Both end by calling
+// the finale (the living status console). The full boot is skippable.
 
 import type { ReactNode } from 'react'
 import type { Broadcast } from '@/lib/terminal/types'

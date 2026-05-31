@@ -145,5 +145,5 @@ registry.register({
   group: 'content',
   name: 'neofetch',
   run: (_args, ctx) => <NeofetchView ctx={ctx} />,
-  summary: 'system + broadcast panel (the money shot)',
+  summary: 'system + broadcast panel',
 })
