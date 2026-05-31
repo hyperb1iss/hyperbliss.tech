@@ -9,12 +9,6 @@ export default async function Projects() {
   // Fetch GitHub release info for all projects
   const releases = await getReleasesForProjects(projects.map((p) => ({ github: p.github, slug: p.slug })))
 
-  // Debug: log release data
-  console.log('[Projects] Releases fetched:', releases.size, 'projects with releases')
-  releases.forEach((release, slug) => {
-    console.log(`  - ${slug}: v${release.version}`)
-  })
-
   // Transform and sort by release date (newest releases first)
   const projectsList = projects
     .map((project) => {

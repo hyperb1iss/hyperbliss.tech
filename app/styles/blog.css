@@ -109,12 +109,15 @@
 }
 
 .blog-content > p:first-of-type {
-  font-size: clamp(1.9rem, 1.6vw, 2.5rem);
-  line-height: 1.6;
+  font-size: clamp(2.2rem, 1.2vw + 1.2rem, 3rem);
+  line-height: 1.55;
   font-weight: 300;
-  color: rgba(236, 232, 245, 0.96);
-  letter-spacing: 0.005em;
-  margin-bottom: 2rem;
+  color: var(--silk-pearl);
+  letter-spacing: 0;
+  margin-bottom: 2.4rem;
+  text-shadow:
+    0 0 18px rgba(0, 255, 240, 0.12),
+    0 0 34px rgba(162, 89, 255, 0.1);
 }
 
 .blog-content > h2 {

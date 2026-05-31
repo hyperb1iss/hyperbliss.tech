@@ -118,7 +118,7 @@ describe('Terminal', () => {
     })
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     const user = userEvent.setup()
-    render(<Terminal autoFocusInput broadcast={testBroadcast} manifest={testManifest} registry={registry} />)
+    render(<Terminal autoFocusInput={true} broadcast={testBroadcast} manifest={testManifest} registry={registry} />)
     await user.type(screen.getByLabelText(/terminal input/i), 'multi{Enter}')
     await waitFor(() => expect(screen.getByText('line 5')).toBeInTheDocument())
     const dupKeyWarning = errorSpy.mock.calls.some((args) => args.some((a) => /same key/i.test(String(a))))

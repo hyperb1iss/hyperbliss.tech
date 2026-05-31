@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
 
   return (
-    <html className={`${jura.variable} ${exo2.variable} ${spaceMono.variable}`} lang="en">
+    <html className={`${jura.variable} ${exo2.variable} ${spaceMono.variable}`} data-scroll-behavior="smooth" lang="en">
       <head>
         <StructuredData data={structuredData} />
       </head>

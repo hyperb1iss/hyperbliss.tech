@@ -36,39 +36,43 @@
     color: var(--text-primary);
     background-color: var(--silk-void-black);
 
-    /* Use the new background image */
-    background-image: url("/images/background2.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-
     overflow-x: hidden;
     position: relative;
     z-index: 0;
   }
 
-  @supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
-    body {
-      background-image: image-set(
-        url("/images/background2.avif") type("image/avif"),
-        url("/images/background2.webp") type("image/webp"),
-        url("/images/background2.png") type("image/png")
-      );
-    }
-  }
-
-  /* Subtle overlay for better text readability */
+  /*
+   * The starfield lives on a fixed, viewport-sized layer with the readability
+   * gradient stacked on top of it (the first listed background paints in
+   * front). Keeping it here instead of on `body` makes `cover` fit the
+   * viewport rather than stretching a 1536x1024 image across the full scroll
+   * height of long pages, and `position: fixed` gives the pinned-background
+   * look without the scroll-repaint jank of `background-attachment: fixed`.
+   */
   body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%);
+    inset: 0;
     z-index: -1;
     pointer-events: none;
+    background-image:
+      linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%),
+      url("/images/background2.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  @supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
+    body::before {
+      background-image:
+        linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%),
+        image-set(
+          url("/images/background2.avif") type("image/avif"),
+          url("/images/background2.webp") type("image/webp"),
+          url("/images/background2.png") type("image/png")
+        );
+    }
   }
 
   /* Typography styles with SilkCircuit - Futuristic */

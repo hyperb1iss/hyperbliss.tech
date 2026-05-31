@@ -307,6 +307,7 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
@@ -321,11 +322,18 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
 
     const particles = createParticles(50, canvas.width, canvas.height)
     let animationId: number
+    let isPaused = document.hidden
 
     const animate = () => {
+      if (isPaused) {
+        animationId = requestAnimationFrame(animate)
+        return
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((particle) => {
+      for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i]
         particle.x += particle.vx
         particle.y += particle.vy
 
@@ -338,7 +346,8 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
         ctx.globalAlpha = particle.opacity
         ctx.fill()
 
-        particles.forEach((other) => {
+        for (let j = i + 1; j < particles.length; j++) {
+          const other = particles[j]
           const dx = particle.x - other.x
           const dy = particle.y - other.y
           const distance = Math.sqrt(dx * dx + dy * dy)
@@ -351,15 +360,20 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
             ctx.globalAlpha = (1 - distance / 100) * 0.2
             ctx.stroke()
           }
-        })
-      })
+        }
+      }
 
       animationId = requestAnimationFrame(animate)
     }
 
+    const handleVisibilityChange = () => {
+      isPaused = document.hidden
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
     animate()
 
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
       window.removeEventListener('resize', resizeCanvas)
       cancelAnimationFrame(animationId)
     }

@@ -29,6 +29,22 @@ export function toProjectCards(projects: ProjectSummary[]): ProjectCard[] {
   }))
 }
 
+export function projectRotationSeed(date = new Date()): number {
+  const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000)
+  return dayOfYear * 24 + date.getHours()
+}
+
+export function pickFeaturedProjects<T>(projects: T[], count = 8, seed = projectRotationSeed()): T[] {
+  const shuffled = [...projects]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const seededRandom = Math.sin(i * seed) * 10000
+    const j = Math.floor(Math.abs(seededRandom) % (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+
+  return shuffled.slice(0, count)
+}
+
 /** Posts + lab experiments, newest first, capped — for the "Latest" section. */
 export function toLatestContent(posts: PostSummary[], lab: LabSummary[] = [], limit = 5): BlogPostCard[] {
   const merged: BlogPostCard[] = [

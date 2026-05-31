@@ -1,8 +1,7 @@
-// Builds the full virtual-FS body map served lazily to the shell (§5.5). Keyed
-// by the same virtual paths as the manifest, so the tree the shell mounts
-// matches the tree native commands and completion already know. Bodies are the
-// raw markdown files (frontmatter included) so `cat` is authentic; `about` is
-// synthesized from the about page since it has no single source file.
+// Builds virtual-FS bodies served lazily to the shell (§5.5). Keyed by the same
+// virtual paths as the manifest, so the tree the shell mounts matches native
+// commands and completion. Bodies are raw markdown files (frontmatter included)
+// so `cat` is authentic; `about` is synthesized because it has no source file.
 
 import {
   type AboutSection,
@@ -27,8 +26,49 @@ function synthesizeAbout(about: AboutSection | null): string {
     .concat('\n')
 }
 
-/** virtualPath → raw body, for every file in the manifest tree. */
-export async function getVirtualFsBodies(): Promise<Record<string, string>> {
+function assertSafeSlug(slug: string): void {
+  if (!/^[\w.-]+$/.test(slug)) {
+    throw new Error(`invalid virtual FS path: ${slug}`)
+  }
+}
+
+function slugFromVirtualPath(path: string, prefix: string): string {
+  const suffix = path.slice(prefix.length)
+  if (!suffix.endsWith('.md')) {
+    throw new Error(`invalid virtual FS path: ${path}`)
+  }
+  const slug = suffix.slice(0, -3)
+  assertSafeSlug(slug)
+  return slug
+}
+
+export async function getVirtualFsBody(path: string): Promise<string> {
+  if (path === VFS_NOW) return readRawContentFile('now.md')
+  if (path === VFS_RESUME) return readRawContentFile('resume/resume.md')
+  if (path === VFS_ABOUT) {
+    return getPage('about')
+      .then((p) => synthesizeAbout(p.about))
+      .catch(() => synthesizeAbout(null))
+  }
+  if (path.startsWith('/blog/')) {
+    return readRawContentFile(`posts/${slugFromVirtualPath(path, '/blog/')}.md`)
+  }
+  if (path.startsWith('/projects/')) {
+    return readRawContentFile(`projects/${slugFromVirtualPath(path, '/projects/')}.md`)
+  }
+  if (path.startsWith('/lab/')) {
+    return readRawContentFile(`lab/${slugFromVirtualPath(path, '/lab/')}.md`)
+  }
+  throw new Error(`unknown virtual FS path: ${path}`)
+}
+
+/** virtualPath → raw body, for selected files or the full manifest tree. */
+export async function getVirtualFsBodies(paths?: readonly string[]): Promise<Record<string, string>> {
+  if (paths) {
+    const entries = await Promise.all(paths.map(async (path) => [path, await getVirtualFsBody(path)] as const))
+    return Object.fromEntries(entries)
+  }
+
   const out: Record<string, string> = {}
   const [postSlugs, projectSlugs, labSlugs] = await Promise.all([
     getAllPostSlugs(),
@@ -46,19 +86,19 @@ export async function getVirtualFsBodies(): Promise<Record<string, string>> {
     ...labSlugs.map(async (s) => {
       out[virtualPath('lab', s)] = await readRawContentFile(`lab/${s}.md`)
     }),
-    readRawContentFile('now.md')
+    getVirtualFsBody(VFS_NOW)
       .then((b) => {
         out[VFS_NOW] = b
       })
       .catch(() => {}),
-    readRawContentFile('resume/resume.md')
+    getVirtualFsBody(VFS_RESUME)
       .then((b) => {
         out[VFS_RESUME] = b
       })
       .catch(() => {}),
-    getPage('about')
-      .then((p) => {
-        out[VFS_ABOUT] = synthesizeAbout(p.about)
+    getVirtualFsBody(VFS_ABOUT)
+      .then((b) => {
+        out[VFS_ABOUT] = b
       })
       .catch(() => {
         out[VFS_ABOUT] = synthesizeAbout(null)

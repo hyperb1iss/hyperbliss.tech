@@ -385,7 +385,7 @@ export default function NotFoundPage() {
             transition={{ delay: 0.2, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
           >
             <div className={lostStarStyles}>
-              <Image alt="Lost shooting star" height={180} priority={true} src="/images/star-icon.png" width={180} />
+              <Image alt="Lost shooting star" height={151} priority={true} src="/images/star-icon.png" width={180} />
             </div>
             {SPARKLES.map((sparkle, i) => (
               <span

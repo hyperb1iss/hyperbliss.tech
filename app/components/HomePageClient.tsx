@@ -18,6 +18,7 @@ interface HomePageClientProps {
   posts: PostSummary[]
   projects: ProjectSummary[]
   labExperiments?: LabSummary[]
+  projectSelectionSeed?: number
 }
 
 interface BlogPost {
@@ -91,7 +92,14 @@ const SidebarWrapper = styled.aside`
 // Component
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function HomePageClient({ pageData, siteConfig, posts, projects, labExperiments = [] }: HomePageClientProps) {
+export function HomePageClient({
+  pageData,
+  siteConfig,
+  posts,
+  projects,
+  labExperiments = [],
+  projectSelectionSeed,
+}: HomePageClientProps) {
   const [isMobile, setIsMobile] = useState(false)
 
   const hero = pageData.hero
@@ -167,13 +175,13 @@ export function HomePageClient({ pageData, siteConfig, posts, projects, labExper
         <>
           <HeroSectionSilk hero={heroData} techTags={techTags} />
           <LatestBlogPostsSilk posts={latestPosts} />
-          <FeaturedProjectsSectionSilk projects={projectsList} />
+          <FeaturedProjectsSectionSilk projects={projectsList} selectionSeed={projectSelectionSeed} />
         </>
       ) : (
         <DesktopLayout>
           <MainContent>
             <HeroSectionSilk hero={heroData} techTags={techTags} />
-            <FeaturedProjectsSectionSilk projects={projectsList} />
+            <FeaturedProjectsSectionSilk projects={projectsList} selectionSeed={projectSelectionSeed} />
           </MainContent>
           <SidebarWrapper>
             <LatestBlogPostsSilk posts={latestPosts} />

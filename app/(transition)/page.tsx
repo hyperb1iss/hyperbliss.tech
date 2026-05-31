@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import HomePageClient from '@/components/HomePageClient'
 import TerminalHome from '@/components/TerminalHome'
 import { getReleasesForProjects } from '@/lib/github'
+import { projectRotationSeed } from '@/lib/homeContent'
 import { buildBroadcast } from '@/lib/terminal/buildBroadcast'
 import { buildManifest } from '@/lib/terminal/buildManifest'
 import { pickLatestShip, type ReleaseLike, versionsMap } from '@/lib/terminal/releases'
@@ -43,12 +44,16 @@ export default async function Home() {
       getAllLab(),
     ])
 
+    const generatedAt = new Date().toISOString()
+    const projectSelectionSeed = projectRotationSeed(new Date(generatedAt))
+
     if (!TERMINAL_HERO) {
       return (
         <HomePageClient
           labExperiments={labExperiments}
           pageData={pageData}
           posts={posts}
+          projectSelectionSeed={projectSelectionSeed}
           projects={projects}
           siteConfig={siteConfig}
         />
@@ -71,7 +76,6 @@ export default async function Home() {
       // Rate-limited or offline — the empty-ship fallback still renders.
     }
 
-    const generatedAt = new Date().toISOString()
     const manifest = buildManifest({
       about: aboutPage?.about ?? null,
       generatedAt,

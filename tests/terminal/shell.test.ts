@@ -21,6 +21,24 @@ const FS: Record<string, string> = {
   '/projects/sibyl.md': '---\ntitle: Sibyl\ntags: [Rust]\n---\nMemory for agents.\n',
 }
 
+const manifest: Manifest = {
+  entries: Object.keys(FS).map((path) => ({
+    bytes: FS[path].length,
+    date: null,
+    emoji: null,
+    github: null,
+    href: null,
+    kind: path.startsWith('/blog/') ? 'post' : path.startsWith('/projects/') ? 'project' : 'about',
+    latestVersion: null,
+    path,
+    status: null,
+    summary: '',
+    tags: [],
+    title: path,
+  })),
+  generatedAt: '2026-05-31T00:00:00.000Z',
+}
+
 function nodeText(node: ReactNode): string {
   if (node == null || typeof node === 'boolean') return ''
   if (typeof node === 'string' || typeof node === 'number') return String(node)
@@ -37,7 +55,7 @@ function shellCtx() {
     clear: () => {},
     cwd: '/',
     history: [],
-    manifest: {} as Manifest,
+    manifest,
     navigate: () => {},
     print: (node: ReactNode) => printed.push(nodeText(node)),
     registry: { all: () => [], get: () => undefined, names: () => [], register: () => {}, visible: () => [] },
@@ -57,6 +75,16 @@ describe('shell runner (just-bash)', () => {
     await shell('ls /projects', c.ctx)
     expect(c.out()).toContain('sibyl.md')
     expect(c.out()).toContain('chromacat.md')
+  })
+
+  it('does not fetch file bodies for directory-only commands', async () => {
+    const fetchBodies = async () => {
+      throw new Error('should not fetch bodies for ls')
+    }
+    const shell = newShell(fetchBodies)
+    const c = shellCtx()
+    await shell('ls /projects', c.ctx)
+    expect(c.out()).toContain('sibyl.md')
   })
 
   it('cats a file verbatim, including frontmatter', async () => {
@@ -98,9 +126,15 @@ describe('shell runner (just-bash)', () => {
   })
 
   it('grep -r traverses the whole mounted subtree (no missed files)', async () => {
-    const shell = newShell()
+    const calls: Array<readonly string[] | undefined> = []
+    const fetchBodies = async (paths?: readonly string[]) => {
+      calls.push(paths)
+      return FS
+    }
+    const shell = newShell(fetchBodies)
     const c = shellCtx()
     await shell('grep -ril rust /', c.ctx)
+    expect(calls[0]).toEqual(Object.keys(FS))
     expect(c.out()).toContain('chromacat.md') // "RGB cat in Rust"
     expect(c.out()).toContain('nested.md') // "deeply nested rust note"
   })
@@ -120,11 +154,11 @@ describe('shell runner (just-bash)', () => {
       return FS
     })
     const fail = shellCtx()
-    await shell('ls /', fail.ctx)
+    await shell('cat /about.md', fail.ctx)
     expect(fail.out()).toContain('shell unavailable')
 
     const ok = shellCtx()
-    await shell('ls /', ok.ctx)
-    expect(ok.out()).toContain('projects')
+    await shell('cat /about.md', ok.ctx)
+    expect(ok.out()).toContain('Stefanie builds tools')
   })
 })

@@ -31,7 +31,7 @@ export const StarButton: React.FC<StarButtonProps> = ({
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
-      <Image alt="" aria-hidden="true" className="star-icon" height={24} src="/images/star-icon.png" width={24} />
+      <Image alt="" aria-hidden="true" className="star-icon" height={737} src="/images/star-icon.png" width={879} />
       {children}
     </StarButtonWrapper>
   )
@@ -49,7 +49,7 @@ export const StarDivider: React.FC<StarDividerProps> = ({ compact = false, class
   return (
     <StarDividerContainer $compact={compact} className={className}>
       <div className="divider-line" />
-      <Image alt="" aria-hidden="true" className="star-icon" height={48} src="/images/star-icon.png" width={48} />
+      <Image alt="" aria-hidden="true" className="star-icon" height={737} src="/images/star-icon.png" width={879} />
       <div className="divider-line" />
     </StarDividerContainer>
   )

@@ -12,6 +12,9 @@ import { Particle } from './Particle'
  * Extends the base `Particle` class with specific initialization and behavior for explosion effects.
  */
 export class ParticleAtCollision extends Particle {
+  private static readonly connectionProjectionA = VectorMath.createProjectionResult()
+  private static readonly connectionProjectionB = VectorMath.createProjectionResult()
+
   private onExpire: () => void
   private fadeOutDuration: number
   private sparkleIntensity: number
@@ -154,7 +157,7 @@ export class ParticleAtCollision extends Particle {
     for (let i = 0; i < particles.length && totalConnections < MAX_TOTAL_CONNECTIONS; i++) {
       let connectionsForParticle = 0
       const particleA = particles[i]
-      const posA = VectorMath.project(particleA.position, width, height)
+      const posA = VectorMath.project(particleA.position, width, height, ParticleAtCollision.connectionProjectionA)
 
       for (let j = i + 1; j < particles.length && connectionsForParticle < MAX_CONNECTIONS_PER_PARTICLE; j++) {
         const particleB = particles[j]
@@ -162,7 +165,7 @@ export class ParticleAtCollision extends Particle {
         const distance = vec3.distance(particleA.position, particleB.position)
 
         if (distance < MAX_DISTANCE) {
-          const posB = VectorMath.project(particleB.position, width, height)
+          const posB = VectorMath.project(particleB.position, width, height, ParticleAtCollision.connectionProjectionB)
 
           const baseOpacity = (1 - distance / MAX_DISTANCE) * Math.min(particleA.opacity, particleB.opacity)
           const opacity = baseOpacity * (1 - Math.max(particleA.age, particleB.age) / particleA.lifespan)

@@ -90,7 +90,7 @@ everything" pitch and the most screenshot-shareable artifact on the site.
 - **Content API** (`app/lib/content.ts`): `getAll{Posts,Projects,Lab}`, `getPage`,
   `getSiteConfig` — filesystem markdown/JSON. Raw corpus is ~205KB and grows (drives §5.5).
 - **GitHub releases** (`app/lib/github.ts`): `getReleasesForProjects()` → `{version,
-  publishedAt, url}`, in-memory cache 1h + ISR `revalidate:3600`, uses `GITHUB_TOKEN`.
+publishedAt, url}`, in-memory cache 1h + ISR `revalidate:3600`, uses `GITHUB_TOKEN`.
   Unauthenticated GitHub = 60 req/hr; 24 repos × routes can exhaust it (§5.10).
 - **Multi-agent repo:** scope edits narrowly; prefer new files; build on a branch; flag-gate.
 
@@ -156,15 +156,16 @@ curses emulation we don't need). We get:
   sentinel and sets a force flag. `help` documents this.
 - **Conflict table (native wins; shell reachable via escape):**
 
-  | Token | Resolves to | Notes |
-  |---|---|---|
-  | `help`, `clear`, `history`, `theme` | native | UI/meta commands |
-  | `neofetch`, `projects`, `blog`, `lab`, `now`, `about`, `contact`, `resume` | native (rich React) | designed output |
+  | Token                                                                                  | Resolves to           | Notes                      |
+  | -------------------------------------------------------------------------------------- | --------------------- | -------------------------- |
+  | `help`, `clear`, `history`, `theme`                                                    | native                | UI/meta commands           |
+  | `neofetch`, `projects`, `blog`, `lab`, `now`, `about`, `contact`, `resume`             | native (rich React)   | designed output            |
   | `ls`, `cat`, `grep`, `pwd`, `cd`, `echo`, `find`, `head`, `tail`, `wc`, `env`, `which` | **shell** (just-bash) | real coreutils over the FS |
 
   Text-producing "native" commands that should compose in pipes (e.g. a plain `now`) may
   alternatively be registered as just-bash `customCommands` so `now | grep sibyl` works.
   Every row above gets a collision test.
+
 - **Executor:** dispatch, capture output → log, unknown → fuzzy "did you mean `<nearest>`?".
   Streams async output via `ctx.print`.
 - **Security (blocker-class, do first — see T-SEC):** output is React text by default; if
@@ -198,7 +199,7 @@ Shipping all bodies as props would duplicate ~205KB+ into the RSC/HTML payload _
 truncating bodies would nerf `cat`/`grep`. Instead:
 
 - **Initial payload = manifest only:** for each path, `{ title, summary, tags, date,
-  href, bytes }`. Powers native commands, `neofetch`, `ls`, tab-completion. Small.
+href, bytes }`. Powers native commands, `neofetch`, `ls`, tab-completion. Small.
 - **Full bodies = lazy:** on first `cat`/`grep`/shell access of a file, fetch its body
   from a static per-file JSON chunk or a `GET /api/fs?path=…` route, then mount it into the
   just-bash FS and **cache client-side**. `grep -r` triggers a batched fetch of the
@@ -293,6 +294,7 @@ the input is focused and the caret is in the line; otherwise the page scrolls no
 **Q7 payload** — manifest + lazy bodies, no truncation (§5.5).
 
 ~~Remaining unknowns for **P0** to close:~~ **ALL CLOSED 2026-05-31 (see T0.1/T0.2 + §11 round 4).**
+
 - **U1 — async-chunk size** ✅ ~298KB gzipped core, single file, no wasm; lazy → no
   initial-JS impact. Async-ness proven in real build at T2.6.
 - **U2 — ANSI in output?** ✅ **No** — plain text. SGR whitelist parser descoped.
@@ -306,130 +308,132 @@ the input is focused and the caret is in the line; otherwise the page scrolls no
 
 Verify abbreviations: `tc`=`pnpm typecheck`, `lint`=`pnpm lint`, `test`=`pnpm test`,
 `build`=`pnpm build`, `seo`=`pnpm test:seo`, `visual`=agent-browser (desktop+mobile),
-`bundle`=inspect real Next build output / async chunks (NOT the mutating `pnpm analyze`
-script — it runs `pnpm add` and rewrites `next.config.mjs`; wire `@next/bundle-analyzer`
-(already a devDep) behind `ANALYZE=true` idempotently, or read `.next` chunk sizes).
+`bundle`=`pnpm analyze` plus async chunk inspection from a real Next/Turbopack build.
 Every phase ends green on `tc`+`lint`+`test`.
 
-### Phase 0 — De-risk & Decide  _(hard gate)_ ✅ CLOSED 2026-05-31
+### Phase 0 — De-risk & Decide _(hard gate)_ ✅ CLOSED 2026-05-31
 
 - [x] **T0.1 Browser proof + real chunk measure.** Spiked just-bash in a throwaway dir.
-  **Findings:** `just-bash/browser` = single self-contained `dist/bundle/browser.js`,
-  1.07MB raw / **~298KB gzipped**, **zero wasm refs** when `python:false,javascript:false`
-  (cpython/sqlite/quickjs are separate chunks, not pulled in). `exec()` returns
-  `{stdout,stderr,exitCode,env}`; **session carried via `result.env` (PWD/OLDPWD/exports)**
-  — instance does NOT persist cwd across calls, but `result.env` does. Verified compound
-  (`cd x && pwd`→`/projects`), subshell isolation (`(cd x); pwd`→`/`), relative `cd`,
-  `export` persistence, `grep -r` over mounted FS, globs, pipes, `customCommands` in pipes,
-  `writeFile`→`grep` (lazy-mount). **No ANSI/SGR in output** (U2 negative). Async-chunk
-  proof deferred to real build at T2.6 (more representative than a throwaway fixture).
-  Closed U1/U2/U4. Facts → Sibyl `claim_dc349dd3d194`, §4/§5.4/§5.5/§7. **Depends:** —
+      **Findings:** `just-bash/browser` = single self-contained `dist/bundle/browser.js`,
+      1.07MB raw / **~298KB gzipped**, **zero wasm refs** when `python:false,javascript:false`
+      (cpython/sqlite/quickjs are separate chunks, not pulled in). `exec()` returns
+      `{stdout,stderr,exitCode,env}`; **session carried via `result.env` (PWD/OLDPWD/exports)**
+      — instance does NOT persist cwd across calls, but `result.env` does. Verified compound
+      (`cd x && pwd`→`/projects`), subshell isolation (`(cd x); pwd`→`/`), relative `cd`,
+      `export` persistence, `grep -r` over mounted FS, globs, pipes, `customCommands` in pipes,
+      `writeFile`→`grep` (lazy-mount). **No ANSI/SGR in output** (U2 negative). Async-chunk
+      proof deferred to real build at T2.6 (more representative than a throwaway fixture).
+      Closed U1/U2/U4. Facts → Sibyl `claim_dc349dd3d194`, §4/§5.4/§5.5/§7. **Depends:** —
 - [x] **T0.2 Lock decisions.** Bundle: ~298KB gzipped lazy chunk (acceptable; async, no
-  initial-JS impact). Lazy-FS transport (U3): **`GET /api/fs?path=…` route** (single source
-  of truth = `content/`, client-cached, manifest pre-materializes subtrees) over static
-  per-file JSON (avoids duplicating ~205KB into the build). ANSI whitelist parser
-  **descoped** (U2 negative). Conflict table unchanged (§5.3). **Depends:** T0.1
+      initial-JS impact). Lazy-FS transport (U3): **`GET /api/fs?path=…` route** (single source
+      of truth = `content/`, client-cached, manifest pre-materializes subtrees) over static
+      per-file JSON (avoids duplicating ~205KB into the build). ANSI whitelist parser
+      **descoped** (U2 negative). Conflict table unchanged (§5.3). **Depends:** T0.1
 
-### Phase 1 — The Spine (curated DOM terminal + SSR layout)  _flag: `NEXT_PUBLIC_TERMINAL_HERO`_
+### Phase 1 — The Spine (curated DOM terminal + SSR layout) _flag: `NEXT_PUBLIC_TERMINAL_HERO`_
 
 **Wave 1 — foundation** _(parallel)_
+
 - [ ] **T1.1 Types + registry scaffold** (each command group **self-registers** in its own
-  file so Wave 3 is truly parallel). **Files:** `terminal/types.ts`, `registry.ts`.
-  **Verify:** `tc`. **Depends:** T0.2 **Parallel:** yes
+      file so Wave 3 is truly parallel). **Files:** `terminal/types.ts`, `registry.ts`.
+      **Verify:** `tc`. **Depends:** T0.2 **Parallel:** yes
 - [ ] **T1.2 Manifest + broadcast builders (server).** **Files:** `app/lib/terminal/
-  buildManifest.ts`, `buildBroadcast.ts`, `tests/terminal/buildManifest.test.ts`.
-  **Verify:** `test` (manifest shape, no full bodies, path mapping), `tc`. **Depends:** T0.2
-  **Parallel:** yes
+buildManifest.ts`, `buildBroadcast.ts`, `tests/terminal/buildManifest.test.ts`.
+      **Verify:** `test` (manifest shape, no full bodies, path mapping), `tc`. **Depends:** T0.2
+      **Parallel:** yes
 - [ ] **T-SEC Security policy + harness** (output-render policy, ANSI whitelist scaffold,
-  hostile-content tests). **Files:** `terminal/render.tsx`, `ansi.ts`,
-  `tests/terminal/security.test.tsx`. **Verify:** `test` (XSS payloads render inert).
-  **Depends:** T0.2 **Parallel:** yes
+      hostile-content tests). **Files:** `terminal/render.tsx`, `ansi.ts`,
+      `tests/terminal/security.test.tsx`. **Verify:** `test` (XSS payloads render inert).
+      **Depends:** T0.2 **Parallel:** yes
 
 **Wave 2 — core** _(depends Wave 1)_
+
 - [ ] **T1.3 Terminal renderer** (output log of React nodes, input, glowing caret, focus,
-  autoscroll). **Files:** `Terminal.tsx`, styles, `tests/terminal/Terminal.test.tsx`.
-  **Verify:** `test`, `visual`. **Depends:** T1.1, T-SEC
+      autoscroll). **Files:** `Terminal.tsx`, styles, `tests/terminal/Terminal.test.tsx`.
+      **Verify:** `test`, `visual`. **Depends:** T1.1, T-SEC
 - [ ] **T1.4 Parser + executor + ctx** (dispatch, parser-sentinel escapes `!`/`:`, unknown→"did you mean").
-  **Files:** `parser.ts`, `executor.ts`, `context.ts`, tests. **Verify:** `test`.
-  **Depends:** T1.1
+      **Files:** `parser.ts`, `executor.ts`, `context.ts`, tests. **Verify:** `test`.
+      **Depends:** T1.1
 - [ ] **T1.5 History + completion** (`↑`/`↓` localStorage; prefix completion over
-  commands+manifest). **Files:** `history.ts`, `complete.ts`, tests. **Verify:** `test`.
-  **Depends:** T1.2, T1.3, T1.4
+      commands+manifest). **Files:** `history.ts`, `complete.ts`, tests. **Verify:** `test`.
+      **Depends:** T1.2, T1.3, T1.4
 
 **Wave 3 — commands** _(parallel; each self-registers)_
+
 - [ ] **T1.6 Native A (text):** `help` (incl. precedence/escape docs), `clear`, `about`,
-  `contact`/`social`, `resume`. **Verify:** `test`. **Depends:** T1.4 **Parallel:** yes
+      `contact`/`social`, `resume`. **Verify:** `test`. **Depends:** T1.4 **Parallel:** yes
 - [ ] **T1.7 Native B (rich React):** `projects`, `blog`, `lab`, `now`. **Verify:** `test`,
-  `visual`. **Depends:** T1.4 **Parallel:** yes
+      `visual`. **Depends:** T1.4 **Parallel:** yes
 - [ ] **T1.8 `neofetch`** + ASCII sigil + broadcast panel (money shot). **Verify:** `test`,
-  `visual`. **Depends:** T1.2, T1.4 **Parallel:** yes
+      `visual`. **Depends:** T1.2, T1.4 **Parallel:** yes
 
 **Wave 4 — integration**
+
 - [ ] **T1.9 Terminal-first page composition.** Restructure `page.tsx` + `HomePageClient`;
-  terminal is hero (`dynamic ssr:false` over a stable skeleton); reuse
-  `FeaturedProjectsSectionSilk`/`LatestBlogPostsSilk` + About teaser as SSR sections;
-  chips + hint; behind flag. **Files:** `page.tsx`, `HomePageClient.tsx`,
-  `TerminalHero.tsx`, `CommandChips.tsx`. **Verify:** `visual`, `build`. **Depends:** T1.6–T1.8
+      terminal is hero (`dynamic ssr:false` over a stable skeleton); reuse
+      `FeaturedProjectsSectionSilk`/`LatestBlogPostsSilk` + About teaser as SSR sections;
+      chips + hint; behind flag. **Files:** `page.tsx`, `HomePageClient.tsx`,
+      `TerminalHero.tsx`, `CommandChips.tsx`. **Verify:** `visual`, `build`. **Depends:** T1.6–T1.8
 - [ ] **T1.10 SEO/no-JS proof.** Homepage-HTML test asserts content present; fallback
-  visible without JS. **Files:** `tests/seo/homepage-content.test.ts`. **Verify:** `seo`+new test.
-  **Depends:** T1.9
+      visible without JS. **Files:** `tests/seo/homepage-content.test.ts`. **Verify:** `seo`+new test.
+      **Depends:** T1.9
 - [ ] **T1.11 a11y baseline** (aria-live log, labeled input, button chips, focus ring,
-  `<noscript>`, reduced-motion skip, no scroll-trap). **Verify:** Playwright+axe, keyboard
-  manual. **Depends:** T1.9
+      `<noscript>`, reduced-motion skip, no scroll-trap). **Verify:** Playwright+axe, keyboard
+      manual. **Depends:** T1.9
 - [ ] **T1.12 Mobile pass** (chips-first, soft keyboard, 390px). **Verify:** `visual` mobile.
-  **Depends:** T1.9
+      **Depends:** T1.9
 - [ ] **T1.13 Empty/loading/error states** (no releases, missing `now.md`, empty content,
-  shell-loading). **Verify:** `test`, `visual`. **Depends:** T1.9
+      shell-loading). **Verify:** `test`, `visual`. **Depends:** T1.9
 - [ ] **T1.14 Analytics policy** (categories/chips only, never raw input — §5.11).
-  **Verify:** `test` (no raw input in events). **Depends:** T1.9
+      **Verify:** `test` (no raw input in events). **Depends:** T1.9
 - [ ] **🔍 Cross-model review of P1** (full ceremony); iterate to green. **Depends:** T1.9–T1.14
 
 ### Phase 2 — Real Shell (just-bash)
 
 - [ ] **T2.1 Shell engine wrapper** (lazy import, session state §5.4, safe config,
-  chunk-load failure handling). **Files:** `shell.ts`, `tests/terminal/shell.test.ts`.
-  **Verify:** `test` (`ls /`, `cat about.md`, `cd`+`ls` via session, `echo x | cat`,
-  import-failure path), `tc`. **Depends:** T0.2, T1.4
+      chunk-load failure handling). **Files:** `shell.ts`, `tests/terminal/shell.test.ts`.
+      **Verify:** `test` (`ls /`, `cat about.md`, `cd`+`ls` via session, `echo x | cat`,
+      import-failure path), `tc`. **Depends:** T0.2, T1.4
 - [ ] **T2.2 Route shell into executor** with §5.3 precedence + conflict-table tests
-  (every row) + parser-sentinel escapes (`!`/`:` stripped pre-dispatch — never `\`/`sh -c`).
-  **Verify:** `test`. **Depends:** T2.1, T-SEC
+      (every row) + parser-sentinel escapes (`!`/`:` stripped pre-dispatch — never `\`/`sh -c`).
+      **Verify:** `test`. **Depends:** T2.1, T-SEC
 - [ ] **T2.3 Lazy-FS transport + recursive correctness** (U3): per-file fetch + client
-  cache + **manifest-driven subtree pre-materialization** for `grep -r`/globs/`ls -R`.
-  **Files:** `fsClient.ts` (+ `app/api/fs/route.ts` if chosen), tests. **Verify:** `test`
-  (cold `grep -r` finds all matches, glob, pipe, `wc`, concurrent-fetch dedupe, abort, 404,
-  stale-cache/version mismatch). **Depends:** T2.1, T1.2
+      cache + **manifest-driven subtree pre-materialization** for `grep -r`/globs/`ls -R`.
+      **Files:** `fsClient.ts` (+ `app/api/fs/route.ts` if chosen), tests. **Verify:** `test`
+      (cold `grep -r` finds all matches, glob, pipe, `wc`, concurrent-fetch dedupe, abort, 404,
+      stale-cache/version mismatch). **Depends:** T2.1, T1.2
 - [ ] **T2.4 Render shell output** (stdout/stderr/exit-code styling; ANSI via whitelist if
-  U2 positive). **Verify:** `test`, `visual`. **Depends:** T2.2, T-SEC
+      U2 positive). **Verify:** `test`, `visual`. **Depends:** T2.2, T-SEC
 - [ ] **T2.5 FS-path completion** via bash FS. **Verify:** `test`. **Depends:** T2.1, T1.5
 - [x] **T2.6 Bundle gate** ✅ Real `next build` (isolated worktree) confirms just-bash
-  lands in a dedicated async chunk (`07l3zj480dvrz.js`, **365KB gzip**) loaded lazily via
-  the Turbopack dynamic-import loader (`Promise.all(["…07l3zj480dvrz.js"])`); it appears in
-  **no route's initial chunk list**, so initial route JS is unaffected. `pnpm build` green
-  (44 pages). **Depends:** T2.2, T2.4
+      lands in a dedicated async chunk (`07l3zj480dvrz.js`, **365KB gzip**) loaded lazily via
+      the Turbopack dynamic-import loader (`Promise.all(["…07l3zj480dvrz.js"])`); it appears in
+      **no route's initial chunk list**, so initial route JS is unaffected. `pnpm build` green
+      (44 pages). **Depends:** T2.2, T2.4
 - [ ] **🔍 Cross-model review of P2** (full ceremony). **Depends:** T2.1–T2.6
 
 ### Phase 3 — Cinematic
 
 - [ ] **T3.1 Boot state machine + sequence** (BIOS/POST + typewriter), §5.6, skippable,
-  reduced-motion, safe-storage. **Files:** `bootState.ts`, `TerminalBoot.tsx`, gate test.
-  **Verify:** `visual`, `test`. **Depends:** T1.9
+      reduced-motion, safe-storage. **Files:** `bootState.ts`, `TerminalBoot.tsx`, gate test.
+      **Verify:** `visual`, `test`. **Depends:** T1.9
 - [ ] **T3.2 Auto-run `neofetch`** post-boot. **Verify:** `visual`. **Depends:** T3.1, T1.8
 - [ ] **T3.3 Single backdrop + CRT** (consolidate to one particle owner, retire Hero
-  canvas, bloom + scanlines, glass, effects toggle, FPS measure, teardown test).
-  **Files:** styles, `EffectsToggle.tsx`, backdrop wiring. **Verify:** `visual`, FPS,
-  reduced-motion off, `test`. **Depends:** T1.9
+      canvas, bloom + scanlines, glass, effects toggle, FPS measure, teardown test).
+      **Files:** styles, `EffectsToggle.tsx`, backdrop wiring. **Verify:** `visual`, FPS,
+      reduced-motion off, `test`. **Depends:** T1.9
 - [ ] **T3.4 Sound** (opt-in, off by default). **Verify:** manual. _(YAGNI — defer if weak.)_
 
 ### Phase 4 — Delight & Share
 
 - [ ] **T4.1 ⌘K command palette** (fuzzy + grouped + ARIA combobox/listbox). **Verify:**
-  `test`, axe. **Depends:** T1.6
+      `test`, axe. **Depends:** T1.6
 - [ ] **T4.2 Shareable session URLs** (`/#neofetch;projects;now` encode + replay).
-  **Verify:** `test` (encode/decode), manual replay. **Depends:** T1.4
+      **Verify:** `test` (encode/decode), manual replay. **Depends:** T1.4
 - [ ] **T4.3 Easter eggs** (`ssh hyperbliss.tech` banner, `sudo`, `theme <name>`, a game).
-  **Verify:** `test`/`visual`. **Depends:** T1.4
+      **Verify:** `test`/`visual`. **Depends:** T1.4
 - [ ] **T4.4 (optional) xterm.js real-shell modal** — only if future curses/full-terminal
-  scope appears. **YAGNI: defer.**
+      scope appears. **YAGNI: defer.**
 
 ## 9. Verification Strategy
 
@@ -467,9 +471,8 @@ Findings + resolution:
    lazy bodies, no truncation** (§5.5, T2.3).
 4. _(major §5.1)_ SSR fallback unproven → **homepage-HTML SEO test** + no-JS visibility
    (§5.8, T1.10).
-5. _(major §7)_ `/tmp` esbuild ≠ Next chunking; `pnpm analyze` mutates config + runs
-   `pnpm add` → **real Next dynamic-import fixture** in T0.1 + **non-mutating bundle**
-   verify (§8). _(Verified the analyze script mutates next.config.mjs and installs.)_
+5. _(major §7)_ `/tmp` esbuild ≠ Next chunking; fixed `pnpm analyze` to use the
+   native Turbopack analyzer without mutating config or installing packages.
 6. _(major §5.3)_ native/bash collisions → **conflict table + `!`/`:` parser-sentinel escapes + per-row
    tests** (§5.3, T2.2).
 7. _(major §5.9)_ CyberScape under-scoped → **verified two systems exist**; single backdrop

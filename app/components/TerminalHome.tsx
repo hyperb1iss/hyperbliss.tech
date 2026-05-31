@@ -1,13 +1,9 @@
-'use client'
-
-// Terminal-first homepage composition. The terminal is the hero; the existing
-// Silk sections render below for depth, SEO, and mobile scroll. A <noscript>
-// block guarantees the full content is visible even with JavaScript disabled
-// (§5.8) — it never relies on motion that JS later reveals.
+// Terminal-first homepage composition. Keep this as a server component so the
+// full content corpus renders as HTML without becoming hydration payload.
 
 import Link from 'next/link'
 import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
-import { toLatestContent, toProjectCards } from '@/lib/homeContent'
+import { pickFeaturedProjects, projectRotationSeed, toLatestContent, toProjectCards } from '@/lib/homeContent'
 import type { Broadcast, Manifest, ManifestEntry } from '@/lib/terminal/types'
 import { styled } from '../../styled-system/jsx'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
@@ -74,7 +70,8 @@ export default function TerminalHome({
   pageData,
   siteConfig,
 }: TerminalHomeProps) {
-  const projectCards = toProjectCards(projects)
+  const projectSeed = projectRotationSeed(new Date(broadcast.generatedAt))
+  const projectCards = pickFeaturedProjects(toProjectCards(projects), 8, projectSeed)
   const latest = toLatestContent(posts, labExperiments)
   const about = aboutEntry(manifest)
 
@@ -89,7 +86,7 @@ export default function TerminalHome({
           <Link href="/about/">about me →</Link>
         </Teaser>
 
-        <FeaturedProjectsSectionSilk projects={projectCards} />
+        <FeaturedProjectsSectionSilk projects={projectCards} selectionSeed={null} />
         <LatestBlogPostsSilk posts={latest} />
       </Below>
 

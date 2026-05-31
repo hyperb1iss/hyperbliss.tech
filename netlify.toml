@@ -7,7 +7,7 @@ package = "@netlify/plugin-nextjs"
 
 [build.environment]
 NEXT_PUBLIC_APP_URL = "https://hyperb1iss.netlify.app"
-NODE_VERSION = "22"
+NODE_VERSION = "24"
 NEXT_TELEMETRY_DISABLED = "1"
 SECRETS_SCAN_OMIT_PATHS = ".next/server/**,.netlify/**"
 

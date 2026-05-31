@@ -117,6 +117,17 @@ export const initializeCyberScape = (
   const clusterAvgPosition: vec3 = vec3.create()
   const clusterAwayVector: vec3 = vec3.create()
   const frustumCuller = new FrustumCuller()
+  const projectionMatrix = mat4.create()
+  const viewMatrix = mat4.create()
+  const velocityJitter: vec3 = vec3.create()
+  const viewportProbe: vec3 = vec3.create()
+  const viewportProjection = VectorMath.createProjectionResult()
+  const shapeConnectionProjectionA = VectorMath.createProjectionResult()
+  const shapeConnectionProjectionB = VectorMath.createProjectionResult()
+  const cameraEye = vec3.fromValues(0, 0, 500)
+  const cameraCenter = vec3.create()
+  const cameraUp = vec3.fromValues(0, 1, 0)
+  const frameShapePositions = new Set<string>()
 
   let recentlyExpiredParticles = 0
 
@@ -317,11 +328,8 @@ export const initializeCyberScape = (
   const updateParticleConnections = (particles: Particle[]) => {
     particles.forEach((particle) => {
       if (Math.random() < 0.05) {
-        vec3.add(
-          particle.velocity,
-          particle.velocity,
-          vec3.fromValues((Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2),
-        )
+        vec3.set(velocityJitter, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2)
+        vec3.add(particle.velocity, particle.velocity, velocityJitter)
 
         const speed = vec3.length(particle.velocity)
         if (speed > 0) {
@@ -353,8 +361,36 @@ export const initializeCyberScape = (
 
   // Add this function to check if a position is within the viewport
   const isWithinViewport = (x: number, y: number, z: number): boolean => {
-    const projectedPoint = VectorMath.project([x, y, z], width, height)
+    vec3.set(viewportProbe, x, y, z)
+    const projectedPoint = VectorMath.project(viewportProbe, width, height, viewportProjection)
     return projectedPoint.x >= 0 && projectedPoint.x <= width && projectedPoint.y >= 0 && projectedPoint.y <= height
+  }
+
+  const preventClustering = (particle: Particle) => {
+    vec3.set(clusterQueryMin, particle.position[0] - 20, particle.position[1] - 20, particle.position[2] - 20)
+    vec3.set(clusterQueryMax, particle.position[0] + 20, particle.position[1] + 20, particle.position[2] + 20)
+
+    const nearbyObjects = octree.query({
+      max: clusterQueryMax,
+      min: clusterQueryMin,
+    })
+
+    const nearbyParticles = nearbyObjects.filter((obj) => obj instanceof Particle) as Particle[]
+
+    if (nearbyParticles.length > 20) {
+      vec3.set(clusterAvgPosition, 0, 0, 0)
+      nearbyParticles.forEach((p) => {
+        vec3.add(clusterAvgPosition, clusterAvgPosition, p.position)
+      })
+      vec3.scale(clusterAvgPosition, clusterAvgPosition, 1 / nearbyParticles.length)
+
+      vec3.sub(clusterAwayVector, particle.position, clusterAvgPosition)
+      vec3.normalize(clusterAwayVector, clusterAwayVector)
+      vec3.scale(clusterAwayVector, clusterAwayVector, 0.5)
+
+      vec3.add(particle.velocity, particle.velocity, clusterAwayVector)
+      vec3.normalize(particle.velocity, particle.velocity)
+    }
   }
 
   /**
@@ -378,8 +414,8 @@ export const initializeCyberScape = (
       octree.clear()
 
       // Update frustum culling
-      const projectionMatrix = mat4.perspective(mat4.create(), Math.PI / 4, width / height, 0.1, 1000)
-      const viewMatrix = mat4.lookAt(mat4.create(), [0, 0, 500], [0, 0, 0], [0, 1, 0])
+      mat4.perspective(projectionMatrix, Math.PI / 4, width / height, 0.1, 1000)
+      mat4.lookAt(viewMatrix, cameraEye, cameraCenter, cameraUp)
       frustumCuller.updateFrustum(projectionMatrix, viewMatrix)
 
       // Adjust particle creation logic
@@ -437,37 +473,6 @@ export const initializeCyberScape = (
         recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
       }
 
-      // Prevent particle clustering (reuse pre-allocated vectors)
-      const preventClustering = (particle: Particle) => {
-        // Build query bounds using pre-allocated vectors
-        vec3.set(clusterQueryMin, particle.position[0] - 20, particle.position[1] - 20, particle.position[2] - 20)
-        vec3.set(clusterQueryMax, particle.position[0] + 20, particle.position[1] + 20, particle.position[2] + 20)
-
-        const nearbyObjects = octree.query({
-          max: clusterQueryMax,
-          min: clusterQueryMin,
-        })
-
-        const nearbyParticles = nearbyObjects.filter((obj) => obj instanceof Particle) as Particle[]
-
-        if (nearbyParticles.length > 20) {
-          // Calculate the average position using pre-allocated vector
-          vec3.set(clusterAvgPosition, 0, 0, 0)
-          nearbyParticles.forEach((p) => {
-            vec3.add(clusterAvgPosition, clusterAvgPosition, p.position)
-          })
-          vec3.scale(clusterAvgPosition, clusterAvgPosition, 1 / nearbyParticles.length)
-
-          // Move the particle away from the cluster using pre-allocated vector
-          vec3.sub(clusterAwayVector, particle.position, clusterAvgPosition)
-          vec3.normalize(clusterAwayVector, clusterAwayVector)
-          vec3.scale(clusterAwayVector, clusterAwayVector, 0.5)
-
-          vec3.add(particle.velocity, particle.velocity, clusterAwayVector)
-          vec3.normalize(particle.velocity, particle.velocity)
-        }
-      }
-
       // Update and draw regular particles
       for (let i = particlesArray.length - 1; i >= 0; i--) {
         const particle = particlesArray[i]
@@ -509,22 +514,22 @@ export const initializeCyberScape = (
       }
 
       // Update and draw shapes
-      const existingPositions = new Set<string>()
+      frameShapePositions.clear()
       for (let i = shapesArray.length - 1; i >= 0; i--) {
         const shape = shapesArray[i]
         shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray)
         if (shape.opacity > 0 && !shape.isExploded) {
           if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
             // Reset the shape if it's out of the viewport
-            shape.reset(existingPositions, width, height)
+            shape.reset(frameShapePositions, width, height)
           } else {
-            existingPositions.add(shape.getPositionKey())
+            frameShapePositions.add(shape.getPositionKey())
             octree.insert(shape as unknown as OctreeObject)
             shape.draw(ctx, width, height)
           }
         }
         if (shape.isFadedOut()) {
-          shape.reset(existingPositions, width, height)
+          shape.reset(frameShapePositions, width, height)
         }
         // Emit small particles from shapes
         if (Math.random() < 0.01) {
@@ -662,8 +667,8 @@ export const initializeCyberScape = (
         const distance = vec3.distance(shapeA.position, shapeB.position)
 
         if (distance < config.shapeConnectionDistance) {
-          const projectedA = VectorMath.project(shapeA.position, width, height)
-          const projectedB = VectorMath.project(shapeB.position, width, height)
+          const projectedA = VectorMath.project(shapeA.position, width, height, shapeConnectionProjectionA)
+          const projectedB = VectorMath.project(shapeB.position, width, height, shapeConnectionProjectionB)
 
           ctx.beginPath()
           ctx.moveTo(projectedA.x, projectedA.y)

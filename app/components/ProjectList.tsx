@@ -60,9 +60,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
         // Format version meta string
         const versionMeta = project.frontmatter.latestVersion ? `v${project.frontmatter.latestVersion}` : undefined
 
-        // Debug: log meta value for each project
-        console.log(`[ProjectList] ${project.slug}: meta=${versionMeta}`)
-
         return (
           <SilkCard
             description={project.frontmatter.description}

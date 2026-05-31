@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import { pickFeaturedProjects } from '../lib/homeContent'
 import { usePageLoad } from './PageLoadOrchestrator'
 import SilkCard from './SilkCard'
 
@@ -120,26 +121,17 @@ interface Project {
 
 interface FeaturedProjectsSectionSilkProps {
   projects: Project[]
+  maxProjects?: number
+  selectionSeed?: number | null
 }
 
-function getHashedProjects(projects: Project[], count: number): Project[] {
-  const date = new Date()
-  const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000)
-  const hour = date.getHours()
-  const seed = dayOfYear * 24 + hour
-
-  const shuffled = [...projects]
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const seededRandom = Math.sin(i * seed) * 10000
-    const j = Math.floor(Math.abs(seededRandom) % (i + 1))
-    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-  }
-
-  return shuffled.slice(0, count)
-}
-
-export default function FeaturedProjectsSectionSilk({ projects }: FeaturedProjectsSectionSilkProps) {
-  const displayedProjects = getHashedProjects(projects, 8)
+export default function FeaturedProjectsSectionSilk({
+  projects,
+  maxProjects = 8,
+  selectionSeed,
+}: FeaturedProjectsSectionSilkProps) {
+  const displayedProjects =
+    selectionSeed == null ? projects.slice(0, maxProjects) : pickFeaturedProjects(projects, maxProjects, selectionSeed)
   const { isInitialLoad } = usePageLoad()
 
   const containerVariants = {

@@ -223,7 +223,7 @@ const Footer: React.FC = () => {
     <FooterContainer>
       <FooterContent>
         <BrandSection>
-          <Image alt="" aria-hidden="true" className="star-icon" height={36} src="/images/star-icon.png" width={36} />
+          <Image alt="" aria-hidden="true" className="star-icon" height={737} src="/images/star-icon.png" width={879} />
           <BrandText>hyperbliss</BrandText>
         </BrandSection>
 
