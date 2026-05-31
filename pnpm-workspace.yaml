@@ -9,6 +9,10 @@ overrides:
   "postcss@<8.5.10": ">=8.5.10"
 
 allowBuilds:
+  # just-bash's optional Node compression backends — we only ship its browser
+  # bundle, which doesn't use them, so skip building the native modules.
+  '@mongodb-js/zstd': false
   "@swc/core": true
   esbuild: true
+  node-liblzma: false
   sharp: true

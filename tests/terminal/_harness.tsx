@@ -65,6 +65,7 @@ export interface Harness {
   navigated: string[]
   themed: string[]
   ran: string[]
+  cwds: string[]
   /** Combined text content of everything printed so far. */
   printedText(): string
 }
@@ -77,6 +78,7 @@ export function makeHarness(
   const navigated: string[] = []
   const themed: string[] = []
   const ran: string[] = []
+  const cwds: string[] = []
   let cleared = 0
 
   const ctx = createContext({
@@ -93,6 +95,7 @@ export function makeHarness(
     run: async (line) => {
       ran.push(line)
     },
+    setCwd: (c) => cwds.push(c),
     setTheme: (name) => themed.push(name),
   })
 
@@ -101,6 +104,7 @@ export function makeHarness(
       return cleared
     },
     ctx,
+    cwds,
     navigated,
     printed,
     printedText() {

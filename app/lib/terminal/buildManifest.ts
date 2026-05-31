@@ -4,6 +4,7 @@
 // and assembles entries. Bodies are never included (§5.5).
 
 import type { AboutSection, LabSummary, NowData, PostSummary, ProjectSummary, ResumeData } from '../content'
+import { deepHref, VFS_ABOUT, VFS_NOW, VFS_RESUME, virtualPath } from './paths'
 import { byteLengthUtf8, type Manifest, type ManifestEntry } from './types'
 
 /** Virtual-path → real byte size of the body the lazy-FS will serve. */
@@ -43,14 +44,14 @@ export function buildManifest(input: BuildManifestInput): Manifest {
   // about.md — synthesized from the about page bio
   const aboutSummary = about?.intro?.introText ?? about?.bio?.slice(0, 160) ?? 'About Stefanie Jane.'
   entries.push({
-    bytes: sizeFor('/about.md', `${aboutSummary}\n${about?.bio ?? ''}`, sizes),
+    bytes: sizeFor(VFS_ABOUT, `${aboutSummary}\n${about?.bio ?? ''}`, sizes),
     date: null,
     emoji: null,
     github: null,
-    href: '/about/',
+    href: deepHref('about', ''),
     kind: 'about',
     latestVersion: null,
-    path: '/about.md',
+    path: VFS_ABOUT,
     status: null,
     summary: aboutSummary,
     tags: ['about', 'bio'],
@@ -59,14 +60,14 @@ export function buildManifest(input: BuildManifestInput): Manifest {
 
   // now.md
   entries.push({
-    bytes: sizeFor('/now.md', `${now.focus ?? ''}\n${now.body ?? ''}`, sizes),
+    bytes: sizeFor(VFS_NOW, `${now.focus ?? ''}\n${now.body ?? ''}`, sizes),
     date: now.updated,
     emoji: now.emoji,
     github: null,
-    href: null,
+    href: deepHref('now', ''),
     kind: 'now',
     latestVersion: null,
-    path: '/now.md',
+    path: VFS_NOW,
     status: null,
     summary: now.focus ?? 'What I am working on right now.',
     tags: ['now', 'current'],
@@ -75,14 +76,14 @@ export function buildManifest(input: BuildManifestInput): Manifest {
 
   // resume.md
   entries.push({
-    bytes: sizeFor('/resume.md', resume.body ?? resume.description ?? '', sizes),
+    bytes: sizeFor(VFS_RESUME, resume.body ?? resume.description ?? '', sizes),
     date: null,
     emoji: null,
     github: null,
-    href: '/resume/',
+    href: deepHref('resume', ''),
     kind: 'resume',
     latestVersion: null,
-    path: '/resume.md',
+    path: VFS_RESUME,
     status: null,
     summary: resume.description ?? 'Professional summary.',
     tags: ['resume', 'cv'],
@@ -90,13 +91,13 @@ export function buildManifest(input: BuildManifestInput): Manifest {
   })
 
   for (const p of projects) {
-    const path = `/projects/${p.slug}.md`
+    const path = virtualPath('project', p.slug)
     entries.push({
       bytes: sizeFor(path, `${p.description ?? ''}\n${p.title}`, sizes),
       date: p.date,
       emoji: p.emoji,
       github: p.github,
-      href: `/projects/${p.slug}/`,
+      href: deepHref('project', p.slug),
       kind: 'project',
       latestVersion: releases?.[p.slug] ?? p.latestVersion ?? null,
       path,
@@ -108,13 +109,13 @@ export function buildManifest(input: BuildManifestInput): Manifest {
   }
 
   for (const post of posts) {
-    const path = `/blog/${post.slug}.md`
+    const path = virtualPath('post', post.slug)
     entries.push({
       bytes: sizeFor(path, `${post.excerpt ?? ''}\n${post.title}`, sizes),
       date: post.date,
       emoji: post.emoji,
       github: null,
-      href: `/blog/${post.slug}/`,
+      href: deepHref('post', post.slug),
       kind: 'post',
       latestVersion: null,
       path,
@@ -126,13 +127,13 @@ export function buildManifest(input: BuildManifestInput): Manifest {
   }
 
   for (const exp of lab) {
-    const path = `/lab/${exp.slug}.md`
+    const path = virtualPath('lab', exp.slug)
     entries.push({
       bytes: sizeFor(path, `${exp.excerpt ?? ''}\n${exp.title}`, sizes),
       date: exp.date,
       emoji: exp.emoji,
       github: null,
-      href: `/lab/${exp.slug}/`,
+      href: deepHref('lab', exp.slug),
       kind: 'lab',
       latestVersion: null,
       path,

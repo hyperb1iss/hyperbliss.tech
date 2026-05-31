@@ -17,6 +17,7 @@ export interface ContextDeps {
   run: (line: string) => Promise<void>
   history?: readonly string[]
   cwd?: string
+  setCwd?: (cwd: string) => void
   signal?: AbortSignal
 }
 
@@ -31,6 +32,7 @@ export function createContext(deps: ContextDeps): TerminalContext {
     print: deps.print,
     registry: deps.registry,
     run: deps.run,
+    setCwd: deps.setCwd ?? (() => {}),
     setTheme: deps.setTheme,
     signal: deps.signal,
   }

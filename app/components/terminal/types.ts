@@ -45,6 +45,8 @@ export interface TerminalContext {
   history: readonly string[]
   /** Current shell working directory ('/' until the shell engine loads). */
   cwd: string
+  /** Update the displayed working directory (the shell calls this after `cd`). */
+  setCwd(cwd: string): void
   /** Cooperative cancellation for long-running output. */
   signal?: AbortSignal
 }

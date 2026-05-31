@@ -13,6 +13,9 @@ import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
 import CommandChips from './CommandChips'
 import './commands'
+import type { ShellRunner } from './executor'
+import { fetchFsBodies } from './fsClient'
+import { createShellRunner } from './shell'
 import type { TerminalHandle } from './Terminal'
 
 const HeroWrap = styled.section`
@@ -102,6 +105,11 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   const handleRef = useRef<TerminalHandle | null>(null)
   const [autoFocus, setAutoFocus] = useState(false)
 
+  // One shell runner for the session — holds the just-bash instance + session
+  // env in its closure, so it must survive re-renders.
+  const shellRef = useRef<ShellRunner | null>(null)
+  if (!shellRef.current) shellRef.current = createShellRunner({ fetchBodies: fetchFsBodies })
+
   // Auto-focus only on true mouse devices so we never pop the soft keyboard on
   // touch — chips are the touch entry point. `hover: hover` + `pointer: fine`
   // is the canonical "has a mouse" query and avoids mobile false-positives.
@@ -126,6 +134,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
           manifest={manifest}
           onCommandCategory={trackTerminalCommand}
           onNavigate={onNavigate}
+          shellRunner={shellRef.current ?? undefined}
         />
       </Frame>
       <CommandChips onCategory={trackTerminalCommand} onRun={runChip} />

@@ -233,13 +233,17 @@ export default function Terminal({
   const [log, setLog] = useState<LogEntry[]>(initialLog)
   const [input, setInput] = useState('')
   const [focused, setFocused] = useState(false)
+  const [cwd, setCwd] = useState('/')
 
   const inputRef = useRef<HTMLInputElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
   // Seed above the highest seeded id so boot-provided initialLog entries (P3)
   // can't collide with runtime-generated ids.
   const idRef = useRef(initialLog.reduce((max, e) => Math.max(max, e.id), 0))
+  // The shell owns authoritative cwd via session env; this mirror drives the
+  // prompt display and is kept in sync through ctx.setCwd.
   const cwdRef = useRef('/')
+  cwdRef.current = cwd
   const historyRef = useRef<History>(new History())
   const runRef = useRef<(line: string) => Promise<void>>(async () => {})
 
@@ -291,6 +295,7 @@ export default function Terminal({
         print: pushEntry,
         registry,
         run,
+        setCwd,
         setTheme: (name) => {
           if (typeof document !== 'undefined') document.documentElement.setAttribute('data-terminal-theme', name)
         },
@@ -397,7 +402,7 @@ export default function Terminal({
       </OutputLog>
 
       <InputForm onSubmit={submit}>
-        <PromptLabel cwd={cwdRef.current} />
+        <PromptLabel cwd={cwd} />
         <VisuallyHidden htmlFor="terminal-input">Terminal input — type a command and press Enter</VisuallyHidden>
         <InputCaret>
           <StyledInput

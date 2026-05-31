@@ -26,6 +26,11 @@ async function readMarkdown(relativePath: string): Promise<{ data: Record<string
   return matter(raw)
 }
 
+/** Read a content file verbatim (frontmatter included) — backs `cat` in the terminal. */
+export async function readRawContentFile(relativePath: string): Promise<string> {
+  return fs.readFile(contentPath(relativePath), 'utf-8')
+}
+
 /** Format display title with optional emoji prefix */
 export function formatDisplayTitle(emoji: string | null | undefined, title: string): string {
   return emoji ? `${emoji} ${title}` : title
