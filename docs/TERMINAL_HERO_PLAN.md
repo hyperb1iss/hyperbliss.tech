@@ -1,14 +1,20 @@
 # 🖥️ Terminal-First Homepage — Implementation Plan
 
-> Status: **BUILDING** · Owner: Stefanie Jane · Updated: 2026-05-31
+> Status: **BUILT — flag-gated, awaiting ship toggle** · Owner: Stefanie Jane · Updated: 2026-05-31
 > Decision record: Sibyl `decision_5badabc910c3` · Engine facts: `claim_d06912f0c6b5` · Architecture: `idea_501cd92cc30d`
 > Review log: see §11.
 >
-> **Progress:** P0 ✅ de-risk closed · P1 ✅ spine shipped (flag-gated, SEO/a11y
-> verified, adversarial review passed) · P2 ✅ real just-bash shell over the
-> content tree (lazy FS, conflict table, session) · P3 ⏳ cinematic (boot,
-> auto-neofetch, single backdrop + CRT) · P4 ⏳ delight (⌘K, share URLs, eggs).
-> just-bash facts verified: `claim_dc349dd3d194`. Build on `feat/terminal-hero`.
+> **Progress:** P0 ✅ de-risk · P1 ✅ spine (SEO/a11y verified, review passed) ·
+> P2 ✅ real just-bash shell (lazy FS, conflict table, session) · P3 ✅ cinematic
+> (boot, auto-neofetch, single backdrop + CRT) · P4 ✅ delight (⌘K palette, share
+> URLs, ssh/sudo/theme/matrix eggs). Both adversarial reviews PASS. 187 tests
+> green; `pnpm build` green (44 pages); just-bash async chunk 365KB gzip.
+> Verified live: boot, neofetch, real shell, mobile, a11y (axe 0), palette.
+> **Remaining (human call): the §6 ship toggle** — set
+> `NEXT_PUBLIC_TERMINAL_HERO=true` in the deploy env (or remove the flag) to make
+> the terminal the live homepage. just-bash facts: `claim_dc349dd3d194`.
+> Deferred YAGNI: T3.4 sound, T4.4 xterm modal, a full interactive game,
+> `.secrets/` eggs.
 
 ## 1. Vision
 
