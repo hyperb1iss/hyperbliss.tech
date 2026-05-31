@@ -41,6 +41,8 @@ export interface TerminalContext {
   /** Run a full command line programmatically (chips, replay, did-you-mean). */
   run(line: string): Promise<void>
   registry: CommandRegistry
+  /** Command history entries (oldest first), for the `history` command. */
+  history: readonly string[]
   /** Current shell working directory ('/' until the shell engine loads). */
   cwd: string
   /** Cooperative cancellation for long-running output. */

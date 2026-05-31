@@ -280,6 +280,7 @@ export default function Terminal({
         broadcast,
         clear,
         cwd: cwdRef.current,
+        history: historyRef.current.entries,
         manifest,
         navigate: (href) => {
           if (onNavigate) onNavigate(href)

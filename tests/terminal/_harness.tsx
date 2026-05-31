@@ -51,6 +51,7 @@ export const testBroadcast: Broadcast = {
   latestProject: { date: '2025-09-01', href: '/projects/sibyl/', title: 'Sibyl' },
   latestShip: { project: 'git-iris', publishedAt: '2026-05-20', slug: 'git-iris', url: 'https://x', version: '1.0.0' },
   location: 'Seattle, WA',
+  nowBody: 'Building the terminal hero.',
   nowUpdated: '2026-05-31',
   postCount: 6,
   projectCount: 24,
@@ -68,8 +69,8 @@ export interface Harness {
   printedText(): string
 }
 
-export function makeHarness(over: Partial<{ cwd: string }> = {}): Harness {
-  const registry = new Registry()
+export function makeHarness(over: Partial<{ cwd: string; registry: Registry; history: string[] }> = {}): Harness {
+  const registry = over.registry ?? new Registry()
   const printed: Array<{ node: ReactNode; stream: OutputStream }> = []
   const navigated: string[] = []
   const themed: string[] = []
@@ -82,6 +83,7 @@ export function makeHarness(over: Partial<{ cwd: string }> = {}): Harness {
       cleared += 1
     },
     cwd: over.cwd ?? '/',
+    history: over.history ?? [],
     manifest: testManifest,
     navigate: (href) => navigated.push(href),
     print: (node, stream = 'stdout') => printed.push({ node, stream }),

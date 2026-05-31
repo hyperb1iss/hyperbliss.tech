@@ -56,6 +56,8 @@ export interface BroadcastLink {
  */
 export interface Broadcast {
   focus: string
+  /** The full now.md prose — small, drives the rich `now` command. */
+  nowBody: string | null
   location: string | null
   nowUpdated: string | null
   latestPost: BroadcastLink | null

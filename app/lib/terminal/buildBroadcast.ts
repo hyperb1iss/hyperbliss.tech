@@ -45,6 +45,7 @@ export function buildBroadcast(input: BuildBroadcastInput): Broadcast {
       : null,
     latestShip,
     location: now.location,
+    nowBody: now.body,
     nowUpdated: now.updated,
     postCount: posts.length,
     projectCount: projects.length,

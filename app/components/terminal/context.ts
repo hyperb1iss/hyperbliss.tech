@@ -15,6 +15,7 @@ export interface ContextDeps {
   navigate: (href: string) => void
   setTheme: (name: string) => void
   run: (line: string) => Promise<void>
+  history?: readonly string[]
   cwd?: string
   signal?: AbortSignal
 }
@@ -24,6 +25,7 @@ export function createContext(deps: ContextDeps): TerminalContext {
     broadcast: deps.broadcast,
     clear: deps.clear,
     cwd: deps.cwd ?? '/',
+    history: deps.history ?? [],
     manifest: deps.manifest,
     navigate: deps.navigate,
     print: deps.print,
