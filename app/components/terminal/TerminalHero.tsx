@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackTerminalCommand } from '@/lib/analytics'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
+import { useBootPhase } from './bootState'
 import CommandChips from './CommandChips'
 import './commands'
 import type { ShellRunner } from './executor'
@@ -104,6 +105,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   const router = useRouter()
   const handleRef = useRef<TerminalHandle | null>(null)
   const [autoFocus, setAutoFocus] = useState(false)
+  const bootPhase = useBootPhase()
 
   // One shell runner for the session — holds the just-bash instance + session
   // env in its closure, so it must survive re-renders.
@@ -129,6 +131,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
       <Frame>
         <Terminal
           autoFocusInput={autoFocus}
+          bootPhase={bootPhase}
           broadcast={broadcast}
           handleRef={handleRef}
           manifest={manifest}

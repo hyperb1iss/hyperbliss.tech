@@ -4,12 +4,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
 import { categoryOf } from './analytics'
+import { runBootSequence } from './boot'
+import { type BootPhase, markVisited } from './bootState'
 import { complete, fsPaths } from './complete'
 import { createContext } from './context'
 import { execute, type ShellRunner } from './executor'
 import { History, loadHistory } from './history'
 import { registry as sharedRegistry } from './registry'
 import { OutputText } from './render'
+import { safeLocalGet, safeLocalSet } from './storage'
 import type { CommandRegistry, LogEntry, OutputStream } from './types'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -42,6 +45,56 @@ const Shell = styled.div`
     box-shadow:
       0 0 50px rgba(0, 255, 240, 0.22),
       inset 0 0 60px rgba(10, 10, 20, 0.6);
+  }
+
+  /* CRT layer — subtle per-color bloom + faint static scanlines. No flicker,
+     no curvature. Disabled by the effects toggle and by reduced motion. */
+  &[data-crt='on'] {
+    text-shadow: 0 0 2px currentColor;
+  }
+  &[data-crt='on']::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.14) 0px,
+      rgba(0, 0, 0, 0.14) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+  }
+`
+
+const TitleSpacer = styled.span`
+  flex: 1;
+`
+
+const CrtToggle = styled.button`
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-base);
+  padding: 1px var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--duration-fast) var(--ease-silk);
+
+  &[data-on='true'] {
+    color: var(--silk-circuit-cyan);
+    border-color: rgba(0, 255, 240, 0.4);
+  }
+  &:hover,
+  &:focus-visible {
+    color: var(--text-primary);
+    outline: none;
   }
 `
 
@@ -215,6 +268,8 @@ export interface TerminalProps {
   onCommandCategory?: (category: string) => void
   /** Client-side deep-link navigation; defaults to a full navigation. */
   onNavigate?: (href: string) => void
+  /** Boot phase (§5.6). Undefined skips the boot entirely (tests). */
+  bootPhase?: BootPhase
   /** Imperative handle (chips / boot sequence drive the terminal through this). */
   handleRef?: { current: TerminalHandle | null }
 }
@@ -228,12 +283,14 @@ export default function Terminal({
   autoFocusInput = false,
   onCommandCategory,
   onNavigate,
+  bootPhase,
   handleRef,
 }: TerminalProps) {
   const [log, setLog] = useState<LogEntry[]>(initialLog)
   const [input, setInput] = useState('')
   const [focused, setFocused] = useState(false)
   const [cwd, setCwd] = useState('/')
+  const [crt, setCrt] = useState(true)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
@@ -321,6 +378,17 @@ export default function Terminal({
     if (autoFocusInput) inputRef.current?.focus()
   }, [autoFocusInput])
 
+  // CRT effects default on, but off under reduced motion or a saved preference.
+  useEffect(() => {
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    setCrt(!reduced && safeLocalGet('hb:term:fx') !== 'off')
+  }, [])
+
+  const toggleCrt = useCallback(() => {
+    setCrt((on) => !on)
+    safeLocalSet('hb:term:fx', crt ? 'off' : 'on') // next = !crt
+  }, [crt])
+
   useEffect(() => {
     if (handleRef) {
       handleRef.current = { focus: () => inputRef.current?.focus(), run }
@@ -329,6 +397,36 @@ export default function Terminal({
       }
     }
   }, [handleRef, run])
+
+  // Boot sequence (§5.6). Runs once the phase resolves; the full boot is
+  // skippable via any key/pointer. markVisited fires here (not at resolve) so
+  // strict-mode's double effect-invoke can't race first-visit detection.
+  useEffect(() => {
+    if (!bootPhase || bootPhase === 'pending') return
+    let cancelled = false
+    let skip = bootPhase === 'skip-to-end'
+    const onSkip = () => {
+      skip = true
+    }
+    if (bootPhase === 'full-boot') {
+      window.addEventListener('keydown', onSkip, { once: true })
+      window.addEventListener('pointerdown', onSkip, { once: true })
+    }
+    markVisited()
+    void runBootSequence({
+      broadcast,
+      isCancelled: () => cancelled,
+      phase: bootPhase,
+      print: pushEntry,
+      run,
+      shouldSkip: () => skip,
+    })
+    return () => {
+      cancelled = true
+      window.removeEventListener('keydown', onSkip)
+      window.removeEventListener('pointerdown', onSkip)
+    }
+  }, [bootPhase, broadcast, pushEntry, run])
 
   const submit = useCallback(
     (e: React.FormEvent) => {
@@ -387,12 +485,16 @@ export default function Terminal({
   }, [])
 
   return (
-    <Shell onMouseUp={focusInput}>
+    <Shell data-crt={crt ? 'on' : 'off'} onMouseUp={focusInput}>
       <TitleBar>
         <Dot data-dot="r" />
         <Dot data-dot="y" />
         <Dot data-dot="g" />
         <TitleText>guest@hyperbliss — terminal</TitleText>
+        <TitleSpacer />
+        <CrtToggle aria-label="Toggle CRT effects" aria-pressed={crt} data-on={crt} onClick={toggleCrt} type="button">
+          CRT
+        </CrtToggle>
       </TitleBar>
 
       <OutputLog aria-label="Terminal output" aria-live="polite" ref={logRef} role="log" tabIndex={0}>
