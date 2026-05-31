@@ -3,11 +3,12 @@
 
 import Link from 'next/link'
 import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
-import { pickFeaturedProjects, projectRotationSeed, toProjectCards } from '@/lib/homeContent'
+import { pickFeaturedProjects, projectRotationSeed, toLatestContent, toProjectCards } from '@/lib/homeContent'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { styled } from '../../styled-system/jsx'
 import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
 import HomeFallbackContent from './HomeFallback'
+import LatestBlogPostsSilk from './LatestBlogPostsSilk'
 import { SparklingName } from './SparklingName'
 import { StarButton } from './StarComponents'
 import TerminalHero from './terminal/TerminalHero'
@@ -25,8 +26,9 @@ interface TerminalHomeProps {
 const DEFAULT_TAGLINE =
   'I build software that gives people control over their technology. Open source all the way down.'
 
-// Split hero: identity + latest writing on one side, the live terminal on the
-// other. Stacks to a single column below the lg breakpoint, identity first.
+// Split hero: identity on one side, the live terminal on the other. The terminal
+// is the bonus; the writing and projects below carry the weight. Stacks to a
+// single column below the lg breakpoint, identity first.
 const HeroGrid = styled.div`
   width: 100%;
   max-width: var(--container-xl, 1400px);
@@ -35,12 +37,12 @@ const HeroGrid = styled.div`
   grid-template-columns: 1fr;
   gap: var(--space-10);
   align-items: center;
-  padding: var(--space-10) var(--space-4) var(--space-6);
+  padding: var(--space-12) var(--space-4) var(--space-8);
 
   @media (min-width: 1024px) {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: var(--space-12);
-    padding: var(--space-12) var(--space-6) var(--space-8);
+    padding: var(--space-16) var(--space-6) var(--space-10);
   }
 `
 
@@ -70,10 +72,10 @@ const NameHeading = styled.h1`
 
 const Tagline = styled.p`
   font-family: var(--font-body);
-  font-size: var(--text-fluid-lg);
+  font-size: var(--text-fluid-xl);
   line-height: var(--leading-relaxed);
   color: var(--text-secondary);
-  max-width: 36ch;
+  max-width: 40ch;
   margin: 0;
 `
 
@@ -106,100 +108,6 @@ const SecondaryCta = styled(Link)`
   }
 `
 
-const Posts = styled.section`
-  width: 100%;
-  margin-top: var(--space-2);
-`
-
-const PostsHeading = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-decoration: none;
-  margin-bottom: var(--space-4);
-
-  &:hover {
-    color: var(--silk-circuit-cyan);
-  }
-`
-
-const PostList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-`
-
-const PostRow = styled(Link)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-4);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  background: var(--surface-glass);
-  text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-silk);
-
-  &:hover {
-    border-color: rgba(0, 255, 240, 0.4);
-    background: rgba(0, 255, 240, 0.05);
-    transform: translateX(4px);
-  }
-`
-
-const PostTitle = styled.span`
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  font-weight: var(--font-semibold);
-  color: var(--text-primary);
-  line-height: var(--leading-snug);
-`
-
-const PostMeta = styled.span`
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--silk-circuit-cyan);
-  opacity: 0.85;
-  flex-shrink: 0;
-`
-
-const PostExcerpt = styled.span`
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: var(--leading-snug);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`
-
-const PostFooter = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: 2px;
-`
-
-const PostTag = styled.span`
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--silk-plasma-pink);
-  background: rgba(255, 117, 216, 0.1);
-  border: 1px solid rgba(255, 117, 216, 0.25);
-  border-radius: var(--radius-full);
-  padding: 1px var(--space-2);
-`
-
 const TerminalCol = styled.div`
   width: 100%;
   min-width: 0;
@@ -213,28 +121,21 @@ const Below = styled.div`
   flex-direction: column;
 `
 
-const fmtDate = (iso: string): string => {
-  if (!iso) return ''
-  const d = new Date(iso)
-  return Number.isNaN(d.getTime())
-    ? ''
-    : new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'short', year: 'numeric' }).format(d)
-}
-
 export default function TerminalHome({
   manifest,
   broadcast,
   posts,
   projects,
+  labExperiments = [],
   pageData,
   siteConfig,
 }: TerminalHomeProps) {
   const projectSeed = projectRotationSeed(new Date(broadcast.generatedAt))
   const projectCards = pickFeaturedProjects(toProjectCards(projects), 8, projectSeed)
+  const latest = toLatestContent(posts, labExperiments)
   const hero = pageData.hero
   const name = hero?.name ?? 'Stefanie Jane'
   const tagline = hero?.subtitle ?? DEFAULT_TAGLINE
-  const latestPosts = posts.slice(0, 3)
 
   return (
     <>
@@ -254,31 +155,6 @@ export default function TerminalHome({
               {hero?.secondaryCtaText ?? 'About Me'} →
             </SecondaryCta>
           </CtaRow>
-
-          {latestPosts.length > 0 && (
-            <Posts aria-label="Latest writing">
-              <PostsHeading href="/blog">Latest posts →</PostsHeading>
-              <PostList>
-                {latestPosts.map((post) => (
-                  <li key={post.slug}>
-                    <PostRow href={`/blog/${post.slug}`}>
-                      <PostTitle>{post.displayTitle}</PostTitle>
-                      {post.excerpt && <PostExcerpt>{post.excerpt}</PostExcerpt>}
-                      <PostFooter>
-                        <PostMeta>{fmtDate(post.date ?? '')}</PostMeta>
-                        {(post.tags ?? [])
-                          .filter((t): t is string => Boolean(t))
-                          .slice(0, 3)
-                          .map((t) => (
-                            <PostTag key={t}>{t}</PostTag>
-                          ))}
-                      </PostFooter>
-                    </PostRow>
-                  </li>
-                ))}
-              </PostList>
-            </Posts>
-          )}
         </Identity>
 
         <TerminalCol>
@@ -287,6 +163,7 @@ export default function TerminalHome({
       </HeroGrid>
 
       <Below>
+        <LatestBlogPostsSilk posts={latest} />
         <FeaturedProjectsSectionSilk projects={projectCards} selectionSeed={null} />
       </Below>
 
