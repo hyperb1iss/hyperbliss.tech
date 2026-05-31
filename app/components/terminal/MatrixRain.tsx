@@ -8,8 +8,11 @@ import { useEffect, useRef, useState } from 'react'
 import { styled } from '../../../styled-system/jsx'
 
 const GLYPHS = 'アイウエオカキクケコサシスセソﾊﾋﾌﾍﾎ0123456789∆◊∑λ≡<>/\\{}[]#$%'
-const DURATION_MS = 6000
+const DURATION_MS = 9000
 const FONT_SIZE = 14
+// Advance the cascade on a chunky time-step (not every frame) for the classic,
+// deliberate Matrix fall instead of a frantic blur.
+const STEP_MS = 85
 
 const Canvas = styled.canvas`
   display: block;
@@ -44,25 +47,34 @@ export default function MatrixRain() {
     const height = canvas.height
     const columns = Math.floor(width / FONT_SIZE)
     const drops = new Array(columns).fill(0).map(() => Math.floor((Math.random() * height) / FONT_SIZE))
+    // Per-column speed (rows per step) — a few faster columns make the cascade
+    // feel organic instead of a uniform wall.
+    const speeds = new Array(columns).fill(0).map(() => (Math.random() < 0.25 ? 2 : 1))
 
     let raf = 0
     let stopped = false
     const start = performance.now()
+    let lastStep = 0
 
     const draw = (now: number) => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'
+      if (!stopped && now - start < DURATION_MS) raf = requestAnimationFrame(draw)
+      if (now - lastStep < STEP_MS) return
+      lastStep = now
+
+      // Fade the previous frame toward black — this is the trailing glow.
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.09)'
       ctx.fillRect(0, 0, width, height)
       ctx.font = `${FONT_SIZE}px monospace`
       for (let i = 0; i < drops.length; i++) {
         const char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
         const x = i * FONT_SIZE
         const y = drops[i] * FONT_SIZE
-        ctx.fillStyle = drops[i] * FONT_SIZE > height - FONT_SIZE * 2 ? '#80ffea' : '#50fa7b'
+        // Most chars green; an occasional bright leading char shimmers.
+        ctx.fillStyle = Math.random() > 0.92 ? '#c8ffe9' : '#50fa7b'
         ctx.fillText(char, x, y)
         if (y > height && Math.random() > 0.975) drops[i] = 0
-        drops[i] += 1
+        drops[i] += speeds[i]
       }
-      if (!stopped && now - start < DURATION_MS) raf = requestAnimationFrame(draw)
     }
     raf = requestAnimationFrame(draw)
 
