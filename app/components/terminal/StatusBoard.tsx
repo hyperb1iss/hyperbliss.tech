@@ -12,10 +12,11 @@ import { useEffect, useRef, useState } from 'react'
 import type { Broadcast } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
 
-// A little axolotl: a rounded head dome up top, three feathery gills fanning
-// off each side, a smiling face, and a tucked chin. Every line is centered on
-// the same column (the mouth) so the whole face stays plumb.
-const SIGIL_ART = [' \\\\\\ ╭─╮ ///', ' \\\\(• ◡ •)//', '    ╰───╯']
+// A little axolotl, pure ASCII so every glyph is exactly one cell in Space Mono
+// (box-drawing and bullet glyphs are ambiguous-width and drift). Frilly gills
+// fan up beside a domed head crown, dot eyes below, a rounded jaw. All three
+// lines center on the same column so the face stays plumb at any size.
+const SIGIL_ART = ['\\\\\\ .-----. ///', '    ( o o )', '     \\___/']
 const SIGIL_COLORS = ['#80ffea', '#ff75d8', '#ff6ac1']
 const SIGIL = SIGIL_ART.map((art, i) => ({ art, color: SIGIL_COLORS[i % SIGIL_COLORS.length], id: `sigil-${i}` }))
 
