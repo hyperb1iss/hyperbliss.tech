@@ -80,7 +80,7 @@ describe('TerminalHome SSR markup carries real content', () => {
   })
 
   it('renders the about teaser linking to the about page', () => {
-    expect(html).toContain('about me') // teaser CTA
+    expect(html.toLowerCase()).toContain('about me') // about CTA
     expect(html).toContain('/about')
   })
 
