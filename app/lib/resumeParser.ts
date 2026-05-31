@@ -349,58 +349,62 @@ export function parseResume(markdown: string): ParsedResume {
       continue
     }
 
-    // Contact info (paragraph with links near the top)
-    if (!result.contact.email && trimmed.includes('@')) {
-      // Parse contact line
-      if (trimmed.includes('📧') || trimmed.toLowerCase().includes('email')) {
-        const emailMatch = trimmed.match(/\[(.+?)\]\(mailto:(.+?)\)/)
-        if (emailMatch) result.contact.email = emailMatch[2]
+    // Contact info: markdown links near the top of the document. The block is
+    // often soft-wrapped across several lines, so gather the whole run and
+    // match each channel by its URL — emoji/label position can't be relied on
+    // once the lines are joined.
+    if (
+      !currentH2Section &&
+      !result.contact.email &&
+      /\[[^\]]+\]\(/.test(trimmed) &&
+      (trimmed.includes('@') || /mailto:|linkedin|github/i.test(trimmed) || /📧|💼|🐙|🌐|🔗/.test(trimmed))
+    ) {
+      let contactText = trimmed
+      let j = i + 1
+      while (j < lines.length && lines[j].trim() && !lines[j].startsWith('#')) {
+        contactText += ` ${lines[j].trim()}`
+        j++
       }
-      if (trimmed.includes('💼') || trimmed.toLowerCase().includes('linkedin')) {
-        const match = trimmed.match(/\[.+?\]\((.+?linkedin.+?)\)/)
-        if (match) result.contact.linkedin = match[1]
-      }
-      if (trimmed.includes('🐙') || trimmed.toLowerCase().includes('github')) {
-        const match = trimmed.match(/\[.+?\]\((.+?github.+?)\)/)
-        if (match) result.contact.github = match[1]
-      }
-      if (trimmed.includes('🌐') || trimmed.toLowerCase().includes('web')) {
-        const match = trimmed.match(/\[.+?\]\((https?:\/\/.+?)\)/)
-        if (match && !match[1].includes('linkedin') && !match[1].includes('github')) {
-          result.contact.website = match[1]
-        }
-      }
-      if (trimmed.includes('🔗') || trimmed.toLowerCase().includes('link')) {
-        const match = trimmed.match(/\[.+?\]\((.+?)\)/)
-        if (match) result.contact.links = match[1]
-      }
+      i = j - 1
+
+      const urls = [...contactText.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1])
+
+      const email = urls.find((url) => url.startsWith('mailto:'))
+      if (email) result.contact.email = email.replace(/^mailto:/, '')
+
+      const linkedin = urls.find((url) => /linkedin/i.test(url))
+      if (linkedin) result.contact.linkedin = linkedin
+
+      const github = urls.find((url) => /github/i.test(url))
+      if (github) result.contact.github = github
+
+      const aggregator = urls.find((url) => /linktr\.ee|bio\.link|carrd\.co|beacons\.ai/i.test(url))
+      if (aggregator) result.contact.links = aggregator
+
+      const website = urls.find(
+        (url) => /^https?:\/\//i.test(url) && url !== linkedin && url !== github && url !== aggregator,
+      )
+      if (website) result.contact.website = website
+
       continue
     }
 
     // Skills section - handle paragraph format
     if (currentH2Section === 'skills' && currentH3Section) {
-      // Check for subsection headers in bold
-      if (trimmed.startsWith('**') && trimmed.includes(':**')) {
-        const match = trimmed.match(/\*\*(.+?):\*\*\s*(.+)/)
-        if (match) {
-          const category = match[1]
-          const items = extractLinksAsItems(match[2])
-          result.skills[category] = items
-          currentH3Section = category
-        }
-      }
-      // Regular paragraph content for skills
-      else if (currentH3Section && result.skills[currentH3Section] !== undefined) {
-        const items = extractLinksAsItems(trimmed)
-        result.skills[currentH3Section].push(...items)
-      }
-      // If no H3, treat the line as skill items under the H3 category
-      else if (currentH3Section) {
-        const items = extractLinksAsItems(trimmed)
-        if (!result.skills[currentH3Section]) {
-          result.skills[currentH3Section] = []
-        }
-        result.skills[currentH3Section].push(...items)
+      // A bold label opens a sub-category. The colon may sit inside or outside
+      // the bold markers ("**Cloud:** …" or "**Cloud**: …"); accept both so the
+      // label is never glued onto the first tag as a prefix.
+      const labelMatch = trimmed.startsWith('**')
+        ? (trimmed.match(/^\*\*(.+?):\*\*\s*(.+)/) ?? trimmed.match(/^\*\*(.+?)\*\*\s*:\s*(.+)/))
+        : null
+      if (labelMatch) {
+        const category = labelMatch[1].trim()
+        result.skills[category] = extractLinksAsItems(labelMatch[2])
+        currentH3Section = category
+      } else if (result.skills[currentH3Section] !== undefined) {
+        result.skills[currentH3Section].push(...extractLinksAsItems(trimmed))
+      } else {
+        result.skills[currentH3Section] = extractLinksAsItems(trimmed)
       }
       continue
     }
