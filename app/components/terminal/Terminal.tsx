@@ -315,8 +315,11 @@ export default function Terminal({
   }, [])
 
   const pushEntry = useCallback((node: React.ReactNode, stream: OutputStream = 'stdout', promptCwd?: string) => {
+    // Capture the id NOW, not inside the updater: batched updaters run later
+    // and would all read the final idRef.current, colliding keys.
     idRef.current += 1
-    setLog((prev) => [...prev, { id: idRef.current, node, promptCwd, stream }])
+    const id = idRef.current
+    setLog((prev) => [...prev, { id, node, promptCwd, stream }])
   }, [])
 
   const clear = useCallback(() => {

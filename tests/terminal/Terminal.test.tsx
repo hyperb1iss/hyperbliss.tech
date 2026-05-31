@@ -107,6 +107,25 @@ describe('Terminal', () => {
     expect(neofetch).not.toHaveBeenCalled()
   })
 
+  it('assigns unique log keys when a command prints many lines in one tick', async () => {
+    const registry = new Registry()
+    registry.register({
+      name: 'multi',
+      run: (_args, ctx) => {
+        for (let i = 0; i < 6; i++) ctx.print(text(`line ${i}`))
+      },
+      summary: 'prints many lines',
+    })
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const user = userEvent.setup()
+    render(<Terminal autoFocusInput broadcast={testBroadcast} manifest={testManifest} registry={registry} />)
+    await user.type(screen.getByLabelText(/terminal input/i), 'multi{Enter}')
+    await waitFor(() => expect(screen.getByText('line 5')).toBeInTheDocument())
+    const dupKeyWarning = errorSpy.mock.calls.some((args) => args.some((a) => /same key/i.test(String(a))))
+    expect(dupKeyWarning).toBe(false)
+    errorSpy.mockRestore()
+  })
+
   it('fires a coarse analytics category, never raw input', async () => {
     const registry = new Registry()
     registry.register({ name: 'help', run: () => text('hi'), summary: 'g' })
