@@ -76,16 +76,15 @@ describe('Terminal', () => {
   })
 
   it('runs the boot finale exactly once, even under StrictMode', async () => {
-    const registry = new Registry()
-    const neofetch = vi.fn(() => text('NEO'))
-    registry.register({ name: 'neofetch', run: neofetch, summary: 'sys' })
     render(
       <StrictMode>
-        <Terminal bootPhase="skip-to-end" broadcast={testBroadcast} manifest={testManifest} registry={registry} />
+        <Terminal bootPhase="skip-to-end" broadcast={testBroadcast} manifest={testManifest} />
       </StrictMode>,
     )
-    await waitFor(() => expect(neofetch).toHaveBeenCalled())
-    expect(neofetch).toHaveBeenCalledTimes(1)
+    // The finale paints the status console; StrictMode's double effect-invoke
+    // must not duplicate it.
+    await waitFor(() => expect(screen.getAllByText(/creative technologist/i).length).toBeGreaterThan(0))
+    expect(screen.getAllByText(/creative technologist/i)).toHaveLength(1)
   })
 
   it('replays shared-session commands instead of neofetch', async () => {

@@ -12,6 +12,7 @@ import { execute, type ShellRunner } from './executor'
 import { History, loadHistory } from './history'
 import { registry as sharedRegistry } from './registry'
 import { OutputText } from './render'
+import StatusBoard from './StatusBoard'
 import { safeLocalGet, safeLocalSet } from './storage'
 import type { CommandRegistry, LogEntry, OutputStream } from './types'
 
@@ -272,8 +273,6 @@ export interface TerminalProps {
   bootPhase?: BootPhase
   /** Commands to replay after boot (shared-session URL — T4.2). */
   replayCommands?: string[]
-  /** First-visit self-typing tour played after neofetch; aborts on any input. */
-  demoCommands?: string[]
   /** Imperative handle (chips / boot sequence drive the terminal through this). */
   handleRef?: { current: TerminalHandle | null }
 }
@@ -289,7 +288,6 @@ export default function Terminal({
   onNavigate,
   bootPhase,
   replayCommands,
-  demoCommands,
   handleRef,
 }: TerminalProps) {
   const [log, setLog] = useState<LogEntry[]>(initialLog)
@@ -414,38 +412,14 @@ export default function Terminal({
     if (!bootPhase || bootPhase === 'pending') return
     let cancelled = false
     let skip = bootPhase === 'skip-to-end'
-    // A real interaction both fast-forwards the boot stagger and aborts the
-    // self-running demo, handing control straight to the visitor.
-    let interacted = false
-    const onInteract = () => {
+    const onSkip = () => {
       skip = true
-      interacted = true
     }
-    window.addEventListener('keydown', onInteract)
-    window.addEventListener('pointerdown', onInteract)
+    if (bootPhase === 'full-boot') {
+      window.addEventListener('keydown', onSkip, { once: true })
+      window.addEventListener('pointerdown', onSkip, { once: true })
+    }
     markVisited()
-
-    const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
-    // Self-typing tour: type each command into the prompt char by char, then run
-    // it. Bails the instant the visitor touches the keyboard or screen so it
-    // never fights them for control.
-    const playDemo = async (cmds: string[]) => {
-      for (const cmd of cmds) {
-        if (cancelled || interacted) break
-        await sleep(750)
-        for (let i = 1; i <= cmd.length; i++) {
-          if (cancelled || interacted) break
-          setInput(cmd.slice(0, i))
-          await sleep(55)
-        }
-        await sleep(350)
-        if (cancelled || interacted) break
-        setInput('')
-        await run(cmd)
-      }
-      if (!cancelled) setInput('')
-    }
-
     const finale = async () => {
       if (replayCommands && replayCommands.length > 0) {
         for (const cmd of replayCommands) {
@@ -454,10 +428,9 @@ export default function Terminal({
         }
         return
       }
-      await run('neofetch')
-      if (bootPhase === 'full-boot' && demoCommands && demoCommands.length > 0) {
-        await playDemo(demoCommands)
-      }
+      // The living status console is the landing display — a breathing
+      // replacement for a one-shot neofetch dump (the command still exists).
+      pushEntry(<StatusBoard broadcast={broadcast} />)
     }
     void runBootSequence({
       broadcast,
@@ -469,10 +442,10 @@ export default function Terminal({
     })
     return () => {
       cancelled = true
-      window.removeEventListener('keydown', onInteract)
-      window.removeEventListener('pointerdown', onInteract)
+      window.removeEventListener('keydown', onSkip)
+      window.removeEventListener('pointerdown', onSkip)
     }
-  }, [bootPhase, broadcast, pushEntry, run, replayCommands, demoCommands])
+  }, [bootPhase, broadcast, pushEntry, run, replayCommands])
 
   const submit = useCallback(
     (e: React.FormEvent) => {

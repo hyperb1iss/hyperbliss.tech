@@ -104,11 +104,6 @@ export interface TerminalHeroProps {
   broadcast: Broadcast
 }
 
-// First-visit self-typing tour: the terminal drives itself through a couple of
-// content commands before settling on a live prompt. Inline-rendering commands
-// only (no navigation), kept short so it reads as a teaser, not a takeover.
-const DEMO_REEL = ['now', 'blog']
-
 export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps) {
   const router = useRouter()
   const handleRef = useRef<TerminalHandle | null>(null)
@@ -161,7 +156,6 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
           autoFocusInput={autoFocus}
           bootPhase={boot.phase}
           broadcast={broadcast}
-          demoCommands={boot.replay.length > 0 ? undefined : DEMO_REEL}
           handleRef={handleRef}
           manifest={manifest}
           onCommandCategory={trackTerminalCommand}
