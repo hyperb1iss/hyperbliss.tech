@@ -11,6 +11,18 @@ const nextConfig = {
 
   // Configure headers for security and privacy
   async headers() {
+    // Content-hashed `_next/static` chunks are safe to cache immutably in
+    // production, but in dev the same header makes the browser pin stale HMR
+    // chunks ("module factory is not available"). Only apply it when built.
+    const staticChunkHeaders =
+      process.env.NODE_ENV === 'production'
+        ? [
+            {
+              headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+              source: '/_next/static/:path*',
+            },
+          ]
+        : []
     return [
       {
         headers: [
@@ -50,15 +62,7 @@ const nextConfig = {
         ],
         source: '/images/:path*',
       },
-      {
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
-          },
-        ],
-        source: '/_next/static/:path*',
-      },
+      ...staticChunkHeaders,
       {
         headers: [
           {
