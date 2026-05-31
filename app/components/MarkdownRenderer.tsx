@@ -9,20 +9,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
-import { css } from '../../styled-system/css'
-import { styled } from '../../styled-system/jsx'
-
-// Custom schema that allows code highlighting classes and table elements
-const sanitizeSchema = {
-  ...defaultSchema,
-  attributes: {
-    ...defaultSchema.attributes,
-    code: [...(defaultSchema.attributes?.code || []), 'className'],
-    span: [...(defaultSchema.attributes?.span || []), 'className'],
-  },
-  tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
-}
-
+import MarkdownFigure from './MarkdownFigure'
 import {
   StyledLink as MarkdownLink,
   StyledBlockquote,
@@ -30,7 +17,6 @@ import {
   StyledH2,
   StyledH3,
   StyledHr,
-  StyledImage,
   StyledInlineCode,
   StyledLi,
   StyledOl,
@@ -44,190 +30,63 @@ import {
   StyledUl,
 } from './MarkdownStyles'
 
-// Define the props interface
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), 'className'],
+    span: [...(defaultSchema.attributes?.span || []), 'className'],
+  },
+  tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
+}
+
+function classNames(...values: Array<string | undefined>): string {
+  return values.filter(Boolean).join(' ')
+}
+
+/**
+ * A paragraph whose only meaningful child is an image is unwrapped so the
+ * resulting <figure> lands as a direct grid child of BlogContent. Wrapping a
+ * <figure> in a <p> is invalid HTML and triggers a hydration mismatch, so we
+ * detect the lone-image case from the hast node and drop the paragraph.
+ */
+function isLoneImageParagraph(node?: Element): boolean {
+  if (!node || !Array.isArray(node.children)) return false
+  const meaningful = node.children.filter((child) => !(child.type === 'text' && child.value.trim() === ''))
+  return meaningful.length === 1 && meaningful[0].type === 'element' && meaningful[0].tagName === 'img'
+}
+
+function isInlineCode(node?: Element): boolean {
+  return node?.position?.start.line === node?.position?.end.line
+}
+
 interface MarkdownRendererProps {
   content: string
 }
 
-// Define a custom interface for the code component props
 interface CodeComponentProps {
-  inline?: boolean
   className?: string
   children?: React.ReactNode
 }
 
-// Panda CSS styles for the copy button and wrapper
-const CopyButton = styled.button`
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.2),
-    rgba(255, 117, 216, 0.1)
-  );
-  border: 1px solid rgba(224, 170, 255, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 0.5rem;
-  color: var(--silk-lavender);
-  cursor: pointer;
-  transition: all 0.3s var(--ease-silk);
-  opacity: 0;
-  z-index: 1;
-  backdrop-filter: blur(10px);
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(162, 89, 255, 0.3),
-      rgba(255, 117, 216, 0.2)
-    );
-    border-color: var(--silk-plasma-pink);
-    color: var(--silk-circuit-cyan);
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(255, 117, 216, 0.3);
-  }
-
-  svg {
-    width: 1.2em;
-    height: 1.2em;
-    filter: drop-shadow(0 0 3px currentColor);
-  }
-`
-
-const codeBlockPreWrapperStyles = css`
-  position: relative;
-
-  &:hover button {
-    opacity: 1;
-  }
-
-  /* Apply purple/magenta silk circuit theme */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 117, 216, 0.08) 0%,
-    rgba(217, 70, 239, 0.06) 20%,
-    rgba(30, 25, 45, 0.95) 40%,
-    rgba(236, 72, 153, 0.04) 80%,
-    rgba(224, 170, 255, 0.06) 100%
-  ) !important;
-  backdrop-filter: blur(15px) saturate(1.1);
-  color: rgba(224, 224, 224, 0.95) !important;
-  padding: 1.5rem !important;
-  border-radius: var(--radius-lg) !important;
-  overflow: auto !important;
-  font-family: var(--font-mono) !important;
-  font-size: 1.3rem !important;
-  line-height: 1.6 !important;
-  border: 1px solid rgba(255, 117, 216, 0.2);
-  box-shadow:
-    0 0 40px rgba(217, 70, 239, 0.15),
-    0 0 80px rgba(255, 117, 216, 0.08),
-    inset 0 0 30px rgba(236, 72, 153, 0.03);
-  margin: 2rem 0 !important;
-  white-space: pre-wrap !important;
-  word-spacing: normal !important;
-  word-break: normal !important;
-  word-wrap: normal !important;
-
-  /* Target code tag inside */
-  code {
-    font-family: inherit;
-    background: none;
-    padding: 0;
-    margin: 0;
-    display: block;
-    color: inherit;
-    white-space: inherit;
-    word-spacing: inherit;
-    word-break: inherit;
-    word-wrap: inherit;
-
-    /* Purple/magenta dominant syntax highlighting */
-    .hljs-comment,
-    .hljs-prolog,
-    .hljs-doctype,
-    .hljs-cdata {
-      color: rgba(168, 85, 247, 0.65);
-      font-style: italic;
-    }
-    .hljs-punctuation {
-      color: #e0aaff;
-      opacity: 0.8;
-    }
-    .hljs-property,
-    .hljs-tag,
-    .hljs-boolean,
-    .hljs-number,
-    .hljs-constant,
-    .hljs-symbol,
-    .hljs-deleted {
-      color: #ff75d8;
-      text-shadow: 0 0 8px rgba(255, 117, 216, 0.4);
-      font-weight: 500;
-    }
-    .hljs-selector,
-    .hljs-attr-name,
-    .hljs-string,
-    .hljs-char,
-    .hljs-builtin,
-    .hljs-inserted {
-      color: #ec4899;
-      text-shadow: 0 0 6px rgba(236, 72, 153, 0.3);
-    }
-    .hljs-operator,
-    .hljs-entity,
-    .hljs-url,
-    .language-css .hljs-string,
-    .style .hljs-string,
-    .hljs-variable {
-      color: #e0aaff;
-      text-shadow: 0 0 5px rgba(224, 170, 255, 0.3);
-    }
-    .hljs-atrule,
-    .hljs-attr-value,
-    .hljs-function,
-    .hljs-class-name {
-      color: #d946ef;
-      font-weight: 600;
-      text-shadow: 0 0 10px rgba(217, 70, 239, 0.4);
-    }
-    .hljs-keyword,
-    .hljs-regex,
-    .hljs-important {
-      color: #a855f7;
-      font-weight: bold;
-      text-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
-    }
-    .hljs-important {
-      font-weight: bold;
-    }
-  }
-`
-
-// --- New Component for Pre Block Logic ---
 interface PreWithCopyProps extends React.ComponentProps<'pre'> {
   node?: Element
   children?: React.ReactNode
 }
 
-const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) => {
-  // State for clipboard API availability and copy status
+const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, className, ...rest }) => {
   const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [isCopying, setIsCopying] = useState(false)
 
-  // Check for Clipboard API on mount
   useEffect(() => {
     setIsClipboardApiAvailable(!!navigator.clipboard?.writeText)
   }, [])
 
-  // Extract code content for copy button
   let codeContent = ''
   if (node && node.type === 'element') {
     codeContent = hastToString(node)
   } else {
-    // Fallback logic without warning
     codeContent = React.Children.toArray(children)
       .map((child) => String(child))
       .join('')
@@ -238,42 +97,38 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
     if (!isClipboardApiAvailable || isCopying) return
 
     setIsCopying(true)
-    setIsCopied(false) // Reset copied state
+    setIsCopied(false)
     try {
       await navigator.clipboard.writeText(codeContent)
       setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy text: ', err)
-      // Optionally: set an error state here to show feedback
     } finally {
       setIsCopying(false)
-      // Reset copied check icon after a delay
-      if (isCopied) {
-        setTimeout(() => setIsCopied(false), 2000)
-      }
     }
   }
 
-  // Filter out node prop before spreading to DOM
   const { node: _node, ...domProps } = rest as PreWithCopyProps & { node?: Element }
 
   return (
-    <pre className={`blog-syntax ${codeBlockPreWrapperStyles}`} suppressHydrationWarning={true} {...domProps}>
+    <pre className={classNames('blog-code blog-syntax', className)} suppressHydrationWarning={true} {...domProps}>
       {children}
-      <CopyButton
+      <button
+        aria-label={isCopied ? 'Code copied' : 'Copy code'}
+        className="blog-code__copy"
         disabled={!isClipboardApiAvailable || isCopying}
         onClick={copyToClipboard}
         title={isClipboardApiAvailable ? 'Copy code' : 'Clipboard API not available'}
+        type="button"
       >
         {isCopying ? '...' : isCopied ? <FiCheck /> : <FiCopy />}
-      </CopyButton>
+      </button>
     </pre>
   )
 }
 
-// Safe link wrapper component
 const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
-  // Create a new props object that's extensible
   const safeProps = {
     href,
     rel: 'noopener noreferrer',
@@ -281,7 +136,6 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
     ...rest,
   }
 
-  // For internal links, don't open in new tab
   if (href && (href.startsWith('/') || href.startsWith('#'))) {
     delete safeProps.target
     delete safeProps.rel
@@ -290,61 +144,38 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   return <MarkdownLink {...safeProps}>{children}</MarkdownLink>
 }
 
-/**
- * MarkdownRenderer Component
- * Renders Markdown content with custom Panda CSS styles.
- * @param {MarkdownRendererProps} props - The component props
- * @returns {JSX.Element} Rendered Markdown content
- */
 const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
   return (
     <ReactMarkdown
       components={{
-        // Links
         a: SafeLink,
-
-        // Blockquote
         blockquote: ({ node: _node, ...props }) => <StyledBlockquote {...props} />,
-
-        // UPDATED 'code' component: Only handles inline code now
-        code: ({ inline, className, children, node: _node, ...props }: CodeComponentProps & { node?: Element }) => {
-          if (inline) {
+        code: ({ className, children, node, ...props }: CodeComponentProps & { node?: Element }) => {
+          if (isInlineCode(node)) {
             return <StyledInlineCode {...props}>{children}</StyledInlineCode>
           }
 
-          // Block code: Render the plain code tag.
-          // Our 'pre' component above will wrap it and add the button/styles.
-          // Pass className for language detection by rehype-highlight.
-          // suppressHydrationWarning because syntax highlighting may differ between server/client
           return (
             <code className={className} suppressHydrationWarning={true} {...props}>
               {children}
             </code>
           )
         },
-        // Headings
         h1: ({ node: _node, ...props }) => <StyledH1 {...props} />,
         h2: ({ node: _node, ...props }) => <StyledH2 {...props} />,
         h3: ({ node: _node, ...props }) => <StyledH3 {...props} />,
-
-        // Horizontal Rule
         hr: ({ node: _node, ...props }) => <StyledHr {...props} />,
-
-        // Images
-        img: ({ node: _node, ...props }) => <StyledImage {...props} />,
+        img: ({ node: _node, ...props }) => <MarkdownFigure {...props} />,
         li: ({ node: _node, ...props }) => <StyledLi {...props} />,
         ol: ({ node: _node, ...props }) => <StyledOl {...props} />,
-
-        // Paragraph
-        p: ({ node: _node, ...props }) => <StyledParagraph {...props} />,
-
-        // UPDATED Custom 'pre' component implementation
-        pre: (props) => {
-          // Render the component that contains the hook logic
-          return <PreWithCopy {...props} />
+        p: ({ node, children, ...props }) => {
+          if (isLoneImageParagraph(node)) {
+            return <>{children}</>
+          }
+          return <StyledParagraph {...props}>{children}</StyledParagraph>
         },
 
-        // Tables
+        pre: (props) => <PreWithCopy {...props} />,
         table: ({ node: _node, ...props }) => <StyledTable {...props} />,
         tbody: ({ node: _node, ...props }) => <StyledTbody {...props} />,
         td: ({ node: _node, ...props }) => <StyledTd {...props} />,
@@ -352,7 +183,6 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
         thead: ({ node: _node, ...props }) => <StyledThead {...props} />,
         tr: ({ node: _node, ...props }) => <StyledTr {...props} />,
 
-        // Lists
         ul: ({ node: _node, ...props }) => <StyledUl {...props} />,
       }}
       rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}

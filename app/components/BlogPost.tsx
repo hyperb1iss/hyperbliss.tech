@@ -3,9 +3,8 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import { css } from '../../styled-system/css'
-import { styled } from '../../styled-system/jsx'
 import MarkdownRenderer from './MarkdownRenderer'
+import { BlogContent } from './MarkdownStyles'
 import { SparklingName } from './SparklingName'
 
 interface BlogPostProps {
@@ -16,113 +15,26 @@ interface BlogPostProps {
   tags?: string[]
 }
 
-const Container = styled.div`
-  width: 85%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 8rem 2rem 2rem;
-
-  @media (max-width: 1200px) {
-    width: 90%;
+/**
+ * Format a post date for display. A bare ISO date ("2026-05-27") parses as UTC
+ * midnight, which renders as the previous day in negative-offset timezones, so
+ * we build it from local components to keep the displayed date honest.
+ */
+function formatPostDate(value: string): string {
+  const trimmed = value.trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    const [year, month, day] = trimmed.split('-').map(Number)
+    return new Date(year, month - 1, day).toLocaleDateString()
   }
-
-  @media (max-width: 768px) {
-    padding: 6rem 1rem 1rem;
-  }
-`
-
-const titleStyles = css`
-  font-size: clamp(2.5rem, 3.5vw, 4.5rem);
-  color: var(--color-secondary);
-  margin-bottom: 1rem;
-  text-shadow: 0 0 10px var(--color-secondary);
-  text-align: center;
-  position: relative;
-
-  &:after {
-    content: "";
-    position: absolute;
-    width: 50%;
-    height: 2px;
-    background: var(--color-primary);
-    left: 25%;
-    bottom: -10px;
-    box-shadow: 0 0 10px var(--color-primary);
-  }
-`
-
-const metaStyles = css`
-  font-size: clamp(1.4rem, 1.5vw, 2rem);
-  color: var(--color-muted);
-  margin: 2rem 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-
-  .date {
-    color: var(--color-primary);
-    font-weight: 700;
-    text-shadow: 0 0 3px var(--color-primary);
-  }
-
-  .separator {
-    color: var(--color-accent);
-    margin: 0 0.2rem;
-    font-weight: 300;
-    text-shadow: 0 0 3px var(--color-accent);
-  }
-
-  .author-wrapper {
-    display: flex;
-    align-items: center;
-    color: var(--color-primary);
-    text-shadow: 0 0 3px var(--color-primary);
-
-    span {
-      color: var(--color-primary);
-    }
-  }
-`
-
-const tagsContainerStyles = css`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-`
-
-const Tag = styled.span`
-  background-color: rgba(255, 0, 255, 0.2);
-  color: var(--color-secondary);
-  padding: 0.3rem 0.6rem;
-  border-radius: 0.5rem;
-  font-size: clamp(1.2rem, 1.2vw, 1.6rem);
-  text-shadow: 0 0 5px var(--color-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: rgba(255, 0, 255, 0.3);
-    transform: translateY(-1px);
-  }
-`
-
-const contentStyles = css`
-  font-size: clamp(1.6rem, 1.5vw, 2.2rem);
-  line-height: 1.6;
-  color: var(--color-text);
-`
+  return new Date(trimmed).toLocaleDateString()
+}
 
 const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags }) => {
   return (
-    <Container>
+    <article className="blog-post">
       <motion.h1
         animate={{ opacity: 1, y: 0 }}
-        className={titleStyles}
+        className="blog-post__title"
         initial={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.6 }}
       >
@@ -130,15 +42,17 @@ const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags 
       </motion.h1>
       <motion.div
         animate={{ opacity: 1 }}
-        className={metaStyles}
+        className="blog-post__meta"
         initial={{ opacity: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
-        <span className="date">{new Date(date).toLocaleDateString()}</span>
+        <time className="blog-post__date" dateTime={date}>
+          {formatPostDate(date)}
+        </time>
         {author && (
           <>
-            <span className="separator">•</span>
-            <span className="author-wrapper">
+            <span className="blog-post__separator">•</span>
+            <span className="blog-post__author">
               <SparklingName name={author} sparkleCount={3} />
             </span>
           </>
@@ -147,24 +61,23 @@ const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags 
       {tags && tags.length > 0 && (
         <motion.div
           animate={{ opacity: 1 }}
-          className={tagsContainerStyles}
+          className="blog-post__tags"
           initial={{ opacity: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
           {tags.map((tag) => (
-            <Tag key={tag}>{tag}</Tag>
+            <span className="blog-post__tag" key={tag}>
+              {tag}
+            </span>
           ))}
         </motion.div>
       )}
-      <motion.div
-        animate={{ opacity: 1 }}
-        className={contentStyles}
-        initial={{ opacity: 0 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
-      >
-        <MarkdownRenderer content={content} />
+      <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
+        <BlogContent>
+          <MarkdownRenderer content={content} />
+        </BlogContent>
       </motion.div>
-    </Container>
+    </article>
   )
 }
 

@@ -9,19 +9,6 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
-import { css } from '../../styled-system/css'
-import { styled } from '../../styled-system/jsx'
-
-// Custom schema that allows code highlighting classes
-const sanitizeSchema = {
-  ...defaultSchema,
-  attributes: {
-    ...defaultSchema.attributes,
-    code: [...(defaultSchema.attributes?.code || []), 'className'],
-    span: [...(defaultSchema.attributes?.span || []), 'className'],
-  },
-}
-
 import {
   ProjectBlockquote,
   ProjectH1,
@@ -32,180 +19,51 @@ import {
   ProjectInlineCode,
   ProjectLi,
   ProjectLink,
+  ProjectMarkdownContent,
   ProjectOl,
   ProjectParagraph,
+  ProjectTable,
+  ProjectTbody,
+  ProjectTd,
+  ProjectTh,
+  ProjectThead,
+  ProjectTr,
   ProjectUl,
 } from './ProjectMarkdownStyles'
 
-// Define the props interface
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    code: [...(defaultSchema.attributes?.code || []), 'className'],
+    span: [...(defaultSchema.attributes?.span || []), 'className'],
+  },
+  tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
+}
+
+function classNames(...values: Array<string | undefined>): string {
+  return values.filter(Boolean).join(' ')
+}
+
+function isInlineCode(node?: Element): boolean {
+  return node?.position?.start.line === node?.position?.end.line
+}
+
 interface ProjectMarkdownRendererProps {
   content: string
 }
 
-// Define a custom interface for the code component props
 interface CodeComponentProps {
-  inline?: boolean
   className?: string
   children?: React.ReactNode
 }
 
-// Panda CSS styles for the copy button
-const CopyButton = styled.button`
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 255, 240, 0.2),
-    rgba(0, 229, 255, 0.1)
-  );
-  border: 1px solid rgba(0, 255, 240, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 0.5rem;
-  color: #00fff0;
-  cursor: pointer;
-  transition: all 0.3s var(--ease-silk);
-  opacity: 0;
-  z-index: 1;
-  backdrop-filter: blur(10px);
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.3),
-      rgba(0, 229, 255, 0.2)
-    );
-    border-color: #00e5ff;
-    color: #26c6da;
-    transform: scale(1.05);
-    box-shadow: 0 0 15px rgba(0, 255, 240, 0.3);
-  }
-
-  svg {
-    width: 1.2em;
-    height: 1.2em;
-    filter: drop-shadow(0 0 3px currentColor);
-  }
-`
-
-// Code block wrapper with cyan theme
-const codeBlockPreWrapperStyles = css`
-  position: relative;
-
-  &:hover button {
-    opacity: 1;
-  }
-
-  /* Apply cyan-dominant silk circuit theme */
-  background: linear-gradient(
-    135deg,
-    rgba(0, 255, 240, 0.08) 0%,
-    rgba(0, 229, 255, 0.06) 20%,
-    rgba(30, 25, 45, 0.95) 40%,
-    rgba(0, 172, 193, 0.04) 80%,
-    rgba(38, 198, 218, 0.06) 100%
-  ) !important;
-  backdrop-filter: blur(15px) saturate(1.1);
-  color: rgba(224, 224, 224, 0.95) !important;
-  padding: 1.5rem !important;
-  border-radius: var(--radius-lg) !important;
-  overflow: auto !important;
-  font-family: var(--font-mono) !important;
-  font-size: 1.3rem !important;
-  line-height: 1.6 !important;
-  border: 1px solid rgba(0, 255, 240, 0.2);
-  box-shadow:
-    0 0 40px rgba(0, 229, 255, 0.15),
-    0 0 80px rgba(0, 255, 240, 0.08),
-    inset 0 0 30px rgba(0, 172, 193, 0.03);
-  margin: 2rem 0 !important;
-  white-space: pre-wrap !important;
-  word-spacing: normal !important;
-  word-break: normal !important;
-  word-wrap: normal !important;
-
-  /* Target code tag inside */
-  code {
-    font-family: inherit;
-    background: none;
-    padding: 0;
-    margin: 0;
-    display: block;
-    color: inherit;
-    white-space: inherit;
-    word-spacing: inherit;
-    word-break: inherit;
-    word-wrap: inherit;
-
-    /* Cyan/teal dominant syntax highlighting */
-    .hljs-comment,
-    .hljs-prolog,
-    .hljs-doctype,
-    .hljs-cdata {
-      color: rgba(0, 172, 193, 0.65);
-      font-style: italic;
-    }
-    .hljs-punctuation {
-      color: #26c6da;
-      opacity: 0.8;
-    }
-    .hljs-property,
-    .hljs-tag,
-    .hljs-boolean,
-    .hljs-number,
-    .hljs-constant,
-    .hljs-symbol,
-    .hljs-deleted {
-      color: #00fff0;
-      text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-      font-weight: 500;
-    }
-    .hljs-selector,
-    .hljs-attr-name,
-    .hljs-string,
-    .hljs-char,
-    .hljs-builtin,
-    .hljs-inserted {
-      color: #00e5ff;
-      text-shadow: 0 0 6px rgba(0, 229, 255, 0.3);
-    }
-    .hljs-operator,
-    .hljs-entity,
-    .hljs-url,
-    .language-css .hljs-string,
-    .style .hljs-string,
-    .hljs-variable {
-      color: #26c6da;
-      text-shadow: 0 0 5px rgba(38, 198, 218, 0.3);
-    }
-    .hljs-atrule,
-    .hljs-attr-value,
-    .hljs-function,
-    .hljs-class-name {
-      color: #00acc1;
-      font-weight: 600;
-      text-shadow: 0 0 10px rgba(0, 172, 193, 0.4);
-    }
-    .hljs-keyword,
-    .hljs-regex,
-    .hljs-important {
-      color: #00fff0;
-      font-weight: bold;
-      text-shadow: 0 0 12px rgba(0, 255, 240, 0.5);
-    }
-    .hljs-important {
-      font-weight: bold;
-    }
-  }
-`
-
-// Pre component with copy functionality
 interface PreWithCopyProps extends React.ComponentProps<'pre'> {
   node?: Element
   children?: React.ReactNode
 }
 
-const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) => {
+const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, className, ...rest }) => {
   const [isClipboardApiAvailable, setIsClipboardApiAvailable] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [isCopying, setIsCopying] = useState(false)
@@ -232,34 +90,33 @@ const PreWithCopy: React.FC<PreWithCopyProps> = ({ node, children, ...rest }) =>
     try {
       await navigator.clipboard.writeText(codeContent)
       setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
     } catch (err) {
       console.error('Failed to copy text: ', err)
     } finally {
       setIsCopying(false)
-      if (isCopied) {
-        setTimeout(() => setIsCopied(false), 2000)
-      }
     }
   }
 
-  // Filter out node prop before spreading to DOM
   const { node: _node, ...domProps } = rest as PreWithCopyProps & { node?: Element }
 
   return (
-    <pre className={`project-syntax ${codeBlockPreWrapperStyles}`} {...domProps}>
+    <pre className={classNames('project-code project-syntax', className)} {...domProps}>
       {children}
-      <CopyButton
+      <button
+        aria-label={isCopied ? 'Code copied' : 'Copy code'}
+        className="project-code__copy"
         disabled={!isClipboardApiAvailable || isCopying}
         onClick={copyToClipboard}
         title={isClipboardApiAvailable ? 'Copy code' : 'Clipboard API not available'}
+        type="button"
       >
         {isCopying ? '...' : isCopied ? <FiCheck /> : <FiCopy />}
-      </CopyButton>
+      </button>
     </pre>
   )
 }
 
-// Safe link wrapper component
 const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   const safeProps = {
     href,
@@ -268,7 +125,6 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
     ...rest,
   }
 
-  // For internal links, don't open in new tab
   if (href && (href.startsWith('/') || href.startsWith('#'))) {
     delete safeProps.target
     delete safeProps.rel
@@ -277,62 +133,47 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   return <ProjectLink {...safeProps}>{children}</ProjectLink>
 }
 
-/**
- * ProjectMarkdownRenderer Component
- * Renders Markdown content with custom cyan/teal Panda CSS styles for projects.
- */
 const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content }) => {
   return (
-    <ReactMarkdown
-      components={{
-        // Links
-        a: SafeLink,
+    <ProjectMarkdownContent>
+      <ReactMarkdown
+        components={{
+          a: SafeLink,
+          blockquote: ({ node: _node, ...props }) => <ProjectBlockquote {...props} />,
+          code: ({ className, children, node, ...props }: CodeComponentProps & { node?: Element }) => {
+            if (isInlineCode(node)) {
+              return <ProjectInlineCode {...props}>{children}</ProjectInlineCode>
+            }
 
-        // Blockquote
-        blockquote: ({ node: _node, ...props }) => <ProjectBlockquote {...props} />,
-
-        // Code component
-        code: ({ inline, className, children, node: _node, ...props }: CodeComponentProps & { node?: Element }) => {
-          if (inline) {
-            return <ProjectInlineCode {...props}>{children}</ProjectInlineCode>
-          }
-
-          return (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          )
-        },
-
-        // Headings
-        h1: ({ node: _node, ...props }) => <ProjectH1 {...props} />,
-        h2: ({ node: _node, ...props }) => <ProjectH2 {...props} />,
-        h3: ({ node: _node, ...props }) => <ProjectH3 {...props} />,
-
-        // Horizontal Rule
-        hr: ({ node: _node, ...props }) => <ProjectHr {...props} />,
-
-        // Images
-        img: ({ node: _node, ...props }) => <ProjectImage {...props} />,
-        li: ({ node: _node, ...props }) => <ProjectLi {...props} />,
-        ol: ({ node: _node, ...props }) => <ProjectOl {...props} />,
-
-        // Paragraph
-        p: ({ node: _node, ...props }) => <ProjectParagraph {...props} />,
-
-        // Pre component with copy button
-        pre: (props) => {
-          return <PreWithCopy {...props} />
-        },
-
-        // Lists
-        ul: ({ node: _node, ...props }) => <ProjectUl {...props} />,
-      }}
-      rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
-      remarkPlugins={[remarkGfm]}
-    >
-      {content}
-    </ReactMarkdown>
+            return (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            )
+          },
+          h1: ({ node: _node, ...props }) => <ProjectH1 {...props} />,
+          h2: ({ node: _node, ...props }) => <ProjectH2 {...props} />,
+          h3: ({ node: _node, ...props }) => <ProjectH3 {...props} />,
+          hr: ({ node: _node, ...props }) => <ProjectHr {...props} />,
+          img: ({ node: _node, ...props }) => <ProjectImage {...props} />,
+          li: ({ node: _node, ...props }) => <ProjectLi {...props} />,
+          ol: ({ node: _node, ...props }) => <ProjectOl {...props} />,
+          p: ({ node: _node, ...props }) => <ProjectParagraph {...props} />,
+          pre: (props) => <PreWithCopy {...props} />,
+          table: ({ node: _node, ...props }) => <ProjectTable {...props} />,
+          tbody: ({ node: _node, ...props }) => <ProjectTbody {...props} />,
+          td: ({ node: _node, ...props }) => <ProjectTd {...props} />,
+          th: ({ node: _node, ...props }) => <ProjectTh {...props} />,
+          thead: ({ node: _node, ...props }) => <ProjectThead {...props} />,
+          tr: ({ node: _node, ...props }) => <ProjectTr {...props} />,
+          ul: ({ node: _node, ...props }) => <ProjectUl {...props} />,
+        }}
+        rehypePlugins={[[rehypeSanitize, sanitizeSchema], rehypeHighlight]}
+        remarkPlugins={[remarkGfm]}
+      >
+        {content}
+      </ReactMarkdown>
+    </ProjectMarkdownContent>
   )
 }
 

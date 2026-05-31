@@ -6,6 +6,8 @@ import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredDat
 import { exo2, jura, spaceMono } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
+import './styles/blog.css'
+import './styles/project.css'
 import './styles/silkcircuit-syntax.css'
 
 export const metadata: Metadata = siteMetadata
