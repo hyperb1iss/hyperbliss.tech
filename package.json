@@ -31,14 +31,14 @@
   },
   "dependencies": {
     "feed": "5.2.1",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.40.0",
     "gl-matrix": "3.4.4",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
-    "next": "^16.2.4",
+    "next": "^16.2.6",
     "nextjs-google-analytics": "^2.3.7",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
     "react-icons": "5.6.0",
     "react-markdown": "10.1.0",
     "rehype-highlight": "7.0.2",
@@ -48,41 +48,25 @@
     "remark-gfm": "4.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.13",
-    "@next/bundle-analyzer": "^16.2.4",
-    "@pandacss/dev": "^1.10.0",
+    "@biomejs/biome": "^2.4.16",
+    "@next/bundle-analyzer": "^16.2.6",
+    "@pandacss/dev": "^1.11.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@testing-library/user-event": "14.6.1",
     "@types/hast": "^3.0.4",
-    "@types/node": "25.6.0",
-    "@types/react": "19.2.14",
+    "@types/node": "25.9.1",
+    "@types/react": "19.2.15",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react-swc": "^4.3.0",
-    "jsdom": "29.1.0",
-    "playwright": "^1.59.1",
+    "@vitejs/plugin-react-swc": "^4.3.1",
+    "jsdom": "29.1.1",
+    "playwright": "^1.60.0",
     "prettier": "3.8.3",
     "schema-dts": "^2.0.0",
     "ts-node": "^10.9.2",
     "typescript": "6.0.3",
-    "vite": "^8.0.10",
-    "vitest": "^4.1.5"
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
   },
-  "packageManager": "pnpm@10.33.2",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "esbuild",
-      "sharp"
-    ],
-    "overrides": {
-      "hono@<4.12.14": ">=4.12.14",
-      "@hono/node-server@<1.19.13": ">=1.19.13",
-      "diff": ">=5.2.2",
-      "qs@>=6.7.0 <=6.14.1": ">=6.14.2",
-      "ajv@>=7.0.0 <8.18.0": ">=8.18.0",
-      "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
-      "postcss@<8.5.10": ">=8.5.10"
-    }
-  }
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1"
 }
