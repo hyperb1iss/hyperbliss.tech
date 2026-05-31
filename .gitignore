@@ -136,6 +136,9 @@ target
 # Claude configuration
 .claude/
 
+# Cursor editor rules
+.cursor/
+
 
 
 ## Panda
