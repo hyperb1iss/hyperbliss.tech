@@ -100,13 +100,30 @@ const projectsGridStyles = css`
   }
 `
 
+const orbFieldStyles = css`
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  /* Feather every edge so the drifting orbs dissolve into the band instead of
+     clipping against the section's hard rectangle. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-composite: intersect;
+`
+
 const floatingOrbBaseStyles = css`
   position: absolute;
   border-radius: 50%;
   filter: blur(40px);
   opacity: 0.3;
   pointer-events: none;
-  z-index: -1;
 `
 
 interface Project {
@@ -159,44 +176,46 @@ export default function FeaturedProjectsSectionSilk({
 
   return (
     <motion.section animate="visible" className={sectionWrapperStyles} initial="hidden" variants={containerVariants}>
-      {/* Floating orbs for ambiance */}
-      <motion.div
-        animate={{
-          x: [-200, 200, -200],
-          y: [-100, 100, -100],
-        }}
-        className={floatingOrbBaseStyles}
-        initial={{ x: -200, y: -100 }}
-        style={{
-          background: 'radial-gradient(circle at 30% 30%, var(--silk-quantum-purple), transparent 70%)',
-          height: 400,
-          width: 400,
-        }}
-        transition={{
-          duration: 20,
-          ease: 'easeInOut',
-          repeat: Number.POSITIVE_INFINITY,
-        }}
-      />
-      <motion.div
-        animate={{
-          x: [0, -100, 0],
-          y: [0, 50, 0],
-        }}
-        className={floatingOrbBaseStyles}
-        style={{
-          background: 'radial-gradient(circle at 30% 30%, var(--silk-circuit-cyan), transparent 70%)',
-          height: 300,
-          right: -150,
-          top: 200,
-          width: 300,
-        }}
-        transition={{
-          duration: 15,
-          ease: 'easeInOut',
-          repeat: Number.POSITIVE_INFINITY,
-        }}
-      />
+      {/* Floating orbs for ambiance, feathered so they never clip at the edges */}
+      <div className={orbFieldStyles}>
+        <motion.div
+          animate={{
+            x: [-200, 200, -200],
+            y: [-100, 100, -100],
+          }}
+          className={floatingOrbBaseStyles}
+          initial={{ x: -200, y: -100 }}
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, var(--silk-quantum-purple), transparent 70%)',
+            height: 400,
+            width: 400,
+          }}
+          transition={{
+            duration: 20,
+            ease: 'easeInOut',
+            repeat: Number.POSITIVE_INFINITY,
+          }}
+        />
+        <motion.div
+          animate={{
+            x: [0, -100, 0],
+            y: [0, 50, 0],
+          }}
+          className={floatingOrbBaseStyles}
+          style={{
+            background: 'radial-gradient(circle at 30% 30%, var(--silk-circuit-cyan), transparent 70%)',
+            height: 300,
+            right: -150,
+            top: 200,
+            width: 300,
+          }}
+          transition={{
+            duration: 15,
+            ease: 'easeInOut',
+            repeat: Number.POSITIVE_INFINITY,
+          }}
+        />
+      </div>
 
       <Container>
         <motion.div className={sectionHeaderStyles} variants={itemVariants}>
