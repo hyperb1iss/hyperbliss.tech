@@ -7,5 +7,6 @@ import './info'
 import './content'
 import './neofetch'
 import './fun'
+import './system'
 
 export { registry } from '../registry'
