@@ -12,10 +12,11 @@ import { useEffect, useRef, useState } from 'react'
 import type { Broadcast } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
 
-// A little axolotl — feathery gills up top, a smiling face. The site mascot,
-// in ASCII. Pink body, cyan/lilac gills.
-const SIGIL_ART = ['  \\\\\\  |  ///', '   \\\\\\ | ///', ' ~==( o   o )==~', '      \\  ◡  /', '       \\___/']
-const SIGIL_COLORS = ['#80ffea', '#e0aaff', '#ff6ac1', '#ff75d8', '#ff75d8']
+// A little axolotl: a rounded head dome up top, three feathery gills fanning
+// off each side, a smiling face, and a tucked chin. Every line is centered on
+// the same column (the mouth) so the whole face stays plumb.
+const SIGIL_ART = [' \\\\\\ ╭─╮ ///', ' \\\\(• ◡ •)//', '    ╰───╯']
+const SIGIL_COLORS = ['#80ffea', '#ff75d8', '#ff6ac1']
 const SIGIL = SIGIL_ART.map((art, i) => ({ art, color: SIGIL_COLORS[i % SIGIL_COLORS.length], id: `sigil-${i}` }))
 
 const BARS = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
