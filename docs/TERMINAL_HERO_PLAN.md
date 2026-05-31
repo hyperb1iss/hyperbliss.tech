@@ -1,8 +1,14 @@
 # 🖥️ Terminal-First Homepage — Implementation Plan
 
-> Status: **DRAFT — revised after cross-model review round 1** · Owner: Stefanie Jane · Updated: 2026-05-31
+> Status: **BUILDING** · Owner: Stefanie Jane · Updated: 2026-05-31
 > Decision record: Sibyl `decision_5badabc910c3` · Engine facts: `claim_d06912f0c6b5` · Architecture: `idea_501cd92cc30d`
 > Review log: see §11.
+>
+> **Progress:** P0 ✅ de-risk closed · P1 ✅ spine shipped (flag-gated, SEO/a11y
+> verified, adversarial review passed) · P2 ✅ real just-bash shell over the
+> content tree (lazy FS, conflict table, session) · P3 ⏳ cinematic (boot,
+> auto-neofetch, single backdrop + CRT) · P4 ⏳ delight (⌘K, share URLs, eggs).
+> just-bash facts verified: `claim_dc349dd3d194`. Build on `feat/terminal-hero`.
 
 ## 1. Vision
 
@@ -389,8 +395,11 @@ Every phase ends green on `tc`+`lint`+`test`.
 - [ ] **T2.4 Render shell output** (stdout/stderr/exit-code styling; ANSI via whitelist if
   U2 positive). **Verify:** `test`, `visual`. **Depends:** T2.2, T-SEC
 - [ ] **T2.5 FS-path completion** via bash FS. **Verify:** `test`. **Depends:** T2.1, T1.5
-- [ ] **T2.6 Bundle gate** (just-bash async; initial JS unchanged). **Verify:** `bundle`.
-  **Depends:** T2.2, T2.4
+- [x] **T2.6 Bundle gate** ✅ Real `next build` (isolated worktree) confirms just-bash
+  lands in a dedicated async chunk (`07l3zj480dvrz.js`, **365KB gzip**) loaded lazily via
+  the Turbopack dynamic-import loader (`Promise.all(["…07l3zj480dvrz.js"])`); it appears in
+  **no route's initial chunk list**, so initial route JS is unaffected. `pnpm build` green
+  (44 pages). **Depends:** T2.2, T2.4
 - [ ] **🔍 Cross-model review of P2** (full ceremony). **Depends:** T2.1–T2.6
 
 ### Phase 3 — Cinematic
