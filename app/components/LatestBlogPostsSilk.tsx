@@ -35,16 +35,32 @@ const Container = styled.div`
 `
 
 const sidebarHeaderStyles = css`
-  margin-bottom: var(--space-8);
+  text-align: center;
+  margin-bottom: var(--space-12);
+  position: relative;
+  z-index: 1;
 `
 
 const titleStyles = css`
-  font-family: var(--font-display);
-  font-size: var(--text-fluid-2xl);
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: clamp(3.2rem, 2.5rem + 2vw, 5.6rem);
   font-weight: var(--font-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   line-height: var(--leading-tight);
+  margin-bottom: var(--space-6);
   position: relative;
   display: inline-block;
+`
+
+const subtitleStyles = css`
+  font-family: var(--font-body);
+  font-size: var(--text-fluid-lg);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: var(--leading-relaxed);
 `
 
 const TitleLink = styled(Link)`
@@ -74,8 +90,8 @@ const TitleLink = styled(Link)`
 const TitleGradient = styled.span`
   background: linear-gradient(
     135deg,
-    var(--silk-plasma-pink) 0%,
-    var(--silk-quantum-purple) 100%
+    var(--silk-quantum-purple) 0%,
+    var(--silk-circuit-cyan) 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -201,6 +217,9 @@ export default function LatestBlogPostsSilk({ posts }: LatestBlogPostsSilkProps)
               <TitleGradient>Latest Posts</TitleGradient>
             </TitleLink>
           </motion.h2>
+          <motion.p className={subtitleStyles}>
+            Field notes on developer tools, terminal interfaces, creative coding, and building with AI.
+          </motion.p>
         </motion.div>
 
         <motion.div className={postsGridStyles}>
