@@ -462,6 +462,32 @@ export async function getResume(): Promise<ResumeData> {
 }
 
 // ============================================================
+// Now (current focus — drives the terminal broadcast)
+// ============================================================
+
+export interface NowData {
+  title: string
+  emoji: string | null
+  focus: string | null
+  updated: string | null
+  location: string | null
+  body: string | null
+}
+
+export async function getNow(): Promise<NowData> {
+  const { data, content } = await readMarkdown('now.md')
+
+  return {
+    body: content || null,
+    emoji: (data.emoji as string) ?? null,
+    focus: (data.focus as string) ?? null,
+    location: (data.location as string) ?? null,
+    title: (data.title as string) ?? 'Now',
+    updated: (data.updated as string) ?? null,
+  }
+}
+
+// ============================================================
 // Site Config
 // ============================================================
 
