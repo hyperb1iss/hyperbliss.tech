@@ -84,5 +84,17 @@ export const trackCyberScapeEvent = (action: string, options?: EventOptions) => 
   })
 }
 
+/**
+ * Track a terminal command or chip click. Receives a COARSE category only
+ * (e.g. `cmd:projects`, `chip:now`) — never the raw typed string, which could
+ * contain anything a visitor types (§5.11 privacy policy).
+ * @param category The safe command category bucket
+ */
+export const trackTerminalCommand = (category: string) => {
+  event('terminal_command', {
+    command_category: category,
+  })
+}
+
 // Re-export the raw event function for custom event tracking
 export { event }
