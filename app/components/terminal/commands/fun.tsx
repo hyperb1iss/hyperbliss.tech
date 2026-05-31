@@ -2,8 +2,10 @@
 // these ship with P1; the rest of T4.3 (a game) lands in P4.
 
 import { styled } from '../../../../styled-system/jsx'
+import MatrixRain from '../MatrixRain'
 import { registry } from '../registry'
 import { text } from '../render'
+import { buildShareUrl } from '../share'
 import { Accent, Block, Muted, Ok } from './ui'
 
 const Banner = styled.pre`
@@ -56,4 +58,42 @@ registry.register({
     return text(`sudo: a password is required — and you're a guest here 😏 (nice try)`, 'stderr')
   },
   summary: 'superuser do (you wish)',
+})
+
+registry.register({
+  group: 'fun',
+  name: 'matrix',
+  run: () => <MatrixRain />,
+  summary: 'follow the white rabbit',
+})
+
+registry.register({
+  group: 'meta',
+  name: 'share',
+  run: (_args, ctx) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://hyperbliss.tech'
+    const url = buildShareUrl(origin, ctx.history)
+    let copied = false
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(
+        () => {},
+        () => {},
+      )
+      copied = true
+    }
+    return (
+      <Block>
+        <div>
+          <Muted>{copied ? 'shareable link (copied to clipboard):' : 'shareable link:'}</Muted>
+        </div>
+        <div>
+          <Accent>{url}</Accent>
+        </div>
+        <div>
+          <Muted>opening it replays this session.</Muted>
+        </div>
+      </Block>
+    )
+  },
+  summary: 'copy a link that replays this session',
 })

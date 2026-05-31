@@ -43,9 +43,9 @@ describe('resolveBootPhase', () => {
 describe('runBootSequence', () => {
   const base = { broadcast: testBroadcast, isCancelled: () => false, shouldSkip: () => true }
 
-  it('full boot prints POST lines with real counts, then auto-runs neofetch', async () => {
+  it('full boot prints POST lines with real counts, then runs the finale', async () => {
     const c = collector()
-    await runBootSequence({ ...base, phase: 'full-boot', print: c.print, run: c.run })
+    await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'full-boot', print: c.print })
     const out = c.out()
     expect(out).toContain('POST')
     expect(out).toContain('[OK]')
@@ -53,16 +53,22 @@ describe('runBootSequence', () => {
     expect(c.ran).toEqual(['neofetch'])
   })
 
-  it('skip-to-end prints a compact banner then neofetch', async () => {
+  it('skip-to-end prints a compact banner then the finale', async () => {
     const c = collector()
-    await runBootSequence({ ...base, phase: 'skip-to-end', print: c.print, run: c.run })
+    await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'skip-to-end', print: c.print })
     expect(c.out()).toContain('hyperbliss terminal')
     expect(c.ran).toEqual(['neofetch'])
   })
 
-  it('stops immediately when cancelled (no output, no neofetch)', async () => {
+  it('stops immediately when cancelled (no output, no finale)', async () => {
     const c = collector()
-    await runBootSequence({ ...base, isCancelled: () => true, phase: 'full-boot', print: c.print, run: c.run })
+    await runBootSequence({
+      ...base,
+      finale: () => c.run('neofetch'),
+      isCancelled: () => true,
+      phase: 'full-boot',
+      print: c.print,
+    })
     expect(c.lines).toEqual([])
     expect(c.ran).toEqual([])
   })

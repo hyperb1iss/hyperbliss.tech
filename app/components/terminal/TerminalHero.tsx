@@ -11,11 +11,14 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { trackTerminalCommand } from '@/lib/analytics'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
-import { useBootPhase } from './bootState'
+import { type BootPhase, readBootInputs, resolveBootPhase } from './bootState'
 import CommandChips from './CommandChips'
+import CommandPalette from './CommandPalette'
 import './commands'
 import type { ShellRunner } from './executor'
 import { fetchFsBodies } from './fsClient'
+import { registry } from './registry'
+import { decodeSession } from './share'
 import { createShellRunner } from './shell'
 import type { TerminalHandle } from './Terminal'
 
@@ -105,7 +108,13 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   const router = useRouter()
   const handleRef = useRef<TerminalHandle | null>(null)
   const [autoFocus, setAutoFocus] = useState(false)
-  const bootPhase = useBootPhase()
+
+  // Resolve the boot phase and any shared-session replay together, so the
+  // Terminal sees both at once and boots exactly once (§5.6, T4.2).
+  const [boot, setBoot] = useState<{ phase: BootPhase; replay: string[] }>({ phase: 'pending', replay: [] })
+  useEffect(() => {
+    setBoot({ phase: resolveBootPhase(readBootInputs()), replay: decodeSession(window.location.hash) })
+  }, [])
 
   // One shell runner for the session — holds the just-bash instance + session
   // env in its closure, so it must survive re-renders.
@@ -119,6 +128,8 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
     setAutoFocus(window.matchMedia?.('(hover: hover) and (pointer: fine)').matches ?? false)
   }, [])
 
+  const [paletteOpen, setPaletteOpen] = useState(false)
+
   const runChip = useCallback((command: string) => {
     handleRef.current?.run(command)
     handleRef.current?.focus()
@@ -126,21 +137,43 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
 
   const onNavigate = useCallback((href: string) => router.push(href), [router])
 
+  // ⌘K / Ctrl+K toggles the command palette.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setPaletteOpen((o) => !o)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   return (
     <HeroWrap aria-label="Interactive terminal — explore hyperbliss.tech">
       <Frame>
         <Terminal
           autoFocusInput={autoFocus}
-          bootPhase={bootPhase}
+          bootPhase={boot.phase}
           broadcast={broadcast}
           handleRef={handleRef}
           manifest={manifest}
           onCommandCategory={trackTerminalCommand}
           onNavigate={onNavigate}
+          replayCommands={boot.replay.length > 0 ? boot.replay : undefined}
           shellRunner={shellRef.current ?? undefined}
         />
       </Frame>
       <CommandChips onCategory={trackTerminalCommand} onRun={runChip} />
+      <CommandPalette
+        onClose={() => setPaletteOpen(false)}
+        onRun={(command) => {
+          trackTerminalCommand(`palette:${command}`)
+          handleRef.current?.run(command)
+        }}
+        open={paletteOpen}
+        registry={registry}
+      />
     </HeroWrap>
   )
 }

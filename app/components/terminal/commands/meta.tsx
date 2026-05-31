@@ -58,12 +58,12 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
       <div>
         <Muted>tips</Muted>
         <div>
-          <Accent>↑/↓</Accent> history · <Accent>Tab</Accent> completion · <Pink>!cmd</Pink> forces shell ·{' '}
-          <Pink>:cmd</Pink> forces native
+          <Accent>↑/↓</Accent> history · <Accent>Tab</Accent> completion · <Accent>⌘K</Accent> palette ·{' '}
+          <Pink>!cmd</Pink> forces shell · <Pink>:cmd</Pink> forces native
         </div>
         <div>
           real shell commands work too: <Accent>ls</Accent> <Accent>cat</Accent> <Accent>grep</Accent>{' '}
-          <Accent>find</Accent> <Accent>echo</Accent> over the content tree
+          <Accent>find</Accent> <Accent>echo</Accent> over the content tree · <Accent>share</Accent> a session
         </div>
       </div>
     </Block>

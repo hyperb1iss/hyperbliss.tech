@@ -27,7 +27,8 @@ export interface BootSequenceOptions {
   phase: 'full-boot' | 'skip-to-end'
   broadcast: Broadcast
   print: (node: ReactNode, stream?: OutputStream) => void
-  run: (line: string) => Promise<void>
+  /** What runs after the POST lines — auto-neofetch, or a shared-session replay. */
+  finale: () => Promise<void>
   isCancelled: () => boolean
   shouldSkip: () => boolean
   /** Per-line stagger; overridable for tests. */
@@ -35,7 +36,7 @@ export interface BootSequenceOptions {
 }
 
 export async function runBootSequence(opts: BootSequenceOptions): Promise<void> {
-  const { phase, broadcast, print, run, isCancelled, shouldSkip, stepMs = 120 } = opts
+  const { phase, broadcast, print, finale, isCancelled, shouldSkip, stepMs = 120 } = opts
 
   // Yield once before the first paint so React strict-mode's double effect-
   // invoke (dev) cancels the first run before it prints anything — no
@@ -45,7 +46,7 @@ export async function runBootSequence(opts: BootSequenceOptions): Promise<void> 
 
   if (phase === 'skip-to-end') {
     print(text('hyperbliss terminal ✦  —  type `help`, or tap a command below', 'system'), 'system')
-    if (!isCancelled()) await run('neofetch')
+    if (!isCancelled()) await finale()
     return
   }
 
@@ -54,5 +55,5 @@ export async function runBootSequence(opts: BootSequenceOptions): Promise<void> 
     print(text(line.text, line.stream), line.stream)
     if (!shouldSkip()) await delay(stepMs)
   }
-  if (!isCancelled()) await run('neofetch')
+  if (!isCancelled()) await finale()
 }

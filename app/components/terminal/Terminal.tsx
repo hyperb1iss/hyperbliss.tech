@@ -270,6 +270,8 @@ export interface TerminalProps {
   onNavigate?: (href: string) => void
   /** Boot phase (§5.6). Undefined skips the boot entirely (tests). */
   bootPhase?: BootPhase
+  /** Commands to replay after boot (shared-session URL — T4.2). */
+  replayCommands?: string[]
   /** Imperative handle (chips / boot sequence drive the terminal through this). */
   handleRef?: { current: TerminalHandle | null }
 }
@@ -284,6 +286,7 @@ export default function Terminal({
   onCommandCategory,
   onNavigate,
   bootPhase,
+  replayCommands,
   handleRef,
 }: TerminalProps) {
   const [log, setLog] = useState<LogEntry[]>(initialLog)
@@ -413,12 +416,22 @@ export default function Terminal({
       window.addEventListener('pointerdown', onSkip, { once: true })
     }
     markVisited()
+    const finale = async () => {
+      if (replayCommands && replayCommands.length > 0) {
+        for (const cmd of replayCommands) {
+          if (cancelled) return
+          await run(cmd)
+        }
+      } else {
+        await run('neofetch')
+      }
+    }
     void runBootSequence({
       broadcast,
+      finale,
       isCancelled: () => cancelled,
       phase: bootPhase,
       print: pushEntry,
-      run,
       shouldSkip: () => skip,
     })
     return () => {
@@ -426,7 +439,7 @@ export default function Terminal({
       window.removeEventListener('keydown', onSkip)
       window.removeEventListener('pointerdown', onSkip)
     }
-  }, [bootPhase, broadcast, pushEntry, run])
+  }, [bootPhase, broadcast, pushEntry, run, replayCommands])
 
   const submit = useCallback(
     (e: React.FormEvent) => {
