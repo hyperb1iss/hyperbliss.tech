@@ -50,7 +50,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) and watch the particles
+Open [http://localhost:1337](http://localhost:1337) and watch the particles
 dance.
 
 ## 🧪 Scripts

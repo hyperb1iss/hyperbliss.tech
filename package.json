@@ -9,9 +9,9 @@
   },
   "scripts": {
     "prepare": "panda",
-    "dev": "next dev",
+    "dev": "next dev -p 1337",
     "build": "panda && next build",
-    "start": "next start",
+    "start": "next start -p 1337",
     "lint": "biome check . && prettier --check '**/*.{md,yml,yaml}'",
     "lint:all": "biome check --write --unsafe . && prettier --write '**/*.{md,yml,yaml}'",
     "lint:fix": "biome check --write . && prettier --write '**/*.{md,yml,yaml}'",
