@@ -10,6 +10,11 @@ import { createContext, useContext, useState } from 'react'
 interface HeaderContextType {
   isExpanded: boolean
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>
+  // The terminal pull-down console. Kept separate from isExpanded so opening the
+  // console never triggers the nav-height/content-padding machinery that
+  // isExpanded drives across GlobalLayout, MainContentWrapper, and HeaderFade.
+  isConsoleOpen: boolean
+  setConsoleOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 /**
@@ -40,6 +45,11 @@ export const useHeaderContext = () => {
  */
 export const HeaderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isConsoleOpen, setConsoleOpen] = useState(false)
 
-  return <HeaderContext.Provider value={{ isExpanded, setIsExpanded }}>{children}</HeaderContext.Provider>
+  return (
+    <HeaderContext.Provider value={{ isConsoleOpen, isExpanded, setConsoleOpen, setIsExpanded }}>
+      {children}
+    </HeaderContext.Provider>
+  )
 }

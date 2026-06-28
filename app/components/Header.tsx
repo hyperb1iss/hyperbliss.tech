@@ -3,6 +3,7 @@
 
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
@@ -182,6 +183,9 @@ const Header: React.FC = () => {
   }>(null)
   const { isExpanded, setIsExpanded } = useHeaderContext()
   const { isInitialLoad } = usePageLoad()
+  // On home the terminal console owns the pull-down affordance, so suppress the
+  // header's own expand chevron there to avoid two competing handles.
+  const isHome = usePathname() === '/'
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
@@ -329,28 +333,30 @@ const Header: React.FC = () => {
       </NavContent>
       {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} setMenuOpen={setMenuOpen} />
-      <motion.div
-        animate={isExpanded ? 'expanded' : 'collapsed'}
-        className={chevronIconStyles}
-        initial="collapsed"
-        onClick={toggleExpansion}
-        transition={{ duration: 0.5, ease: 'easeInOut' }}
-        variants={chevronVariants}
-      >
-        <svg
-          aria-label="Toggle header expansion"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+      {!isHome && (
+        <motion.div
+          animate={isExpanded ? 'expanded' : 'collapsed'}
+          className={chevronIconStyles}
+          initial="collapsed"
+          onClick={toggleExpansion}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          variants={chevronVariants}
         >
-          <title>Toggle header expansion</title>
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </motion.div>
+          <svg
+            aria-label="Toggle header expansion"
+            fill="none"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <title>Toggle header expansion</title>
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </motion.div>
+      )}
     </nav>
   )
 }

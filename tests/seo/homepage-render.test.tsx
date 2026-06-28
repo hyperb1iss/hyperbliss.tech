@@ -1,8 +1,9 @@
 // T1.10 (stronger) — render the real TerminalHome to static markup and assert
 // the homepage `/` output carries all real content, both in the SSR sections
-// (outside <noscript>) and in the no-JS fallback. The terminal hero itself is
-// client-only (ssr:false) and contributes no crawlable content, so it's mocked
-// out to isolate the SSR/SEO surface.
+// (outside <noscript>) and in the no-JS fallback. The terminal lives in the
+// client-only pull-down console (portaled, mounted-gated, ssr:false inside) and
+// contributes no crawlable content, so it's mocked out to isolate the SSR/SEO
+// surface.
 
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
@@ -11,7 +12,7 @@ import TerminalHome from '@/components/TerminalHome'
 import type { LabSummary, PageData, PostSummary, ProjectSummary } from '@/lib/content'
 import { testBroadcast, testManifest } from '../terminal/_harness'
 
-vi.mock('@/components/terminal/TerminalHero', () => ({ default: () => null }))
+vi.mock('@/components/terminal/TerminalConsole', () => ({ default: () => null }))
 
 const project = (slug: string, title: string): ProjectSummary => ({
   category: null,
