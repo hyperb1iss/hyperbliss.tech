@@ -8,8 +8,8 @@
 // the printed strings directly (no DOM render) so we don't need jsdom here.
 
 import { isValidElement, type ReactNode } from 'react'
-import { describe, expect, it } from 'vitest'
-import { createShellRunner } from '@/components/terminal/shell'
+import { describe, expect, it, vi } from 'vitest'
+import { createShellRunner, createShellSession } from '@/components/terminal/shell'
 import type { TerminalContext } from '@/components/terminal/types'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 
@@ -67,6 +67,8 @@ function shellCtx() {
 }
 
 const newShell = (fetchBodies = async () => FS) => createShellRunner({ fetchBodies })
+
+const flushTurn = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 describe('shell runner (just-bash)', () => {
   it('lists the mounted filesystem', async () => {
@@ -160,5 +162,157 @@ describe('shell runner (just-bash)', () => {
     const ok = shellCtx()
     await shell('cat /about.md', ok.ctx)
     expect(ok.out()).toContain('Stefanie builds tools')
+  })
+
+  it('serializes execShell calls around the shared session env', async () => {
+    const starts: Array<{ cwd: string; line: string }> = []
+    let releaseFirst!: () => void
+    const firstGate = new Promise<void>((resolve) => {
+      releaseFirst = resolve
+    })
+    const session = createShellSession({
+      createBash: () => ({
+        exec: async (line, opts) => {
+          starts.push({ cwd: opts.cwd ?? '/', line })
+          if (line === 'cd /projects') await firstGate
+          return {
+            env: { ...(opts.env ?? {}), PWD: line === 'cd /projects' ? '/projects' : (opts.cwd ?? '/') },
+            exitCode: 0,
+            stderr: '',
+            stdout: '',
+          }
+        },
+        getEnv: () => ({ HOME: '/', PWD: '/', TERM: 'xterm-256color' }),
+      }),
+      fetchBodies: async () => FS,
+    })
+
+    const first = session.execShell('cd /projects', { manifest })
+    await flushTurn()
+    expect(starts).toHaveLength(1)
+    const second = session.execShell('pwd', { manifest })
+    await flushTurn()
+    expect(starts).toEqual([{ cwd: '/', line: 'cd /projects' }])
+
+    releaseFirst()
+    await Promise.all([first, second])
+    expect(starts).toEqual([
+      { cwd: '/', line: 'cd /projects' },
+      { cwd: '/projects', line: 'pwd' },
+    ])
+  })
+
+  it('passes bounded execution limits into just-bash', async () => {
+    let limits: Record<string, number | undefined> | undefined
+    const session = createShellSession({
+      createBash: (options) => {
+        limits = options.executionLimits
+        return {
+          exec: async (_line, opts) => ({
+            env: { ...(opts.env ?? {}), PWD: opts.cwd ?? '/' },
+            exitCode: 0,
+            stderr: '',
+            stdout: 'ok\n',
+          }),
+          getEnv: () => ({ HOME: '/', PWD: '/', TERM: 'xterm-256color' }),
+        }
+      },
+      fetchBodies: async () => FS,
+    })
+
+    await session.execShell('echo ok', { manifest })
+
+    expect(limits).toMatchObject({
+      maxCommandCount: 2000,
+      maxLoopIterations: 1000,
+      maxOutputSize: 16_384,
+      maxStringLength: 16_384,
+    })
+  })
+
+  it('aborts queued execShell calls without releasing the active session early', async () => {
+    const starts: string[] = []
+    let releaseFirst!: () => void
+    const firstGate = new Promise<void>((resolve) => {
+      releaseFirst = resolve
+    })
+    const session = createShellSession({
+      createBash: () => ({
+        exec: async (line, opts) => {
+          starts.push(line)
+          if (line === 'hold') await firstGate
+          return {
+            env: { ...(opts.env ?? {}), PWD: opts.cwd ?? '/' },
+            exitCode: 0,
+            stderr: '',
+            stdout: `${line}\n`,
+          }
+        },
+        getEnv: () => ({ HOME: '/', PWD: '/', TERM: 'xterm-256color' }),
+      }),
+      fetchBodies: async () => FS,
+    })
+
+    const first = session.execShell('hold', { manifest })
+    await flushTurn()
+    expect(starts).toEqual(['hold'])
+
+    const controller = new AbortController()
+    const queued = session.execShell('queued', { manifest, signal: controller.signal })
+    controller.abort()
+    await expect(queued).rejects.toMatchObject({ name: 'AbortError' })
+
+    const after = session.execShell('after', { manifest })
+    await flushTurn()
+    expect(starts).toEqual(['hold'])
+
+    releaseFirst()
+    await Promise.all([first, after])
+    expect(starts).toEqual(['hold', 'after'])
+  })
+
+  it('times out non-cooperative exec and starts a fresh shell generation', async () => {
+    vi.useFakeTimers()
+    try {
+      const starts: string[] = []
+      const session = createShellSession({
+        createBash: () => ({
+          exec: async (line, opts) => {
+            starts.push(line)
+            if (line === 'hang') return new Promise<never>(() => {})
+            return {
+              env: { ...(opts.env ?? {}), PWD: opts.cwd ?? '/' },
+              exitCode: 0,
+              stderr: '',
+              stdout: 'fresh\n',
+            }
+          },
+          getEnv: () => ({ HOME: '/', PWD: '/', TERM: 'xterm-256color' }),
+        }),
+        fetchBodies: async () => FS,
+      })
+
+      const timedOut = session.execShell('hang', { manifest }, { timeoutMs: 10 })
+      const timeoutExpectation = expect(timedOut).rejects.toMatchObject({ name: 'ShellTimeoutError' })
+      await vi.advanceTimersByTimeAsync(10)
+      await timeoutExpectation
+
+      await expect(session.execShell('pwd', { manifest }, { timeoutMs: 10 })).resolves.toMatchObject({
+        stdout: 'fresh',
+      })
+      expect(starts).toEqual(['hang', 'pwd'])
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('bounds real shell output before returning it', async () => {
+    const shell = newShell()
+    const c = shellCtx()
+
+    await shell('seq 1 10000', c.ctx)
+
+    expect(c.out()).toMatch(/limit|exceeded/i)
+    expect(c.out().length).toBeLessThan(1000)
   })
 })
