@@ -5,6 +5,14 @@
 export type ContentKind = 'about' | 'now' | 'resume' | 'project' | 'post' | 'lab' | 'secret'
 
 /**
+ * Content kinds safe to expose publicly — both to the terminal's shell virtual
+ * filesystem and to the browser-agent read tools. Excludes 'secret' so a future
+ * private kind can't leak through `cat`/`grep` or read_content; both surfaces
+ * must gate on this single set so their allow-lists can never drift apart.
+ */
+export const PUBLIC_CONTENT_KINDS: readonly ContentKind[] = ['about', 'now', 'resume', 'project', 'post', 'lab']
+
+/**
  * One node in the virtual filesystem. The manifest is the authoritative file
  * tree: every path is known up front so recursive shell ops (grep -r, globs,
  * ls -R) can pre-materialize the matching subtree before handing off to the

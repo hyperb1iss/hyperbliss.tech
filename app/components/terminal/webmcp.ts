@@ -1,7 +1,13 @@
 'use client'
 
 import { NAV_ITEMS } from '@/lib/navigation'
-import type { Broadcast, ContentKind, Manifest, ManifestEntry } from '@/lib/terminal/types'
+import {
+  type Broadcast,
+  type ContentKind,
+  type Manifest,
+  type ManifestEntry,
+  PUBLIC_CONTENT_KINDS,
+} from '@/lib/terminal/types'
 import { TERMINAL_THEMES, type TerminalTheme } from './commands/meta'
 import type { FsBodies } from './fsClient'
 import type { ExecShell } from './shell'
@@ -14,7 +20,7 @@ const MAX_HREF_LENGTH = 256
 const MAX_SHELL_LINE_LENGTH = 300
 const MAX_SHELL_OUTPUT_LENGTH = 12000
 const SHELL_TIMEOUT_MS = 8000
-const SEARCHABLE_KINDS = new Set<ContentKind>(['about', 'now', 'resume', 'project', 'post', 'lab'])
+const SEARCHABLE_KINDS = new Set<ContentKind>(PUBLIC_CONTENT_KINDS)
 const LISTABLE_KINDS = new Set<ContentKind>(['project', 'post', 'lab'])
 
 type PublicEntry = Pick<

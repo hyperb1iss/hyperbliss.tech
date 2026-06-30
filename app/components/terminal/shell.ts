@@ -4,7 +4,7 @@
 // instance itself is stateless per exec). We never JS-parse `cd`; the whole
 // line runs in one exec so compound forms, subshells, and pipes stay correct.
 
-import type { Manifest } from '@/lib/terminal/types'
+import { type ContentKind, type Manifest, PUBLIC_CONTENT_KINDS } from '@/lib/terminal/types'
 import type { ShellRunner } from './executor'
 import type { FsBodies } from './fsClient'
 import { tokenize } from './parser'
@@ -49,6 +49,10 @@ interface BashCreateOptions {
 type BashFactory = (options: BashCreateOptions) => BashLike | Promise<BashLike>
 
 const BASE_ENV: Record<string, string> = { HOME: '/', PWD: '/', TERM: 'xterm-256color' }
+// Human-typed commands get a timeout too (the agent passes its own 8s). Without
+// one, a wedged just-bash engine holds the shared session lock forever and
+// starves every later command; on timeout the session is reset and rebuilt.
+const DEFAULT_SHELL_TIMEOUT_MS = 15_000
 const SHELL_ENGINE_LIMIT = 16_384
 const SHELL_EXECUTION_LIMITS: NonNullable<BashCreateOptions['executionLimits']> = {
   maxCommandCount: 2000,
@@ -106,8 +110,13 @@ export class ShellTimeoutError extends Error {
   }
 }
 
+const PUBLIC_KINDS = new Set<ContentKind>(PUBLIC_CONTENT_KINDS)
+
+// Only mount publicly-exposable content into the shell FS — never 'secret'
+// kinds — so cat/grep can't reach what the agent read tools also hide. Shares
+// PUBLIC_CONTENT_KINDS with webmcp.ts so the two allow-lists can't drift.
 function manifestPaths(manifest: Manifest): string[] {
-  return manifest.entries.map((entry) => entry.path)
+  return manifest.entries.filter((entry) => PUBLIC_KINDS.has(entry.kind)).map((entry) => entry.path)
 }
 
 function shouldBatchMaterialize(line: string): boolean {
@@ -354,7 +363,7 @@ export function createShellSession({ createBash = defaultCreateBash, fetchBodies
   const runShell: ShellRunner = async (line, ctx) => {
     let result: ExecShellResult
     try {
-      result = await execShell(line, ctx)
+      result = await execShell(line, ctx, { timeoutMs: DEFAULT_SHELL_TIMEOUT_MS })
     } catch (error) {
       if (isAbortError(error)) return
       if (error instanceof ShellUnavailableError) {
