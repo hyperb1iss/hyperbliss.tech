@@ -10,9 +10,10 @@ import { createContext, useContext, useState } from 'react'
 interface HeaderContextType {
   isExpanded: boolean
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>
-  // The terminal pull-down console. Kept separate from isExpanded so opening the
-  // console never triggers the nav-height/content-padding machinery that
-  // isExpanded drives across GlobalLayout, MainContentWrapper, and HeaderFade.
+  // The terminal pull-down console panel/overlay state. TerminalConsole moves
+  // this together with isExpanded so summoning the terminal also blooms the
+  // header (revealing CyberScape) — the terminal is part of the expandable
+  // header, not a layer bolted beside it.
   isConsoleOpen: boolean
   setConsoleOpen: React.Dispatch<React.SetStateAction<boolean>>
 }

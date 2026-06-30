@@ -1,8 +1,9 @@
 'use client'
 
-// The terminal as a pull-down console that drops from under the header. Driven
-// by HeaderContext.isConsoleOpen so it never touches the isExpanded nav-height /
-// content-padding machinery. The panel is portaled to <body> to escape the
+// The terminal as a pull-down console that IS the header's expansion. Opening it
+// drives both isConsoleOpen (the panel/overlay) and isExpanded (the header bloom)
+// so the CyberScape canvas reveals as the terminal drops — the terminal really is
+// part of the expandable header. The panel is portaled to <body> to escape the
 // nav's transform containing block (same reason MobileNavLinks portals), and
 // renders nothing until mounted so the server pass stays SSR-safe.
 
@@ -16,12 +17,15 @@ import TerminalHero from './TerminalHero'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
-// Matches the collapsed nav height in Header.tsx (110px desktop / 96px mobile),
-// so the console tucks directly under the bar instead of behind it.
-const NAV_OFFSET = css`
-  --console-nav-offset: 110px;
+// The nav heights from Header.tsx, collapsed and expanded, per breakpoint. The
+// console only shows while the header is expanded, so the panel tucks under the
+// expanded bar; the handle rides between the two as it opens and closes.
+const offsetVars = css`
+  --nav-collapsed: 110px;
+  --nav-expanded: 200px;
   @media (max-width: 768px) {
-    --console-nav-offset: 96px;
+    --nav-collapsed: 96px;
+    --nav-expanded: 180px;
   }
 `
 
@@ -35,7 +39,7 @@ const backdropStyles = css`
 
 const panelStyles = css`
   position: fixed;
-  top: var(--console-nav-offset);
+  top: var(--nav-expanded);
   left: 0;
   right: 0;
   z-index: 90;
@@ -57,14 +61,16 @@ const panelStyles = css`
 const scrollStyles = css`
   width: 100%;
   max-width: 960px;
-  max-height: calc(100dvh - var(--console-nav-offset) - var(--space-3));
+  max-height: calc(100dvh - var(--nav-expanded) - var(--space-3));
   overflow-y: auto;
   overscroll-behavior: contain;
 `
 
 const handleStyles = css`
   position: fixed;
-  top: calc(var(--console-nav-offset) - 18px);
+  /* Rides under the collapsed bar when closed, and down under the expanded bar
+     when open, easing in step with the nav's own height transition. */
+  top: calc(var(--nav-collapsed) - 18px);
   left: 50%;
   transform: translateX(-50%);
   /* Above the nav (z-100) so the part that straddles the bar stays tappable —
@@ -86,6 +92,11 @@ const handleStyles = css`
   white-space: nowrap;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 255, 240, 0.18);
   -webkit-tap-highlight-color: transparent;
+  transition: top var(--duration-normal) var(--ease-silk);
+
+  &[data-open='true'] {
+    top: calc(var(--nav-expanded) - 18px);
+  }
 
   & .prompt {
     color: var(--text-secondary);
@@ -111,17 +122,33 @@ interface TerminalConsoleProps {
 }
 
 export default function TerminalConsole({ manifest, broadcast }: TerminalConsoleProps) {
-  const { isConsoleOpen, setConsoleOpen } = useHeaderContext()
+  const { isConsoleOpen, setConsoleOpen, setIsExpanded } = useHeaderContext()
   const [mounted, setMounted] = useState(false)
 
   // The identity hero is the landing, so the console always starts closed and is
-  // summoned from the handle. Just gate the portal until the client has mounted.
+  // summoned from the handle. Just gate the portal until the client has mounted,
+  // and make sure leaving home tears the header expansion back down (isExpanded
+  // is global; a stranded `true` would leave other routes' navs expanded).
   useEffect(() => {
     setMounted(true)
-  }, [])
+    return () => {
+      setConsoleOpen(false)
+      setIsExpanded(false)
+    }
+  }, [setConsoleOpen, setIsExpanded])
 
-  const close = useCallback(() => setConsoleOpen(false), [setConsoleOpen])
-  const toggle = useCallback(() => setConsoleOpen((open) => !open), [setConsoleOpen])
+  // The console IS the header expansion: move both flags together so the nav
+  // blooms (revealing CyberScape) exactly as the terminal drops.
+  const close = useCallback(() => {
+    setConsoleOpen(false)
+    setIsExpanded(false)
+  }, [setConsoleOpen, setIsExpanded])
+
+  const toggle = useCallback(() => {
+    const next = !isConsoleOpen
+    setConsoleOpen(next)
+    setIsExpanded(next)
+  }, [isConsoleOpen, setConsoleOpen, setIsExpanded])
 
   // Open is always deliberate, so treat it as a focused overlay: Escape closes
   // and body scroll locks on every breakpoint while the console is down.
@@ -144,7 +171,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   if (!mounted) return null
 
   return createPortal(
-    <div className={NAV_OFFSET}>
+    <div className={offsetVars}>
       <AnimatePresence>
         {isConsoleOpen && (
           <motion.div
@@ -191,6 +218,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
         aria-expanded={isConsoleOpen}
         aria-label={isConsoleOpen ? 'Close terminal console' : 'Open terminal console'}
         className={handleStyles}
+        data-open={isConsoleOpen}
         onClick={toggle}
         transition={
           isConsoleOpen ? { duration: 0.2 } : { duration: 2.4, ease: 'easeInOut', repeat: Number.POSITIVE_INFINITY }
