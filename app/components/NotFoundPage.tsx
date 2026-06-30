@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { type CanvasAnimationSetup, useCanvasAnimation } from '@/hooks/useCanvasAnimation'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import PageWrapper from './PageWrapper'
@@ -241,36 +242,12 @@ interface WarpStar {
 export default function NotFoundPage() {
   const [message, setMessage] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const _starsRef = useRef<WarpStar[]>([])
-
-  // Initialize warp stars
-  const _initStars = useCallback((count: number) => {
-    const stars: WarpStar[] = []
-    for (let i = 0; i < count; i++) {
-      stars.push({
-        prevX: 0,
-        prevY: 0,
-        x: (Math.random() - 0.5) * 2000,
-        y: (Math.random() - 0.5) * 2000,
-        z: Math.random() * 1000,
-      })
-    }
-    return stars
-  }, [])
 
   useEffect(() => {
     setMessage(LOST_MESSAGES[Math.floor(Math.random() * LOST_MESSAGES.length)])
   }, [])
 
-  // Canvas starfield animation
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    let animationId: number
+  const setupStarfield = useCallback<CanvasAnimationSetup>(({ canvas, context: ctx, lifecycle }) => {
     let stars: WarpStar[] = []
     const speed = 3
     const maxDepth = 1000
@@ -300,10 +277,12 @@ export default function NotFoundPage() {
 
     resizeCanvas()
     initializeStars()
-    window.addEventListener('resize', () => {
+
+    const handleResize = () => {
       resizeCanvas()
       initializeStars()
-    })
+    }
+    lifecycle.addResizeListener(handleResize)
 
     const animate = () => {
       const { width, height } = canvas
@@ -361,16 +340,13 @@ export default function NotFoundPage() {
         ctx.fill()
       }
 
-      animationId = requestAnimationFrame(animate)
+      lifecycle.requestFrame(animate)
     }
 
     animate()
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas)
-      cancelAnimationFrame(animationId)
-    }
   }, [])
+
+  useCanvasAnimation(canvasRef, setupStarfield)
 
   return (
     <PageWrapper>

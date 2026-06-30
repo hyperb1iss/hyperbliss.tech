@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
+import { type CanvasAnimationSetup, useCanvasAnimation } from '@/hooks/useCanvasAnimation'
 import type { HeroSection } from '@/lib/content'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
@@ -303,14 +304,8 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
   const heroContent = { ...DEFAULT_HERO, ...hero }
   const tags = techTags ?? DEFAULT_TECH_TAGS
 
-  // Particle animation
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
+  const setupParticleField = useCallback<CanvasAnimationSetup>(({ canvas, context: ctx, lifecycle }) => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
@@ -318,15 +313,14 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
     }
 
     resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
+    lifecycle.addResizeListener(resizeCanvas)
 
     const particles = createParticles(50, canvas.width, canvas.height)
-    let animationId: number
     let isPaused = document.hidden
 
     const animate = () => {
       if (isPaused) {
-        animationId = requestAnimationFrame(animate)
+        lifecycle.requestFrame(animate)
         return
       }
 
@@ -363,21 +357,17 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
         }
       }
 
-      animationId = requestAnimationFrame(animate)
+      lifecycle.requestFrame(animate)
     }
 
     const handleVisibilityChange = () => {
       isPaused = document.hidden
     }
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    lifecycle.addVisibilityListener(handleVisibilityChange)
     animate()
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('resize', resizeCanvas)
-      cancelAnimationFrame(animationId)
-    }
   }, [])
+
+  useCanvasAnimation(canvasRef, setupParticleField)
 
   const containerVariants = {
     hidden: { opacity: 0 },
