@@ -16,18 +16,18 @@ const Banner = styled.pre`
   text-shadow: 0 0 10px rgba(0, 255, 240, 0.4);
 `
 
-// Build the welcome box from a single inner width so the top, middle, and
-// bottom borders always line up — hand-counted box art drifts the moment a
-// label changes. The label sits inside the top border; the body line is padded
-// to the same inner width.
-function welcomeBox(): string {
-  const label = '[ welcome to hyperbliss.tech ]'
-  const body = 'you are already inside ✦'
-  const inner = label.length + 4
-  const top = `┌─${label}${'─'.repeat(inner - label.length - 1)}┐`
-  const mid = `│ ${body.padEnd(inner - 1, ' ')}│`
-  const bot = `└${'─'.repeat(inner)}┘`
-  return `${top}\n${mid}\n${bot}`
+// An ssh-style login banner. Pure ASCII only: Space Mono is a display
+// monospace that won't tile box-drawing or star glyphs to one cell, so the old
+// ┌─┐ box drifted apart. The rule width is derived from the title so it never
+// needs hand-counting when the text changes.
+function welcomeBanner(): string {
+  const title = 'welcome to hyperbliss.tech'
+  const body = 'you are already inside <3'
+  const width = Math.max(40, title.length + 8)
+  const head = `-- ${title} `
+  const top = head + '-'.repeat(width - head.length)
+  const bot = '-'.repeat(width)
+  return `${top}\n   ${body}\n${bot}`
 }
 
 registry.register({
@@ -40,7 +40,7 @@ registry.register({
     }
     return (
       <Block>
-        <Banner>{welcomeBox()}</Banner>
+        <Banner>{welcomeBanner()}</Banner>
         <div>
           <Ok>Last login: just now from a browser near you</Ok>
         </div>
