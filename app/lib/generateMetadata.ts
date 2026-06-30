@@ -125,9 +125,9 @@ function createTwitter(
 export async function generateBlogMetadata(
   frontmatter: BlogFrontmatter,
   slug: string,
-  parent: ResolvingMetadata,
+  parent?: ResolvingMetadata,
 ): Promise<Metadata> {
-  const previousMetadata = await parent
+  const previousMetadata = parent ? await parent : {}
   const defaultAuthor = getDefaultAuthor()
   const url = `${BASE_URL}/blog/${slug}`
   const author = frontmatter.author || defaultAuthor
@@ -172,9 +172,9 @@ export async function generateBlogMetadata(
 export async function generateProjectMetadata(
   frontmatter: ProjectFrontmatter,
   slug: string,
-  parent: ResolvingMetadata,
+  parent?: ResolvingMetadata,
 ): Promise<Metadata> {
-  const previousMetadata = await parent
+  const previousMetadata = parent ? await parent : {}
   const defaultAuthor = getDefaultAuthor()
   const url = `${BASE_URL}/projects/${slug}`
   const author = frontmatter.author || defaultAuthor
