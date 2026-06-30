@@ -8,7 +8,9 @@ const nextConfig = {
     GA_MEASUREMENT_ID: 'G-2R4MW5X5SE',
     NEXT_PUBLIC_TERMINAL_HERO: process.env.NEXT_PUBLIC_TERMINAL_HERO ?? 'true',
     NEXT_PUBLIC_WEBMCP: process.env.NEXT_PUBLIC_WEBMCP ?? 'true',
-    NEXT_PUBLIC_WEBMCP_SHELL: process.env.NEXT_PUBLIC_WEBMCP_SHELL ?? 'true',
+    // Agent-driven shell exec is opt-in: a remote-exec-shaped tool should never
+    // default on, even though it runs in the just-bash wasm sandbox.
+    NEXT_PUBLIC_WEBMCP_SHELL: process.env.NEXT_PUBLIC_WEBMCP_SHELL ?? 'false',
   },
   generateEtags: false,
 

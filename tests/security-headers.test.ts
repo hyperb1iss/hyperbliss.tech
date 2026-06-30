@@ -8,7 +8,8 @@ describe('security headers', () => {
     expect(config.env).toMatchObject({
       NEXT_PUBLIC_TERMINAL_HERO: 'true',
       NEXT_PUBLIC_WEBMCP: 'true',
-      NEXT_PUBLIC_WEBMCP_SHELL: 'true',
+      // Agent shell exec is opt-in by default; only the env can turn it on.
+      NEXT_PUBLIC_WEBMCP_SHELL: 'false',
     })
   })
 
