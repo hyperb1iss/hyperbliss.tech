@@ -1,4 +1,6 @@
 // app/sitemap.xml/route.ts
+
+import { MARKDOWN_COLLECTIONS, type MarkdownDirectory } from '../lib/contentCollections'
 import { getAllMarkdownSlugs } from '../lib/markdown'
 
 /**
@@ -16,34 +18,30 @@ function ensureTrailingSlash(url: string): string {
  */
 export async function GET(): Promise<Response> {
   const baseUrl = 'https://hyperbliss.tech'
+  const dynamicCollections: Array<{
+    changeFrequency: 'monthly' | 'weekly'
+    directory: MarkdownDirectory
+    priority: 0.7 | 0.8
+  }> = [
+    { changeFrequency: 'weekly', directory: 'posts', priority: 0.7 },
+    { changeFrequency: 'monthly', directory: 'projects', priority: 0.8 },
+    { changeFrequency: 'monthly', directory: 'lab', priority: 0.8 },
+  ]
 
-  // Get all content slugs
-  const [blogSlugs, projectSlugs, labSlugs] = await Promise.all([
-    getAllMarkdownSlugs('posts'),
-    getAllMarkdownSlugs('projects'),
-    getAllMarkdownSlugs('lab'),
-  ])
-
-  const blogUrls = blogSlugs.map((slug) => ({
-    changeFrequency: 'weekly' as const,
-    lastModified: new Date(),
-    priority: 0.7,
-    url: ensureTrailingSlash(`${baseUrl}/blog/${slug}`),
-  }))
-
-  const projectUrls = projectSlugs.map((slug) => ({
-    changeFrequency: 'monthly' as const,
-    lastModified: new Date(),
-    priority: 0.8,
-    url: ensureTrailingSlash(`${baseUrl}/projects/${slug}`),
-  }))
-
-  const labUrls = labSlugs.map((slug) => ({
-    changeFrequency: 'monthly' as const,
-    lastModified: new Date(),
-    priority: 0.8,
-    url: ensureTrailingSlash(`${baseUrl}/lab/${slug}`),
-  }))
+  const dynamicUrls = (
+    await Promise.all(
+      dynamicCollections.map(async ({ changeFrequency, directory, priority }) => {
+        const slugs = await getAllMarkdownSlugs(directory)
+        const routeSegment = MARKDOWN_COLLECTIONS[directory].routeSegment
+        return slugs.map((slug) => ({
+          changeFrequency,
+          lastModified: new Date(),
+          priority,
+          url: ensureTrailingSlash(`${baseUrl}/${routeSegment}/${slug}`),
+        }))
+      }),
+    )
+  ).flat()
 
   const staticPages = [
     { changeFrequency: 'daily' as const, lastModified: new Date(), priority: 1.0, url: ensureTrailingSlash(baseUrl) },
@@ -79,7 +77,7 @@ export async function GET(): Promise<Response> {
     },
   ]
 
-  const sitemap = [...staticPages, ...blogUrls, ...projectUrls, ...labUrls]
+  const sitemap = [...staticPages, ...dynamicUrls]
 
   // Convert the sitemap array to XML string
   return new Response(

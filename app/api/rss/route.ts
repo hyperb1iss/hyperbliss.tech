@@ -2,6 +2,7 @@
 
 import { Feed } from 'feed'
 import { NextResponse } from 'next/server'
+import { MARKDOWN_COLLECTIONS, type MarkdownDirectory } from '@/lib/contentCollections'
 import { getAllMarkdownSlugs, getMarkdownContent } from '@/lib/markdown'
 
 const AUTHOR = {
@@ -23,27 +24,27 @@ export async function GET() {
     title: 'Hyperbliss',
   })
 
-  const [postSlugs, labSlugs] = await Promise.all([getAllMarkdownSlugs('posts'), getAllMarkdownSlugs('lab')])
-
-  const [posts, labExperiments] = await Promise.all([
-    Promise.all(postSlugs.map(async (slug) => getMarkdownContent('posts', slug))),
-    Promise.all(labSlugs.map(async (slug) => getMarkdownContent('lab', slug))),
-  ])
-
-  const allItems = [
-    ...posts.map((post) => ({ ...post, section: 'blog' as const })),
-    ...labExperiments.map((exp) => ({ ...exp, section: 'lab' as const })),
-  ].sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
+  const feedDirectories: MarkdownDirectory[] = ['posts', 'lab']
+  const allItems = (
+    await Promise.all(
+      feedDirectories.map(async (directory) => {
+        const slugs = await getAllMarkdownSlugs(directory)
+        const items = await Promise.all(slugs.map(async (slug) => getMarkdownContent(directory, slug)))
+        return items.map((item) => ({ ...item, routeSegment: MARKDOWN_COLLECTIONS[directory].routeSegment }))
+      }),
+    )
+  )
+    .flat()
+    .sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime())
 
   for (const item of allItems) {
-    const prefix = item.section === 'lab' ? 'lab' : 'blog'
     feed.addItem({
       author: [AUTHOR],
       content: item.content,
       date: new Date(item.frontmatter.date),
       description: item.frontmatter.excerpt,
-      id: `https://hyperbliss.tech/${prefix}/${item.slug}`,
-      link: `https://hyperbliss.tech/${prefix}/${item.slug}`,
+      id: `https://hyperbliss.tech/${item.routeSegment}/${item.slug}`,
+      link: `https://hyperbliss.tech/${item.routeSegment}/${item.slug}`,
       title: item.frontmatter.title,
     })
   }

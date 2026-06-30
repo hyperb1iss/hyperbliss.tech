@@ -1,71 +1,13 @@
 // app/lib/content.ts
 // Filesystem-based content library
 
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import matter from 'gray-matter'
-
 // ============================================================
 // Helpers
 // ============================================================
 
-const CONTENT_ROOT = path.join(process.cwd(), 'content')
+import { getMarkdownSlugs, readJsonContent, readMarkdown, readMarkdownOrNull } from './contentCollections'
 
-/** A requested content file doesn't exist, or its resolved path escaped the content root. */
-class ContentNotFoundError extends Error {
-  constructor(relativePath: string) {
-    super(`Content not found: ${relativePath}`)
-    this.name = 'ContentNotFoundError'
-  }
-}
-
-/** Resolve a content path relative to the content root, refusing slugs that escape it. */
-function contentPath(...segments: string[]): string {
-  const resolved = path.resolve(CONTENT_ROOT, ...segments)
-  if (resolved !== CONTENT_ROOT && !resolved.startsWith(`${CONTENT_ROOT}${path.sep}`)) {
-    throw new ContentNotFoundError(segments.join('/'))
-  }
-  return resolved
-}
-
-/** Read and parse a JSON content file */
-async function readJson<T>(relativePath: string): Promise<T> {
-  const raw = await fs.readFile(contentPath(relativePath), 'utf-8')
-  return JSON.parse(raw) as T
-}
-
-/** Read a markdown file and split frontmatter from body */
-async function readMarkdown(relativePath: string): Promise<{ data: Record<string, unknown>; content: string }> {
-  const raw = await fs.readFile(contentPath(relativePath), 'utf-8')
-  return matter(raw)
-}
-
-/**
- * A nonexistent file (ENOENT) or an out-of-root path — i.e. the content simply
- * isn't there, as opposed to a real IO or parse failure that must keep
- * propagating so we surface it instead of masking it as a 404.
- */
-function isMissingContent(err: unknown): boolean {
-  if (err instanceof ContentNotFoundError) return true
-  return typeof err === 'object' && err !== null && (err as NodeJS.ErrnoException).code === 'ENOENT'
-}
-
-/** Read markdown, returning null when the file doesn't exist. Real errors still throw. */
-async function readMarkdownOrNull(
-  relativePath: string,
-): Promise<{ data: Record<string, unknown>; content: string } | null> {
-  try {
-    return await readMarkdown(relativePath)
-  } catch (err) {
-    if (isMissingContent(err)) return null
-    throw err
-  }
-}
-
-/** Read a content file verbatim (frontmatter included) — backs `cat` in the terminal. */
-export async function readRawContentFile(relativePath: string): Promise<string> {
-  return fs.readFile(contentPath(relativePath), 'utf-8')
-}
+export { readRawContentFile } from './contentCollections'
 
 /** Format display title with optional emoji prefix */
 export function formatDisplayTitle(emoji: string | null | undefined, title: string): string {
@@ -102,8 +44,7 @@ export interface PostDetail {
 }
 
 export async function getAllPostSlugs(): Promise<string[]> {
-  const files = await fs.readdir(contentPath('posts'))
-  return files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''))
+  return getMarkdownSlugs('posts')
 }
 
 export async function getAllPosts(): Promise<PostSummary[]> {
@@ -185,8 +126,7 @@ export interface LabDetail {
 }
 
 export async function getAllLabSlugs(): Promise<string[]> {
-  const files = await fs.readdir(contentPath('lab'))
-  return files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''))
+  return getMarkdownSlugs('lab')
 }
 
 export async function getAllLab(): Promise<LabSummary[]> {
@@ -276,8 +216,7 @@ export interface ProjectDetail {
 }
 
 export async function getAllProjectSlugs(): Promise<string[]> {
-  const files = await fs.readdir(contentPath('projects'))
-  return files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''))
+  return getMarkdownSlugs('projects')
 }
 
 export async function getAllProjects(): Promise<ProjectSummary[]> {
@@ -432,7 +371,7 @@ interface RawPageJson {
 }
 
 export async function getPage(slug: string): Promise<PageData> {
-  const raw = await readJson<RawPageJson>(`pages/${slug}.json`)
+  const raw = await readJsonContent<RawPageJson>(`pages/${slug}.json`)
 
   return {
     about: raw.about
@@ -602,7 +541,7 @@ interface RawSiteConfigJson {
 }
 
 export async function getSiteConfig(): Promise<SiteConfig> {
-  const raw = await readJson<RawSiteConfigJson>('config/site.json')
+  const raw = await readJsonContent<RawSiteConfigJson>('config/site.json')
 
   return {
     footer: raw.footer
