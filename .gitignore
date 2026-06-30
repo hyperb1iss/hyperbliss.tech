@@ -139,6 +139,9 @@ target
 # Cursor editor rules
 .cursor/
 
+# macOS
+.DS_Store
+
 
 
 ## Panda
