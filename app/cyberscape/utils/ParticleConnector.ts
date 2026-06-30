@@ -28,7 +28,7 @@ export class ParticleConnector {
   private readonly queryBounds: Bounds = { max: this.queryMax, min: this.queryMin }
 
   // Internal octree for particle spatial queries
-  private particleOctree: Octree
+  private particleOctree: Octree<Particle>
 
   constructor() {
     this.config = CyberScapeConfig.getInstance()
@@ -92,8 +92,7 @@ export class ParticleConnector {
       // Query octree for nearby particles
       const nearby = this.particleOctree.query(this.queryBounds)
 
-      for (const obj of nearby) {
-        const particleB = obj as Particle
+      for (const particleB of nearby) {
         // Skip self and ensure we only process each pair once (A < B by id)
         if (particleB === particleA || particleB.id <= particleA.id) {
           continue

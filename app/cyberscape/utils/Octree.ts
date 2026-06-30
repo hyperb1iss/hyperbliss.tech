@@ -21,10 +21,10 @@ export interface OctreeObject {
 /**
  * Represents a node in the octree.
  */
-class OctreeNode {
+class OctreeNode<T extends OctreeObject> {
   bounds: Bounds
-  objects: OctreeObject[]
-  children: OctreeNode[]
+  objects: T[]
+  children: Array<OctreeNode<T>>
   isLeaf: boolean
 
   constructor(bounds: Bounds) {
@@ -38,8 +38,8 @@ class OctreeNode {
 /**
  * Octree class for efficient spatial partitioning and querying.
  */
-export class Octree {
-  private root: OctreeNode
+export class Octree<T extends OctreeObject = OctreeObject> {
+  private root: OctreeNode<T>
   private maxObjects: number
   private maxDepth: number
 
@@ -86,7 +86,7 @@ export class Octree {
    * Inserts an object into the octree.
    * @param object - The object to insert.
    */
-  insert(object: OctreeObject): void {
+  insert(object: T): void {
     this.insertObject(object, this.root, 0)
   }
 
@@ -96,7 +96,7 @@ export class Octree {
    * @param node - The current octree node.
    * @param depth - The current depth in the octree.
    */
-  private insertObject(object: OctreeObject, node: OctreeNode, depth: number): void {
+  private insertObject(object: T, node: OctreeNode<T>, depth: number): void {
     if (!this.isInBounds(object.position, node.bounds)) {
       return
     }
@@ -122,7 +122,7 @@ export class Octree {
    * Splits a leaf node into eight child nodes.
    * @param node - The node to split.
    */
-  private split(node: OctreeNode): void {
+  private split(node: OctreeNode<T>): void {
     const { min, max } = node.bounds
     // Reuse pre-allocated vectors for midpoint calculation
     vec3.add(this.tempVec, min, max)
@@ -130,35 +130,35 @@ export class Octree {
     const mid = this.midpoint
 
     node.children = [
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [mid[0], mid[1], mid[2]],
         min: [min[0], min[1], min[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [max[0], mid[1], mid[2]],
         min: [mid[0], min[1], min[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [mid[0], max[1], mid[2]],
         min: [min[0], mid[1], min[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [max[0], max[1], mid[2]],
         min: [mid[0], mid[1], min[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [mid[0], mid[1], max[2]],
         min: [min[0], min[1], mid[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [max[0], mid[1], max[2]],
         min: [mid[0], min[1], mid[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [mid[0], max[1], max[2]],
         min: [min[0], mid[1], mid[2]],
       }),
-      new OctreeNode({
+      new OctreeNode<T>({
         max: [max[0], max[1], max[2]],
         min: [mid[0], mid[1], mid[2]],
       }),
@@ -213,8 +213,8 @@ export class Octree {
    * @param bounds - The bounds to query.
    * @returns An array of objects within the query bounds.
    */
-  query(bounds: Bounds): OctreeObject[] {
-    const result: OctreeObject[] = []
+  query(bounds: Bounds): T[] {
+    const result: T[] = []
     this.queryNode(this.root, bounds, result)
     return result
   }
@@ -225,7 +225,7 @@ export class Octree {
    * @param queryBounds - The bounds to query.
    * @param result - The array to store the resulting objects.
    */
-  private queryNode(node: OctreeNode, queryBounds: Bounds, result: OctreeObject[]): void {
+  private queryNode(node: OctreeNode<T>, queryBounds: Bounds, result: T[]): void {
     if (!this.intersectsBounds(node.bounds, queryBounds)) {
       return
     }

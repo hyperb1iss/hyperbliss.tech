@@ -13,7 +13,7 @@ import { ShapeFactory } from './shapes/ShapeFactory'
 import { VectorShape } from './shapes/VectorShape'
 import { ColorManager } from './utils/ColorManager'
 import { FrustumCuller } from './utils/FrustumCuller'
-import { Octree, OctreeObject } from './utils/Octree'
+import { Octree } from './utils/Octree'
 import { ParticleConnector } from './utils/ParticleConnector'
 import { ParticlePool } from './utils/ParticlePool'
 import { PerformanceMonitor } from './utils/PerformanceMonitor'
@@ -60,7 +60,8 @@ export const initializeCyberScape = (
 
   const config = CyberScapeConfig.getInstance()
   const particlePool = new ParticlePool(config.particlePoolSize)
-  CollisionHandler.initialize(particlePool)
+  CollisionHandler.initialize()
+  type CyberScapeSpatialObject = Particle | ParticleAtCollision | VectorShape
 
   let width = canvas.offsetWidth
   let height = canvas.offsetHeight
@@ -94,7 +95,7 @@ export const initializeCyberScape = (
 
   const performanceMonitor = new PerformanceMonitor()
 
-  const octree = new Octree({
+  const octree = new Octree<CyberScapeSpatialObject>({
     max: [width / 2, height / 2, 300],
     min: [-width / 2, -height / 2, -300],
   })
@@ -487,7 +488,7 @@ export const initializeCyberScape = (
             activeParticles--
             recentlyExpiredParticles++
           } else {
-            octree.insert(particle as unknown as OctreeObject)
+            octree.insert(particle)
             particle.draw(ctx, mouseX, mouseY, width, height)
           }
         } else {
@@ -505,7 +506,7 @@ export const initializeCyberScape = (
             particlePool.returnCollisionParticle(particle)
             collisionParticlesArray.splice(i, 1)
           } else {
-            octree.insert(particle as unknown as OctreeObject)
+            octree.insert(particle)
             particle.draw(ctx, mouseX, mouseY, width, height)
           }
         } else {
@@ -524,7 +525,7 @@ export const initializeCyberScape = (
             shape.reset(frameShapePositions, width, height)
           } else {
             frameShapePositions.add(shape.getPositionKey())
-            octree.insert(shape as unknown as OctreeObject)
+            octree.insert(shape)
             shape.draw(ctx, width, height)
           }
         }
@@ -586,7 +587,6 @@ export const initializeCyberScape = (
             shapeA.explodeAndRespawn()
             shapeB.explodeAndRespawn()
           },
-          collisionParticlesArray,
         )
       }
 
