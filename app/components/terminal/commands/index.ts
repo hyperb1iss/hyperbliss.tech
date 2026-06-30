@@ -5,6 +5,7 @@
 import './meta'
 import './info'
 import './content'
+import './github'
 import './neofetch'
 import './fun'
 import './system'
