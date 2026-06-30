@@ -6,6 +6,9 @@ const nextConfig = {
   env: {
     GA_DEBUG_MODE: process.env.NODE_ENV === 'development' ? 'true' : 'false',
     GA_MEASUREMENT_ID: 'G-2R4MW5X5SE',
+    NEXT_PUBLIC_TERMINAL_HERO: process.env.NEXT_PUBLIC_TERMINAL_HERO ?? 'true',
+    NEXT_PUBLIC_WEBMCP: process.env.NEXT_PUBLIC_WEBMCP ?? 'true',
+    NEXT_PUBLIC_WEBMCP_SHELL: process.env.NEXT_PUBLIC_WEBMCP_SHELL ?? 'true',
   },
   generateEtags: false,
 
@@ -43,7 +46,7 @@ const nextConfig = {
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: 'camera=(), microphone=(), geolocation=(), tools=(self)',
           },
         ],
         source: '/(.*)',

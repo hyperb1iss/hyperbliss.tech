@@ -29,7 +29,8 @@ const CmdGrid = styled.div`
   }
 `
 
-const THEMES = ['silk', 'matrix', 'amber']
+export const TERMINAL_THEMES = ['silk', 'matrix', 'amber'] as const
+export type TerminalTheme = (typeof TERMINAL_THEMES)[number]
 
 function HelpAll({ ctx }: { ctx: TerminalContext }) {
   const groups = new Map<CommandGroup, { name: string; summary: string }[]>()
@@ -116,13 +117,34 @@ registry.register({
   name: 'theme',
   run: (args, ctx) => {
     const name = args[0]
-    if (!name) return text(`themes: ${THEMES.join(', ')} · usage: theme <name>`)
-    if (!THEMES.includes(name)) return text(`theme: unknown theme '${name}' (try: ${THEMES.join(', ')})`, 'stderr')
+    if (!name) return text(`themes: ${TERMINAL_THEMES.join(', ')} · usage: theme <name>`)
+    if (!TERMINAL_THEMES.includes(name as TerminalTheme)) {
+      return text(`theme: unknown theme '${name}' (try: ${TERMINAL_THEMES.join(', ')})`, 'stderr')
+    }
     ctx.setTheme(name)
     return text(`theme → ${name}`, 'ok')
   },
   summary: 'switch the terminal color theme',
   usage: 'theme <silk|matrix|amber>',
+})
+
+registry.register({
+  group: 'meta',
+  name: 'agent',
+  run: async () => {
+    const { getRegisteredAgentToolNames, isWebMcpEnabled } = await import('../webmcp')
+    if (!isWebMcpEnabled()) return text('WebMCP: disabled on this build', 'system')
+    let toolNames: string[] | null
+    try {
+      toolNames = await getRegisteredAgentToolNames()
+    } catch {
+      return text('WebMCP: tools unavailable', 'system')
+    }
+    if (toolNames === null) return text('WebMCP: unsupported in this browser', 'system')
+    if (toolNames.length === 0) return text('WebMCP: available, no tools registered yet', 'system')
+    return text(`WebMCP: ready · ${toolNames.length} tools\n${toolNames.join('\n')}`, 'system')
+  },
+  summary: 'show WebMCP agent interface status',
 })
 
 registry.register({

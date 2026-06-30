@@ -9,8 +9,11 @@
 // keeps ticking either way.
 
 import { useEffect, useRef, useState } from 'react'
+import type { ActivityKind, ActivitySummary } from '@/lib/github'
+import { sparkline } from '@/lib/sparkline'
 import type { Broadcast } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
+import { getModelContext, isWebMcpEnabled } from './webmcp'
 
 // A little axolotl, pure ASCII so every glyph is exactly one cell in Space Mono
 // (box-drawing and bullet glyphs are ambiguous-width and drift). Frilly gills
@@ -20,8 +23,9 @@ const SIGIL_ART = ['\\\\\\ .-----. ///', '    ( o o )', '     \\___/']
 const SIGIL_COLORS = ['#80ffea', '#ff75d8', '#ff6ac1']
 const SIGIL = SIGIL_ART.map((art, i) => ({ art, color: SIGIL_COLORS[i % SIGIL_COLORS.length], id: `sigil-${i}` }))
 
-const BARS = ['▁', '▂', '▃', '▄', '▅', '▆', '▇', '█']
 const SPARK_LEN = 16
+
+const KIND_ICON: Record<ActivityKind, string> = { create: '✦', pr: '⇡', push: '↑', release: '⌁' }
 
 const TIPS = [
   'type `help` to explore',
@@ -145,8 +149,13 @@ interface FeedItem {
   text: string
 }
 
-function buildFeed(b: Broadcast): FeedItem[] {
+function buildFeed(b: Broadcast, activity: ActivitySummary | null): FeedItem[] {
   const feed: FeedItem[] = []
+  if (activity) {
+    for (const ev of activity.events.slice(0, 5)) {
+      feed.push({ icon: KIND_ICON[ev.kind], text: `${ev.title} · ${ev.repo}` })
+    }
+  }
   if (b.latestShip) {
     feed.push({
       icon: '↑',
@@ -154,15 +163,37 @@ function buildFeed(b: Broadcast): FeedItem[] {
     })
   }
   if (b.latestPost) feed.push({ icon: '✎', text: `posted ${b.latestPost.title}` })
-  feed.push({ icon: '◆', text: `${b.projectCount} repos · ${b.postCount} posts · ${b.labCount} experiments` })
+  feed.push({
+    icon: '◆',
+    text:
+      activity && activity.totalPushes > 0
+        ? `${activity.totalPushes} pushes · ${activity.repos.length} repos · ${b.postCount} posts`
+        : `${b.projectCount} repos · ${b.postCount} posts · ${b.labCount} experiments`,
+  })
   feed.push({ icon: '⌁', text: 'open source all the way down' })
   return feed
 }
 
 const seedSpark = () => Array.from({ length: SPARK_LEN }, (_, i) => 0.35 + 0.25 * Math.sin(i / 2))
 const stepSpark = (prev: number) => Math.max(0.06, Math.min(1, prev + (Math.random() - 0.5) * 0.55))
-const sparkChars = (vals: number[]) =>
-  vals.map((v) => BARS[Math.min(BARS.length - 1, Math.floor(v * BARS.length))]).join('')
+
+/** Fetch the cached activity summary once; null until a non-empty result lands. */
+function useGithubActivity(): ActivitySummary | null {
+  const [data, setData] = useState<ActivitySummary | null>(null)
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/activity')
+      .then((r) => (r.ok ? (r.json() as Promise<ActivitySummary>) : null))
+      .then((d) => {
+        if (!cancelled && d?.ok && d.events.length > 0) setData(d)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return data
+}
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false)
@@ -177,12 +208,58 @@ function usePrefersReducedMotion(): boolean {
   return reduced
 }
 
+type WebMcpStatus = { state: 'disabled' | 'unsupported' | 'ready'; count: number | null }
+
+function useWebMcpStatus(): WebMcpStatus {
+  const [status, setStatus] = useState<WebMcpStatus>({ count: null, state: 'disabled' })
+
+  useEffect(() => {
+    if (!isWebMcpEnabled()) {
+      setStatus({ count: null, state: 'disabled' })
+      return
+    }
+
+    const modelContext = getModelContext()
+    if (!modelContext) {
+      setStatus({ count: null, state: 'unsupported' })
+      return
+    }
+
+    const getTools = modelContext.getTools?.bind(modelContext)
+    if (!getTools) {
+      setStatus({ count: null, state: 'unsupported' })
+      return
+    }
+
+    let cancelled = false
+    const sync = async () => {
+      try {
+        const tools = await getTools()
+        if (!cancelled) setStatus({ count: tools?.length ?? null, state: 'ready' })
+      } catch {
+        if (!cancelled) setStatus({ count: null, state: 'unsupported' })
+      }
+    }
+
+    void sync()
+    modelContext.addEventListener('toolchange', sync)
+    return () => {
+      cancelled = true
+      modelContext.removeEventListener('toolchange', sync)
+    }
+  }, [])
+
+  return status
+}
+
 export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
   const reduced = usePrefersReducedMotion()
+  const webmcp = useWebMcpStatus()
+  const activity = useGithubActivity()
   const mountRef = useRef(0)
   if (mountRef.current === 0) mountRef.current = Date.now()
 
-  const feed = buildFeed(broadcast)
+  const feed = buildFeed(broadcast, activity)
   const [now, setNow] = useState(() => new Date())
   const [feedIdx, setFeedIdx] = useState(0)
   const [tipIdx, setTipIdx] = useState(0)
@@ -195,19 +272,23 @@ export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
   }, [])
 
   // Feed / tips / sparkline are ambient flourish — pause them for reduced motion.
+  // Real commit cadence is static data, so only the placeholder spark animates.
   useEffect(() => {
     if (reduced) return
     const feedId = setInterval(() => setFeedIdx((i) => (i + 1) % feed.length), 3600)
     const tipId = setInterval(() => setTipIdx((i) => (i + 1) % TIPS.length), 4800)
-    const sparkId = setInterval(() => setSpark((prev) => [...prev.slice(1), stepSpark(prev[prev.length - 1])]), 460)
+    const sparkId = activity
+      ? null
+      : setInterval(() => setSpark((prev) => [...prev.slice(1), stepSpark(prev[prev.length - 1])]), 460)
     return () => {
       clearInterval(feedId)
       clearInterval(tipId)
-      clearInterval(sparkId)
+      if (sparkId) clearInterval(sparkId)
     }
-  }, [reduced, feed.length])
+  }, [reduced, feed.length, activity])
 
   const item = feed[feedIdx % feed.length] ?? feed[0]
+  const sparkVals = activity ? activity.pushesPerDay : spark
 
   return (
     <Wrap aria-label="hyperbliss status console">
@@ -238,9 +319,20 @@ export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
             <FeedText>{item.text}</FeedText>
           </Line>
           <Line>
-            <Label>net</Label>
-            <Spark>{sparkChars(spark)}</Spark>
+            <Label>{activity ? 'pushes' : 'net'}</Label>
+            <Spark>{sparkline(sparkVals)}</Spark>
             <Live>live</Live>
+          </Line>
+          <Line>
+            <Label>agent</Label>
+            {webmcp.state === 'ready' ? (
+              <>
+                <Spark>WebMCP</Spark>
+                <Live>ready{webmcp.count === null ? '' : ` · ${webmcp.count} tools`}</Live>
+              </>
+            ) : (
+              <Tip>{webmcp.state === 'disabled' ? 'WebMCP disabled' : 'WebMCP unsupported'}</Tip>
+            )}
           </Line>
           <Line>
             <Label>now</Label>

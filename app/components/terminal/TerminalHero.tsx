@@ -15,12 +15,12 @@ import { type BootPhase, readBootInputs, resolveBootPhase } from './bootState'
 import CommandChips from './CommandChips'
 import CommandPalette from './CommandPalette'
 import './commands'
-import type { ShellRunner } from './executor'
 import { fetchFsBodies } from './fsClient'
 import { registry } from './registry'
 import { decodeSession } from './share'
-import { createShellRunner } from './shell'
+import { createShellSession, type ShellSession } from './shell'
 import type { TerminalHandle } from './Terminal'
+import { isWebMcpEnabled, registerAgentTools } from './webmcp'
 
 const HeroWrap = styled.section`
   position: relative;
@@ -116,10 +116,10 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
     setBoot({ phase: resolveBootPhase(readBootInputs()), replay: decodeSession(window.location.hash) })
   }, [])
 
-  // One shell runner for the session — holds the just-bash instance + session
-  // env in its closure, so it must survive re-renders.
-  const shellRef = useRef<ShellRunner | null>(null)
-  if (!shellRef.current) shellRef.current = createShellRunner({ fetchBodies: fetchFsBodies })
+  // One shell session for human input and agent tools, preserving cwd/exports.
+  const shellRef = useRef<ShellSession | null>(null)
+  const shellSession = shellRef.current ?? createShellSession({ fetchBodies: fetchFsBodies })
+  shellRef.current = shellSession
 
   // Auto-focus only on true mouse devices so we never pop the soft keyboard on
   // touch — chips are the touch entry point. `hover: hover` + `pointer: fine`
@@ -136,6 +136,20 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   }, [])
 
   const onNavigate = useCallback((href: string) => router.push(href), [router])
+
+  useEffect(() => {
+    if (!isWebMcpEnabled()) return
+    return registerAgentTools({
+      broadcast,
+      execShell: shellSession.execShell,
+      fetchBodies: fetchFsBodies,
+      handleRef,
+      manifest,
+      navigate: onNavigate,
+      onToolCall: (name) => trackTerminalCommand(`agent:${name}`),
+      setTheme: (name) => document.documentElement.setAttribute('data-terminal-theme', name),
+    })
+  }, [broadcast, manifest, onNavigate, shellSession.execShell])
 
   // ⌘K / Ctrl+K toggles the command palette.
   useEffect(() => {
@@ -161,7 +175,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
           onCommandCategory={trackTerminalCommand}
           onNavigate={onNavigate}
           replayCommands={boot.replay.length > 0 ? boot.replay : undefined}
-          shellRunner={shellRef.current ?? undefined}
+          shellRunner={shellSession.runShell}
         />
       </Frame>
       <CommandChips onCategory={trackTerminalCommand} onRun={runChip} />

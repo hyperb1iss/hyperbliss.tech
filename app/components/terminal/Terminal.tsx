@@ -254,6 +254,9 @@ export function PromptLabel({ cwd }: { cwd: string }) {
 export interface TerminalHandle {
   run(line: string): Promise<void>
   focus(): void
+  print(node: React.ReactNode, stream?: OutputStream): void
+  printAgentInput(line: string): void
+  setCwd(cwd: string): void
 }
 
 export interface TerminalProps {
@@ -275,6 +278,10 @@ export interface TerminalProps {
   replayCommands?: string[]
   /** Imperative handle (chips / boot sequence drive the terminal through this). */
   handleRef?: { current: TerminalHandle | null }
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === 'AbortError'
 }
 
 export default function Terminal({
@@ -307,6 +314,7 @@ export default function Terminal({
   cwdRef.current = cwd
   const historyRef = useRef<History>(new History())
   const runRef = useRef<(line: string) => Promise<void>>(async () => {})
+  const activeControllersRef = useRef<Set<AbortController>>(new Set())
 
   const paths = useMemo(() => fsPaths(manifest), [manifest])
 
@@ -330,6 +338,26 @@ export default function Terminal({
   // Stable entry point used by ctx.run, chips, and the imperative handle.
   const run = useCallback((line: string) => runRef.current(line), [])
 
+  const printAgentInput = useCallback(
+    (line: string) => {
+      pushEntry(
+        <Row>
+          <PromptLabel cwd={cwdRef.current} />
+          <OutputText stream="input">{`[agent] ${line}`}</OutputText>
+        </Row>,
+        'input',
+      )
+    },
+    [pushEntry],
+  )
+
+  const abortActiveCommands = useCallback(() => {
+    for (const controller of activeControllersRef.current) {
+      controller.abort()
+    }
+    activeControllersRef.current.clear()
+  }, [])
+
   const handleRun = useCallback(
     async (raw: string) => {
       if (raw.trim().length === 0) {
@@ -345,6 +373,8 @@ export default function Terminal({
       )
       historyRef.current.add(raw)
       onCommandCategory?.(categoryOf(raw))
+      const controller = new AbortController()
+      activeControllersRef.current.add(controller)
 
       const ctx = createContext({
         broadcast,
@@ -363,8 +393,15 @@ export default function Terminal({
         setTheme: (name) => {
           if (typeof document !== 'undefined') document.documentElement.setAttribute('data-terminal-theme', name)
         },
+        signal: controller.signal,
       })
-      await execute(raw, ctx, shellRunner)
+      try {
+        await execute(raw, ctx, shellRunner)
+      } catch (error) {
+        if (!isAbortError(error)) throw error
+      } finally {
+        activeControllersRef.current.delete(controller)
+      }
     },
     [broadcast, clear, manifest, onCommandCategory, onNavigate, pushEntry, registry, run, shellRunner],
   )
@@ -372,6 +409,12 @@ export default function Terminal({
   useEffect(() => {
     runRef.current = handleRun
   }, [handleRun])
+
+  useEffect(() => {
+    return () => {
+      abortActiveCommands()
+    }
+  }, [abortActiveCommands])
 
   // Autoscroll to newest output. `log` is the re-run trigger; the body reads
   // the ref so we always pin to the latest scrollHeight.
@@ -398,12 +441,18 @@ export default function Terminal({
 
   useEffect(() => {
     if (handleRef) {
-      handleRef.current = { focus: () => inputRef.current?.focus(), run }
+      handleRef.current = {
+        focus: () => inputRef.current?.focus(),
+        print: pushEntry,
+        printAgentInput,
+        run,
+        setCwd,
+      }
       return () => {
         handleRef.current = null
       }
     }
-  }, [handleRef, run])
+  }, [handleRef, printAgentInput, pushEntry, run])
 
   // Boot sequence (§5.6). Runs once the phase resolves; the full boot is
   // skippable via any key/pointer. markVisited fires here (not at resolve) so
@@ -483,6 +532,7 @@ export default function Terminal({
         clear()
       } else if (e.key === 'c' && e.ctrlKey) {
         e.preventDefault()
+        abortActiveCommands()
         pushEntry(
           <Row>
             <PromptLabel cwd={cwdRef.current} />
@@ -494,7 +544,7 @@ export default function Terminal({
         historyRef.current.reset()
       }
     },
-    [clear, input, paths, pushEntry, registry],
+    [abortActiveCommands, clear, input, paths, pushEntry, registry],
   )
 
   const focusInput = useCallback(() => {

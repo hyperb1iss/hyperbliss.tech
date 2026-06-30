@@ -64,6 +64,42 @@ describe('Terminal', () => {
     expect(within(screen.getByRole('log')).queryByText('hi there')).not.toBeInTheDocument()
   })
 
+  it('aborts the active command when Ctrl+C is pressed', async () => {
+    const registry = new Registry()
+    let activeSignal: AbortSignal | undefined
+    const abortSpy = vi.fn()
+
+    registry.register({
+      name: 'slow',
+      run: (_args, ctx) => {
+        activeSignal = ctx.signal
+        return new Promise<void>((resolve) => {
+          ctx.signal?.addEventListener(
+            'abort',
+            () => {
+              abortSpy()
+              resolve()
+            },
+            { once: true },
+          )
+        })
+      },
+      summary: 'waits forever',
+    })
+
+    const user = userEvent.setup()
+    render(<Terminal autoFocusInput={true} broadcast={testBroadcast} manifest={testManifest} registry={registry} />)
+
+    await user.type(screen.getByLabelText(/terminal input/i), 'slow{Enter}')
+    await waitFor(() => expect(activeSignal).toBeDefined())
+
+    await user.keyboard('{Control>}c{/Control}')
+
+    await waitFor(() => expect(abortSpy).toHaveBeenCalledTimes(1))
+    expect(activeSignal?.aborted).toBe(true)
+    expect(within(screen.getByRole('log')).getByText('^C')).toBeInTheDocument()
+  })
+
   it('completes a command on Tab', async () => {
     const { input, user } = setup()
     await user.type(input, 'hel')
