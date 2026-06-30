@@ -111,10 +111,12 @@ describe('getRecentActivity', () => {
     expect(a.totalPushes).toBe(4) // the 29-day-old push is outside the window
   })
 
-  it('lists distinct repos in recency order', async () => {
+  it('lists distinct in-window repos in recency order', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse(rawEvents())))
     const a = await getRecentActivity('hyperb1iss')
-    expect(a.repos).toEqual(['hyperskills', 'sibyl', 'old-repo'])
+    // old-repo's only event is 29 days old (outside the 14-day window), so it
+    // is excluded — the repos list must agree with the pushes window.
+    expect(a.repos).toEqual(['hyperskills', 'sibyl'])
   })
 
   it('returns ok:false on a non-ok response', async () => {

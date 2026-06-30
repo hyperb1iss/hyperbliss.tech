@@ -298,18 +298,29 @@ export async function getRecentActivity(username = GITHUB_USERNAME): Promise<Act
 
   for (const ev of raw as RawGitHubEvent[]) {
     // Push cadence counts every push in the window, even past the feed cap.
+    // Clamp slightly-future timestamps (upstream clock skew) into today's
+    // bucket rather than dropping them off the high end.
     if (ev.type === 'PushEvent' && ev.created_at) {
-      const dayIdx = ACTIVITY_WINDOW_DAYS - 1 - Math.floor((now - Date.parse(ev.created_at)) / DAY_MS)
-      if (dayIdx >= 0 && dayIdx < ACTIVITY_WINDOW_DAYS) pushesPerDay[dayIdx] += 1
+      const dayIdx = Math.min(
+        ACTIVITY_WINDOW_DAYS - 1,
+        ACTIVITY_WINDOW_DAYS - 1 - Math.floor((now - Date.parse(ev.created_at)) / DAY_MS),
+      )
+      if (dayIdx >= 0) pushesPerDay[dayIdx] += 1
     }
     const item = normalizeEvent(ev)
     if (item) normalized.push(item)
   }
 
   const collapsed = collapsePushes(normalized)
+  // Distinct repos touched within the window only, so the summary never claims
+  // "active in: <repo>" for a repo whose only event predates the window.
+  // collapsed is newest-first (GitHub returns events newest-first; we never
+  // reorder), so push order is already recency order.
+  const windowStart = now - ACTIVITY_WINDOW_DAYS * DAY_MS
   const repos: string[] = []
   const seen = new Set<string>()
   for (const ev of collapsed) {
+    if (Date.parse(ev.createdAt) < windowStart) continue
     if (!seen.has(ev.repo)) {
       seen.add(ev.repo)
       repos.push(ev.repo)
