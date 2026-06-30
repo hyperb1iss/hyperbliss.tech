@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation'
-import HomePageClient from '@/components/HomePageClient'
 import TerminalHome from '@/components/TerminalHome'
 import { getReleasesForProjects } from '@/lib/github'
-import { projectRotationSeed } from '@/lib/homeContent'
 import { buildBroadcast } from '@/lib/terminal/buildBroadcast'
 import { buildManifest } from '@/lib/terminal/buildManifest'
 import { pickLatestShip, type ReleaseLike, versionsMap } from '@/lib/terminal/releases'
@@ -20,10 +18,6 @@ import {
 // Re-validate hourly so the broadcast (counts, latest ship/post) stays fresh
 // and the curated GitHub release fetch stays within budget (§5.10).
 export const revalidate = 3600
-
-// Gate the terminal-first hero (§6). Off → the classic homepage stays the
-// fallback. Enable with NEXT_PUBLIC_TERMINAL_HERO=true; flag removed on ship.
-const TERMINAL_HERO = process.env.NEXT_PUBLIC_TERMINAL_HERO === 'true'
 
 const DEFAULT_NOW: NowData = {
   body: null,
@@ -45,20 +39,6 @@ export default async function Home() {
     ])
 
     const generatedAt = new Date().toISOString()
-    const projectSelectionSeed = projectRotationSeed(new Date(generatedAt))
-
-    if (!TERMINAL_HERO) {
-      return (
-        <HomePageClient
-          labExperiments={labExperiments}
-          pageData={pageData}
-          posts={posts}
-          projectSelectionSeed={projectSelectionSeed}
-          projects={projects}
-          siteConfig={siteConfig}
-        />
-      )
-    }
 
     // Terminal-first path: assemble the virtual-FS manifest + broadcast.
     const [now, aboutPage, resume] = await Promise.all([
