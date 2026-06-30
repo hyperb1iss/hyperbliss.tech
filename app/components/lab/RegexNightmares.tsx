@@ -6,6 +6,7 @@ import { FaLightbulb, FaSkull, FaWandMagicSparkles } from 'react-icons/fa6'
 import { css } from '../../../styled-system/css'
 import { REGEX_NIGHTMARES } from '../../lib/regex-nightmares/data'
 import type { RegexNightmareEntry } from '../../lib/regex-nightmares/types'
+import MarkdownRenderer from '../MarkdownRenderer'
 import PageTitle from '../PageTitle'
 import RegexDissector from './RegexDissector'
 import RegexTester from './RegexTester'
@@ -452,18 +453,6 @@ const dividerEmojiStyles = css`
 // Components
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-function renderProse(text: string) {
-  return text.split('\n\n').map((para, i) => {
-    const processed = para
-      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-      .replace(/\\([nrt])/g, (_, c) => (c === 'n' ? '\n' : c === 't' ? '\t' : '\r'))
-    return <p dangerouslySetInnerHTML={{ __html: processed }} key={i} />
-  })
-}
-
 function DangerBar({ level }: { level: number }) {
   const labels = ['Safe', 'Mild', 'Spicy', 'Dangerous', 'Catastrophic']
   return (
@@ -555,7 +544,9 @@ function EntryCard({ entry }: { entry: RegexNightmareEntry }) {
 
       <RegexDissector regex={entry.regex} segments={entry.segments} />
 
-      <div className={proseStyles}>{renderProse(entry.explanation)}</div>
+      <div className={proseStyles}>
+        <MarkdownRenderer content={entry.explanation} />
+      </div>
 
       <RegexTester
         flags={entry.flags}
@@ -587,7 +578,9 @@ function EntryCard({ entry }: { entry: RegexNightmareEntry }) {
           >
             <span>{entry.bodyCount.emoji}</span> {entry.bodyCount.label}
           </div>
-          <div className={bodyCountProseStyles}>{renderProse(entry.bodyCount.content)}</div>
+          <div className={bodyCountProseStyles}>
+            <MarkdownRenderer content={entry.bodyCount.content} />
+          </div>
         </motion.div>
       )}
     </motion.article>
