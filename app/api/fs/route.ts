@@ -3,16 +3,22 @@
 // a command needs them.
 
 import { NextResponse } from 'next/server'
-import { getVirtualFsBodies } from '@/lib/terminal/fsBodies'
+import { getVirtualFsBodies, getVirtualFsPaths } from '@/lib/terminal/fsBodies'
 
 export const revalidate = 3600
+
+const MAX_PATHS = 64
+const MAX_PATHS_PARAM_LENGTH = 8192
 
 function parsePaths(request: Request): string[] | undefined {
   const params = new URL(request.url).searchParams
   const paths = params.get('paths')
   if (paths) {
+    if (paths.length > MAX_PATHS_PARAM_LENGTH) {
+      throw new Error('paths parameter too large')
+    }
     const parsed: unknown = JSON.parse(paths)
-    if (!Array.isArray(parsed) || parsed.some((p) => typeof p !== 'string')) {
+    if (!Array.isArray(parsed) || parsed.length > MAX_PATHS || parsed.some((p) => typeof p !== 'string')) {
       throw new Error('paths must be a JSON string array')
     }
     return parsed
@@ -21,10 +27,19 @@ function parsePaths(request: Request): string[] | undefined {
   return path ? [path] : undefined
 }
 
+async function validatePaths(paths: readonly string[] | undefined): Promise<string[] | undefined> {
+  if (!paths) return undefined
+  const allowed = new Set(await getVirtualFsPaths())
+  if (paths.some((path) => !allowed.has(path))) {
+    throw new Error('unknown virtual filesystem path')
+  }
+  return [...new Set(paths)]
+}
+
 export async function GET(request: Request) {
   let paths: string[] | undefined
   try {
-    paths = parsePaths(request)
+    paths = await validatePaths(parsePaths(request))
   } catch {
     return NextResponse.json({ error: 'invalid filesystem path request' }, { status: 400 })
   }

@@ -2,16 +2,17 @@
 // manifest builder and the lazy-body server use these so the tree the native
 // commands see always matches the tree the shell mounts.
 
+import { MARKDOWN_COLLECTIONS, type MarkdownDirectory } from '../contentCollections'
 import type { ContentKind } from './types'
 
 export const VFS_ABOUT = '/about.md'
 export const VFS_NOW = '/now.md'
 export const VFS_RESUME = '/resume.md'
 
-const DIR: Partial<Record<ContentKind, string>> = {
-  lab: '/lab',
-  post: '/blog',
-  project: '/projects',
+const KIND_TO_DIRECTORY: Partial<Record<ContentKind, MarkdownDirectory>> = {
+  lab: 'lab',
+  post: 'posts',
+  project: 'projects',
 }
 
 /** Virtual absolute path for a content item. */
@@ -19,8 +20,8 @@ export function virtualPath(kind: ContentKind, slug: string): string {
   if (kind === 'about') return VFS_ABOUT
   if (kind === 'now') return VFS_NOW
   if (kind === 'resume') return VFS_RESUME
-  const dir = DIR[kind]
-  return dir ? `${dir}/${slug}.md` : `/${slug}.md`
+  const directory = KIND_TO_DIRECTORY[kind]
+  return directory ? `${MARKDOWN_COLLECTIONS[directory].virtualDir}/${slug}.md` : `/${slug}.md`
 }
 
 /** Deep route an item links into (trailing slash to match trailingSlash:true). */
@@ -31,11 +32,11 @@ export function deepHref(kind: ContentKind, slug: string): string | null {
     case 'resume':
       return '/resume/'
     case 'project':
-      return `/projects/${slug}/`
+      return `/${MARKDOWN_COLLECTIONS.projects.routeSegment}/${slug}/`
     case 'post':
-      return `/blog/${slug}/`
+      return `/${MARKDOWN_COLLECTIONS.posts.routeSegment}/${slug}/`
     case 'lab':
-      return `/lab/${slug}/`
+      return `/${MARKDOWN_COLLECTIONS.lab.routeSegment}/${slug}/`
     default:
       return null
   }

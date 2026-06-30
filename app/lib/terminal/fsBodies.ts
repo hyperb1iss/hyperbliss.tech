@@ -3,15 +3,16 @@
 // commands and completion. Bodies are raw markdown files (frontmatter included)
 // so `cat` is authentic; `about` is synthesized because it has no source file.
 
+import { type AboutSection, getPage, readRawContentFile } from '../content'
 import {
-  type AboutSection,
-  getAllLabSlugs,
-  getAllPostSlugs,
-  getAllProjectSlugs,
-  getPage,
-  readRawContentFile,
-} from '../content'
-import { VFS_ABOUT, VFS_NOW, VFS_RESUME, virtualPath } from './paths'
+  getMarkdownSlugs,
+  getRawMarkdownSource,
+  MARKDOWN_COLLECTIONS,
+  type MarkdownDirectory,
+  markdownVirtualPath,
+  slugFromVirtualPath,
+} from '../contentCollections'
+import { VFS_ABOUT, VFS_NOW, VFS_RESUME } from './paths'
 
 function synthesizeAbout(about: AboutSection | null): string {
   if (!about) return '# About\n\nStefanie Jane — principal engineer, open-source maker.\n'
@@ -26,20 +27,17 @@ function synthesizeAbout(about: AboutSection | null): string {
     .concat('\n')
 }
 
-function assertSafeSlug(slug: string): void {
-  if (!/^[\w.-]+$/.test(slug)) {
-    throw new Error(`invalid virtual FS path: ${slug}`)
-  }
-}
-
-function slugFromVirtualPath(path: string, prefix: string): string {
-  const suffix = path.slice(prefix.length)
-  if (!suffix.endsWith('.md')) {
-    throw new Error(`invalid virtual FS path: ${path}`)
-  }
-  const slug = suffix.slice(0, -3)
-  assertSafeSlug(slug)
-  return slug
+export async function getVirtualFsPaths(): Promise<string[]> {
+  const directories = Object.keys(MARKDOWN_COLLECTIONS) as MarkdownDirectory[]
+  const slugsByDirectory = await Promise.all(
+    directories.map(async (directory) => [directory, await getMarkdownSlugs(directory)] as const),
+  )
+  return [
+    VFS_NOW,
+    VFS_RESUME,
+    VFS_ABOUT,
+    ...slugsByDirectory.flatMap(([directory, slugs]) => slugs.map((slug) => markdownVirtualPath(directory, slug))),
+  ]
 }
 
 export async function getVirtualFsBody(path: string): Promise<string> {
@@ -50,14 +48,9 @@ export async function getVirtualFsBody(path: string): Promise<string> {
       .then((p) => synthesizeAbout(p.about))
       .catch(() => synthesizeAbout(null))
   }
-  if (path.startsWith('/blog/')) {
-    return readRawContentFile(`posts/${slugFromVirtualPath(path, '/blog/')}.md`)
-  }
-  if (path.startsWith('/projects/')) {
-    return readRawContentFile(`projects/${slugFromVirtualPath(path, '/projects/')}.md`)
-  }
-  if (path.startsWith('/lab/')) {
-    return readRawContentFile(`lab/${slugFromVirtualPath(path, '/lab/')}.md`)
+  const source = slugFromVirtualPath(path)
+  if (source) {
+    return getRawMarkdownSource(source.directory, source.slug)
   }
   throw new Error(`unknown virtual FS path: ${path}`)
 }
@@ -70,22 +63,14 @@ export async function getVirtualFsBodies(paths?: readonly string[]): Promise<Rec
   }
 
   const out: Record<string, string> = {}
-  const [postSlugs, projectSlugs, labSlugs] = await Promise.all([
-    getAllPostSlugs(),
-    getAllProjectSlugs(),
-    getAllLabSlugs(),
-  ])
+  const allPaths = await getVirtualFsPaths()
 
   await Promise.all([
-    ...postSlugs.map(async (s) => {
-      out[virtualPath('post', s)] = await readRawContentFile(`posts/${s}.md`)
-    }),
-    ...projectSlugs.map(async (s) => {
-      out[virtualPath('project', s)] = await readRawContentFile(`projects/${s}.md`)
-    }),
-    ...labSlugs.map(async (s) => {
-      out[virtualPath('lab', s)] = await readRawContentFile(`lab/${s}.md`)
-    }),
+    ...allPaths
+      .filter((path) => path !== VFS_NOW && path !== VFS_RESUME && path !== VFS_ABOUT)
+      .map(async (path) => {
+        out[path] = await getVirtualFsBody(path)
+      }),
     getVirtualFsBody(VFS_NOW)
       .then((b) => {
         out[VFS_NOW] = b
