@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react'
 import Analytics from './Analytics'
+import CyberpunkEasterEgg from './CyberpunkEasterEgg'
 
 /**
  * ClientComponents
@@ -12,6 +13,7 @@ export default function ClientComponents() {
   return (
     <Suspense fallback={null}>
       <Analytics />
+      <CyberpunkEasterEgg />
     </Suspense>
   )
 }
