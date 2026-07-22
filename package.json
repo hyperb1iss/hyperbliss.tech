@@ -21,7 +21,7 @@
     "format:yaml": "prettier --write '**/*.{yml,yaml}'",
     "check": "biome check && prettier --check '**/*.{md,yml,yaml}'",
     "ci": "biome ci && prettier --check '**/*.{md,yml,yaml}'",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:seo": "vitest run tests/seo",
