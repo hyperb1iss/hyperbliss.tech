@@ -1,33 +1,7 @@
 // @vitest-environment node
 
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GET } from '@/api/activity/route'
-
-// The node-env Response polyfill lacks .json(); mirror the fs-route setup.
-beforeAll(() => {
-  const ResponseCtor = globalThis.Response as typeof Response & {
-    json?: (data: unknown, init?: ResponseInit) => Response
-  }
-  ResponseCtor.json ??= (data: unknown, init?: ResponseInit) => {
-    const response = new Response(JSON.stringify(data), {
-      ...init,
-      headers: { 'content-type': 'application/json', ...(init?.headers as Record<string, string> | undefined) },
-    })
-    Object.defineProperty(response, 'status', { configurable: true, value: init?.status ?? 200 })
-    return response
-  }
-  ResponseCtor.prototype.json ??= function json(this: Response) {
-    return this.text().then((text) => JSON.parse(text) as unknown)
-  }
-  if (!Object.getOwnPropertyDescriptor(ResponseCtor.prototype, 'status')) {
-    Object.defineProperty(ResponseCtor.prototype, 'status', {
-      configurable: true,
-      get(this: Response & { options?: ResponseInit }) {
-        return this.options?.status ?? 200
-      },
-    })
-  }
-})
 
 const pushEvent = {
   created_at: '2026-06-18T10:00:00Z',

@@ -16,7 +16,10 @@ export async function GET(): Promise<Response> {
     host: 'https://hyperbliss.tech',
     rules: [
       {
-        allow: '/',
+        allow: [
+          '/',
+          '/api/og', // Social-card renderer — scrapers (Twitterbot) must be able to fetch og:image
+        ],
         disallow: [
           '/api/*', // Prevent crawling of API routes
           '/_next/*', // Prevent crawling of Next.js system files
@@ -31,9 +34,10 @@ export async function GET(): Promise<Response> {
   const firstRule = robotsTxt.rules[0]
 
   // Convert the robots config to text format manually
+  const allows = Array.isArray(firstRule.allow) ? firstRule.allow : [firstRule.allow]
   const content = [
     `User-agent: ${firstRule.userAgent}`,
-    `Allow: ${firstRule.allow}`,
+    ...allows.map((path: string) => `Allow: ${path}`),
     ...firstRule.disallow.map((path: string) => `Disallow: ${path}`),
     `Sitemap: ${robotsTxt.sitemap}`,
     `Host: ${robotsTxt.host}`,

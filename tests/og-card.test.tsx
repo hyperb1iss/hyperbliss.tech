@@ -13,7 +13,8 @@ const variants: Record<string, string> = {
     'kind=blog&title=Loop%20Engineering%3A%20Building%20Self-Improving%20Agent%20Pipelines%20That%20Actually%20Converge&subtitle=What%20612%20debugging%20sessions%20taught%20me%20about%20verification%20cadence%2C%20drift%2C%20and%20the%20art%20of%20letting%20agents%20check%20their%20own%20work.&meta=July%2022%2C%202026&path=cat%20blog/loop-engineering.md',
   'og-blog-short':
     'kind=blog&title=Terminal%20Renaissance&subtitle=Why%20the%20command%20line%20is%20eating%20the%20web%20again.&meta=April%204%2C%202026&path=cat%20blog/terminal-renaissance.md',
-  'og-emoji': 'kind=blog&title=%F0%9F%8E%AD%20HyperShell%3A%20Unifying%20Windows%20and%20Linux&meta=October%2015%2C%202024',
+  'og-emoji':
+    'kind=blog&title=%F0%9F%8E%AD%20HyperShell%3A%20Unifying%20Windows%20and%20Linux&meta=October%2015%2C%202024',
   'og-project':
     'kind=project&title=chromacat&subtitle=A%20turbocharged%20terminal%20colorizer%20written%20in%20Rust.&path=hyperbliss%20projects%20--show%20chromacat',
   'og-site': 'kind=site',

@@ -167,6 +167,7 @@ function ContentBody(props: OgCardProps): ReactElement {
             lineHeight: 1.15,
             marginTop: 28,
             textShadow: '0 0 28px rgba(162, 89, 255, 0.75), 0 0 70px rgba(255, 117, 216, 0.35)',
+            wordBreak: 'break-word',
           }}
         >
           {clamp(title, 90)}
