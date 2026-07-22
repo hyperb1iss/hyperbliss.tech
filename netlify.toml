@@ -1,6 +1,7 @@
-# typecheck runs here because next's in-build check is disabled while
-# TypeScript 7 lacks a JS API (until Next 16.3's useTypeScriptCli) — without
-# it, a type-broken push would deploy while CI merely goes red.
+# Explicit typecheck kept as defense-in-depth while we ride the Next 16.3
+# canary for TypeScript 7 support (useTypeScriptCli) — the in-build check is
+# active again, but a deploy-blocking gate that doesn't depend on Next's TS
+# integration has already saved us once.
 [build]
 command = "pnpm typecheck && pnpm build"
 publish = ".next"

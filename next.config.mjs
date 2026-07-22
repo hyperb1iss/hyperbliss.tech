@@ -12,6 +12,12 @@ const nextConfig = {
     // default on, even though it runs in the just-bash wasm sandbox.
     NEXT_PUBLIC_WEBMCP_SHELL: process.env.NEXT_PUBLIC_WEBMCP_SHELL ?? 'false',
   },
+  experimental: {
+    // TypeScript 7's native compiler ships no JS API; this backend invokes the
+    // local tsc CLI instead. Requires next 16.3 — drop the canary pin once
+    // 16.3 goes stable.
+    useTypeScriptCli: true,
+  },
   generateEtags: false,
 
   // Configure headers for security and privacy
@@ -78,13 +84,6 @@ const nextConfig = {
   trailingSlash: true,
 
   turbopack: {},
-
-  typescript: {
-    // TypeScript 7 (native compiler) has no JS API, which next's in-build type
-    // check needs until 16.3's useTypeScriptCli lands. Types gate via
-    // `pnpm typecheck` in CI instead.
-    ignoreBuildErrors: true,
-  },
 }
 
 export default nextConfig
