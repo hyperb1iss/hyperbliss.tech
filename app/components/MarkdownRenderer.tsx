@@ -29,6 +29,7 @@ import {
   StyledTr,
   StyledUl,
 } from './MarkdownStyles'
+import MermaidDiagram from './MermaidDiagram'
 
 const sanitizeSchema = {
   ...defaultSchema,
@@ -58,6 +59,18 @@ function isLoneImageParagraph(node?: Element): boolean {
 
 function isInlineCode(node?: Element): boolean {
   return node?.position?.start.line === node?.position?.end.line
+}
+
+function mermaidSource(node?: Element): string | null {
+  const codeChild = node?.children?.find(
+    (child): child is Element => child.type === 'element' && child.tagName === 'code',
+  )
+  if (!codeChild) return null
+  const className = codeChild.properties?.className
+  if (Array.isArray(className) && className.includes('language-mermaid')) {
+    return hastToString(codeChild).replace(/\n$/, '')
+  }
+  return null
 }
 
 interface MarkdownRendererProps {
@@ -175,7 +188,13 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           return <StyledParagraph {...props}>{children}</StyledParagraph>
         },
 
-        pre: (props) => <PreWithCopy {...props} />,
+        pre: (props) => {
+          const mermaid = mermaidSource(props.node)
+          if (mermaid !== null) {
+            return <MermaidDiagram code={mermaid} />
+          }
+          return <PreWithCopy {...props} />
+        },
         table: ({ node: _node, ...props }) => <StyledTable {...props} />,
         tbody: ({ node: _node, ...props }) => <StyledTbody {...props} />,
         td: ({ node: _node, ...props }) => <StyledTd {...props} />,
