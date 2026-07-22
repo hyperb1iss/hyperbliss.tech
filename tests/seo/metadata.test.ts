@@ -218,8 +218,11 @@ describe('Metadata Generation', () => {
         expect(ogImages[0]).toMatchObject({
           alt: expect.any(String),
           height: 630,
-          url: expect.stringContaining('hyperbliss.tech'),
+          url: expect.stringContaining('/api/og?kind=blog'),
           width: 1200,
+        })
+        expect(ogImages[0]).toMatchObject({
+          url: expect.stringContaining('title=Test+Blog+Post'),
         })
       }
 
@@ -231,7 +234,7 @@ describe('Metadata Generation', () => {
       if (Array.isArray(twitterImages)) {
         expect(twitterImages[0]).toMatchObject({
           alt: expect.any(String),
-          url: expect.stringContaining('hyperbliss.tech'),
+          url: expect.stringContaining('/api/og?kind=blog'),
         })
       }
     })
@@ -264,9 +267,17 @@ describe('Metadata Generation', () => {
         siteName: 'Hyperbliss',
         tags: ['test', 'project'],
         title: 'Test Project',
-        type: 'article',
+        type: 'website',
         url: 'https://hyperbliss.tech/projects/test-project/',
       })
+
+      const ogImages = metadata.openGraph?.images
+      expect(Array.isArray(ogImages)).toBe(true)
+      if (Array.isArray(ogImages)) {
+        expect(ogImages[0]).toMatchObject({
+          url: expect.stringContaining('/api/og?kind=project'),
+        })
+      }
 
       expect(metadata.twitter).toMatchObject({
         card: 'summary_large_image',

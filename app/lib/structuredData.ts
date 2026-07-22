@@ -1,5 +1,6 @@
 import type { BlogPosting, BreadcrumbList, Person, SoftwareApplication, WebSite, WithContext } from 'schema-dts'
 import { TECH_TAGS } from './constants'
+import { buildOgImageUrl } from './ogImage'
 
 const BASE_URL = 'https://hyperbliss.tech'
 
@@ -9,7 +10,7 @@ export function generatePersonSchema(): WithContext<Person> {
     '@type': 'Person',
     alternateName: 'hyperb1iss',
     description: 'Developer, designer, and tech enthusiast. Open source contributor and creative technologist.',
-    image: `${BASE_URL}/images/og-default.jpg`,
+    image: `${BASE_URL}/images/profile-image.jpg`,
     jobTitle: 'Full Stack Engineer & Creative Technologist',
     knowsAbout: Array.from(TECH_TAGS),
     name: 'Stefanie Jane',
@@ -62,7 +63,7 @@ export function generateArticleSchema(
     datePublished,
     description,
     headline: title,
-    image: image ? `${BASE_URL}/images/${image}` : `${BASE_URL}/images/og-default.jpg`,
+    image: image ? `${BASE_URL}/images/${image}` : buildOgImageUrl({ kind: 'blog', title }),
     keywords: tags,
     mainEntityOfPage: {
       '@id': url,

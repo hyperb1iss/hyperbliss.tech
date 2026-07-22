@@ -2,6 +2,7 @@
 
 import type { Metadata, ResolvingMetadata } from 'next'
 import type { Metadata as MetadataInterface } from 'next/dist/lib/metadata/types/metadata-interface'
+import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Configuration values
 const BASE_URL = 'https://hyperbliss.tech'
@@ -10,12 +11,11 @@ const SITE_NAME = 'Hyperbliss'
 const DEFAULT_LOCALE = 'en_US'
 const TWITTER_HANDLE = '@hyperb1iss'
 
-// Add new constant for images
-const DEFAULT_OG_IMAGE = {
-  alt: 'Hyperbliss',
-  height: 630,
-  url: `${BASE_URL}/images/og-default.jpg`,
-  width: 1200,
+/** Formats a frontmatter date for the card's meta pill, e.g. "July 22, 2026". */
+function formatCardDate(date: string): string {
+  const parsed = new Date(date)
+  if (Number.isNaN(parsed.getTime())) return date
+  return parsed.toLocaleDateString('en-US', { day: 'numeric', month: 'long', timeZone: 'UTC', year: 'numeric' })
 }
 
 /**
@@ -67,24 +67,25 @@ function createOpenGraph(
   description: string,
   url: string,
   author: string,
+  imageUrl: string,
+  type: 'article' | 'website',
   tags?: string[],
   publishedTime?: string,
-  ogImage?: string,
 ): NonNullable<MetadataInterface['openGraph']> {
   return {
     description,
     images: [
       {
-        ...DEFAULT_OG_IMAGE,
         alt: title,
-        // Override with custom image if provided
-        url: ogImage ? `${BASE_URL}/images/${ogImage}` : DEFAULT_OG_IMAGE.url,
+        height: OG_IMAGE_HEIGHT,
+        url: imageUrl,
+        width: OG_IMAGE_WIDTH,
       },
     ],
     locale: DEFAULT_LOCALE,
     siteName: SITE_NAME,
     title,
-    type: 'article',
+    type,
     url: ensureTrailingSlash(url),
     ...(publishedTime && { publishedTime }),
     ...(author && { authors: [author] }),
@@ -98,7 +99,7 @@ function createOpenGraph(
 function createTwitter(
   title: string,
   description: string,
-  ogImage?: string,
+  imageUrl: string,
 ): NonNullable<MetadataInterface['twitter']> {
   return {
     card: 'summary_large_image',
@@ -107,7 +108,7 @@ function createTwitter(
     images: [
       {
         alt: title,
-        url: ogImage ? `${BASE_URL}/images/${ogImage}` : DEFAULT_OG_IMAGE.url,
+        url: imageUrl,
       },
     ],
     site: TWITTER_HANDLE,
@@ -131,6 +132,13 @@ export async function generateBlogMetadata(
   const defaultAuthor = getDefaultAuthor()
   const url = `${BASE_URL}/blog/${slug}`
   const author = frontmatter.author || defaultAuthor
+  const imageUrl = buildOgImageUrl({
+    kind: 'blog',
+    meta: formatCardDate(frontmatter.date),
+    path: `cat blog/${slug}.md`,
+    subtitle: frontmatter.excerpt,
+    title: frontmatter.title,
+  })
 
   const metadata: Metadata = {
     alternates: {
@@ -140,7 +148,16 @@ export async function generateBlogMetadata(
     description: frontmatter.excerpt,
     keywords: frontmatter.tags,
     metadataBase: new URL(BASE_URL),
-    openGraph: createOpenGraph(frontmatter.title, frontmatter.excerpt, url, author, frontmatter.tags, frontmatter.date),
+    openGraph: createOpenGraph(
+      frontmatter.title,
+      frontmatter.excerpt,
+      url,
+      author,
+      imageUrl,
+      'article',
+      frontmatter.tags,
+      frontmatter.date,
+    ),
     robots: {
       follow: true,
       googleBot: {
@@ -153,7 +170,7 @@ export async function generateBlogMetadata(
       index: true,
     },
     title: frontmatter.title,
-    twitter: createTwitter(frontmatter.title, frontmatter.excerpt),
+    twitter: createTwitter(frontmatter.title, frontmatter.excerpt, imageUrl),
   }
 
   return {
@@ -178,6 +195,12 @@ export async function generateProjectMetadata(
   const defaultAuthor = getDefaultAuthor()
   const url = `${BASE_URL}/projects/${slug}`
   const author = frontmatter.author || defaultAuthor
+  const imageUrl = buildOgImageUrl({
+    kind: 'project',
+    path: `hyperbliss projects --show ${slug}`,
+    subtitle: frontmatter.description,
+    title: frontmatter.title,
+  })
 
   const metadata: Metadata = {
     alternates: {
@@ -187,7 +210,15 @@ export async function generateProjectMetadata(
     description: frontmatter.description,
     keywords: frontmatter.tags,
     metadataBase: new URL(BASE_URL),
-    openGraph: createOpenGraph(frontmatter.title, frontmatter.description, url, author, frontmatter.tags),
+    openGraph: createOpenGraph(
+      frontmatter.title,
+      frontmatter.description,
+      url,
+      author,
+      imageUrl,
+      'website',
+      frontmatter.tags,
+    ),
     robots: {
       follow: true,
       googleBot: {
@@ -200,7 +231,7 @@ export async function generateProjectMetadata(
       index: true,
     },
     title: frontmatter.title,
-    twitter: createTwitter(frontmatter.title, frontmatter.description),
+    twitter: createTwitter(frontmatter.title, frontmatter.description, imageUrl),
   }
 
   return {

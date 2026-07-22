@@ -1,6 +1,7 @@
 // app/lib/metadata.ts
 import { Metadata } from 'next'
 import { TECH_TAGS } from './constants'
+import { DEFAULT_OG_IMAGE_URL, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Constants for site metadata
 const AUTHOR_NAME = 'Stefanie Jane'
@@ -10,12 +11,12 @@ const SITE_DESCRIPTION = 'The personal website of Stefanie Jane—developer, des
 const SITE_NAME = '🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹'
 const OG_LOCALE = 'en_US'
 
-// Add new constants for images
+// Generated SilkCircuit terminal card — see app/api/og
 const DEFAULT_OG_IMAGE = {
   alt: SITE_DESCRIPTION,
-  height: 630,
-  url: `${BASE_URL}/images/og-default.jpg`,
-  width: 1200,
+  height: OG_IMAGE_HEIGHT,
+  url: DEFAULT_OG_IMAGE_URL,
+  width: OG_IMAGE_WIDTH,
 }
 
 /**
