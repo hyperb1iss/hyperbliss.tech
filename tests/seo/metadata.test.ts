@@ -218,7 +218,7 @@ describe('Metadata Generation', () => {
         expect(ogImages[0]).toMatchObject({
           alt: expect.any(String),
           height: 630,
-          url: expect.stringContaining('/api/og?kind=blog'),
+          url: expect.stringContaining('/api/og/?kind=blog'),
           width: 1200,
         })
         expect(ogImages[0]).toMatchObject({
@@ -234,7 +234,7 @@ describe('Metadata Generation', () => {
       if (Array.isArray(twitterImages)) {
         expect(twitterImages[0]).toMatchObject({
           alt: expect.any(String),
-          url: expect.stringContaining('/api/og?kind=blog'),
+          url: expect.stringContaining('/api/og/?kind=blog'),
         })
       }
     })
@@ -275,7 +275,7 @@ describe('Metadata Generation', () => {
       expect(Array.isArray(ogImages)).toBe(true)
       if (Array.isArray(ogImages)) {
         expect(ogImages[0]).toMatchObject({
-          url: expect.stringContaining('/api/og?kind=project'),
+          url: expect.stringContaining('/api/og/?kind=project'),
         })
       }
 
