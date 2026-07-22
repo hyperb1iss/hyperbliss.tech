@@ -1,5 +1,8 @@
+# typecheck runs here because next's in-build check is disabled while
+# TypeScript 7 lacks a JS API (until Next 16.3's useTypeScriptCli) — without
+# it, a type-broken push would deploy while CI merely goes red.
 [build]
-command = "pnpm build"
+command = "pnpm typecheck && pnpm build"
 publish = ".next"
 
 [[plugins]]

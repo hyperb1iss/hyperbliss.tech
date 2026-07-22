@@ -37,6 +37,9 @@ jobs:
       - name: 🎨 Format & Lint
         run: pnpm run ci
 
+      - name: 🔍 Typecheck
+        run: pnpm typecheck
+
       - name: 🧪 Run tests
         run: pnpm test
 
