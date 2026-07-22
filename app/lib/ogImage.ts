@@ -26,7 +26,9 @@ export function buildOgImageUrl({ kind, title, subtitle, meta, path }: OgImagePa
   if (subtitle) params.set('subtitle', subtitle)
   if (meta) params.set('meta', meta)
   if (path) params.set('path', path)
-  return `${BASE_URL}/api/og?${params.toString()}`
+  // trailingSlash: true 308s route handlers at the bare path; emit the
+  // canonical slashed URL so scrapers never eat a redirect hop.
+  return `${BASE_URL}/api/og/?${params.toString()}`
 }
 
 export const DEFAULT_OG_IMAGE_URL = buildOgImageUrl({ kind: 'site' })
