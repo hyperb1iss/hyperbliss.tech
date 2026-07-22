@@ -43,6 +43,10 @@ export async function GET(request: NextRequest): Promise<ImageResponse> {
         // Cards are keyed by their full query string, so long-lived caching
         // is safe: a title change produces a new URL.
         'Cache-Control': 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800',
+        // Netlify's function cache ignores query strings unless told to vary
+        // on them — without this, the first card rendered serves for EVERY
+        // query string (verified live: identical bytes across kinds).
+        'Netlify-Vary': 'query',
       },
       height: OG_HEIGHT,
       width: OG_WIDTH,

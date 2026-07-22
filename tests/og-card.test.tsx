@@ -27,6 +27,7 @@ describe('og card generation', () => {
       expect(response.status).toBe(200)
       expect(response.headers.get('content-type')).toBe('image/png')
       expect(response.headers.get('cache-control')).toContain('s-maxage')
+      expect(response.headers.get('netlify-vary')).toBe('query')
       const bytes = Buffer.from(await response.arrayBuffer())
       expect(bytes.length).toBeGreaterThan(10_000)
       expect(bytes.subarray(0, 8)).toEqual(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
