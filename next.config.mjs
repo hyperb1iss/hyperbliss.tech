@@ -78,6 +78,13 @@ const nextConfig = {
   trailingSlash: true,
 
   turbopack: {},
+
+  typescript: {
+    // TypeScript 7 (native compiler) has no JS API, which next's in-build type
+    // check needs until 16.3's useTypeScriptCli lands. Types gate via
+    // `pnpm typecheck` in CI instead.
+    ignoreBuildErrors: true,
+  },
 }
 
 export default nextConfig

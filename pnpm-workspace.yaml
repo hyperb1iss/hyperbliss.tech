@@ -1,24 +1,15 @@
 overrides:
-  "next>postcss": "8.5.15"
-  "hono@<4.12.25": ">=4.12.25 <5"
-  "@hono/node-server@<2.0.5": ">=2.0.5 <3"
-  "undici@<7.28.0": ">=7.28.0 <8"
-  "js-yaml@<3.15.0": ">=3.15.0 <4"
-  diff: ">=5.2.2"
-  "qs@>=6.7.0 <=6.14.1": ">=6.14.2"
-  "ajv@>=7.0.0 <8.18.0": ">=8.18.0"
-  "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0"
   "postcss@<8.5.10": ">=8.5.10"
-  "brace-expansion@>=3.0.0 <5.0.7": ">=5.0.7 <6"
   "sharp@<0.35.0": ">=0.35.0 <0.36"
-  "fast-uri@>=3.0.0 <3.1.4": ">=3.1.4 <4"
-  "body-parser@>=2.0.0 <2.3.0": ">=2.3.0 <3"
+  "@hono/node-server@<2.0.5": ">=2.0.5 <3"
 
 allowBuilds:
   # just-bash's optional Node compression backends — we only ship its browser
   # bundle, which doesn't use them, so skip building the native modules.
   "@mongodb-js/zstd": false
-  "@swc/core": true
   esbuild: true
   node-liblzma: false
   sharp: true
+
+minimumReleaseAgeExclude:
+  - "@vitejs/plugin-react@6.0.4"

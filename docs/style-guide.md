@@ -618,15 +618,11 @@ import { styled } from '../styled-system/jsx'
 
 // Base components using styled factory
 const ComponentWrapper = styled('div', {
-  base: {
-    /* Base styles */
-  },
+  base: {/* Base styles */},
 })
 
 const ComponentTitle = styled('h2', {
-  base: {
-    /* Title styles */
-  },
+  base: {/* Title styles */},
 })
 
 // Component implementation
