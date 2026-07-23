@@ -191,4 +191,16 @@ describe('registered command set', () => {
     const h = await run('sudo rm -rf /')
     expect(h.printedText()).toContain('nice try')
   })
+
+  it('meow reveals the hidden cosmic cat', async () => {
+    const h = await run('meow')
+    const { container } = render(h.printed.at(-1)?.node)
+
+    expect(container.querySelector('[role="img"]')).toHaveAttribute(
+      'aria-label',
+      'A neon cosmic cat answers your signal',
+    )
+    expect(container.textContent).toContain('mrrp protocol accepted')
+    expect(shared.visible().some((command) => command.name === 'meow')).toBe(false)
+  })
 })

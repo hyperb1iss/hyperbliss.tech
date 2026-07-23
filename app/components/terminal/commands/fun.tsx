@@ -1,7 +1,8 @@
-// Easter eggs: ssh, sudo. Self-registers on import. `contact` teases `ssh`, so
-// these ship with P1; the rest of T4.3 (a game) lands in P4.
+// Terminal surprises self-register on import. Hidden commands stay out of help
+// and the command palette, but remain available to curious visitors.
 
 import { styled } from '../../../../styled-system/jsx'
+import CosmicCat from '../CosmicCat'
 import MatrixRain from '../MatrixRain'
 import { registry } from '../registry'
 import { text } from '../render'
@@ -75,6 +76,14 @@ registry.register({
   name: 'matrix',
   run: () => <MatrixRain />,
   summary: 'follow the white rabbit',
+})
+
+registry.register({
+  group: 'fun',
+  hidden: true,
+  name: 'meow',
+  run: () => <CosmicCat />,
+  summary: 'ping the cosmic cat network',
 })
 
 registry.register({
