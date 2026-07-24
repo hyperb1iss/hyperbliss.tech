@@ -65,6 +65,7 @@ Rules:
 - Max 4 tags, alphanumeric only (strip hyphens/special chars, lowercase)
 - Canonical URL always points back to hyperbliss.tech
 - Cover image: prefix with `https://hyperbliss.tech/images/` if relative path
+- No `coverImage` in frontmatter? Fall back to the first body image
 - Always `published: false` — drafts only
 
 ### Markdown Transformations
@@ -81,7 +82,25 @@ Apply these transformations to the markdown body before publishing:
 | Bare YouTube URLs | `{% embed URL %}` |
 | Bare CodePen URLs | `{% embed URL %}` |
 | `$$math$$` | `{% katex %}math{% endkatex %}` |
-| `$inline$` | `{% katex inline %}inline{% endkatex %}` |
+| `![[wide] alt](...)` layout hints | Strip the hint: `![alt](...)` |
+| Relative `](/...)` links and images | Absolute: `](https://hyperbliss.tech/...)` |
+
+Inline `$math$` is NOT auto-converted — single dollars false-positive on
+currency ("$165,000"). Convert inline math by hand if a post ever needs it.
+
+Fenced code passes through byte-for-byte — never unwrap or space-collapse
+inside a fence. Note: dev.to does not render ```mermaid blocks; they show
+as plain code. Flag any mermaid diagrams in the post-publish report.
+
+To swap mermaid for images: the live site renders diagrams as
+SilkCircuit-themed SVG in `.silk-mermaid` containers. Capture them with
+agent-browser at deviceScaleFactor 2 — but element-selector screenshots
+return black boxes, so take full-viewport screenshots and crop instead:
+scroll the element to center with `behavior: 'instant'` (smooth scroll
+races the measurement), verify its rect is fully in-viewport, screenshot,
+then `cwebp -crop x*2 y*2 w*2 h*2` straight to webp. Drop captures in
+`public/images/blog/`, PUT the draft with image + `{% details %}`-wrapped
+source, and remember the images 404 on dev.to until the site deploys.
 
 ### Footer
 
@@ -96,13 +115,17 @@ Append a cross-post footer to every article:
 
 ## Publishing via API
 
-Execute the publish script:
+Execute the publish script (a thin wrapper around `scripts/convert.js`,
+which does the real work):
 
 ```bash
-bash .claude/skills/hypercast/scripts/publish.sh <slug>
+bash .claude/skills/hypercast/scripts/publish.sh <slug> [--dry-run]
 ```
 
-The script handles reading the file, conversion, and API call. Parse its JSON output for the draft URL.
+Always dry-run first and sanity-check the payload (fences intact, no
+relative URLs left, correct tags/cover) before the real publish. The script
+prints the full article JSON on `--dry-run` and publishes on the bare
+invocation. Parse its JSON output for the draft URL.
 
 If the script is not available or fails, perform the equivalent steps manually:
 1. Read the post with the Read tool
@@ -126,4 +149,5 @@ When invoked with `list`, read the `content/posts/` directory and display availa
 - **`references/devto-format.md`** — Complete dev.to markdown format reference including all liquid tags, HTML whitelist, and formatting quirks
 
 ### Scripts
-- **`scripts/publish.sh`** — Shell script that reads a post, converts format, and publishes via the API
+- **`scripts/publish.sh`** — Thin wrapper that execs `convert.js`
+- **`scripts/convert.js`** — Reads a post, converts format (fence-aware paragraph unwrapping, URL absolutization, liquid tags), and publishes via the API; `--dry-run` prints the payload instead
