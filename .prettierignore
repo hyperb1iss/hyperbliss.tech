@@ -5,6 +5,8 @@ pnpm-lock.yaml
 node_modules/
 .pnp
 .pnp.js
+**/.venv/
+**/__pycache__/
 
 # Production
 build/
