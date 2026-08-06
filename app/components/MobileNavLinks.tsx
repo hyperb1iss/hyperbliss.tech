@@ -82,7 +82,6 @@ const navLinkStyles = css`
   text-decoration: none;
   border-radius: var(--radius-md);
   cursor: pointer;
-  pointer-events: auto;
   position: relative;
   transition: all 0.2s ease;
   background: transparent;
@@ -205,6 +204,10 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     <motion.nav
       animate={open ? 'open' : 'closed'}
       className={navPanelStyles}
+      // The closed panel still occupies its box over the terminal handle, so
+      // inert keeps its faded links out of hit-testing, focus, and the a11y
+      // tree instead of relying on pointer-events alone.
+      inert={!open}
       initial="closed"
       ref={panelRef}
       style={{ background: 'rgb(12, 12, 20)' }}
