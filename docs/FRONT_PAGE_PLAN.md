@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Wave 1 in progress** · Branch: `nova/front-page` ·
+> Status: **Waves 1–3 built, gates + review pending** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
 
@@ -53,32 +53,32 @@ shipping, and elsewhere.
 ### Wave 1 · Foundation
 
 - [x] **T0** Plan ledger committed (this file).
-- [ ] **T1** Fonts: Syne + IBM Plex Sans via `next/font`, Space Mono kept.
+- [x] **T1** Fonts: Syne + IBM Plex Sans via `next/font`, Space Mono kept.
       Files: `app/styles/fonts.ts`, `app/layout.tsx`,
       `app/styles/silkcircuit/variables.css`.
       Verify: `pnpm typecheck`; `grep -rn "font-jura\|font-exo2" app` empty.
-- [ ] **T2** Feed model: `app/lib/feed.ts` with `buildFeed()` merging posts,
+- [x] **T2** Feed model: `app/lib/feed.ts` with `buildFeed()` merging posts,
       lab, releases, launches into `FeedItem[]`; releases carry a one-line
       summary (release name or first line of body) via `app/lib/github.ts`.
       Files: `app/lib/feed.ts`, `app/lib/github.ts`, `tests/lib/feed.test.ts`.
       Verify: `pnpm test -- tests/lib/feed.test.ts`.
-- [ ] **T3** Releases for every project with a GitHub URL (not the curated 4)
+- [x] **T3** Releases for every project with a GitHub URL (not the curated 4)
       in `app/(transition)/page.tsx`; in-memory + ISR caching already bounds
       this to one call per repo per hour.
       Verify: `pnpm build` with and without `GITHUB_TOKEN` renders `/`.
 
 ### Wave 2 · Front page
 
-- [ ] **T4** `app/components/front/` — `FrontPage` (server), `LeadStory`,
+- [x] **T4** `app/components/front/` — `FrontPage` (server), `LeadStory`,
       `Feed`, `Rail` (who, now, shipping, elsewhere). Wired into `TerminalHome`
       in place of hero + card sections. `noscript` fallback and
       `TerminalConsole` untouched.
       Verify: `pnpm build`; `pnpm test:seo`; visual at 1440 and 390.
-- [ ] **T5** Delete `HeroSectionSilk`, `HomePageClient`,
+- [x] **T5** Delete `HeroSectionSilk`, `HomePageClient`,
       `LatestBlogPostsSilk`, `FeaturedProjectsSectionSilk`, `homeContent.ts`;
       trim `content/pages/home.json` to what the front page reads.
       Verify: `pnpm typecheck`; `pnpm test`; grep for dead imports empty.
-- [ ] **T6** Header refresh: nav set in Syne, logo mark calmed (no glitch
+- [x] **T6** Header refresh: nav set in Syne, logo mark calmed (no glitch
       keyframes), CyberScape config tuned (60fps target, fewer shapes, lower
       particle density, softer glow, hairline connections).
       Files: `app/components/NavLinks.tsx`, `app/components/Logo.tsx`,
@@ -87,14 +87,14 @@ shipping, and elsewhere.
 
 ### Wave 3 · Motion and polish
 
-- [ ] **T7** Entrance orchestration (client wrapper, Framer variants:
+- [x] **T7** Entrance orchestration (client wrapper, Framer variants:
       lead → feed stagger → rail), hover states (version brightens, photo
       duotone warms), reduced-motion path.
       Verify: visual; `prefers-reduced-motion` emulation shows no transforms.
-- [ ] **T8** Responsive: rail stacks under feed below 1024px; lead headline
+- [x] **T8** Responsive: rail stacks under feed below 1024px; lead headline
       fluid; 390px clean.
       Verify: visual at 390, 768, 1024, 1440.
-- [ ] **T9** Tests: `homepage-content.test.tsx` updated to the new SSR
+- [x] **T9** Tests: `homepage-content.test.tsx` updated to the new SSR
       markup; render test for `FrontPage`.
       Verify: `pnpm test`.
 - [ ] **T10** Gates + independent review: `pnpm typecheck && pnpm lint &&
@@ -108,3 +108,21 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
 - Syne + IBM Plex Sans chosen from three type systems on the canvas
   (Bliss picked T2). Space Mono kept over Martian Mono (see invariants).
 - No ticker or metadata line under the header (Bliss, Round 3b).
+- Entrance animation is CSS, not Framer: an inline `opacity:0` from a
+  motion component survives hydration under reduced motion and leaves
+  the page invisible. Keyframe plus `prefers-reduced-motion` has no such
+  failure mode.
+- Panda `styled(Component)` swallows the `as` prop, so `Reveal` takes a
+  `className` instead of being wrapped by `styled()`.
+- Front-page headings opt out of the global uppercase + glow heading
+  rule locally. Retiring that rule site-wide is a follow-up, not this
+  round (non-goal: other pages).
+
+## Follow-ups (not this round)
+
+- OG image renderer still sets Jura and Exo 2; move it to Syne + Plex.
+- Global `h1..h6` uppercase + text-shadow rule; the other pages still
+  inherit it.
+- A unified archive route for the feed ("Older →" currently splits to
+  /blog and /projects).
+- `now.md` copy is a draft; Bliss to approve or rewrite.
