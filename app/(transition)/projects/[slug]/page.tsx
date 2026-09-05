@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import ProjectDetailView from '../../../components/ProjectDetailView'
 import { getAllProjectSlugs, getProject } from '../../../lib/content'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
+import { getLatestRelease } from '../../../lib/github'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -38,12 +39,16 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = await getProject(slug)
   if (!project) notFound()
 
+  const release = project.github ? await getLatestRelease(project.github).catch(() => null) : null
+
   return (
     <ProjectDetailView
       body={project.body}
       github={project.github ?? ''}
+      releaseUrl={release?.url ?? null}
       tags={(project.tags ?? []).filter((t): t is string => t !== null)}
-      title={project.displayTitle}
+      title={project.title}
+      version={release?.version ?? null}
     />
   )
 }

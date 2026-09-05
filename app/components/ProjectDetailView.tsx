@@ -1,83 +1,69 @@
+// app/components/ProjectDetailView.tsx
+// A project page: name and tagline, tags, version and repo link, then the
+// README-style body. Header matches the Projects index rows.
+
 'use client'
 
-import { motion } from 'framer-motion'
-import React from 'react'
-import { FaGithub } from 'react-icons/fa6'
+import { shortName, tagline } from '@/lib/feed'
+import Reveal from './front/Reveal'
 import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
-import { StarDivider } from './StarComponents'
 
 interface ProjectDetailViewProps {
   title: string
   github: string
   body: string | null
   tags?: string[]
+  version?: string | null
+  releaseUrl?: string | null
 }
 
-const ProjectDetailView: React.FC<ProjectDetailViewProps> = ({ title, github, body, tags }) => {
+export default function ProjectDetailView({ title, github, body, tags, version, releaseUrl }: ProjectDetailViewProps) {
+  const name = shortName(title)
+  const sub = tagline(title)
   return (
     <article className="project-detail">
-      <header className="project-detail__hero">
-        <div className="project-detail__decoration" />
-        <div className="project-detail__decoration" />
-
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          className="project-detail__title-wrap"
-          initial={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.6 }}
-        >
-          <h1 className="project-detail__title">{title}</h1>
-        </motion.div>
-
+      <Reveal as="div" className="project-detail__hero" order={0}>
+        <div className="project-detail__meta">
+          {version &&
+            (releaseUrl ? (
+              <a className="project-detail__version" href={releaseUrl} rel="noopener noreferrer">
+                v{version}
+              </a>
+            ) : (
+              <span className="project-detail__version">v{version}</span>
+            ))}
+          {github && (
+            <a className="project-detail__repo" href={github} rel="noopener noreferrer">
+              GitHub →
+            </a>
+          )}
+        </div>
+        <h1 className="project-detail__title">
+          {name}
+          {sub && <span className="project-detail__tagline">{sub}</span>}
+        </h1>
         {tags && tags.length > 0 && (
-          <motion.div
-            animate={{ opacity: 1 }}
-            className="project-detail__tags"
-            initial={{ opacity: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
+          <div className="project-detail__tags">
             {tags.map((tag) => (
               <span className="project-detail__tag" key={tag}>
                 {tag}
               </span>
             ))}
-          </motion.div>
+          </div>
         )}
-      </header>
+      </Reveal>
 
-      <motion.div
-        animate={{ opacity: 1 }}
-        className="project-detail__divider"
-        initial={{ opacity: 0 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
-      >
-        <StarDivider compact={true} />
-      </motion.div>
-
-      <motion.div
-        animate={{ opacity: 1 }}
-        className="project-detail__content"
-        initial={{ opacity: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-      >
+      <Reveal className="project-detail__content" order={2}>
         {body && <ProjectMarkdownRenderer content={body} />}
-      </motion.div>
+      </Reveal>
 
       {github && (
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          className="project-detail__actions"
-          initial={{ opacity: 0, y: 20 }}
-          transition={{ delay: 0.7, duration: 0.6 }}
-        >
-          <a className="project-detail__github" href={github} rel="noopener noreferrer" target="_blank">
-            <FaGithub />
-            <span>View on GitHub</span>
+        <Reveal className="project-detail__actions" order={3}>
+          <a className="project-detail__github" href={github} rel="noopener noreferrer">
+            View on GitHub →
           </a>
-        </motion.div>
+        </Reveal>
       )}
     </article>
   )
 }
-
-export default ProjectDetailView

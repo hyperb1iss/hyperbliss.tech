@@ -1,12 +1,16 @@
 // app/components/BlogPost.tsx
+// An essay: kind and date, sentence-case title, tags, then the prose. The
+// header matches the front page lead story; the body keeps the blog prose
+// styles from blog.css.
+
 'use client'
 
-import { motion } from 'framer-motion'
-import React from 'react'
-import { formatPostDate } from '../lib/formatPostDate'
+import type { ReactNode } from 'react'
+import Badge from './front/Badge'
+import { longDate } from './front/format'
+import Reveal from './front/Reveal'
 import MarkdownRenderer from './MarkdownRenderer'
 import { BlogContent } from './MarkdownStyles'
-import { SparklingName } from './SparklingName'
 
 interface BlogPostProps {
   title: string
@@ -14,58 +18,48 @@ interface BlogPostProps {
   content: string
   author?: string
   tags?: string[]
+  /** Optional slot rendered under the tags, e.g. a kind-specific note. */
+  aside?: ReactNode
 }
 
-const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags }) => {
+/** A bare ISO date renders from its parts so no timezone can shift the day. */
+function isoDay(value: string): string | null {
+  const trimmed = value.trim()
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed
+  const time = new Date(trimmed).getTime()
+  return Number.isNaN(time) ? null : new Date(time).toISOString().slice(0, 10)
+}
+
+export default function BlogPost({ title, date, content, tags, aside }: BlogPostProps) {
+  const day = isoDay(date)
   return (
     <article className="blog-post">
-      <motion.h1
-        animate={{ opacity: 1, y: 0 }}
-        className="blog-post__title"
-        initial={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.6 }}
-      >
-        {title}
-      </motion.h1>
-      <motion.div
-        animate={{ opacity: 1 }}
-        className="blog-post__meta"
-        initial={{ opacity: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-      >
-        <time className="blog-post__date" dateTime={date}>
-          {formatPostDate(date)}
-        </time>
-        {author && (
-          <>
-            <span className="blog-post__separator">•</span>
-            <span className="blog-post__author">
-              <SparklingName name={author} sparkleCount={3} />
-            </span>
-          </>
+      <Reveal as="div" className="blog-post__header" order={0}>
+        <div className="blog-post__meta">
+          <Badge kind="essay" />
+          {day && (
+            <time className="blog-post__date" dateTime={day}>
+              {longDate(day)}
+            </time>
+          )}
+        </div>
+        <h1 className="blog-post__title">{title}</h1>
+        {tags && tags.length > 0 && (
+          <div className="blog-post__tags">
+            {tags.map((tag) => (
+              <span className="blog-post__tag" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
         )}
-      </motion.div>
-      {tags && tags.length > 0 && (
-        <motion.div
-          animate={{ opacity: 1 }}
-          className="blog-post__tags"
-          initial={{ opacity: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          {tags.map((tag) => (
-            <span className="blog-post__tag" key={tag}>
-              {tag}
-            </span>
-          ))}
-        </motion.div>
-      )}
-      <motion.div animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ delay: 0.6, duration: 0.6 }}>
+        {aside}
+      </Reveal>
+      <Reveal order={2}>
         <BlogContent>
           <MarkdownRenderer content={content} />
         </BlogContent>
-      </motion.div>
+      </Reveal>
     </article>
   )
 }
-
-export default BlogPost
