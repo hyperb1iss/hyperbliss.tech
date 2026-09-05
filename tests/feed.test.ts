@@ -83,9 +83,10 @@ describe('toIsoDay', () => {
     expect(toIsoDay('2026-07-14T18:00:00Z')).toBe('2026-07-14')
     expect(toIsoDay('2026-07-21')).toBe('2026-07-21')
   })
-  it('rejects garbage', () => {
+  it('rejects garbage and impossible calendar days', () => {
     expect(toIsoDay(null)).toBeNull()
     expect(toIsoDay('soon')).toBeNull()
+    expect(toIsoDay('2026-02-30')).toBeNull()
   })
 })
 
@@ -109,16 +110,17 @@ describe('buildFeed', () => {
     expect(feed.some((item) => item.id === 'launch:orphan-release')).toBe(false)
   })
 
-  it('links releases to the project page and keeps the GitHub url', () => {
+  it('links releases to the GitHub release page and marks them external', () => {
     const release = feed.find((item) => item.id === 'release:opaline@0.4.2')
     expect(release).toMatchObject({
-      href: '/projects/opaline/',
+      external: true,
+      href: 'https://github.com/hyperb1iss/opaline/releases/tag/v0.4.2',
       project: 'Opaline',
-      releaseUrl: 'https://github.com/hyperb1iss/opaline/releases/tag/v0.4.2',
       summary: 'CSS export and four new themes.',
       title: 'Opaline v0.4.2',
       version: '0.4.2',
     })
+    expect(feed.find((item) => item.id === 'essay:loop-engineering')?.external).toBe(false)
   })
 
   it('can leave launches out', () => {
@@ -130,10 +132,9 @@ describe('buildFeed', () => {
 
 describe('splitLead', () => {
   it('leads with the newest long-form piece and removes it from the rest', () => {
-    const { lead, items, total } = splitLead(buildFeed(input), 3)
+    const { lead, items } = splitLead(buildFeed(input), 3)
     expect(lead?.id).toBe('essay:loop-engineering')
     expect(items.map((item) => item.id)).toEqual(['release:opaline@0.4.2', 'release:sibyl@1.3.1', 'essay:how-i-ai'])
-    expect(total).toBe(6)
   })
 
   it('skips releases when picking the lead', () => {
@@ -148,7 +149,7 @@ describe('splitLead', () => {
   })
 
   it('handles an empty feed', () => {
-    expect(splitLead([])).toEqual({ items: [], lead: null, total: 0 })
+    expect(splitLead([])).toEqual({ items: [], lead: null })
   })
 })
 
@@ -208,10 +209,19 @@ describe('summarizeRelease', () => {
     )
     expect(summarizeRelease(null, 'Version 0.4.2\n', '0.4.2')).toBeNull()
   })
-  it('falls back to a descriptive title, never a bare tag', () => {
+  it('falls back to a descriptive title, never a bare tag or boilerplate', () => {
     expect(summarizeRelease('Retrieval rewrite', '', '1.3.1')).toBe('Retrieval rewrite')
     expect(summarizeRelease('v1.3.1', '', '1.3.1')).toBeNull()
+    expect(summarizeRelease('Release v1.2.3', '', '1.2.3')).toBeNull()
     expect(summarizeRelease(null, null, '1.3.1')).toBeNull()
+  })
+  it('skips code fences, html, tables, and unwraps blockquotes', () => {
+    expect(summarizeRelease(null, '```text\nnpm i thing\n```\n\nAdds a CLI.', '1.0.0')).toBe('Adds a CLI.')
+    expect(summarizeRelease(null, '<details><summary>Notes</summary>\n\nFixed the crash.', '1.0.0')).toBe(
+      'Fixed the crash.',
+    )
+    expect(summarizeRelease(null, '> Fixed the crash.', '1.0.0')).toBe('Fixed the crash.')
+    expect(summarizeRelease(null, '| a | b |\n|---|---|\nTable first.', '1.0.0')).toBe('Table first.')
   })
   it('truncates long lines on a word boundary', () => {
     const long = `${'a'.repeat(60)} ${'b'.repeat(60)} ${'c'.repeat(60)}`

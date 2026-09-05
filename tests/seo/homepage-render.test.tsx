@@ -104,6 +104,7 @@ describe('TerminalHome SSR markup carries real content', () => {
   it('renders the feed with releases, launches, and older essays as deep links', () => {
     expect(withoutNoscript).toContain('Sibyl v1.3.1')
     expect(withoutNoscript).toContain('Retrieval rewrite.')
+    expect(withoutNoscript).toContain('href="https://github.com/hyperb1iss/sibyl/releases/tag/v1.3.1"')
     expect(withoutNoscript).toMatch(/href="\/blog\/regex-deep-dive\/?"/)
     expect(withoutNoscript).toMatch(/href="\/projects\/chromacat\/?"/)
   })
@@ -125,5 +126,14 @@ describe('TerminalHome SSR markup carries real content', () => {
 
   it('does not hide the homepage behind display:none', () => {
     expect(html).not.toContain('display:none')
+  })
+
+  it('adds no <main> landmark of its own (GlobalLayout provides the page main)', () => {
+    expect(html).not.toContain('<main')
+  })
+
+  it('has one h1 and a feed-level h2 above the item h3s', () => {
+    expect((withoutNoscript.match(/<h1\b/g) ?? []).length).toBe(1)
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 })

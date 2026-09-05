@@ -151,13 +151,7 @@ export default function Rail({ front, now, shipping, projectCount }: RailProps) 
       <Block aria-label="About">
         {front?.photo && (
           <Photo>
-            <Image
-              alt={front.photoAlt ?? ''}
-              fill={true}
-              priority={true}
-              sizes="(max-width: 1024px) 100vw, 320px"
-              src={front.photo}
-            />
+            <Image alt="" fill={true} sizes="320px" src={front.photo} />
           </Photo>
         )}
         <Name>Stefanie Jane</Name>

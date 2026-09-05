@@ -35,6 +35,9 @@ export function summarizeRelease(name: string | null, body: string | null, versi
     /^#{1,6}\s/.test(line) ||
     /^!\[/.test(line) ||
     /^<!--/.test(line) ||
+    /^<[a-z!/]/i.test(line) ||
+    /^\|/.test(line) ||
+    /^(release|version)\s+v?\d+(\.\d+)*$/i.test(line) ||
     /^(\*\*)?full changelog/i.test(line) ||
     /^(what'?s changed|changelog|release notes|highlights)\s*:?$/i.test(line) ||
     /^released:?\s/i.test(line) ||
@@ -43,19 +46,31 @@ export function summarizeRelease(name: string | null, body: string | null, versi
 
   // Test both the raw line and its stripped form, so "**Released:** date"
   // is recognized as boilerplate just like the plain version.
-  const first = lines.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
+  // Skip fenced code blocks wholesale, then apply the noise test to both the
+  // raw line and its stripped form ("**Released:** date" counts as noise).
+  const prose: string[] = []
+  let fenced = false
+  for (const line of lines) {
+    if (/^(```|~~~)/.test(line)) {
+      fenced = !fenced
+      continue
+    }
+    if (!fenced) prose.push(line)
+  }
+  const first = prose.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
   const cleaned = first ? firstSentence(stripMarkdown(first), RELEASE_SUMMARY_MAX) : ''
   if (cleaned) return truncateAtWord(cleaned, RELEASE_SUMMARY_MAX)
 
-  const title = (name ?? '').trim()
-  const bare = title.replace(/^v?/i, '')
-  if (title && bare !== version && bare !== `v${version}`)
-    return truncateAtWord(stripMarkdown(title), RELEASE_SUMMARY_MAX)
-  return null
+  const title = stripMarkdown((name ?? '').trim())
+  if (!title || isNoise(title)) return null
+  const bare = title.replace(/^v/i, '')
+  if (bare === version || bare === `v${version}`) return null
+  return truncateAtWord(title, RELEASE_SUMMARY_MAX)
 }
 
 function stripMarkdown(line: string): string {
   return line
+    .replace(/^(>\s?)+/, '')
     .replace(/^[-*+]\s+/, '')
     .replace(/^\d+\.\s+/, '')
     .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
@@ -126,6 +141,17 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
     })
 
     if (!response.ok) {
+      if (response.status === 403 || response.status === 429) {
+        // Rate limited: say so distinctly so a quiet feed is diagnosable, and
+        // don't cache it, so the next revalidation retries instead of sitting
+        // on an empty result for an hour.
+        const reset = response.headers.get('x-ratelimit-reset')
+        const resetsAt = reset ? `, resets at ${new Date(Number(reset) * 1000).toISOString()}` : ''
+        console.warn(
+          `GitHub rate limit hit fetching ${cacheKey} (HTTP ${response.status})${resetsAt}. Set GITHUB_TOKEN in the deploy environment.`,
+        )
+        return null
+      }
       // No releases or repo not found - cache the null result
       releaseCache.set(cacheKey, { data: null, timestamp: Date.now() })
       return null

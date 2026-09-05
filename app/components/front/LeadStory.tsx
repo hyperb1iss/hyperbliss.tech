@@ -17,7 +17,7 @@ const Meta = styled.div`
   align-items: center;
   gap: 1.4rem;
   font-size: 1.4rem;
-  color: var(--text-muted);
+  color: var(--silk-steel-400);
 `
 
 const Title = styled.h1`
@@ -77,10 +77,18 @@ export default function LeadStory({ item }: { item: FeedItem }) {
         <time dateTime={item.date}>{longDate(item.date)}</time>
       </Meta>
       <Title>
-        <Link href={item.href}>{item.title}</Link>
+        {item.external ? (
+          <a href={item.href} rel="noopener noreferrer">
+            {item.title}
+          </a>
+        ) : (
+          <Link href={item.href}>{item.title}</Link>
+        )}
       </Title>
       {item.summary && <Lede>{item.summary}</Lede>}
-      <More href={item.href}>{KIND_VERB[item.kind]} →</More>
+      <More href={item.href} rel={item.external ? 'noopener noreferrer' : undefined}>
+        {KIND_VERB[item.kind]} →
+      </More>
     </Article>
   )
 }

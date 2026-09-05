@@ -10,7 +10,9 @@ export class CyberScapeConfig {
   private static instance: CyberScapeConfig
 
   // Animation and rendering
-  public targetFPS = 60
+  // The simulation steps per frame, not per elapsed ms, so raising this also
+  // speeds every particle up. Stays at 30 until the update loop is time-based.
+  public targetFPS = 30
   public frameTime: number = 1000 / this.targetFPS
 
   // Particle settings

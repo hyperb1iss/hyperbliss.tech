@@ -4,24 +4,15 @@
 // staggered by the `order` each caller declares. Because it is a CSS animation
 // there is no inline opacity:0 for a hydration pass to get wrong, and the
 // prefers-reduced-motion query removes it entirely so the page simply appears.
+// The keyframes are declared in globals.css: Panda drops @keyframes bodies
+// written inside a css`` template, so the class here only references them.
 
 import type { CSSProperties, ReactNode } from 'react'
 import { css, cx } from '../../../styled-system/css'
 
 const revealStyles = css`
-  animation: frontReveal 560ms var(--ease-silk) both;
+  animation: front-reveal 560ms var(--ease-silk) both;
   animation-delay: calc(320ms + var(--reveal-delay, 0ms));
-
-  @keyframes frontReveal {
-    from {
-      opacity: 0;
-      transform: translateY(14px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;

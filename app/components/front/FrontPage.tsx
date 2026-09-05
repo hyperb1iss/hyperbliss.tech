@@ -36,7 +36,7 @@ const Wrap = styled.div`
   }
 `
 
-const Main = styled.main`
+const Main = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 0;

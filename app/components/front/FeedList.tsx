@@ -56,7 +56,17 @@ const Month = styled.span`
   font-family: var(--font-mono);
   font-size: 1.05rem;
   letter-spacing: 0.1em;
-  color: var(--text-muted);
+  color: var(--silk-steel-400);
+`
+
+const ListHeading = styled.h2`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  margin: 0;
 `
 
 const BadgeSlot = styled.div`
@@ -119,6 +129,7 @@ interface FeedListProps {
 export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
   return (
     <div>
+      <ListHeading>Latest</ListHeading>
       <List>
         {items.map((item, index) => {
           const { day, month } = numeralDate(item.date)
@@ -139,7 +150,13 @@ export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
               </BadgeSlot>
               <div>
                 <Title>
-                  <Link href={item.href}>{item.title}</Link>
+                  {item.external ? (
+                    <a href={item.href} rel="noopener noreferrer">
+                      {item.title}
+                    </a>
+                  ) : (
+                    <Link href={item.href}>{item.title}</Link>
+                  )}
                 </Title>
                 {item.summary && <Summary>{item.summary}</Summary>}
               </div>

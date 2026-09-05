@@ -14,12 +14,12 @@ export interface FeedItem {
   date: string
   title: string
   summary: string | null
-  /** Internal route for the item. */
+  /** Route for the item: internal for essays, lab, and launches; the GitHub release page for releases. */
   href: string
+  /** True when `href` leaves the site. */
+  external: boolean
   /** Release tag without the leading v, for release items only. */
   version: string | null
-  /** External GitHub release URL, for release items only. */
-  releaseUrl: string | null
   /** Project title the item belongs to, for release and launch items. */
   project: string | null
 }
@@ -40,8 +40,6 @@ export interface FeedInput {
 }
 
 export interface FeedOptions {
-  /** Cap on items returned after the lead is split off. */
-  limit?: number
   /** Include project launches (first publish date). Defaults to true. */
   launches?: boolean
 }
@@ -58,12 +56,20 @@ export function shortName(title: string): string {
   return name.trim() || title
 }
 
-/** Normalize any parseable date to YYYY-MM-DD, or null when it isn't one. */
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/
+
+/**
+ * Normalize any parseable date to YYYY-MM-DD, or null when it isn't one.
+ * Date-only input must round-trip exactly, so "2026-02-30" is rejected rather
+ * than silently rolled into March.
+ */
 export function toIsoDay(value: string | null | undefined): string | null {
   if (!value) return null
   const time = new Date(value).getTime()
   if (Number.isNaN(time)) return null
-  return new Date(time).toISOString().slice(0, 10)
+  const day = new Date(time).toISOString().slice(0, 10)
+  if (DATE_ONLY.test(value) && day !== value) return null
+  return day
 }
 
 /** Build the merged feed, newest first. Items without a usable date are dropped. */
@@ -76,11 +82,11 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
     if (!date) continue
     items.push({
       date,
+      external: false,
       href: `/blog/${post.slug}/`,
       id: `essay:${post.slug}`,
       kind: 'essay',
       project: null,
-      releaseUrl: null,
       summary: post.excerpt,
       title: post.title,
       version: null,
@@ -92,11 +98,11 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
     if (!date) continue
     items.push({
       date,
+      external: false,
       href: `/lab/${experiment.slug}/`,
       id: `lab:${experiment.slug}`,
       kind: 'lab',
       project: null,
-      releaseUrl: null,
       summary: experiment.excerpt,
       title: experiment.title,
       version: null,
@@ -113,11 +119,11 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
     const name = shortName(project.title)
     items.push({
       date,
-      href: `/projects/${slug}/`,
+      external: true,
+      href: release.url,
       id: `release:${slug}@${release.version}`,
       kind: 'release',
       project: name,
-      releaseUrl: release.url,
       summary: release.summary ?? null,
       title: `${name} v${release.version}`,
       version: release.version,
@@ -130,11 +136,11 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
       if (!date) continue
       items.push({
         date,
+        external: false,
         href: `/projects/${project.slug}/`,
         id: `launch:${project.slug}`,
         kind: 'launch',
-        project: project.title,
-        releaseUrl: null,
+        project: shortName(project.title),
         summary: project.description,
         title: project.title,
         version: null,
@@ -151,16 +157,14 @@ export interface FrontPageFeed {
   lead: FeedItem | null
   /** Everything else, newest first, capped by `limit`. */
   items: FeedItem[]
-  /** Total items before the cap, so the page can say how much more there is. */
-  total: number
 }
 
 /** Split the newest long-form piece off as the lead and cap the rest. */
 export function splitLead(feed: FeedItem[], limit = 10): FrontPageFeed {
-  if (feed.length === 0) return { items: [], lead: null, total: 0 }
+  if (feed.length === 0) return { items: [], lead: null }
   const lead = feed.find((item) => LONG_FORM.includes(item.kind)) ?? feed[0]
   const rest = feed.filter((item) => item.id !== lead.id)
-  return { items: rest.slice(0, limit), lead, total: rest.length }
+  return { items: rest.slice(0, limit), lead }
 }
 
 /** Projects with a known release, newest release first, for the Shipping rail. */
