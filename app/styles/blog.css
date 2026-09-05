@@ -861,12 +861,6 @@
   }
 }
 
-@media (max-width: 1200px) {
-  .blog-post {
-    width: 90%;
-  }
-}
-
 @media (max-width: 820px) {
   .silk-float,
   .silk-float--left,
@@ -874,12 +868,6 @@
     float: none;
     width: 100%;
     margin: 2.2rem 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .blog-post {
-    padding: 6rem 1rem 1rem;
   }
 }
 

@@ -77,7 +77,7 @@ const BadgeSlot = styled.div`
   padding-top: 0.6rem;
 `
 
-const Title = styled.h3`
+const titleStyles = css`
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 2.1rem;
@@ -117,6 +117,8 @@ interface FeedListProps {
   showKind?: boolean
   /** Cap the list width for reading comfort on wide index pages. */
   narrow?: boolean
+  /** Row title level: h3 under the list's hidden h2, or h2 when the page title is the only heading above. */
+  titleLevel?: 'h2' | 'h3'
 }
 
 export default function FeedList({
@@ -125,7 +127,9 @@ export default function FeedList({
   heading = 'Latest',
   showKind = true,
   narrow = false,
+  titleLevel = 'h3',
 }: FeedListProps) {
+  const TitleTag = titleLevel
   return (
     <div style={narrow ? { maxWidth: '96rem' } : undefined}>
       {heading && <ListHeading>{heading}</ListHeading>}
@@ -156,7 +160,7 @@ export default function FeedList({
                 </BadgeSlot>
               )}
               <div>
-                <Title>
+                <TitleTag className={titleStyles}>
                   {item.external ? (
                     <a href={item.href} rel="noopener noreferrer">
                       {item.title}
@@ -164,7 +168,7 @@ export default function FeedList({
                   ) : (
                     <Link href={item.href}>{item.title}</Link>
                   )}
-                </Title>
+                </TitleTag>
                 {item.summary && <Summary>{item.summary}</Summary>}
               </div>
             </Reveal>

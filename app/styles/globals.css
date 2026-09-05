@@ -427,6 +427,20 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    /* none, not translateY(0): a resolved transform would turn every page
+       wrapper into a containing block and pin position:fixed children to it. */
+    transform: none;
+  }
+}
+
+/* Opacity-only variant for page wrappers: a transform on a wrapper, even one
+   that resolves to identity, becomes the containing block for any
+   position:fixed descendant (the Resume download button). */
+@keyframes front-reveal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

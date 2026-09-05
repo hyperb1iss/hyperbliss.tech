@@ -26,5 +26,9 @@ interface PageLayoutProps {
 }
 
 export default function PageLayout({ children }: PageLayoutProps) {
-  return <Reveal className={wrapperStyles}>{children}</Reveal>
+  return (
+    <Reveal className={wrapperStyles} lift={false}>
+      {children}
+    </Reveal>
+  )
 }

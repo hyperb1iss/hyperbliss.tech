@@ -60,7 +60,6 @@ export default async function PostPage({ params }: PageProps) {
     <>
       <StructuredData data={[articleSchema, breadcrumbSchema]} />
       <BlogPost
-        author={post.author ?? undefined}
         content={post.body ?? ''}
         date={post.date ?? ''}
         tags={(post.tags ?? []).filter((t): t is string => t !== null)}

@@ -17,7 +17,7 @@ export default function BlogList({ posts }: BlogListProps) {
       <PageTitle lede="Field notes on developer tools, terminal interfaces, creative coding, and building with AI.">
         Writing
       </PageTitle>
-      <FeedList heading={null} items={essayFeed(posts)} narrow={true} showKind={false} />
+      <FeedList heading={null} items={essayFeed(posts)} narrow={true} showKind={false} titleLevel="h2" />
     </PageLayout>
   )
 }

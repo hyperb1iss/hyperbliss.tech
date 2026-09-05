@@ -637,17 +637,6 @@
   }
 }
 
-@keyframes project-pulse {
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
 @keyframes project-pulse-cyan {
   0%,
   100% {
@@ -669,18 +658,6 @@
   50% {
     transform: scale(1.1);
     opacity: 1;
-  }
-}
-
-@media (max-width: 1200px) {
-  .project-detail {
-    width: 90%;
-  }
-}
-
-@media (max-width: 768px) {
-  .project-detail {
-    padding: 6rem 1rem 2rem;
   }
 }
 

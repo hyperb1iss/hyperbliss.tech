@@ -16,7 +16,6 @@ interface BlogPostProps {
   title: string
   date: string
   content: string
-  author?: string
   tags?: string[]
   /** Optional slot rendered under the tags, e.g. a kind-specific note. */
   aside?: ReactNode
