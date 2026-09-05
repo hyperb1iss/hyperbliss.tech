@@ -1,11 +1,11 @@
 {
   "description": "Stefanie Jane builds developer tools, terminal interfaces, and AI agents. Open source all the way down.",
-  "slug": "home",
-  "title": "@hyperb1iss | Stefanie Jane",
   "front": {
-    "role": "Principal engineer, Seattle.",
     "bio": "I build software that gives people control over their technology. Developer tools, terminal interfaces, and infrastructure for AI agents, all of it open source.",
     "photo": "/images/profile-image.jpg",
-    "photoAlt": "Stefanie Jane"
-  }
+    "photoAlt": "Stefanie Jane",
+    "role": "Principal engineer, Seattle."
+  },
+  "slug": "home",
+  "title": "@hyperb1iss | Stefanie Jane"
 }

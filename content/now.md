@@ -1,27 +1,26 @@
 ---
 title: Now
 emoji: '🌊'
-focus: 'Building a terminal-first homepage for hyperbliss.tech'
-updated: '2026-05-31'
+focus: 'Rebuilding the hyperbliss.tech front page, rewriting Sibyl retrieval with an agent in the loop, and writing about loop engineering.'
+updated: '2026-09-04'
 location: 'Seattle, WA'
 ---
 
 ## What I'm doing now
 
-Rebuilding the front door. The homepage is becoming a real, interactive
-terminal — you can type `help`, `neofetch`, `projects`, or pipe real shell
-commands over my content tree. It announces everything I'm shipping and stays
-fresh because it reads the content directly.
+The front door of this site is becoming a front page: the newest thing
+first, everything else in one feed, and a quiet rail for what's shipping.
+The terminal is still here. Pull the handle or run `help`.
 
 ## Currently shipping
 
-- **hyperbliss.tech** — this terminal hero, in active development.
 - **Sibyl** — persistent memory and task coordination for AI agents.
+- **opaline** — token-based theme engine for Rust TUIs.
 - **git-iris** — AI-assisted commits, changelogs, and reviews in Rust.
 
 ## On my mind
 
-- Context engineering: constraints and examples over rigid scripts.
+- Loop engineering: agents that act, observe, and go again until it's true.
 - Terminal UIs that feel cinematic without sacrificing accessibility.
 - Open source all the way down.
 

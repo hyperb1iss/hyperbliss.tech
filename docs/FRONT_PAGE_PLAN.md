@@ -54,52 +54,52 @@ shipping, and elsewhere.
 
 - [x] **T0** Plan ledger committed (this file).
 - [ ] **T1** Fonts: Syne + IBM Plex Sans via `next/font`, Space Mono kept.
-  Files: `app/styles/fonts.ts`, `app/layout.tsx`,
-  `app/styles/silkcircuit/variables.css`.
-  Verify: `pnpm typecheck`; `grep -rn "font-jura\|font-exo2" app` empty.
+      Files: `app/styles/fonts.ts`, `app/layout.tsx`,
+      `app/styles/silkcircuit/variables.css`.
+      Verify: `pnpm typecheck`; `grep -rn "font-jura\|font-exo2" app` empty.
 - [ ] **T2** Feed model: `app/lib/feed.ts` with `buildFeed()` merging posts,
-  lab, releases, launches into `FeedItem[]`; releases carry a one-line
-  summary (release name or first line of body) via `app/lib/github.ts`.
-  Files: `app/lib/feed.ts`, `app/lib/github.ts`, `tests/lib/feed.test.ts`.
-  Verify: `pnpm test -- tests/lib/feed.test.ts`.
+      lab, releases, launches into `FeedItem[]`; releases carry a one-line
+      summary (release name or first line of body) via `app/lib/github.ts`.
+      Files: `app/lib/feed.ts`, `app/lib/github.ts`, `tests/lib/feed.test.ts`.
+      Verify: `pnpm test -- tests/lib/feed.test.ts`.
 - [ ] **T3** Releases for every project with a GitHub URL (not the curated 4)
-  in `app/(transition)/page.tsx`; in-memory + ISR caching already bounds
-  this to one call per repo per hour.
-  Verify: `pnpm build` with and without `GITHUB_TOKEN` renders `/`.
+      in `app/(transition)/page.tsx`; in-memory + ISR caching already bounds
+      this to one call per repo per hour.
+      Verify: `pnpm build` with and without `GITHUB_TOKEN` renders `/`.
 
 ### Wave 2 · Front page
 
 - [ ] **T4** `app/components/front/` — `FrontPage` (server), `LeadStory`,
-  `Feed`, `Rail` (who, now, shipping, elsewhere). Wired into `TerminalHome`
-  in place of hero + card sections. `noscript` fallback and
-  `TerminalConsole` untouched.
-  Verify: `pnpm build`; `pnpm test:seo`; visual at 1440 and 390.
+      `Feed`, `Rail` (who, now, shipping, elsewhere). Wired into `TerminalHome`
+      in place of hero + card sections. `noscript` fallback and
+      `TerminalConsole` untouched.
+      Verify: `pnpm build`; `pnpm test:seo`; visual at 1440 and 390.
 - [ ] **T5** Delete `HeroSectionSilk`, `HomePageClient`,
-  `LatestBlogPostsSilk`, `FeaturedProjectsSectionSilk`, `homeContent.ts`;
-  trim `content/pages/home.json` to what the front page reads.
-  Verify: `pnpm typecheck`; `pnpm test`; grep for dead imports empty.
+      `LatestBlogPostsSilk`, `FeaturedProjectsSectionSilk`, `homeContent.ts`;
+      trim `content/pages/home.json` to what the front page reads.
+      Verify: `pnpm typecheck`; `pnpm test`; grep for dead imports empty.
 - [ ] **T6** Header refresh: nav set in Syne, logo mark calmed (no glitch
-  keyframes), CyberScape config tuned (60fps target, fewer shapes, lower
-  particle density, softer glow, hairline connections).
-  Files: `app/components/NavLinks.tsx`, `app/components/Logo.tsx`,
-  `app/cyberscape/CyberScapeConfig.ts`.
-  Verify: visual; DevTools FPS on header ≥ 60.
+      keyframes), CyberScape config tuned (60fps target, fewer shapes, lower
+      particle density, softer glow, hairline connections).
+      Files: `app/components/NavLinks.tsx`, `app/components/Logo.tsx`,
+      `app/cyberscape/CyberScapeConfig.ts`.
+      Verify: visual; DevTools FPS on header ≥ 60.
 
 ### Wave 3 · Motion and polish
 
 - [ ] **T7** Entrance orchestration (client wrapper, Framer variants:
-  lead → feed stagger → rail), hover states (version brightens, photo
-  duotone warms), reduced-motion path.
-  Verify: visual; `prefers-reduced-motion` emulation shows no transforms.
+      lead → feed stagger → rail), hover states (version brightens, photo
+      duotone warms), reduced-motion path.
+      Verify: visual; `prefers-reduced-motion` emulation shows no transforms.
 - [ ] **T8** Responsive: rail stacks under feed below 1024px; lead headline
-  fluid; 390px clean.
-  Verify: visual at 390, 768, 1024, 1440.
+      fluid; 390px clean.
+      Verify: visual at 390, 768, 1024, 1440.
 - [ ] **T9** Tests: `homepage-content.test.tsx` updated to the new SSR
-  markup; render test for `FrontPage`.
-  Verify: `pnpm test`.
+      markup; render test for `FrontPage`.
+      Verify: `pnpm test`.
 - [ ] **T10** Gates + independent review: `pnpm typecheck && pnpm lint &&
-  pnpm test && pnpm build`, then `cross-model-review`. Refresh
-  `content/now.md` (draft for Bliss to approve).
+pnpm test && pnpm build`, then `cross-model-review`. Refresh
+      `content/now.md` (draft for Bliss to approve).
 
 ## Decisions
 
