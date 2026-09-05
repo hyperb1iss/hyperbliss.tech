@@ -244,25 +244,18 @@ const downloadButtonStyles = css`
 // ═══════════════════════════════════════════════════════════════════════════
 
 const ContactTitle = styled.h3`
-  font-family: var(--font-heading);
-  font-size: var(--text-fluid-xl);
-  font-weight: var(--font-bold);
-  background: linear-gradient(
-    90deg,
-    #ff75d8 0%,
-    #00fff0 50%,
-    #ff75d8 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--silk-quantum-purple);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: var(--space-6);
+  letter-spacing: 0.2em;
+  text-shadow: none;
+  margin-bottom: var(--space-5);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(162, 89, 255, 0.25);
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.4));
 `
 
 const ContactItem = styled.a`
@@ -379,43 +372,26 @@ const SectionHeader = styled.div`
 `
 
 const SectionIcon = styled.div`
-  width: 48px;
-  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.2),
-    rgba(0, 255, 240, 0.1)
-  );
-  border: 2px solid var(--silk-circuit-cyan);
-  border-radius: var(--radius-lg);
 
   svg {
-    font-size: 2.4rem;
+    font-size: 1.8rem;
     color: var(--silk-circuit-cyan);
-    filter: drop-shadow(0 0 10px rgba(0, 255, 240, 0.6));
+    opacity: 0.85;
   }
 `
 
 const SectionTitle = styled.h2`
-  font-family: var(--font-heading);
-  font-size: var(--text-fluid-2xl);
-  font-weight: var(--font-bold);
-  background: linear-gradient(
-    90deg,
-    #ff75d8 0%,
-    #e0aaff 50%,
-    #ff75d8 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  filter: drop-shadow(0 0 12px rgba(255, 117, 216, 0.4));
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-shadow: none;
+  color: var(--silk-steel-50);
+  margin: 0;
 `
 
 const TimelineItem = styled.div`
@@ -463,20 +439,21 @@ const TimelineHeader = styled.div`
 
 const CompanyName = styled.h3`
   font-family: var(--font-display);
-  font-size: var(--text-fluid-lg);
-  font-weight: var(--font-bold);
-  color: var(--silk-plasma-pink);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: none;
+  text-shadow: none;
+  color: var(--silk-steel-50);
   margin-bottom: var(--space-1);
-  text-shadow: 0 0 10px rgba(255, 117, 216, 0.4);
 
   a {
     color: inherit;
     text-decoration: none;
-    transition: all var(--duration-fast) var(--ease-silk);
+    transition: color var(--duration-fast) var(--ease-silk);
 
     &:hover {
       color: var(--silk-circuit-cyan);
-      text-shadow: 0 0 15px rgba(0, 255, 240, 0.6);
     }
   }
 `

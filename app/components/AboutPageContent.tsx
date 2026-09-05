@@ -1,477 +1,273 @@
-'use client'
-
 // app/components/AboutPageContent.tsx
-// Two-column grid layout with profile card and bio content
+// About: the person behind the label. Portrait and links in a rail, the story
+// in prose beside it, then how to get in touch. Same language as the front
+// page rail, with room for the full bio (this is where the CyanogenMod story
+// lives).
 
-import { motion } from 'framer-motion'
 import Image from 'next/image'
-import React from 'react'
-import { FaCode, FaEnvelope, FaGithub, FaHeart, FaLinkedin, FaRocket } from 'react-icons/fa6'
 import type { AboutSection } from '@/lib/content'
-import defaultProfileImage from '../../public/images/profile-image.jpg'
-import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import Reveal from './front/Reveal'
 import MarkdownRenderer from './MarkdownRenderer'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
-import { SparklingName } from './SparklingName'
 
 interface AboutPageContentProps {
   about: AboutSection
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Styles
-// ═══════════════════════════════════════════════════════════════════════════
-
-const contentGridStyles = css`
+const Grid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-10);
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: 32rem minmax(0, 1fr);
+  column-gap: 7.2rem;
+  align-items: start;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 380px 1fr;
-    gap: var(--space-12);
+  @media (max-width: 1024px) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 4rem;
   }
 `
 
-const profileSectionStyles = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-`
-
-const profileCardStyles = css`
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.08) 0%,
-    rgba(30, 41, 59, 0.6) 50%,
-    rgba(255, 117, 216, 0.08) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.2);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
+const Portrait = styled.div`
   position: relative;
-  overflow: visible;
-  box-shadow:
-    0 0 25px rgba(162, 89, 255, 0.2),
-    0 0 40px rgba(255, 117, 216, 0.1),
-    inset 0 0 20px rgba(139, 92, 246, 0.05);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      #a855f7,
-      #00fff0,
-      #ff75d8
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
-  }
-`
-
-const ProfileImageFrame = styled.div`
   width: 100%;
-  aspect-ratio: 2792 / 4083;
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-4);
+  aspect-ratio: 4 / 5;
   overflow: hidden;
-  filter: saturate(1.1) brightness(1.05);
-  position: relative;
-  z-index: 1;
+  margin-bottom: 1.6rem;
+  border: 1px solid rgba(148, 163, 184, 0.14);
 
-  img {
-    transition: transform var(--duration-normal) var(--ease-silk);
-    will-change: transform;
+  & img {
+    object-fit: cover;
+    object-position: 50% 20%;
+    filter: grayscale(1) contrast(1.06) brightness(0.92);
+    transition: filter var(--duration-slower) var(--ease-silk);
   }
-
-  &:hover img {
-    transform: scale(1.05);
-  }
-`
-
-const profileImageStyles = css`
-  object-fit: cover;
-`
-
-const ProfileName = styled.h2`
-  font-family: var(--font-heading);
-  font-size: var(--text-fluid-2xl);
-  font-weight: var(--font-bold);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: var(--space-2);
-  position: relative;
-  z-index: 1;
-`
-
-const ProfileTitle = styled.p`
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  color: var(--silk-circuit-cyan);
-  margin-bottom: var(--space-6);
-  position: relative;
-  z-index: 1;
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-`
-
-const SocialLinks = styled.div`
-  display: flex;
-  gap: var(--space-4);
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-`
-
-const SocialLink = styled.a`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.1),
-    rgba(0, 255, 240, 0.05)
-  );
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  border-radius: var(--radius-full);
-  color: var(--silk-lavender);
-  font-size: 1.8rem;
-  transition: all var(--duration-normal) var(--ease-silk);
-
-  &:hover {
-    transform: translateY(-3px) scale(1.1);
-    border-color: var(--silk-circuit-cyan);
-    color: var(--silk-circuit-cyan);
-    box-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(139, 92, 246, 0.1)
-    );
-  }
-`
-
-const contentSectionStyles = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-`
-
-const bioCardStyles = css`
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.06) 0%,
-    rgba(30, 41, 59, 0.5) 50%,
-    rgba(0, 255, 240, 0.04) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.1);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-10);
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 20px rgba(139, 92, 246, 0.15),
-    inset 0 0 20px rgba(224, 170, 255, 0.03);
-
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.4),
-      transparent,
-      rgba(0, 255, 240, 0.4)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.3;
+    background: linear-gradient(160deg, rgba(162, 89, 255, 0.85), rgba(0, 255, 240, 0.5));
+    mix-blend-mode: color;
+    pointer-events: none;
+    transition: opacity var(--duration-slower) var(--ease-silk);
+  }
+  &:hover img {
+    filter: grayscale(0) contrast(1) brightness(1);
+  }
+  &:hover::after {
+    opacity: 0;
+  }
+
+  @media (max-width: 1024px) {
+    max-width: 32rem;
   }
 `
 
-const BioTitle = styled.h3`
-  font-family: var(--font-heading);
-  font-size: var(--text-fluid-xl);
-  font-weight: var(--font-bold);
+const Name = styled.p`
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.7rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
   color: var(--silk-plasma-pink);
-  margin-bottom: var(--space-4);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-
-  svg {
-    color: var(--silk-circuit-cyan);
-    filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.5));
-  }
+  margin: 0;
 `
 
-const BioContent = styled.div`
-  position: relative;
-  z-index: 1;
+const Role = styled.p`
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  margin: 0.8rem 0 1.4rem;
+`
 
-  p {
-    font-family: var(--font-body);
-    font-size: var(--text-fluid-base);
-    line-height: var(--leading-relaxed);
-    color: var(--text-secondary);
-    margin-bottom: var(--space-4);
+const Links = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  letter-spacing: 0.04em;
 
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  strong {
-    color: var(--silk-lavender);
-    font-weight: var(--font-semibold);
-  }
-
-  a {
+  & a {
     color: var(--silk-circuit-cyan);
     text-decoration: none;
-    position: relative;
-    transition: all var(--duration-fast) var(--ease-silk);
-
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--silk-circuit-cyan), var(--silk-plasma-pink));
-      transition: width var(--duration-normal) var(--ease-silk);
-    }
-
-    &:hover {
-      color: var(--silk-plasma-pink);
-      text-shadow: 0 0 8px rgba(255, 117, 216, 0.5);
-
-      &::after {
-        width: 100%;
-      }
-    }
+  }
+  & a:hover {
+    color: var(--silk-steel-50);
   }
 `
 
-const ContactGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-`
+const Prose = styled.div`
+  max-width: 72rem;
 
-const contactCardStyles = css`
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.6) 0%,
-    rgba(139, 92, 246, 0.05) 100%
-  );
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  transition: all var(--duration-normal) var(--ease-silk);
-
-  &:hover {
-    border-color: rgba(0, 255, 240, 0.3);
-    transform: translateY(-3px);
-    box-shadow: 0 0 20px rgba(0, 255, 240, 0.2);
-  }
-
-  h4 {
-    font-family: var(--font-mono);
-    font-size: 1.4rem;
-    font-weight: var(--font-semibold);
-    color: var(--silk-circuit-cyan);
-    margin-bottom: var(--space-2);
-    text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
-  }
-
-  p {
-    font-size: 1.3rem;
+  & .markdown-prose__paragraph {
+    font-size: 1.7rem;
+    line-height: 1.6;
+    font-weight: 300;
+    letter-spacing: 0;
     color: var(--text-secondary);
-    line-height: 1.5;
+    margin-bottom: 1.6rem;
+  }
+  & .markdown-prose__paragraph strong {
+    color: var(--silk-steel-50);
+    text-shadow: none;
+    font-weight: 500;
+  }
+  & .markdown-prose__paragraph a,
+  & .markdown-prose__link {
+    color: var(--silk-circuit-cyan);
+    text-shadow: none;
   }
 `
 
-// ═══════════════════════════════════════════════════════════════════════════
-// Component
-// ═══════════════════════════════════════════════════════════════════════════
+const Lede = styled.p`
+  font-size: 2.1rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--silk-steel-50);
+  margin: 0 0 2rem;
+  max-width: 72rem;
+  text-wrap: pretty;
 
-const AboutPageContent: React.FC<AboutPageContentProps> = ({ about }) => {
+  & strong {
+    font-weight: 500;
+    color: var(--silk-circuit-cyan);
+  }
+`
+
+const Section = styled.section`
+  padding: 0;
+  margin-top: 4.8rem;
+  max-width: 72rem;
+`
+
+const Heading = styled.h2`
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--silk-quantum-purple);
+  margin: 0 0 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(162, 89, 255, 0.25);
+`
+
+const Reasons = styled.dl`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 3.2rem;
+  margin: 0;
+
+  @media (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  & dt {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.7rem;
+    letter-spacing: -0.01em;
+    color: var(--silk-steel-50);
+    margin: 0 0 0.4rem;
+  }
+  & dd {
+    font-size: 1.5rem;
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+`
+
+const Quiet = styled.p`
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+
+  & a {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+    color: var(--silk-circuit-cyan);
+    text-decoration: none;
+    margin-left: 0.8rem;
+  }
+  & a:hover {
+    color: var(--silk-steel-50);
+  }
+`
+
+export default function AboutPageContent({ about }: AboutPageContentProps) {
   const { profileImage, profileImageAlt, intro, bio, contactIntro, contactReasons } = about
-  const profileImageSrc =
-    profileImage === '/images/profile-image.jpg' || !profileImage ? defaultProfileImage : profileImage
-  const profilePlaceholder = profileImageSrc === defaultProfileImage ? 'blur' : 'empty'
+  const name = intro?.name ?? 'Stefanie Jane'
 
   return (
     <PageLayout>
       <PageTitle>About</PageTitle>
-
-      <motion.div className={contentGridStyles}>
-        <motion.div className={profileSectionStyles}>
-          <motion.div
-            animate={{ opacity: 1, x: 0 }}
-            className={profileCardStyles}
-            initial={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <ProfileImageFrame>
-              <Image
-                alt={profileImageAlt ?? 'Stefanie Jane'}
-                className={profileImageStyles}
-                fill={true}
-                placeholder={profilePlaceholder}
-                sizes="(min-width: 1024px) 380px, 80vw"
-                src={profileImageSrc}
-              />
-            </ProfileImageFrame>
-            <ProfileName>
-              <SparklingName name={intro?.name ?? 'Stefanie Jane'} sparkleCount={5} />
-            </ProfileName>
-            <ProfileTitle>Creative Technologist</ProfileTitle>
-
-            <SocialLinks>
-              <SocialLink href="https://github.com/hyperb1iss" rel="noopener noreferrer" target="_blank">
-                <FaGithub />
-              </SocialLink>
-              <SocialLink href="https://linkedin.com/in/hyperb1iss" rel="noopener noreferrer" target="_blank">
-                <FaLinkedin />
-              </SocialLink>
-              <SocialLink href="mailto:stef@hyperbliss.tech">
-                <FaEnvelope />
-              </SocialLink>
-            </SocialLinks>
-          </motion.div>
-        </motion.div>
-
-        <motion.div className={contentSectionStyles}>
-          {/* Main Bio Card */}
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className={bioCardStyles}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle>
-              <FaCode /> {intro?.greeting ?? 'Hey there!'}
-            </BioTitle>
-            <BioContent>
-              {intro && (intro.highlightText || intro.introText) && (
-                <p>
-                  I&apos;ve been building technology for {intro.highlightText && <strong>{intro.highlightText}</strong>}
-                  {intro.introText && ` ${intro.introText}`}
-                </p>
-              )}
-              {bio && <MarkdownRenderer content={bio} />}
-            </BioContent>
-          </motion.div>
-
-          {/* Sponsor Section */}
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className={bioCardStyles}
-            initial={{ opacity: 0, y: 20 }}
-            style={{ borderColor: 'rgba(255, 117, 216, 0.12)', textAlign: 'center' }}
-            transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <BioTitle style={{ justifyContent: 'center' }}>
-              <FaHeart style={{ color: '#ff75d8' }} /> Support My Work
-            </BioTitle>
-            <BioContent>
-              <p style={{ margin: '0 auto var(--space-5)', maxWidth: '480px' }}>
-                If you dig these projects and experiments, sponsoring helps me keep building weird and wonderful open
-                source things.
-              </p>
-            </BioContent>
-            <motion.a
-              href="https://github.com/sponsors/hyperb1iss"
-              rel="noopener noreferrer"
-              style={{
-                alignItems: 'center',
-                background: 'linear-gradient(135deg, #ff75d8, #c084fc)',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                boxShadow: '0 4px 15px rgba(255, 117, 216, 0.3)',
-                color: '#1e1b2e',
-                cursor: 'pointer',
-                display: 'inline-flex',
-                fontFamily: 'var(--font-body)',
-                fontSize: '1.5rem',
-                fontWeight: 600,
-                gap: 'var(--space-2)',
-                padding: 'var(--space-3) var(--space-6)',
-                textDecoration: 'none',
-              }}
-              target="_blank"
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <FaGithub /> Sponsor on GitHub
-            </motion.a>
-          </motion.div>
-
-          {/* Connect Section */}
-          {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={bioCardStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
-              <BioTitle>
-                <FaRocket /> Let&apos;s Connect
-              </BioTitle>
-              {contactIntro && (
-                <BioContent>
-                  <p>{contactIntro}</p>
-                </BioContent>
-              )}
-              {contactReasons && contactReasons.length > 0 && (
-                <ContactGrid>
-                  {contactReasons.map((reason, index) => (
-                    <motion.div
-                      animate={{ opacity: 1, y: 0 }}
-                      className={contactCardStyles}
-                      initial={{ opacity: 0, y: 10 }}
-                      key={reason.title}
-                      transition={{ delay: 0.5 + index * 0.1, duration: 0.4 }}
-                    >
-                      <h4>{reason.title}</h4>
-                      <p>{reason.description}</p>
-                    </motion.div>
-                  ))}
-                </ContactGrid>
-              )}
-            </motion.div>
+      <Grid>
+        <Reveal as="aside" order={0}>
+          {profileImage && (
+            <Portrait>
+              <Image alt={profileImageAlt ?? name} fill={true} sizes="320px" src={profileImage} />
+            </Portrait>
           )}
-        </motion.div>
-      </motion.div>
+          <Name>{name}</Name>
+          <Role>Principal engineer, Seattle.</Role>
+          <Links>
+            <a href="https://github.com/hyperb1iss" rel="noopener noreferrer">
+              GitHub →
+            </a>
+            <a href="https://linkedin.com/in/hyperb1iss" rel="noopener noreferrer">
+              LinkedIn →
+            </a>
+            <a href="mailto:stef@hyperbliss.tech">Email →</a>
+          </Links>
+        </Reveal>
+
+        <Reveal order={1}>
+          {intro && (intro.highlightText || intro.introText) && (
+            <Lede>
+              I&apos;ve been building technology for {intro.highlightText && <strong>{intro.highlightText}</strong>}
+              {intro.introText && ` ${intro.introText}`}
+            </Lede>
+          )}
+          {bio && (
+            <Prose>
+              <MarkdownRenderer content={bio} />
+            </Prose>
+          )}
+
+          {(contactIntro || (contactReasons && contactReasons.length > 0)) && (
+            <Section>
+              <Heading>Say hi</Heading>
+              {contactIntro && <Quiet style={{ marginBottom: '2rem' }}>{contactIntro}</Quiet>}
+              {contactReasons && contactReasons.length > 0 && (
+                <Reasons>
+                  {contactReasons.map((reason) => (
+                    <div key={reason.title}>
+                      <dt>{reason.title}</dt>
+                      <dd>{reason.description}</dd>
+                    </div>
+                  ))}
+                </Reasons>
+              )}
+            </Section>
+          )}
+
+          <Section>
+            <Heading>Support</Heading>
+            <Quiet>
+              If these projects are useful to you, sponsoring keeps the weird and wonderful open source coming.
+              <a href="https://github.com/sponsors/hyperb1iss" rel="noopener noreferrer">
+                Sponsor on GitHub →
+              </a>
+            </Quiet>
+          </Section>
+        </Reveal>
+      </Grid>
     </PageLayout>
   )
 }
-
-export default AboutPageContent
