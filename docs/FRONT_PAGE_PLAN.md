@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Built, gates green, review PASS (round 4). Ready for Bliss's eyes and a PR.** · Branch: `nova/front-page` ·
+> Status: **Front page + all inner pages built; pages wave under review.** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
 
@@ -139,9 +139,37 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
 - Round 4 (Codex, executed, narrow): PASS. Eight probes on the fence
   scanner, no new findings.
 
+### Wave 4 · Inner pages (2026-09-05)
+
+- [x] **P1** Shared `PageTitle` (sentence case, lede) and `PageLayout`
+      (plain wrapper, CSS entrance, no nested main). Writing, Lab, and
+      Projects indexes as rows; card grids, BlogCard, ProjectList, SilkCard
+      deleted. `46fa683`
+- [x] **P2** Essay and project detail headers; body headings in the
+      display face without gradient or glow; project route fetches the
+      latest release. `b41e9c5`
+- [x] **P3** About as rail + column (bio and CyanogenMod story live
+      here); Resume headings calmed. `0964083`
+- [ ] **P4** Independent review of the pages wave.
+
+## Open taste items
+
+- Bliss (2026-09-05): not sure about the "squished" large display type
+  (Syne 800, tracking -0.03em on the lead headline, day numerals, name).
+  Knobs: weight 700/600, tracking toward 0, or a lighter numeral column.
+  Play once the other pages exist so the change lands site-wide.
+
 ## Follow-ups (not this round)
 
 - OG image renderer still sets Jura and Exo 2; move it to Syne + Plex.
+- Resume still wears its glass-card chrome (bordered panels, pill
+  skills, boxed contact rows). Headings are done; the containers are a
+  later pass.
+- Blog slugs are the filenames (`2026.04.04_terminal-renaissance`), so
+  essay URLs carry the date prefix. Pre-existing; a slug field or a
+  redirect map would clean the URLs.
+- Terminal `help` still lists `blog`; nav says Blog while the index page
+  is titled Writing. Pick one word.
 - CyberScape steps per frame, not per elapsed time, so a 60fps budget
   doubles every speed. Make the update loop time-based, then raise
   `targetFPS` to 60 (the plan's original motion target).
