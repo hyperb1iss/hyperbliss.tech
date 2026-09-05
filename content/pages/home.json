@@ -1,24 +1,11 @@
 {
   "description": "Stefanie Jane builds developer tools, terminal interfaces, and AI agents. Open source all the way down.",
-  "featuredProjects": {
-    "ctaText": "View on GitHub",
-    "subtitle": "A selection of my open source work and experiments",
-    "title": "Featured Projects"
-  },
-  "hero": {
-    "name": "Stefanie Jane",
-    "primaryCtaLink": "/projects",
-    "primaryCtaText": "View Projects",
-    "scrollText": "Scroll to explore",
-    "secondaryCtaLink": "/about",
-    "secondaryCtaText": "About Me",
-    "subtitle": "I build software that gives people control over their technology. Open source all the way down.",
-    "welcomeText": ""
-  },
-  "latestPosts": {
-    "emptyStateText": "No posts yet. Check back soon!",
-    "title": "Latest Posts"
-  },
   "slug": "home",
-  "title": "@hyperb1iss | Stefanie Jane"
+  "title": "@hyperb1iss | Stefanie Jane",
+  "front": {
+    "role": "Principal engineer, Seattle.",
+    "bio": "I build software that gives people control over their technology. Developer tools, terminal interfaces, and infrastructure for AI agents, all of it open source.",
+    "photo": "/images/profile-image.jpg",
+    "photoAlt": "Stefanie Jane"
+  }
 }

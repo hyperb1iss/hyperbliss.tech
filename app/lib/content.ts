@@ -278,17 +278,6 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
 // Pages (Home, About, etc.)
 // ============================================================
 
-export interface HeroSection {
-  welcomeText: string | null
-  name: string | null
-  subtitle: string | null
-  primaryCtaText: string | null
-  primaryCtaLink: string | null
-  secondaryCtaText: string | null
-  secondaryCtaLink: string | null
-  scrollText: string | null
-}
-
 export interface ContactReason {
   title: string
   description: string
@@ -310,25 +299,20 @@ export interface AboutSection {
   contactReasons: ContactReason[] | null
 }
 
-export interface FeaturedProjectsSection {
-  title: string | null
-  subtitle: string | null
-  ctaText: string | null
-}
-
-export interface LatestPostsSection {
-  title: string | null
-  emptyStateText: string | null
+/** The front page's byline block: who is behind the label, in two lines. */
+export interface FrontSection {
+  role: string | null
+  bio: string | null
+  photo: string | null
+  photoAlt: string | null
 }
 
 export interface PageData {
   slug: string
   title: string
   description: string
-  hero: HeroSection | null
+  front: FrontSection | null
   about: AboutSection | null
-  featuredProjects: FeaturedProjectsSection | null
-  latestPosts: LatestPostsSection | null
 }
 
 /** Raw JSON shape — matches the files in content/pages/ */
@@ -336,16 +320,6 @@ interface RawPageJson {
   slug: string
   title: string
   description: string
-  hero?: {
-    welcomeText?: string
-    name?: string
-    subtitle?: string
-    primaryCtaText?: string
-    primaryCtaLink?: string
-    secondaryCtaText?: string
-    secondaryCtaLink?: string
-    scrollText?: string
-  }
   about?: {
     profileImage?: string
     profileImageAlt?: string
@@ -359,14 +333,11 @@ interface RawPageJson {
     contactIntro?: string
     contactReasons?: Array<{ title?: string; description?: string }>
   }
-  featuredProjects?: {
-    title?: string
-    subtitle?: string
-    ctaText?: string
-  }
-  latestPosts?: {
-    title?: string
-    emptyStateText?: string
+  front?: {
+    role?: string
+    bio?: string
+    photo?: string
+    photoAlt?: string
   }
 }
 
@@ -397,29 +368,12 @@ export async function getPage(slug: string): Promise<PageData> {
         }
       : null,
     description: raw.description,
-    featuredProjects: raw.featuredProjects
+    front: raw.front
       ? {
-          ctaText: raw.featuredProjects.ctaText ?? null,
-          subtitle: raw.featuredProjects.subtitle ?? null,
-          title: raw.featuredProjects.title ?? null,
-        }
-      : null,
-    hero: raw.hero
-      ? {
-          name: raw.hero.name ?? null,
-          primaryCtaLink: raw.hero.primaryCtaLink ?? null,
-          primaryCtaText: raw.hero.primaryCtaText ?? null,
-          scrollText: raw.hero.scrollText ?? null,
-          secondaryCtaLink: raw.hero.secondaryCtaLink ?? null,
-          secondaryCtaText: raw.hero.secondaryCtaText ?? null,
-          subtitle: raw.hero.subtitle ?? null,
-          welcomeText: raw.hero.welcomeText ?? null,
-        }
-      : null,
-    latestPosts: raw.latestPosts
-      ? {
-          emptyStateText: raw.latestPosts.emptyStateText ?? null,
-          title: raw.latestPosts.title ?? null,
+          bio: raw.front.bio ?? null,
+          photo: raw.front.photo ?? null,
+          photoAlt: raw.front.photoAlt ?? null,
+          role: raw.front.role ?? null,
         }
       : null,
     slug: raw.slug,
