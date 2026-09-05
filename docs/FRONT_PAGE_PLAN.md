@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Front page + all inner pages built; pages wave under review.** · Branch: `nova/front-page` ·
+> Status: **Front page + all inner pages built and reviewed (PASS). Ready for Bliss's eyes and a PR.** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
 
@@ -148,6 +148,7 @@ transform: none }` frame). Wrappers fade; rows and blocks inside lift.
   overriding the new detail layouts on phones; Writing/Lab outline
   skipping h2. Nits: dead SparklingName, StarDivider, keyframes, author
   prop. All fixed in `d24b423`; PageLayout now fades without moving.
+- Pages wave round 2 (Codex, executed + traced): PASS, no new findings.
 
 ### Wave 4 · Inner pages (2026-09-05)
 
