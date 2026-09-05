@@ -199,6 +199,13 @@ describe('summarizeRelease', () => {
         '0.4.2',
       ),
     ).toBe('A correctness release for the theme contract.')
+  })
+  it('keeps the first sentence whole instead of truncating mid-thought', () => {
+    const body =
+      'Sibyl 1.3.2 improves startup reliability and closes authentication gaps. It also refreshes the web workspace with unified search, a collapsible sidebar, and a faster graph view.'
+    expect(summarizeRelease(null, body, '1.3.2')).toBe(
+      'Sibyl 1.3.2 improves startup reliability and closes authentication gaps.',
+    )
     expect(summarizeRelease(null, 'Version 0.4.2\n', '0.4.2')).toBeNull()
   })
   it('falls back to a descriptive title, never a bare tag', () => {
@@ -209,7 +216,7 @@ describe('summarizeRelease', () => {
   it('truncates long lines on a word boundary', () => {
     const long = `${'a'.repeat(60)} ${'b'.repeat(60)} ${'c'.repeat(60)}`
     const out = summarizeRelease(null, long, '1.0.0')
-    expect(out?.length).toBeLessThanOrEqual(140)
+    expect(out?.length).toBeLessThanOrEqual(160)
     expect(out?.endsWith('…')).toBe(true)
   })
 })

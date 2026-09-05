@@ -59,9 +59,13 @@ const More = styled(Link)`
   color: var(--silk-circuit-cyan);
   text-decoration: none;
   align-self: flex-start;
+  transition:
+    color var(--duration-normal) var(--ease-silk),
+    transform var(--duration-normal) var(--ease-silk);
 
   &:hover {
     color: var(--silk-steel-50);
+    transform: translateX(4px);
   }
 `
 

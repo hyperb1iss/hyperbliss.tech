@@ -8,6 +8,7 @@ import { styled } from '../../../styled-system/jsx'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
 import Rail, { type ShippingRow } from './Rail'
+import Reveal from './Reveal'
 
 export interface FrontPageProps {
   lead: FeedItem | null
@@ -45,10 +46,16 @@ export default function FrontPage({ lead, items, shipping, now, front, projectCo
   return (
     <Wrap>
       <Main>
-        {lead && <LeadStory item={lead} />}
-        <FeedList items={items} />
+        {lead && (
+          <Reveal order={0}>
+            <LeadStory item={lead} />
+          </Reveal>
+        )}
+        <FeedList items={items} startOrder={1} />
       </Main>
-      <Rail front={front} now={now} projectCount={projectCount} shipping={shipping} />
+      <Reveal order={2}>
+        <Rail front={front} now={now} projectCount={projectCount} shipping={shipping} />
+      </Reveal>
     </Wrap>
   )
 }

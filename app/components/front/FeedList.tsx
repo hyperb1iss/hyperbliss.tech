@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import type { FeedItem } from '@/lib/feed'
+import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
 import { numeralDate } from './format'
+import Reveal from './Reveal'
 
 const List = styled.ol`
   list-style: none;
@@ -12,7 +14,9 @@ const List = styled.ol`
   flex-direction: column;
 `
 
-const Row = styled.li`
+// Panda's styled() would swallow the `as` prop before Reveal saw it, so the
+// row styles ride along as a class on the Reveal wrapper instead.
+const rowStyles = css`
   display: grid;
   grid-template-columns: 6.4rem 8.4rem minmax(0, 1fr);
   column-gap: 2rem;
@@ -41,6 +45,11 @@ const Day = styled.span`
   line-height: 0.95;
   letter-spacing: -0.03em;
   color: var(--silk-steel-50);
+  transition: color var(--duration-normal) var(--ease-silk);
+
+  li:hover & {
+    color: var(--silk-circuit-cyan);
+  }
 `
 
 const Month = styled.span`
@@ -101,14 +110,20 @@ const Foot = styled.div`
   }
 `
 
-export default function FeedList({ items }: { items: FeedItem[] }) {
+interface FeedListProps {
+  items: FeedItem[]
+  /** Entrance position of the first row; rows stagger from here. */
+  startOrder?: number
+}
+
+export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
   return (
     <div>
       <List>
-        {items.map((item) => {
+        {items.map((item, index) => {
           const { day, month } = numeralDate(item.date)
           return (
-            <Row key={item.id}>
+            <Reveal as="li" className={rowStyles} key={item.id} order={startOrder + index * 0.5}>
               <DateCol>
                 <Day aria-hidden="true">{day}</Day>
                 <Month aria-hidden="true">{month}</Month>
@@ -128,14 +143,16 @@ export default function FeedList({ items }: { items: FeedItem[] }) {
                 </Title>
                 {item.summary && <Summary>{item.summary}</Summary>}
               </div>
-            </Row>
+            </Reveal>
           )
         })}
       </List>
-      <Foot>
-        <Link href="/blog/">All writing →</Link>
-        <Link href="/projects/">All projects →</Link>
-      </Foot>
+      <Reveal order={startOrder + items.length * 0.5}>
+        <Foot>
+          <Link href="/blog/">All writing →</Link>
+          <Link href="/projects/">All projects →</Link>
+        </Foot>
+      </Reveal>
     </div>
   )
 }

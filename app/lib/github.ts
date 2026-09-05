@@ -17,7 +17,7 @@ export interface ReleaseInfo {
   summary: string | null
 }
 
-const RELEASE_SUMMARY_MAX = 140
+const RELEASE_SUMMARY_MAX = 160
 
 /**
  * Reduce GitHub release notes to one plain line for the front-page feed.
@@ -44,7 +44,7 @@ export function summarizeRelease(name: string | null, body: string | null, versi
   // Test both the raw line and its stripped form, so "**Released:** date"
   // is recognized as boilerplate just like the plain version.
   const first = lines.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
-  const cleaned = first ? stripMarkdown(first) : ''
+  const cleaned = first ? firstSentence(stripMarkdown(first), RELEASE_SUMMARY_MAX) : ''
   if (cleaned) return truncateAtWord(cleaned, RELEASE_SUMMARY_MAX)
 
   const title = (name ?? '').trim()
@@ -64,6 +64,13 @@ function stripMarkdown(line: string): string {
     .replace(/\s+\(#\d+\)$/, '')
     .replace(/\s+/g, ' ')
     .trim()
+}
+
+/** Keep the whole first sentence when it fits, so a summary ends on a period instead of an ellipsis. */
+function firstSentence(text: string, max: number): string {
+  const match = /^(.+?[.!?])(?:\s|$)/.exec(text)
+  if (match && match[1].length >= 24 && match[1].length <= max) return match[1]
+  return text
 }
 
 function truncateAtWord(text: string, max: number): string {
