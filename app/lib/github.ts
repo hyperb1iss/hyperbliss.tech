@@ -41,21 +41,31 @@ export function summarizeRelease(name: string | null, body: string | null, versi
     /^(\*\*)?full changelog/i.test(line) ||
     /^(what'?s changed|changelog|release notes|highlights)\s*:?$/i.test(line) ||
     /^released:?\s/i.test(line) ||
-    /^(version|release)\s+v?\d/i.test(line) ||
     /^-{3,}$/.test(line)
 
   // Test both the raw line and its stripped form, so "**Released:** date"
   // is recognized as boilerplate just like the plain version.
-  // Skip fenced code blocks wholesale, then apply the noise test to both the
-  // raw line and its stripped form ("**Released:** date" counts as noise).
+  // Skip fenced code blocks wholesale (a fence closes only on the same marker
+  // at least as wide as the one that opened it, so a four-backtick fence can
+  // wrap a three-backtick example), then apply the noise test to both the raw
+  // line and its stripped form ("**Released:** date" counts as noise).
   const prose: string[] = []
-  let fenced = false
+  let fence: { char: string; width: number } | null = null
   for (const line of lines) {
-    if (/^(```|~~~)/.test(line)) {
-      fenced = !fenced
-      continue
+    const marker = /^(`{3,}|~{3,})/.exec(line)
+    if (marker) {
+      const char = marker[1][0]
+      const width = marker[1].length
+      if (!fence) {
+        fence = { char, width }
+        continue
+      }
+      if (fence.char === char && width >= fence.width) {
+        fence = null
+        continue
+      }
     }
-    if (!fenced) prose.push(line)
+    if (!fence) prose.push(line)
   }
   const first = prose.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
   const cleaned = first ? firstSentence(stripMarkdown(first), RELEASE_SUMMARY_MAX) : ''

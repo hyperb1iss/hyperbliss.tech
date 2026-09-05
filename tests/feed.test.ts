@@ -213,7 +213,13 @@ describe('summarizeRelease', () => {
     expect(summarizeRelease('Retrieval rewrite', '', '1.3.1')).toBe('Retrieval rewrite')
     expect(summarizeRelease('v1.3.1', '', '1.3.1')).toBeNull()
     expect(summarizeRelease('Release v1.2.3', '', '1.2.3')).toBeNull()
+    expect(summarizeRelease('Release v1.2.3: Faster startup', '', '1.2.3')).toBe('Release v1.2.3: Faster startup')
     expect(summarizeRelease(null, null, '1.3.1')).toBeNull()
+  })
+  it('closes a fence only on a matching marker at least as wide as the opener', () => {
+    const body = '````md\n```\nnpm install thing\n```\n````\n\nActual release summary.'
+    expect(summarizeRelease(null, body, '1.0.0')).toBe('Actual release summary.')
+    expect(summarizeRelease(null, '~~~\ncode\n```\nstill code\n~~~\nProse.', '1.0.0')).toBe('Prose.')
   })
   it('skips code fences, html, tables, and unwraps blockquotes', () => {
     expect(summarizeRelease(null, '```text\nnpm i thing\n```\n\nAdds a CLI.', '1.0.0')).toBe('Adds a CLI.')
