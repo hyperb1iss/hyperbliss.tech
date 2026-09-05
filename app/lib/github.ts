@@ -37,9 +37,13 @@ export function summarizeRelease(name: string | null, body: string | null, versi
     /^<!--/.test(line) ||
     /^(\*\*)?full changelog/i.test(line) ||
     /^(what'?s changed|changelog|release notes|highlights)\s*:?$/i.test(line) ||
+    /^released:?\s/i.test(line) ||
+    /^(version|release)\s+v?\d/i.test(line) ||
     /^-{3,}$/.test(line)
 
-  const first = lines.find((line) => !isNoise(line))
+  // Test both the raw line and its stripped form, so "**Released:** date"
+  // is recognized as boilerplate just like the plain version.
+  const first = lines.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
   const cleaned = first ? stripMarkdown(first) : ''
   if (cleaned) return truncateAtWord(cleaned, RELEASE_SUMMARY_MAX)
 

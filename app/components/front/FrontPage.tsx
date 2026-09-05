@@ -22,7 +22,7 @@ const Wrap = styled.div`
   width: 100%;
   max-width: 144rem;
   margin: 0 auto;
-  padding: 4.8rem 6.4rem 0;
+  padding: 4.8rem 6.4rem 6.4rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 32rem;
   column-gap: 7.2rem;
@@ -31,7 +31,7 @@ const Wrap = styled.div`
   @media (max-width: 1024px) {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 5.6rem;
-    padding: 3.2rem 2.4rem 0;
+    padding: 3.2rem 2.4rem 4.8rem;
   }
 `
 

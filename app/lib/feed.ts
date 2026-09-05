@@ -48,6 +48,16 @@ export interface FeedOptions {
 
 const LONG_FORM: readonly FeedKind[] = ['essay', 'lab']
 
+/**
+ * Project titles carry a tagline after a colon ("Sibyl: Build With Agents That
+ * Remember"). The feed and rail want the name alone.
+ */
+export function shortName(title: string): string {
+  const idx = title.indexOf(':')
+  const name = idx > 0 ? title.slice(0, idx) : title
+  return name.trim() || title
+}
+
 /** Normalize any parseable date to YYYY-MM-DD, or null when it isn't one. */
 export function toIsoDay(value: string | null | undefined): string | null {
   if (!value) return null
@@ -100,15 +110,16 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
     if (!project) continue
     const date = toIsoDay(release.publishedAt)
     if (!date) continue
+    const name = shortName(project.title)
     items.push({
       date,
       href: `/projects/${slug}/`,
       id: `release:${slug}@${release.version}`,
       kind: 'release',
-      project: project.title,
+      project: name,
       releaseUrl: release.url,
       summary: release.summary ?? null,
-      title: `${project.title} v${release.version}`,
+      title: `${name} v${release.version}`,
       version: release.version,
     })
   }
@@ -166,7 +177,7 @@ export function shippingList(
       href: `/projects/${project.slug}/`,
       publishedAt: release.publishedAt,
       slug: project.slug,
-      title: project.title,
+      title: shortName(project.title),
       version: release.version,
     })
   }

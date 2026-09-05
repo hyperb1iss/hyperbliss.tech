@@ -60,6 +60,8 @@ const Title = styled.h3`
   font-size: 2.1rem;
   line-height: 1.15;
   letter-spacing: -0.02em;
+  text-transform: none;
+  text-shadow: none;
   margin: 0.3rem 0 0.6rem;
   text-wrap: pretty;
 

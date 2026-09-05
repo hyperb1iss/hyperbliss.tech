@@ -26,6 +26,8 @@ const Title = styled.h1`
   font-size: clamp(3.4rem, 2.6rem + 2vw, 5.4rem);
   line-height: 1.02;
   letter-spacing: -0.03em;
+  text-transform: none;
+  text-shadow: none;
   margin: 0;
   max-width: 86rem;
   text-wrap: balance;

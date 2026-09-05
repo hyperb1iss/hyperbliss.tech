@@ -27,6 +27,7 @@ const Aside = styled.aside`
 const Block = styled.section`
   display: flex;
   flex-direction: column;
+  padding: 0;
 `
 
 const Heading = styled.h2`
@@ -36,6 +37,7 @@ const Heading = styled.h2`
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--silk-quantum-purple);
+  text-shadow: none;
   margin: 0 0 1.4rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(162, 89, 255, 0.25);
@@ -48,6 +50,10 @@ const Photo = styled.div`
   overflow: hidden;
   margin-bottom: 1.6rem;
   border: 1px solid rgba(148, 163, 184, 0.14);
+
+  @media (max-width: 1024px) {
+    max-width: 32rem;
+  }
 
   & img {
     object-fit: cover;

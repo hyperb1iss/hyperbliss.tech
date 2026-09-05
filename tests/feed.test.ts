@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
-import { buildFeed, type FeedRelease, shippingList, splitLead, toIsoDay } from '@/lib/feed'
+import { buildFeed, type FeedRelease, shippingList, shortName, splitLead, toIsoDay } from '@/lib/feed'
 import { summarizeRelease } from '@/lib/github'
 
 const post = (slug: string, date: string | null, title = slug): PostSummary => ({
@@ -71,7 +71,7 @@ const input = {
     post('undated', null),
   ],
   projects: [
-    project('sibyl', '2025-01-26', 'Sibyl'),
+    project('sibyl', '2025-01-26', 'Sibyl: Build With Agents That Remember'),
     project('opaline', '2026-02-01', 'Opaline'),
     project('orphan-release', null),
   ],
@@ -152,6 +152,14 @@ describe('splitLead', () => {
   })
 })
 
+describe('shortName', () => {
+  it('drops the tagline after a colon and leaves plain names alone', () => {
+    expect(shortName('Sibyl: Build With Agents That Remember')).toBe('Sibyl')
+    expect(shortName('DroidMind')).toBe('DroidMind')
+    expect(shortName(': odd')).toBe(': odd')
+  })
+})
+
 describe('shippingList', () => {
   it('lists released projects newest release first with project links', () => {
     expect(shippingList(input.projects, releases)).toEqual([
@@ -181,6 +189,17 @@ describe('summarizeRelease', () => {
     const body =
       "## What's Changed\n\n* **CSS export** for every theme by @hyperb1iss in https://github.com/x/y/pull/12\n* egui fixes\n\n**Full Changelog**: https://github.com/x/y/compare/v0.4.1...v0.4.2"
     expect(summarizeRelease('v0.4.2', body, '0.4.2')).toBe('CSS export for every theme')
+  })
+  it('skips release-date and version boilerplate lines', () => {
+    expect(summarizeRelease(null, 'Released: 2026-09-02\n\nAdds CSS export.', '0.4.2')).toBe('Adds CSS export.')
+    expect(
+      summarizeRelease(
+        'Release v0.4.2',
+        '# Release Notes v0.4.2\n\n**Released:** 2026-09-02\n\nA correctness release for the theme contract.\n\n## Highlights',
+        '0.4.2',
+      ),
+    ).toBe('A correctness release for the theme contract.')
+    expect(summarizeRelease(null, 'Version 0.4.2\n', '0.4.2')).toBeNull()
   })
   it('falls back to a descriptive title, never a bare tag', () => {
     expect(summarizeRelease('Retrieval rewrite', '', '1.3.1')).toBe('Retrieval rewrite')
