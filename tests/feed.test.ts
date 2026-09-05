@@ -220,6 +220,9 @@ describe('summarizeRelease', () => {
     const body = '````md\n```\nnpm install thing\n```\n````\n\nActual release summary.'
     expect(summarizeRelease(null, body, '1.0.0')).toBe('Actual release summary.')
     expect(summarizeRelease(null, '~~~\ncode\n```\nstill code\n~~~\nProse.', '1.0.0')).toBe('Prose.')
+    const trailing = '````md\n````not-a-closer\nLeaked prose\n````\n\nActual release summary.'
+    expect(summarizeRelease(null, trailing, '1.0.0')).toBe('Actual release summary.')
+    expect(summarizeRelease(null, '```\nnever closed\nstill code', '1.0.0')).toBeNull()
   })
   it('skips code fences, html, tables, and unwraps blockquotes', () => {
     expect(summarizeRelease(null, '```text\nnpm i thing\n```\n\nAdds a CLI.', '1.0.0')).toBe('Adds a CLI.')

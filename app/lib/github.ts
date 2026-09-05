@@ -60,7 +60,9 @@ export function summarizeRelease(name: string | null, body: string | null, versi
         fence = { char, width }
         continue
       }
-      if (fence.char === char && width >= fence.width) {
+      // A closer is the bare marker (trailing whitespace only); a marker
+      // followed by text is content inside the fence.
+      if (fence.char === char && width >= fence.width && /^(`{3,}|~{3,})\s*$/.test(line)) {
         fence = null
         continue
       }
