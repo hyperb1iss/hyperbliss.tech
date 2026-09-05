@@ -1,33 +1,34 @@
-import { Exo_2, Jura, Space_Mono } from 'next/font/google'
+import { IBM_Plex_Sans, Space_Mono, Syne } from 'next/font/google'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Heading Font
+// Display Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Jura - light, airy, sci-fi elegance
-export const jura = Jura({
+// Syne - geometric with an editorial edge; headlines, nav, numerals
+export const syne = Syne({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-jura',
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-syne',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Body Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Exo 2 - futuristic but softer
-export const exo2 = Exo_2({
+// IBM Plex Sans - quiet, technical, reads well light
+export const plexSans = IBM_Plex_Sans({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-exo2',
-  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-plex-sans',
+  weight: ['300', '400', '500', '600'],
 })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Mono Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+// Space Mono - the terminal, code, and version numbers share one mono face
 export const spaceMono = Space_Mono({
   display: 'swap',
   subsets: ['latin'],

@@ -3,7 +3,7 @@ import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
-import { exo2, jura, spaceMono } from './styles/fonts'
+import { plexSans, spaceMono, syne } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
 import './styles/blog.css'
@@ -28,7 +28,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
 
   return (
-    <html className={`${jura.variable} ${exo2.variable} ${spaceMono.variable}`} data-scroll-behavior="smooth" lang="en">
+    <html
+      className={`${syne.variable} ${plexSans.variable} ${spaceMono.variable}`}
+      data-scroll-behavior="smooth"
+      lang="en"
+    >
       <head>
         <StructuredData data={structuredData} />
       </head>

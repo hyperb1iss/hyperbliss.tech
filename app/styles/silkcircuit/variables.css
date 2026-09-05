@@ -94,13 +94,13 @@
      Typography
      ═══════════════════════════════════════════════════════════════ */
 
-  /* Font Stacks - Femme Future
-     Jura (headings) + Exo 2 (body) + Space Mono (code)
+  /* Font Stacks
+     Syne (display) + IBM Plex Sans (body) + Space Mono (code, data)
      Powered by `next/font` CSS variables (see `app/styles/fonts.ts`).
   */
-  --font-display: var(--font-jura, system-ui), system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-jura, system-ui), system-ui, -apple-system, sans-serif;
-  --font-body: var(--font-exo2, system-ui), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-syne, system-ui), "Avenir Next", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-syne, system-ui), "Avenir Next", system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-plex-sans, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
   --font-mono:
     var(--font-space-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
