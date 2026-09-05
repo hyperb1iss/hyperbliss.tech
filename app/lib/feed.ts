@@ -1,0 +1,175 @@
+// The front-page feed: everything that happened, newest first. Essays, lab
+// experiments, GitHub releases, and project launches fold into one list so the
+// landing page can lead with the newest long-form piece and run the rest
+// underneath it. Pure functions, server-safe, no React.
+
+import type { LabSummary, PostSummary, ProjectSummary } from './content'
+
+export type FeedKind = 'essay' | 'lab' | 'release' | 'launch'
+
+export interface FeedItem {
+  id: string
+  kind: FeedKind
+  /** ISO calendar date, YYYY-MM-DD. */
+  date: string
+  title: string
+  summary: string | null
+  /** Internal route for the item. */
+  href: string
+  /** Release tag without the leading v, for release items only. */
+  version: string | null
+  /** External GitHub release URL, for release items only. */
+  releaseUrl: string | null
+  /** Project title the item belongs to, for release and launch items. */
+  project: string | null
+}
+
+export interface FeedRelease {
+  version: string
+  publishedAt: string
+  url: string
+  summary?: string | null
+}
+
+export interface FeedInput {
+  posts: PostSummary[]
+  lab: LabSummary[]
+  projects: ProjectSummary[]
+  /** Project slug → latest release. */
+  releases: Map<string, FeedRelease>
+}
+
+export interface FeedOptions {
+  /** Cap on items returned after the lead is split off. */
+  limit?: number
+  /** Include project launches (first publish date). Defaults to true. */
+  launches?: boolean
+}
+
+const LONG_FORM: readonly FeedKind[] = ['essay', 'lab']
+
+/** Normalize any parseable date to YYYY-MM-DD, or null when it isn't one. */
+export function toIsoDay(value: string | null | undefined): string | null {
+  if (!value) return null
+  const time = new Date(value).getTime()
+  if (Number.isNaN(time)) return null
+  return new Date(time).toISOString().slice(0, 10)
+}
+
+/** Build the merged feed, newest first. Items without a usable date are dropped. */
+export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem[] {
+  const { launches = true } = options
+  const items: FeedItem[] = []
+
+  for (const post of input.posts) {
+    const date = toIsoDay(post.date)
+    if (!date) continue
+    items.push({
+      date,
+      href: `/blog/${post.slug}/`,
+      id: `essay:${post.slug}`,
+      kind: 'essay',
+      project: null,
+      releaseUrl: null,
+      summary: post.excerpt,
+      title: post.title,
+      version: null,
+    })
+  }
+
+  for (const experiment of input.lab) {
+    const date = toIsoDay(experiment.date)
+    if (!date) continue
+    items.push({
+      date,
+      href: `/lab/${experiment.slug}/`,
+      id: `lab:${experiment.slug}`,
+      kind: 'lab',
+      project: null,
+      releaseUrl: null,
+      summary: experiment.excerpt,
+      title: experiment.title,
+      version: null,
+    })
+  }
+
+  const projectsBySlug = new Map(input.projects.map((project) => [project.slug, project]))
+
+  for (const [slug, release] of input.releases) {
+    const project = projectsBySlug.get(slug)
+    if (!project) continue
+    const date = toIsoDay(release.publishedAt)
+    if (!date) continue
+    items.push({
+      date,
+      href: `/projects/${slug}/`,
+      id: `release:${slug}@${release.version}`,
+      kind: 'release',
+      project: project.title,
+      releaseUrl: release.url,
+      summary: release.summary ?? null,
+      title: `${project.title} v${release.version}`,
+      version: release.version,
+    })
+  }
+
+  if (launches) {
+    for (const project of input.projects) {
+      const date = toIsoDay(project.date)
+      if (!date) continue
+      items.push({
+        date,
+        href: `/projects/${project.slug}/`,
+        id: `launch:${project.slug}`,
+        kind: 'launch',
+        project: project.title,
+        releaseUrl: null,
+        summary: project.description,
+        title: project.title,
+        version: null,
+      })
+    }
+  }
+
+  items.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : a.id.localeCompare(b.id)))
+  return items
+}
+
+export interface FrontPageFeed {
+  /** Newest long-form piece (essay or lab), or the newest item if there is none. */
+  lead: FeedItem | null
+  /** Everything else, newest first, capped by `limit`. */
+  items: FeedItem[]
+  /** Total items before the cap, so the page can say how much more there is. */
+  total: number
+}
+
+/** Split the newest long-form piece off as the lead and cap the rest. */
+export function splitLead(feed: FeedItem[], limit = 10): FrontPageFeed {
+  if (feed.length === 0) return { items: [], lead: null, total: 0 }
+  const lead = feed.find((item) => LONG_FORM.includes(item.kind)) ?? feed[0]
+  const rest = feed.filter((item) => item.id !== lead.id)
+  return { items: rest.slice(0, limit), lead, total: rest.length }
+}
+
+/** Projects with a known release, newest release first, for the Shipping rail. */
+export function shippingList(
+  projects: ProjectSummary[],
+  releases: Map<string, FeedRelease>,
+  limit = 6,
+): Array<{ slug: string; title: string; version: string; href: string; publishedAt: string }> {
+  const rows: Array<{ slug: string; title: string; version: string; href: string; publishedAt: string }> = []
+  for (const project of projects) {
+    const release = releases.get(project.slug)
+    if (!release) continue
+    rows.push({
+      href: `/projects/${project.slug}/`,
+      publishedAt: release.publishedAt,
+      slug: project.slug,
+      title: project.title,
+      version: release.version,
+    })
+  }
+  rows.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  return rows.slice(0, limit)
+}

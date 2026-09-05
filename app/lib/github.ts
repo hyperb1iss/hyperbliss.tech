@@ -3,14 +3,70 @@
 
 interface GitHubRelease {
   tag_name: string
+  name: string | null
+  body: string | null
   published_at: string
   html_url: string
 }
 
-interface ReleaseInfo {
+export interface ReleaseInfo {
   version: string
   publishedAt: string
   url: string
+  /** One plain-text line describing the release, or null when the notes are empty or boilerplate. */
+  summary: string | null
+}
+
+const RELEASE_SUMMARY_MAX = 140
+
+/**
+ * Reduce GitHub release notes to one plain line for the front-page feed.
+ * Skips headings, badges, and changelog boilerplate, strips markdown from the
+ * first real sentence, and falls back to the release title when it says more
+ * than the tag does.
+ */
+export function summarizeRelease(name: string | null, body: string | null, version: string): string | null {
+  const lines = (body ?? '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const isNoise = (line: string) =>
+    /^#{1,6}\s/.test(line) ||
+    /^!\[/.test(line) ||
+    /^<!--/.test(line) ||
+    /^(\*\*)?full changelog/i.test(line) ||
+    /^(what'?s changed|changelog|release notes|highlights)\s*:?$/i.test(line) ||
+    /^-{3,}$/.test(line)
+
+  const first = lines.find((line) => !isNoise(line))
+  const cleaned = first ? stripMarkdown(first) : ''
+  if (cleaned) return truncateAtWord(cleaned, RELEASE_SUMMARY_MAX)
+
+  const title = (name ?? '').trim()
+  const bare = title.replace(/^v?/i, '')
+  if (title && bare !== version && bare !== `v${version}`)
+    return truncateAtWord(stripMarkdown(title), RELEASE_SUMMARY_MAX)
+  return null
+}
+
+function stripMarkdown(line: string): string {
+  return line
+    .replace(/^[-*+]\s+/, '')
+    .replace(/^\d+\.\s+/, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_`~]/g, '')
+    .replace(/\s+by\s+@[\w-]+\s+in\s+\S+$/i, '')
+    .replace(/\s+\(#\d+\)$/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function truncateAtWord(text: string, max: number): string {
+  if (text.length <= max) return text
+  const cut = text.slice(0, max - 1)
+  const at = cut.lastIndexOf(' ')
+  return `${(at > max * 0.6 ? cut.slice(0, at) : cut).trimEnd()}…`
 }
 
 // Cache for GitHub release data (in-memory for build time)
@@ -66,10 +122,12 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
 
     const release: GitHubRelease = await response.json()
 
+    const version = release.tag_name.replace(/^v/, '')
     const releaseInfo: ReleaseInfo = {
       publishedAt: release.published_at,
+      summary: summarizeRelease(release.name, release.body, version),
       url: release.html_url,
-      version: release.tag_name.replace(/^v/, ''),
+      version,
     }
 
     // Cache the result
