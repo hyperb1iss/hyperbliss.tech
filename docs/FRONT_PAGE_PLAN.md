@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Waves 1–3 built, gates + review pending** · Branch: `nova/front-page` ·
+> Status: **Built, gates green, two review rounds fixed, final check pending** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
 
@@ -117,10 +117,32 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
 - Front-page headings opt out of the global uppercase + glow heading
   rule locally. Retiring that rule site-wide is a follow-up, not this
   round (non-goal: other pages).
+- `@keyframes` written inside a Panda `css` template compile to an
+  empty rule. Keyframes live in `globals.css`; templates only reference
+  them by name.
+- Release rows link to the GitHub release page (external), not the
+  project page: the row says what shipped, the link goes to the notes.
+  Launch rows stay internal.
+
+## Review history
+
+- Round 1 (Codex, executed + traced): FAIL. 2 blockers (empty keyframes,
+  nested main), 8 should-fix, 4 nits. All taken in `2cdf3f8` except the
+  OG font follow-up. 30fps kept over time-based stepping for this round.
+- Round 2 (Codex, executed + compiled-artifact inspection at `2cdf3f8`):
+  NEEDS_CHANGES. All 10 round-1 items verified landed; two new parser
+  regressions in `summarizeRelease` (descriptive titles dropped, fence
+  widths ignored). Fixed in `1fd15a8` with tests.
 
 ## Follow-ups (not this round)
 
 - OG image renderer still sets Jura and Exo 2; move it to Syne + Plex.
+- CyberScape steps per frame, not per elapsed time, so a 60fps budget
+  doubles every speed. Make the update loop time-based, then raise
+  `targetFPS` to 60 (the plan's original motion target).
+- Deploy env needs `GITHUB_TOKEN`; without it 24 repos consume 40% of
+  the unauthenticated hourly budget per revalidation. Rate-limit
+  responses are logged and uncached, but a token is the real fix.
 - Global `h1..h6` uppercase + text-shadow rule; the other pages still
   inherit it.
 - A unified archive route for the feed ("Older →" currently splits to
