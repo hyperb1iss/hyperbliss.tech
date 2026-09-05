@@ -114,6 +114,10 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
   failure mode.
 - Panda `styled(Component)` swallows the `as` prop, so `Reveal` takes a
   `className` instead of being wrapped by `styled()`.
+- Never animate `transform` on a page-level wrapper: while the animation
+  fills, the wrapper is a containing block for `position: fixed`
+  descendants (Chrome reports an identity matrix even for a `to {
+transform: none }` frame). Wrappers fade; rows and blocks inside lift.
 - Front-page headings opt out of the global uppercase + glow heading
   rule locally. Retiring that rule site-wide is a follow-up, not this
   round (non-goal: other pages).
@@ -138,6 +142,12 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
   `2b96e67` with tests.
 - Round 4 (Codex, executed, narrow): PASS. Eight probes on the fence
   scanner, no new findings.
+- Pages wave round 1 (Codex, traced + tsc): FAIL. Blocker: the page
+  wrapper's animated transform became the containing block for the
+  Resume's fixed download button. Should-fix: legacy media rules
+  overriding the new detail layouts on phones; Writing/Lab outline
+  skipping h2. Nits: dead SparklingName, StarDivider, keyframes, author
+  prop. All fixed in `d24b423`; PageLayout now fades without moving.
 
 ### Wave 4 · Inner pages (2026-09-05)
 
@@ -150,7 +160,8 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
       latest release. `b41e9c5`
 - [x] **P3** About as rail + column (bio and CyanogenMod story live
       here); Resume headings calmed. `0964083`
-- [ ] **P4** Independent review of the pages wave.
+- [x] **P4** Independent review of the pages wave (round 1 fixed in
+      `d24b423`, round 2 pending).
 
 ## Open taste items
 
