@@ -56,6 +56,24 @@ export function shortName(title: string): string {
   return name.trim() || title
 }
 
+/** The part of a project title after the colon, or null when there is none. */
+export function tagline(title: string): string | null {
+  const idx = title.indexOf(':')
+  if (idx < 0) return null
+  const rest = title.slice(idx + 1).trim()
+  return rest || null
+}
+
+/** Essays only, newest first, for the Blog index. */
+export function essayFeed(posts: PostSummary[]): FeedItem[] {
+  return buildFeed({ lab: [], posts, projects: [], releases: new Map() }, { launches: false })
+}
+
+/** Lab experiments only, newest first, for the Lab index. */
+export function labFeed(lab: LabSummary[]): FeedItem[] {
+  return buildFeed({ lab, posts: [], projects: [], releases: new Map() }, { launches: false })
+}
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/
 
 /**

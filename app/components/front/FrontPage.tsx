@@ -2,6 +2,7 @@
 // merged feed runs beneath it, and a quiet rail carries who, now, shipping,
 // and elsewhere. Server component: everything here is crawlable HTML.
 
+import Link from 'next/link'
 import type { FrontSection, NowData } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
 import { styled } from '../../../styled-system/jsx'
@@ -42,6 +43,23 @@ const Main = styled.div`
   min-width: 0;
 `
 
+const Foot = styled.div`
+  display: flex;
+  gap: 2.4rem;
+  padding-top: 1.8rem;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  letter-spacing: 0.06em;
+
+  & a {
+    color: var(--silk-circuit-cyan);
+    text-decoration: none;
+  }
+  & a:hover {
+    color: var(--silk-steel-50);
+  }
+`
+
 export default function FrontPage({ lead, items, shipping, now, front, projectCount }: FrontPageProps) {
   return (
     <Wrap>
@@ -52,6 +70,12 @@ export default function FrontPage({ lead, items, shipping, now, front, projectCo
           </Reveal>
         )}
         <FeedList items={items} startOrder={1} />
+        <Reveal order={1 + items.length * 0.5}>
+          <Foot>
+            <Link href="/blog/">All writing →</Link>
+            <Link href="/projects/">All projects →</Link>
+          </Foot>
+        </Reveal>
       </Main>
       <Reveal order={2}>
         <Rail front={front} now={now} projectCount={projectCount} shipping={shipping} />

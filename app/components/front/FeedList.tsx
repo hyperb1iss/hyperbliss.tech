@@ -24,9 +24,13 @@ const rowStyles = css`
   padding: 1.8rem 0;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 
+  &[data-kind='hidden'] {
+    grid-template-columns: 6.4rem minmax(0, 1fr);
+  }
+
   @media (max-width: 640px) {
     grid-template-columns: 5.6rem minmax(0, 1fr);
-    & > :nth-child(2) {
+    & > [data-badge] {
       display: none;
     }
   }
@@ -103,38 +107,39 @@ const Summary = styled.p`
   text-wrap: pretty;
 `
 
-const Foot = styled.div`
-  display: flex;
-  gap: 2.4rem;
-  padding-top: 1.8rem;
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  letter-spacing: 0.06em;
-
-  & a {
-    color: var(--silk-circuit-cyan);
-    text-decoration: none;
-  }
-  & a:hover {
-    color: var(--silk-steel-50);
-  }
-`
-
 interface FeedListProps {
   items: FeedItem[]
   /** Entrance position of the first row; rows stagger from here. */
   startOrder?: number
+  /** Visually hidden heading for the list. Pass null when the page title already names it. */
+  heading?: string | null
+  /** Show the kind badge per row. Off for single-kind pages like Writing. */
+  showKind?: boolean
+  /** Cap the list width for reading comfort on wide index pages. */
+  narrow?: boolean
 }
 
-export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
+export default function FeedList({
+  items,
+  startOrder = 0,
+  heading = 'Latest',
+  showKind = true,
+  narrow = false,
+}: FeedListProps) {
   return (
-    <div>
-      <ListHeading>Latest</ListHeading>
+    <div style={narrow ? { maxWidth: '96rem' } : undefined}>
+      {heading && <ListHeading>{heading}</ListHeading>}
       <List>
         {items.map((item, index) => {
           const { day, month } = numeralDate(item.date)
           return (
-            <Reveal as="li" className={rowStyles} key={item.id} order={startOrder + index * 0.5}>
+            <Reveal
+              as="li"
+              className={rowStyles}
+              data-kind={showKind ? undefined : 'hidden'}
+              key={item.id}
+              order={startOrder + index * 0.5}
+            >
               <DateCol>
                 <Day aria-hidden="true">{day}</Day>
                 <Month aria-hidden="true">{month}</Month>
@@ -145,9 +150,11 @@ export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
                   {item.date}
                 </time>
               </DateCol>
-              <BadgeSlot>
-                <Badge kind={item.kind} />
-              </BadgeSlot>
+              {showKind && (
+                <BadgeSlot data-badge="">
+                  <Badge kind={item.kind} />
+                </BadgeSlot>
+              )}
               <div>
                 <Title>
                   {item.external ? (
@@ -164,12 +171,6 @@ export default function FeedList({ items, startOrder = 0 }: FeedListProps) {
           )
         })}
       </List>
-      <Reveal order={startOrder + items.length * 0.5}>
-        <Foot>
-          <Link href="/blog/">All writing →</Link>
-          <Link href="/projects/">All projects →</Link>
-        </Foot>
-      </Reveal>
     </div>
   )
 }

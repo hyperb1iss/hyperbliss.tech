@@ -5,20 +5,7 @@ import { generatePageMetadata } from '../../lib/generateMetadata'
 
 export default async function Blog() {
   const posts = await getAllPosts()
-
-  // Transform to the format BlogList expects
-  const blogPosts = posts.map((post) => ({
-    frontmatter: {
-      author: post.author ?? undefined,
-      date: post.date ?? '',
-      excerpt: post.excerpt ?? '',
-      tags: (post.tags ?? []).filter((t): t is string => t !== null),
-      title: post.displayTitle,
-    },
-    slug: post.slug,
-  }))
-
-  return <BlogList posts={blogPosts} />
+  return <BlogList posts={posts} />
 }
 
 export const metadata = generatePageMetadata(

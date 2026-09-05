@@ -21,6 +21,8 @@ const revealStyles = css`
 
 interface RevealProps {
   children: ReactNode
+  /** Data attribute hooks for the caller's CSS. */
+  'data-kind'?: string
   /** Position in the entrance sequence. Each step adds 70ms. */
   order?: number
   /** Render as this element so semantics survive the wrapper. */
@@ -28,11 +30,11 @@ interface RevealProps {
   className?: string
 }
 
-export default function Reveal({ children, order = 0, as = 'div', className }: RevealProps) {
+export default function Reveal({ children, order = 0, as = 'div', className, 'data-kind': dataKind }: RevealProps) {
   const Tag = as
   const style = { '--reveal-delay': `${Math.round(order * 70)}ms` } as CSSProperties
   return (
-    <Tag className={cx(revealStyles, className)} style={style}>
+    <Tag className={cx(revealStyles, className)} data-kind={dataKind} style={style}>
       {children}
     </Tag>
   )

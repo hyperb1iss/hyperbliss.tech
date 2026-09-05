@@ -1,49 +1,21 @@
 // app/components/ProjectsPageContent.tsx
-'use client'
+// The Projects index: title, one-line lede, and the project rows.
 
-import React from 'react'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
-import ProjectList from './ProjectList'
+import ProjectRows, { type ProjectRow } from './ProjectRows'
 
-/**
- * Interface for project data
- */
-interface Project {
-  slug: string
-  frontmatter: {
-    title: string
-    description: string
-    github: string
-    author?: string
-    tags?: string[]
-    latestVersion?: string | null
-    releaseDate?: string | null
-    releaseUrl?: string | null
-  }
-}
-
-/**
- * Interface for ProjectsPageContent component props
- */
 interface ProjectsPageContentProps {
-  projects: Project[]
+  rows: ProjectRow[]
 }
 
-/**
- * ProjectsPageContent component
- * Renders the projects page with a title and list of projects.
- * Ensures correct layout without duplicate headers.
- * @param {ProjectsPageContentProps} props - The component props
- * @returns {JSX.Element} Rendered projects page
- */
-const ProjectsPageContent: React.FC<ProjectsPageContentProps> = ({ projects }) => {
+export default function ProjectsPageContent({ rows }: ProjectsPageContentProps) {
   return (
     <PageLayout>
-      <PageTitle>Projects</PageTitle>
-      <ProjectList projects={projects} />
+      <PageTitle lede="Things I have built, broken, and shipped. Open source tools, creative experiments, and systems that do real work.">
+        Projects
+      </PageTitle>
+      <ProjectRows rows={rows} />
     </PageLayout>
   )
 }
-
-export default ProjectsPageContent
