@@ -253,7 +253,7 @@ export class Particle {
 
     // Calculate dynamic shadow blur based on position and proximity to cursor
     const distanceToCursor = Math.hypot(mouseX - this.position[0], mouseY - this.position[1])
-    const dynamicShadowBlur = 10 + (200 - Math.min(distanceToCursor, 200)) / 20
+    const dynamicShadowBlur = 6 + (200 - Math.min(distanceToCursor, 200)) / 25
 
     // Set the particle's color and prepare for dynamic glow effect
     ctx.fillStyle = this.color

@@ -10,13 +10,13 @@ export class CyberScapeConfig {
   private static instance: CyberScapeConfig
 
   // Animation and rendering
-  public targetFPS = 30
+  public targetFPS = 60
   public frameTime: number = 1000 / this.targetFPS
 
   // Particle settings
   public particlePoolSize = 500
-  public particlesPerPixel: number = 1 / 2000
-  public baseParticleCount = 100
+  public particlesPerPixel: number = 1 / 3200
+  public baseParticleCount = 70
   public particleMinSpeed = 0.1
   public particleMaxSpeed = 0.5
   public particleSizeMin = 1.5
@@ -40,15 +40,15 @@ export class CyberScapeConfig {
   public particleAtCollisionShapeDistortionFactor = 0.1
 
   // Shape settings
-  public numberOfShapes = 6
-  public numberOfShapesMobile = 5
+  public numberOfShapes = 4
+  public numberOfShapesMobile = 3
   public shapeMinSpeed = 0.05
   public shapeMaxSpeed = 0.3
   public shapeLifespanMin = 10000
   public shapeLifespanMax = 25000
   public shapeFadeOutDuration = 3000
-  public shapeGlowIntensityMin = 15
-  public shapeGlowIntensityMax = 25
+  public shapeGlowIntensityMin = 8
+  public shapeGlowIntensityMax = 14
 
   // Explosion settings
   public maxExplosionParticles = 100
@@ -82,12 +82,12 @@ export class CyberScapeConfig {
   public shapeRepulsionForce = 0.001
 
   // Glitch effect settings
-  public glitchIntervalMin = 10000
-  public glitchIntervalMax = 20000
+  public glitchIntervalMin = 25000
+  public glitchIntervalMax = 45000
   public glitchDurationMin = 100
   public glitchDurationMax = 400
-  public glitchIntensityMin = 0.3
-  public glitchIntensityMax = 1
+  public glitchIntensityMin = 0.2
+  public glitchIntensityMax = 0.55
 
   // Glitch effect detail settings
   public glitchEffectMaxAmount = 15

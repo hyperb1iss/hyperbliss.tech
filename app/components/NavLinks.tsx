@@ -37,11 +37,12 @@ const navLinkBaseStyles = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-family: var(--font-display);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: var(--font-semibold);
+  letter-spacing: 0.2em;
+  font-weight: 700;
   padding: var(--space-2) var(--space-3);
-  font-size: clamp(1.6rem, 1.4rem + 0.5vw, 2.2rem);
+  font-size: clamp(1.25rem, 1.15rem + 0.25vw, 1.5rem);
   text-decoration: none;
   position: relative;
   outline: none;

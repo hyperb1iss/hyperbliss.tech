@@ -376,7 +376,7 @@ export abstract class VectorShape {
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity * 0.5})`
         }
 
-        ctx.lineWidth = 2
+        ctx.lineWidth = 1.25
 
         // Apply dynamic glow based on opacity and glow intensity
         const glowEffect = this.opacity * this.glowIntensity * 1.5
@@ -409,7 +409,7 @@ export abstract class VectorShape {
         // Add a subtle inner glow
         ctx.globalCompositeOperation = 'lighter'
         ctx.shadowBlur = glowEffect * 0.5
-        ctx.globalAlpha = 0.3
+        ctx.globalAlpha = 0.18
         ctx.stroke()
         ctx.globalAlpha = 1
         ctx.globalCompositeOperation = 'source-over'
