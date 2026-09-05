@@ -133,6 +133,9 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
   NEEDS_CHANGES. All 10 round-1 items verified landed; two new parser
   regressions in `summarizeRelease` (descriptive titles dropped, fence
   widths ignored). Fixed in `1fd15a8` with tests.
+- Round 3 (Codex, executed, narrow): NEEDS_CHANGES. Both round-2 fixes
+  verified; one new edge (a fence closer with trailing text). Fixed in
+  `2b96e67` with tests. Round 4 is a final narrow confirmation.
 
 ## Follow-ups (not this round)
 
