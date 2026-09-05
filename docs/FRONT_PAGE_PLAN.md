@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Built, gates green, two review rounds fixed, final check pending** · Branch: `nova/front-page` ·
+> Status: **Built, gates green, review PASS (round 4). Ready for Bliss's eyes and a PR.** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
 
@@ -97,7 +97,7 @@ shipping, and elsewhere.
 - [x] **T9** Tests: `homepage-content.test.tsx` updated to the new SSR
       markup; render test for `FrontPage`.
       Verify: `pnpm test`.
-- [ ] **T10** Gates + independent review: `pnpm typecheck && pnpm lint &&
+- [x] **T10** Gates + independent review: `pnpm typecheck && pnpm lint &&
 pnpm test && pnpm build`, then `cross-model-review`. Refresh
       `content/now.md` (draft for Bliss to approve).
 
@@ -135,7 +135,9 @@ pnpm test && pnpm build`, then `cross-model-review`. Refresh
   widths ignored). Fixed in `1fd15a8` with tests.
 - Round 3 (Codex, executed, narrow): NEEDS_CHANGES. Both round-2 fixes
   verified; one new edge (a fence closer with trailing text). Fixed in
-  `2b96e67` with tests. Round 4 is a final narrow confirmation.
+  `2b96e67` with tests.
+- Round 4 (Codex, executed, narrow): PASS. Eight probes on the fence
+  scanner, no new findings.
 
 ## Follow-ups (not this round)
 
