@@ -52,12 +52,15 @@ const Name = styled.h2`
   gap: 0 1.2rem;
 
   & a {
-    color: var(--silk-steel-50);
+    color: var(--silk-circuit-cyan);
     text-decoration: none;
-    transition: color var(--duration-normal) var(--ease-silk);
+    transition:
+      color var(--duration-normal) var(--ease-silk),
+      text-shadow var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-circuit-cyan);
+    color: var(--silk-steel-50);
+    text-shadow: 0 0 18px rgba(0, 255, 240, 0.6);
   }
 `
 

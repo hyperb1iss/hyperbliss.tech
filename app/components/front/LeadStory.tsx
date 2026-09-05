@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import type { FeedItem } from '@/lib/feed'
+import { cx } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
 import { KIND_VERB, longDate } from './format'
+import { neonTitle } from './neon'
 
 const Article = styled.article`
   display: flex;
@@ -33,12 +35,11 @@ const Title = styled.h1`
   text-wrap: balance;
 
   & a {
-    color: var(--silk-steel-50);
+    color: inherit;
     text-decoration: none;
-    transition: color var(--duration-normal) var(--ease-silk);
   }
-  & a:hover {
-    color: var(--silk-circuit-cyan);
+  &:hover {
+    filter: drop-shadow(0 0 26px rgba(0, 255, 240, 0.35));
   }
 `
 
@@ -76,7 +77,7 @@ export default function LeadStory({ item }: { item: FeedItem }) {
         <Badge kind={item.kind} />
         <time dateTime={item.date}>{longDate(item.date)}</time>
       </Meta>
-      <Title>
+      <Title className={neonTitle}>
         {item.external ? (
           <a href={item.href} rel="noopener noreferrer">
             {item.title}

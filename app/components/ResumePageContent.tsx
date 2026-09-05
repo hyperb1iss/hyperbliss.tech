@@ -389,8 +389,8 @@ const SectionTitle = styled.h2`
   font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: none;
-  text-shadow: none;
-  color: var(--silk-steel-50);
+  color: var(--silk-circuit-cyan);
+  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
   margin: 0;
 `
 
@@ -444,7 +444,7 @@ const CompanyName = styled.h3`
   letter-spacing: -0.02em;
   text-transform: none;
   text-shadow: none;
-  color: var(--silk-steel-50);
+  color: #e0aaff;
   margin-bottom: var(--space-1);
 
   a {

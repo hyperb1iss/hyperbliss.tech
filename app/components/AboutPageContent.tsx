@@ -168,7 +168,7 @@ const Reasons = styled.dl`
     font-weight: 700;
     font-size: 1.7rem;
     letter-spacing: -0.01em;
-    color: var(--silk-steel-50);
+    color: #e0aaff;
     margin: 0 0 0.4rem;
   }
   & dd {

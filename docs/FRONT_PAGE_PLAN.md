@@ -39,8 +39,13 @@ shipping, and elsewhere.
 - Header collapsed/expanded heights stay 110px/200px (96/180 mobile).
   `TerminalConsole` and `GlobalLayout` derive offsets from them.
 - CyberScape lives in the header band and nowhere else.
-- Pink appears once per screen: the name. Purple is structure, cyan is
-  interactive.
+- Color carries meaning, and titles carry color. Page and story titles
+  wear the cyan → lavender → pink gradient with a soft purple bloom;
+  feed titles are colored by kind (essay pink, release cyan, lab
+  lavender, launch purple); project names are cyan; prose h2 cyan, h3
+  pink or lavender. Body copy stays steel. Earlier "pink once per
+  screen" rule retired 2026-09-05 after Bliss: "most of the text is
+  white now and we lost the cyber vibes".
 - No captions, tickers, or marginalia (rev hashes, counts, coordinates).
 - One mono face. Space Mono stays for the terminal, code, and version
   numbers. Martian Mono from the mock is dropped: a second mono for six

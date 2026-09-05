@@ -4,7 +4,8 @@
 // the global uppercase-and-glow heading rule so it matches the front page.
 
 import type { ReactNode } from 'react'
-import { css } from '../../styled-system/css'
+import { css, cx } from '../../styled-system/css'
+import { neonTitle } from './front/neon'
 
 const headerStyles = css`
   display: flex;
@@ -24,7 +25,6 @@ const titleStyles = css`
   text-transform: none;
   text-shadow: none;
   margin: 0;
-  color: var(--silk-steel-50);
   text-wrap: balance;
 `
 
@@ -47,7 +47,7 @@ interface PageTitleProps {
 export default function PageTitle({ children, lede }: PageTitleProps) {
   return (
     <header className={headerStyles}>
-      <h1 className={titleStyles}>{children}</h1>
+      <h1 className={cx(titleStyles, neonTitle)}>{children}</h1>
       {lede && <p className={ledeStyles}>{lede}</p>}
     </header>
   )

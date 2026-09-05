@@ -46,8 +46,12 @@
   text-shadow: none;
   text-align: left;
   margin: 0;
-  color: var(--silk-steel-50);
   text-wrap: balance;
+  background: linear-gradient(110deg, var(--silk-circuit-cyan) 0%, #e0aaff 48%, var(--silk-plasma-pink) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(162, 89, 255, 0.35));
 }
 
 .blog-post__tags {
@@ -895,9 +899,11 @@
 }
 
 .markdown-prose__h2 {
-  color: var(--silk-steel-50);
+  color: var(--silk-circuit-cyan);
+  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
 }
 
 .markdown-prose__h3 {
   color: var(--silk-plasma-pink);
+  text-shadow: 0 0 14px rgba(255, 117, 216, 0.25);
 }

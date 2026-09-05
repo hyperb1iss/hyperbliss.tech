@@ -1,9 +1,11 @@
 import Link from 'next/link'
+import type { CSSProperties } from 'react'
 import type { FeedItem } from '@/lib/feed'
 import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
 import { numeralDate } from './format'
+import { KIND_COLOR } from './neon'
 import Reveal from './Reveal'
 
 const List = styled.ol`
@@ -48,7 +50,7 @@ const Day = styled.span`
   font-size: 3.4rem;
   line-height: 0.95;
   letter-spacing: -0.03em;
-  color: var(--silk-steel-50);
+  color: #e0aaff;
   transition: color var(--duration-normal) var(--ease-silk);
 
   li:hover & {
@@ -89,12 +91,15 @@ const titleStyles = css`
   text-wrap: pretty;
 
   & a {
-    color: var(--silk-steel-50);
+    color: var(--title-color, var(--silk-steel-50));
     text-decoration: none;
-    transition: color var(--duration-normal) var(--ease-silk);
+    transition:
+      color var(--duration-normal) var(--ease-silk),
+      text-shadow var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-circuit-cyan);
+    color: var(--silk-steel-50);
+    text-shadow: 0 0 18px var(--title-color, transparent);
   }
 `
 
@@ -160,7 +165,7 @@ export default function FeedList({
                 </BadgeSlot>
               )}
               <div>
-                <TitleTag className={titleStyles}>
+                <TitleTag className={titleStyles} style={{ '--title-color': KIND_COLOR[item.kind] } as CSSProperties}>
                   {item.external ? (
                     <a href={item.href} rel="noopener noreferrer">
                       {item.title}

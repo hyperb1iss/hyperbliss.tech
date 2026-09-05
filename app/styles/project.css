@@ -52,13 +52,16 @@
   letter-spacing: -0.03em;
   text-transform: none;
   text-shadow: none;
-  filter: none;
   margin: 0;
-  color: var(--silk-steel-50);
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.4rem 1.6rem;
+  background: linear-gradient(110deg, var(--silk-circuit-cyan) 0%, #e0aaff 48%, var(--silk-plasma-pink) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(162, 89, 255, 0.35));
 }
 
 .project-detail__tagline {
@@ -67,6 +70,8 @@
   font-size: clamp(1.8rem, 1.5rem + 0.6vw, 2.4rem);
   letter-spacing: 0;
   line-height: 1.3;
+  /* the tagline sits inside the gradient h1; give it its own fill */
+  -webkit-text-fill-color: var(--text-secondary);
   color: var(--text-secondary);
 }
 
@@ -684,10 +689,12 @@
 }
 
 .project-markdown__h2 {
-  color: var(--silk-steel-50);
+  color: var(--silk-circuit-cyan);
+  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
 }
 
 .project-markdown__h3 {
-  color: var(--silk-circuit-cyan);
+  color: #e0aaff;
+  text-shadow: 0 0 14px rgba(162, 89, 255, 0.3);
   padding-left: 0;
 }
