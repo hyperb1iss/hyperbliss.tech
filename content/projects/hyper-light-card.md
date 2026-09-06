@@ -1,5 +1,6 @@
 ---
 emoji: '🌟'
+category: 'lighting'
 title: 'Hyper Light Card'
 description: 'An adaptive Home Assistant card for SignalRGB and Hypercolor, with effect artwork, scene controls, audio settings, and per-zone lighting.'
 date: '2024-09-25'

@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '🖨️'
 title: 'SilkPrint: Markdown Worth Reading'
 description: 'A themed Markdown reader and PDF renderer written in Rust, with terminal navigation, inline images and diagrams, and Typst-powered document output.'

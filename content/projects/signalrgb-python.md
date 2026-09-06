@@ -1,4 +1,5 @@
 ---
+category: 'lighting'
 emoji: '💡'
 title: 'signalrgb-python: Python Library for SignalRGB'
 date: '2024-09-25'

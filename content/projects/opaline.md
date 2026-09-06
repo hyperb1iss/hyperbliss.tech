@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '✦'
 title: 'Opaline: A Shared Language for Color'
 description: 'A Rust theme engine that resolves palettes into semantic tokens, styles, and gradients for terminal interfaces, desktop apps, and CSS.'

@@ -1,19 +1,14 @@
 // app/components/ProjectRows.tsx
-// The Projects index as a list: name, tagline, description, a few tags, and the
-// latest version on the right. Sorted by the caller (newest release first).
+// A lane's projects as rows: sigil, name and tagline, description, a few tags,
+// and the live facts (version, stars, language, last push) on the right.
 
 import Link from 'next/link'
-import type { ProjectSummary } from '@/lib/content'
 import { shortName, tagline } from '@/lib/feed'
+import type { ProjectEntry } from '@/lib/projectLanes'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import Reveal from './front/Reveal'
-
-export interface ProjectRow {
-  project: ProjectSummary
-  version: string | null
-  releaseUrl: string | null
-}
+import ProjectMeta from './projects/ProjectMeta'
 
 const List = styled.ol`
   list-style: none;
@@ -25,19 +20,33 @@ const List = styled.ol`
 
 const rowStyles = css`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 3.2rem;
+  grid-template-columns: 3.6rem minmax(0, 1fr) auto;
+  column-gap: 2rem;
   align-items: start;
   padding: 2rem 0;
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  transition: background var(--duration-normal) var(--ease-silk);
 
-  @media (max-width: 640px) {
-    grid-template-columns: minmax(0, 1fr);
+  &:hover {
+    background: linear-gradient(90deg, rgba(162, 89, 255, 0.06), transparent 60%);
+  }
+
+  @media (max-width: 760px) {
+    grid-template-columns: 3.2rem minmax(0, 1fr);
     row-gap: 0.8rem;
+    & > :last-child {
+      grid-column: 2;
+    }
   }
 `
 
-const Name = styled.h2`
+const Sigil = styled.span`
+  font-size: 2rem;
+  line-height: 1.4;
+  filter: drop-shadow(0 0 10px rgba(162, 89, 255, 0.45));
+`
+
+const Name = styled.h3`
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 2.4rem;
@@ -94,42 +103,41 @@ const Tags = styled.div`
 `
 
 const Meta = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.6rem;
   padding-top: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 1.2rem;
-  white-space: nowrap;
+  text-align: right;
 
-  & a {
-    color: var(--silk-circuit-cyan);
-    text-decoration: none;
-    opacity: 0.85;
-    transition: opacity var(--duration-normal) var(--ease-silk);
-  }
-  & a:hover {
-    opacity: 1;
+  & > div {
+    justify-content: flex-end;
   }
 
-  @media (max-width: 640px) {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 1.6rem;
+  @media (max-width: 760px) {
+    text-align: left;
     padding-top: 0;
+    & > div {
+      justify-content: flex-start;
+    }
   }
 `
 
-export default function ProjectRows({ rows }: { rows: ProjectRow[] }) {
+export default function ProjectRows({
+  entries,
+  now,
+  startOrder = 0,
+}: {
+  entries: ProjectEntry[]
+  now: number
+  startOrder?: number
+}) {
   return (
     <List>
-      {rows.map(({ project, version, releaseUrl }, index) => {
+      {entries.map((entry, index) => {
+        const { project } = entry
         const name = shortName(project.title)
         const sub = tagline(project.title)
         const tags = (project.tags ?? []).filter((t): t is string => t !== null).slice(0, 4)
         return (
-          <Reveal as="li" className={rowStyles} key={project.slug} order={index * 0.5}>
+          <Reveal as="li" className={rowStyles} key={project.slug} order={startOrder + index * 0.5}>
+            <Sigil aria-hidden="true">{project.emoji ?? ''}</Sigil>
             <div>
               <Name>
                 <Link href={`/projects/${project.slug}/`}>{name}</Link>
@@ -145,19 +153,7 @@ export default function ProjectRows({ rows }: { rows: ProjectRow[] }) {
               )}
             </div>
             <Meta>
-              {version &&
-                (releaseUrl ? (
-                  <a href={releaseUrl} rel="noopener noreferrer">
-                    v{version}
-                  </a>
-                ) : (
-                  <span>v{version}</span>
-                ))}
-              {project.github && (
-                <a href={project.github} rel="noopener noreferrer">
-                  GitHub →
-                </a>
-              )}
+              <ProjectMeta entry={entry} now={now} />
             </Meta>
           </Reveal>
         )

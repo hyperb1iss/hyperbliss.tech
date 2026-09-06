@@ -1,4 +1,5 @@
 ---
+category: 'agents'
 emoji: '⚡'
 title: 'q: Claude Within Reach'
 description: 'A compact Claude CLI for quick questions, shell pipelines, persistent conversations, and tool-assisted tasks, built with TypeScript, Bun, and Ink.'

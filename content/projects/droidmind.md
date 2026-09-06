@@ -1,4 +1,5 @@
 ---
+category: 'agents'
 emoji: '🤖'
 title: 'DroidMind: Android in the Development Loop'
 description: 'An MCP bridge from AI assistants to Android devices, bringing app control, screenshots, logs, and UI interaction into a connected debugging workflow.'

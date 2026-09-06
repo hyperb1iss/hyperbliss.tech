@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '😺'
 title: 'ChromaCat: Color in Motion'
 date: '2024-09-25'

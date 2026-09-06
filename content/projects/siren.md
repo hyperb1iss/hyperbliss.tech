@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '🧜‍♀️'
 title: 'Siren: One Frontend for Code Quality'
 description: 'An in-development Rust frontend that detects project languages, selects existing quality tools, and brings their checks and fixes into one terminal workflow.'

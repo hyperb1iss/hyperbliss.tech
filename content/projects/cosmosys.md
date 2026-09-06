@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '🪐'
 title: 'Cosmosys: Releases with a Clear Sequence'
 date: '2024-09-25'

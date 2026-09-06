@@ -1,4 +1,5 @@
 ---
+category: 'lighting'
 emoji: '🔌'
 title: 'blocksd: ROLI Blocks on Linux and macOS'
 description: 'A host daemon that keeps ROLI Blocks connected, drives their LEDs, and exposes touch events to creative software on Linux and macOS.'

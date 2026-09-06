@@ -190,6 +190,80 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
   }
 }
 
+// ─── Repo stats ───────────────────────────────────────────────────────────────
+
+export interface RepoStats {
+  stars: number
+  forks: number
+  language: string | null
+  pushedAt: string | null
+  archived: boolean
+}
+
+const statsCache = new Map<string, { data: RepoStats | null; timestamp: number }>()
+
+/** Stars, primary language, and last push for a repository, cached for an hour. */
+export async function getRepoStats(githubUrl: string): Promise<RepoStats | null> {
+  const parsed = parseGitHubUrl(githubUrl)
+  if (!parsed) return null
+  const cacheKey = `${parsed.owner}/${parsed.repo}`
+  const cached = statsCache.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.data
+
+  try {
+    const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        ...(process.env.GITHUB_TOKEN && { Authorization: `token ${process.env.GITHUB_TOKEN}` }),
+      },
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) {
+      if (response.status === 403 || response.status === 429) {
+        console.warn(`GitHub rate limit hit fetching repo stats for ${cacheKey} (HTTP ${response.status}).`)
+        return null
+      }
+      statsCache.set(cacheKey, { data: null, timestamp: Date.now() })
+      return null
+    }
+    const repo = (await response.json()) as {
+      stargazers_count?: number
+      forks_count?: number
+      language?: string | null
+      pushed_at?: string | null
+      archived?: boolean
+    }
+    const stats: RepoStats = {
+      archived: Boolean(repo.archived),
+      forks: repo.forks_count ?? 0,
+      language: repo.language ?? null,
+      pushedAt: repo.pushed_at ?? null,
+      stars: repo.stargazers_count ?? 0,
+    }
+    statsCache.set(cacheKey, { data: stats, timestamp: Date.now() })
+    return stats
+  } catch (error) {
+    console.error(`Failed to fetch repo stats for ${cacheKey}:`, error)
+    statsCache.set(cacheKey, { data: null, timestamp: Date.now() })
+    return null
+  }
+}
+
+/** Repo stats for many projects in parallel, keyed by slug. */
+export async function getRepoStatsForProjects(
+  projects: Array<{ slug: string; github: string | null }>,
+): Promise<Map<string, RepoStats>> {
+  const out = new Map<string, RepoStats>()
+  const results = await Promise.all(
+    projects.map(async (project) => ({
+      slug: project.slug,
+      stats: project.github ? await getRepoStats(project.github) : null,
+    })),
+  )
+  for (const { slug, stats } of results) if (stats) out.set(slug, stats)
+  return out
+}
+
 /**
  * Fetch releases for multiple GitHub URLs in parallel
  */

@@ -1,4 +1,5 @@
 ---
+category: 'terminal'
 emoji: '📡'
 title: 'unifly: UniFi from the Terminal'
 description: 'A Rust CLI and live terminal dashboard for UniFi networks, from switch ports and firewall policies to Wi-Fi diagnostics and cloud-managed sites.'
