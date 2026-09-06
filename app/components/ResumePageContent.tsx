@@ -433,6 +433,17 @@ const TimelineItem = styled.div`
   }
 `
 
+const SubLabel = styled.h4`
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--silk-quantum-purple);
+  margin: 0 0 var(--space-3);
+`
+
 const TimelineHeader = styled.div`
   margin-bottom: var(--space-3);
 `
@@ -795,9 +806,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               <TimelineContent>
                 {speaking.length > 0 && (
                   <div style={{ marginBottom: 'var(--space-6)' }}>
-                    <h4 style={{ color: 'var(--silk-plasma-pink)', marginBottom: 'var(--space-3)' }}>
-                      Speaking & Recognition
-                    </h4>
+                    <SubLabel>Speaking & Recognition</SubLabel>
                     <ul>
                       {speaking.map((item, idx) => (
                         <li key={idx}>
@@ -810,7 +819,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
 
                 {awards.length > 0 && (
                   <div>
-                    <h4 style={{ color: 'var(--silk-plasma-pink)', marginBottom: 'var(--space-3)' }}>Awards</h4>
+                    <SubLabel>Awards</SubLabel>
                     <ul>
                       {awards.map((item, idx) => (
                         <li key={idx}>
