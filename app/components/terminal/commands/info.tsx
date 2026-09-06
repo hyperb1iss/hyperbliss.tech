@@ -21,7 +21,7 @@ registry.register({
     return (
       <Block>
         <Heading>{about?.title ?? 'Stefanie Jane'}</Heading>
-        <div>{about?.summary ?? 'Principal engineer, open-source maker.'}</div>
+        <div>{about?.summary ?? 'Creative technologist, open-source maker.'}</div>
         <div>
           <Muted>creator of CyanogenMod / LineageOS · building developer tools, terminal UIs, and AI agents.</Muted>
         </div>

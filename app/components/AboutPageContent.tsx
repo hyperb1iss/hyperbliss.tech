@@ -215,7 +215,7 @@ export default function AboutPageContent({ about }: AboutPageContentProps) {
             </Portrait>
           )}
           <Name>{name}</Name>
-          <Role>Principal engineer, Seattle.</Role>
+          <Role>Creative technologist, Seattle.</Role>
           <Links>
             <a href="https://github.com/hyperb1iss" rel="noopener noreferrer">
               GitHub →

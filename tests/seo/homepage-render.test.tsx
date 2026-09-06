@@ -43,7 +43,7 @@ const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
   photo: '/images/profile-image.jpg',
   photoAlt: 'Stefanie Jane',
-  role: 'Principal engineer, Seattle.',
+  role: 'Creative technologist, Seattle.',
 }
 
 const now: NowData = {
@@ -106,7 +106,7 @@ describe('TerminalHome SSR markup carries real content', () => {
 
   it('renders the rail: byline, now, shipping, elsewhere', () => {
     expect(withoutNoscript).toContain('Stefanie Jane')
-    expect(withoutNoscript).toContain('Principal engineer, Seattle.')
+    expect(withoutNoscript).toContain('Creative technologist, Seattle.')
     expect(withoutNoscript).toMatch(/href="\/about\/?"/)
     expect(withoutNoscript).toMatch(/href="\/resume\/?"/)
     expect(withoutNoscript).toContain('Rebuilding the front door.')
