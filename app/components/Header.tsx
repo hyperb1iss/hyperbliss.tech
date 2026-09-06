@@ -3,7 +3,6 @@
 
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
-import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
@@ -127,44 +126,6 @@ const canvasStyles = css`
   }
 `
 
-const chevronIconStyles = css`
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-  pointer-events: auto;
-  color: rgba(0, 255, 240, 0.8);
-  opacity: 0.9;
-  transition: opacity var(--duration-fast) var(--ease-silk), transform var(--duration-fast) var(--ease-silk);
-  z-index: 5;
-
-  /* Larger touch target on mobile */
-  @media (max-width: 768px) {
-    width: 44px;
-    height: 44px;
-    bottom: 5px;
-    padding: 8px;
-  }
-
-  &:hover {
-    opacity: 1;
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
-`
-
-const chevronVariants = {
-  collapsed: { rotate: 0 },
-  expanded: { rotate: 180 },
-}
-
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -181,11 +142,8 @@ const Header: React.FC = () => {
     initializeCyberScape: typeof import('../cyberscape/CyberScape')['initializeCyberScape']
     triggerCyberScapeAnimation: typeof import('../cyberscape/CyberScape')['triggerCyberScapeAnimation']
   }>(null)
-  const { isExpanded, setIsExpanded } = useHeaderContext()
+  const { isExpanded } = useHeaderContext()
   const { isInitialLoad } = usePageLoad()
-  // On home the terminal console owns the pull-down affordance, so suppress the
-  // header's own expand chevron there to avoid two competing handles.
-  const isHome = usePathname() === '/'
 
   // Effect for initializing canvas and triggering CyberScape
   useEffect(() => {
@@ -296,13 +254,6 @@ const Header: React.FC = () => {
     triggerMenuAnimation()
   }, [triggerMenuAnimation])
 
-  // Handler for toggling header expansion
-  const toggleExpansion = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
-    setIsExpanded(!isExpanded)
-  }
-
   // Dynamic height based on expansion state
   const navHeight = isExpanded ? '200px' : '110px'
   const navHeightMobile = isExpanded ? '180px' : '96px'
@@ -333,30 +284,6 @@ const Header: React.FC = () => {
       </NavContent>
       {/* Mobile Navigation */}
       <MobileNavLinks open={menuOpen} setMenuOpen={setMenuOpen} />
-      {!isHome && (
-        <motion.div
-          animate={isExpanded ? 'expanded' : 'collapsed'}
-          className={chevronIconStyles}
-          initial="collapsed"
-          onClick={toggleExpansion}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
-          variants={chevronVariants}
-        >
-          <svg
-            aria-label="Toggle header expansion"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Toggle header expansion</title>
-            <polyline points="6 9 12 15 18 9" />
-          </svg>
-        </motion.div>
-      )}
     </nav>
   )
 }

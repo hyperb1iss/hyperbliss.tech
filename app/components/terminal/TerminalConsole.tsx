@@ -8,6 +8,7 @@
 // renders nothing until mounted so the server pass stays SSR-safe.
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
@@ -124,11 +125,11 @@ interface TerminalConsoleProps {
 export default function TerminalConsole({ manifest, broadcast }: TerminalConsoleProps) {
   const { isConsoleOpen, setConsoleOpen, setIsExpanded } = useHeaderContext()
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
 
-  // The identity hero is the landing, so the console always starts closed and is
-  // summoned from the handle. Just gate the portal until the client has mounted,
-  // and make sure leaving home tears the header expansion back down (isExpanded
-  // is global; a stranded `true` would leave other routes' navs expanded).
+  // The console always starts closed and is summoned from the handle. Gate the
+  // portal until the client has mounted, and tear the expansion down on unmount
+  // (isExpanded is global; a stranded `true` would leave the nav expanded).
   useEffect(() => {
     setMounted(true)
     return () => {
@@ -136,6 +137,13 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
       setIsExpanded(false)
     }
   }, [setConsoleOpen, setIsExpanded])
+
+  // The console is mounted by the layout and survives navigation, so a command
+  // that links into a route (projects, blog, ...) closes it as the page changes.
+  useEffect(() => {
+    setConsoleOpen(false)
+    setIsExpanded(false)
+  }, [pathname, setConsoleOpen, setIsExpanded])
 
   // The console IS the header expansion: move both flags together so the nav
   // blooms (revealing CyberScape) exactly as the terminal drops.

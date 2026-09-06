@@ -1,18 +1,15 @@
-// The home route: the front page as crawlable server-rendered HTML, with the
-// terminal layered on top as a summonable pull-down console. Keep this a server
-// component so the content corpus never becomes hydration payload.
+// The home route: the front page as crawlable server-rendered HTML. The
+// pull-down terminal is mounted by the (transition) layout on every route.
+// Keep this a server component so the content corpus never becomes hydration
+// payload.
 
 import type { FrontSection, NowData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
-import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import FrontPage from './front/FrontPage'
 import type { ShippingRow } from './front/Rail'
 import HomeFallbackContent from './HomeFallback'
-import TerminalConsole from './terminal/TerminalConsole'
 
 interface TerminalHomeProps {
-  manifest: Manifest
-  broadcast: Broadcast
   posts: PostSummary[]
   projects: ProjectSummary[]
   lead: FeedItem | null
@@ -27,8 +24,6 @@ const DEFAULT_TAGLINE =
   'I build software that gives people control over their technology. Open source all the way down.'
 
 export default function TerminalHome({
-  manifest,
-  broadcast,
   posts,
   projects,
   lead,
@@ -40,9 +35,6 @@ export default function TerminalHome({
 }: TerminalHomeProps) {
   return (
     <>
-      {/* Portaled pull-down console; defaults closed. */}
-      <TerminalConsole broadcast={broadcast} manifest={manifest} />
-
       <FrontPage front={front} items={items} lead={lead} now={now} projectCount={projects.length} shipping={shipping} />
 
       <noscript>

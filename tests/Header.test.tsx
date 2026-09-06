@@ -72,16 +72,4 @@ describe('Header', () => {
     expect(mobileMenuIcon).toHaveAttribute('aria-expanded', 'false')
     expect(mobileMenuIcon).toHaveClass('mobile-menu-icon')
   })
-
-  it('shows the expand chevron off the home route', () => {
-    nav.pathname = '/about'
-    render(<Header />)
-    expect(screen.queryByTitle('Toggle header expansion')).toBeInTheDocument()
-  })
-
-  it('hides the expand chevron on home, where the terminal console owns the affordance', () => {
-    nav.pathname = '/'
-    render(<Header />)
-    expect(screen.queryByTitle('Toggle header expansion')).not.toBeInTheDocument()
-  })
 })

@@ -6,14 +6,11 @@
 // surface.
 
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { PageLoadProvider } from '@/components/PageLoadOrchestrator'
 import TerminalHome from '@/components/TerminalHome'
 import type { FrontSection, LabSummary, NowData, PostSummary, ProjectSummary } from '@/lib/content'
 import { buildFeed, type FeedRelease, shippingList, splitLead } from '@/lib/feed'
-import { testBroadcast, testManifest } from '../terminal/_harness'
-
-vi.mock('@/components/terminal/TerminalConsole', () => ({ default: () => null }))
 
 const project = (slug: string, title: string, date: string): ProjectSummary => ({
   category: null,
@@ -79,11 +76,9 @@ const shipping = shippingList(projects, releases)
 const html = renderToStaticMarkup(
   <PageLoadProvider>
     <TerminalHome
-      broadcast={testBroadcast}
       front={front}
       items={items}
       lead={lead}
-      manifest={testManifest}
       now={now}
       posts={posts}
       projects={projects}
