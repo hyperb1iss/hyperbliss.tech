@@ -187,6 +187,9 @@ transform: none }` frame). Wrappers fade; rows and blocks inside lift.
   redirect map would clean the URLs.
 - Terminal `help` still lists `blog`; nav says Blog while the index page
   is titled Writing. Pick one word.
+- The terminal's manifest and broadcast now ship with every route's
+  layout payload. It is small (bodies load lazily), but worth a look at
+  the RSC payload size if the content corpus grows.
 - CyberScape steps per frame, not per elapsed time, so a 60fps budget
   doubles every speed. Make the update loop time-based, then raise
   `targetFPS` to 60 (the plan's original motion target).
