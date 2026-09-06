@@ -187,6 +187,8 @@ transform: none }` frame). Wrappers fade; rows and blocks inside lift.
   redirect map would clean the URLs.
 - Terminal `help` still lists `blog`; nav says Blog while the index page
   is titled Writing. Pick one word.
+- GitHub calls per hour are now up to 48 (24 releases + 24 repo stats)
+  plus the events feed; fine with a token, tight without one.
 - The terminal's manifest and broadcast now ship with every route's
   layout payload. It is small (bodies load lazily), but worth a look at
   the RSC payload size if the content corpus grows.
