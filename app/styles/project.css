@@ -698,3 +698,161 @@
   text-shadow: 0 0 14px rgba(162, 89, 255, 0.3);
   padding-left: 0;
 }
+
+/* Project page layout: body column with a sticky facts rail on wide screens. */
+.project-detail__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: 6.4rem;
+  align-items: start;
+}
+
+@media (min-width: 1200px) {
+  .project-detail__layout {
+    grid-template-columns: minmax(0, 96rem) 26rem;
+  }
+}
+
+.project-detail__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 2.8rem;
+  position: sticky;
+  top: 14rem;
+}
+
+@media (max-width: 1199px) {
+  .project-detail__facts {
+    position: static;
+    padding-top: 3.2rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.14);
+    max-width: 96rem;
+  }
+}
+
+.project-detail__facts-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--silk-quantum-purple);
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(162, 89, 255, 0.25);
+}
+
+.project-detail__facts dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem 1.6rem;
+  font-size: 1.4rem;
+}
+
+.project-detail__facts dt {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silk-steel-400);
+  padding-top: 0.2rem;
+}
+
+.project-detail__facts dd {
+  margin: 0;
+  color: var(--silk-steel-50);
+}
+
+.project-detail__facts dd a {
+  color: var(--silk-circuit-cyan);
+  text-decoration: none;
+}
+
+.project-detail__facts dd a:hover {
+  color: var(--silk-steel-50);
+}
+
+.project-detail__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.project-detail__lang::before {
+  content: "";
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--lang-color);
+  box-shadow: 0 0 8px var(--lang-color);
+}
+
+.project-detail__facts-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  color: var(--silk-steel-400);
+}
+
+.project-detail__related {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.project-detail__related a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  text-decoration: none;
+}
+
+.project-detail__related-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  color: var(--silk-circuit-cyan);
+  transition: color var(--duration-normal) var(--ease-silk);
+}
+
+.project-detail__related a:hover .project-detail__related-name {
+  color: var(--silk-steel-50);
+}
+
+.project-detail__related-tagline {
+  font-size: 1.3rem;
+  color: var(--text-secondary);
+}
+
+/* Reading rhythm and a quiet bullet instead of the pulsing target. */
+.project-markdown__h2 {
+  margin-top: 4.4rem;
+  margin-bottom: 1.4rem;
+  scroll-margin-top: 14rem;
+}
+
+.project-markdown__h3 {
+  margin-top: 3.2rem;
+  margin-bottom: 1rem;
+  scroll-margin-top: 14rem;
+}
+
+.project-markdown__ul > .project-markdown__li::before {
+  content: "";
+  top: 0.85em;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--silk-circuit-cyan);
+  box-shadow: 0 0 8px rgba(0, 255, 240, 0.5);
+  animation: none;
+  font-size: 0;
+}

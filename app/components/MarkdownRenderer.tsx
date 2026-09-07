@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
+import { createHeadingIdAssigner, type Heading } from '@/lib/reading'
 import MarkdownFigure from './MarkdownFigure'
 import {
   StyledLink as MarkdownLink,
@@ -71,10 +72,6 @@ function mermaidSource(node?: Element): string | null {
     return hastToString(codeChild).replace(/\n$/, '')
   }
   return null
-}
-
-interface MarkdownRendererProps {
-  content: string
 }
 
 interface CodeComponentProps {
@@ -157,7 +154,26 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   return <MarkdownLink {...safeProps}>{children}</MarkdownLink>
 }
 
-const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
+interface MarkdownRendererProps {
+  content: string
+  /** Headings extracted from `content`; when given, h2/h3 get matching ids for in-page links. */
+  headings?: Heading[]
+}
+
+/** Plain text of a heading's rendered children, for id assignment. */
+function childrenText(children: React.ReactNode): string {
+  return React.Children.toArray(children)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') return String(child)
+      if (React.isValidElement<{ children?: React.ReactNode }>(child)) return childrenText(child.props.children)
+      return ''
+    })
+    .join('')
+    .trim()
+}
+
+const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content, headings }) => {
+  const assignId = createHeadingIdAssigner(headings ?? [])
   return (
     <ReactMarkdown
       components={{
@@ -175,8 +191,16 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ content }) => {
           )
         },
         h1: ({ node: _node, ...props }) => <StyledH1 {...props} />,
-        h2: ({ node: _node, ...props }) => <StyledH2 {...props} />,
-        h3: ({ node: _node, ...props }) => <StyledH3 {...props} />,
+        h2: ({ node: _node, children, ...props }) => (
+          <StyledH2 id={headings ? assignId(2, childrenText(children)) : undefined} {...props}>
+            {children}
+          </StyledH2>
+        ),
+        h3: ({ node: _node, children, ...props }) => (
+          <StyledH3 id={headings ? assignId(3, childrenText(children)) : undefined} {...props}>
+            {children}
+          </StyledH3>
+        ),
         hr: ({ node: _node, ...props }) => <StyledHr {...props} />,
         img: ({ node: _node, ...props }) => <MarkdownFigure {...props} />,
         li: ({ node: _node, ...props }) => <StyledLi {...props} />,

@@ -2,9 +2,11 @@
 import { ResolvingMetadata } from 'next'
 import { notFound } from 'next/navigation'
 import ProjectDetailView from '../../../components/ProjectDetailView'
-import { getAllProjectSlugs, getProject } from '../../../lib/content'
+import { getAllProjectSlugs, getAllProjects, getProject } from '../../../lib/content'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getLatestRelease } from '../../../lib/github'
+import { getLatestRelease, getRepoStats } from '../../../lib/github'
+import { laneOf } from '../../../lib/projectLanes'
+import { extractHeadings } from '../../../lib/reading'
 import { PageProps } from '../../../types'
 
 export async function generateStaticParams() {
@@ -39,13 +41,30 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = await getProject(slug)
   if (!project) notFound()
 
-  const release = project.github ? await getLatestRelease(project.github).catch(() => null) : null
+  const [release, stats, all] = await Promise.all([
+    project.github ? getLatestRelease(project.github).catch(() => null) : null,
+    project.github ? getRepoStats(project.github).catch(() => null) : null,
+    getAllProjects(),
+  ])
+
+  // Other projects in the same lane, newest first, capped so the rail stays short.
+  const lane = laneOf(project.category)
+  const related = all
+    .filter((p) => p.slug !== slug && laneOf(p.category) === lane)
+    .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''))
+    .slice(0, 4)
 
   return (
     <ProjectDetailView
       body={project.body}
+      category={project.category}
       github={project.github ?? ''}
+      headings={extractHeadings(project.body ?? '')}
+      now={Date.now()}
+      related={related}
+      releaseDate={release?.publishedAt ?? null}
       releaseUrl={release?.url ?? null}
+      stats={stats}
       tags={(project.tags ?? []).filter((t): t is string => t !== null)}
       title={project.title}
       version={release?.version ?? null}
