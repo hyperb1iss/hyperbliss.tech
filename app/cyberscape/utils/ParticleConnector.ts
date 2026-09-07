@@ -172,8 +172,8 @@ export class ParticleConnector {
       VectorMath.project(particleB.position, width, height, this.projB)
 
       // Blend particle colors
-      const rgbA = ColorManager.hexToRgb(particleA.color)
-      const rgbB = ColorManager.hexToRgb(particleB.color)
+      const rgbA = ColorManager.toRgb(particleA.color)
+      const rgbB = ColorManager.toRgb(particleB.color)
 
       let connectionColor: string
       if (rgbA && rgbB) {

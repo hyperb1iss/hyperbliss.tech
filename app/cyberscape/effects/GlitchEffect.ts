@@ -3,115 +3,125 @@
 /**
  * GlitchEffect class
  *
- * Applies a glitch effect to the canvas.
- * This effect includes RGB shift, random pixel displacement, and color inversion.
+ * A restrained signal shimmer built from canvas primitives only: a pink and a
+ * cyan echo of the frame offset sideways (chromatic aberration in palette
+ * colours), a couple of thin horizontal slices nudged a few pixels, and one
+ * scanline sweep. No pixel loops, no random hues, no inversion, so it stays
+ * on brand and on the GPU.
  */
 
 import { CyberScapeConfig } from '../CyberScapeConfig'
 
+const ECHO_PINK = '#ff75d8'
+const ECHO_CYAN = '#00fff0'
+const SWEEP_CYAN = 'rgba(0, 255, 240, 1)'
+
 export class GlitchEffect {
   private config: CyberScapeConfig
+  private tint: HTMLCanvasElement | null = null
+  private tintCtx: CanvasRenderingContext2D | null = null
+
+  /** Slice rows are picked once per glitch so they hold still instead of buzzing */
+  private sliceSeeds: number[] = []
 
   constructor() {
     this.config = CyberScapeConfig.getInstance()
   }
 
   /**
-   * Applies the glitch effect to the canvas.
+   * Picks the slice rows for a new glitch burst.
+   */
+  public begin(): void {
+    this.sliceSeeds = []
+    for (let i = 0; i < this.config.glitchMaxSlices; i++) {
+      this.sliceSeeds.push(Math.random())
+    }
+  }
+
+  /**
+   * Applies the shimmer on top of the finished frame.
    *
    * @param ctx - The 2D rendering context of the canvas.
-   * @param width - The width of the canvas.
-   * @param height - The height of the canvas.
-   * @param intensity - The intensity of the glitch effect (0-1).
+   * @param intensity - Effect strength (0-1), already shaped by the manager's envelope.
+   * @param progress - Position within the glitch (0-1), drives the scanline sweep.
    */
-  public apply(ctx: CanvasRenderingContext2D, width: number, height: number, intensity: number) {
-    const imageData = ctx.getImageData(0, 0, width, height)
-    const data = imageData.data
+  public apply(ctx: CanvasRenderingContext2D, intensity: number, progress: number): void {
+    const canvas = ctx.canvas
+    const pw = canvas.width
+    const ph = canvas.height
+    if (pw === 0 || ph === 0) return
 
-    // Optimization: Precalculate values
-    const amount = Math.floor(intensity * this.config.glitchEffectMaxAmount)
-    const dataLength = data.length
-    const maxOffset = 200 << 2 // Precalculate max offset for pixel displacement
+    const dpr = pw / Math.max(1, canvas.clientWidth || pw)
+    const offset = this.config.glitchMaxOffsetPx * intensity * dpr
 
-    // RGB shift with color distortion
-    for (let i = 0; i < dataLength; i += 4) {
-      data[i] = data[i + amount] || data[i]
-      data[i + 1] = data[i + 1 - amount] || data[i + 1]
-      data[i + 2] = data[i + 2 + amount] || data[i + 2]
+    ctx.save()
+    ctx.resetTransform()
+
+    // Chromatic echoes: a tinted silhouette of the frame, shifted left in pink and right in cyan
+    const tintCtx = this.getTintContext(pw, ph)
+    if (tintCtx) {
+      ctx.globalCompositeOperation = 'lighter'
+      ctx.globalAlpha = 0.45 * intensity
+      this.drawEcho(ctx, tintCtx, canvas, ECHO_PINK, -offset)
+      this.drawEcho(ctx, tintCtx, canvas, ECHO_CYAN, offset)
+      ctx.globalCompositeOperation = 'source-over'
+      ctx.globalAlpha = 1
     }
 
-    // Random pixel displacement with color inversion
-    const displacementThreshold = intensity * this.config.glitchEffectDisplacementThresholdFactor
-    for (let i = 0; i < dataLength; i += 4) {
-      if (Math.random() < displacementThreshold) {
-        const offset = (Math.random() * maxOffset) & ~3 // Ensure offset is multiple of 4
-        data[i] = 255 - (data[i + offset] || data[i])
-        data[i + 1] = 255 - (data[i + offset + 1] || data[i + 1])
-        data[i + 2] = 255 - (data[i + offset + 2] || data[i + 2])
-      }
+    // Horizontal slices nudged sideways, redrawn from the canvas itself
+    const sliceHeight = Math.max(2, Math.round(ph * 0.06))
+    for (let i = 0; i < this.sliceSeeds.length; i++) {
+      const seed = this.sliceSeeds[i]
+      const y = Math.floor(seed * (ph - sliceHeight))
+      const shift = (seed < 0.5 ? -1 : 1) * offset * (1.5 + i)
+      ctx.drawImage(canvas, 0, y, pw, sliceHeight, shift, y, pw, sliceHeight)
     }
 
-    ctx.putImageData(imageData, 0, 0)
+    // A single soft scanline band sweeping top to bottom over the glitch
+    const bandHeight = Math.max(4, ph * 0.22)
+    const bandY = progress * (ph + bandHeight) - bandHeight
+    const band = ctx.createLinearGradient(0, bandY, 0, bandY + bandHeight)
+    band.addColorStop(0, 'rgba(0, 255, 240, 0)')
+    band.addColorStop(0.5, SWEEP_CYAN)
+    band.addColorStop(1, 'rgba(0, 255, 240, 0)')
+    ctx.globalCompositeOperation = 'lighter'
+    ctx.globalAlpha = 0.08 * intensity
+    ctx.fillStyle = band
+    ctx.fillRect(0, bandY, pw, bandHeight)
 
-    // Add random vertical lines with gradient colors
-    const numLines = Math.floor(intensity * this.config.glitchEffectMaxNumLines)
-    ctx.globalAlpha = intensity * 0.8
-    for (let i = 0; i < numLines; i++) {
-      const x = Math.random() * width
-      const gradient = ctx.createLinearGradient(x, 0, x, height)
-      gradient.addColorStop(0, `hsl(${Math.random() * 360}, 100%, 50%)`)
-      gradient.addColorStop(0.5, `hsl(${Math.random() * 360}, 100%, 50%)`)
-      gradient.addColorStop(1, `hsl(${Math.random() * 360}, 100%, 50%)`)
-      ctx.strokeStyle = gradient
-      ctx.lineWidth = Math.random() * 5 + 1
-      ctx.beginPath()
-      ctx.moveTo(x, 0)
-      ctx.lineTo(x, height)
-      ctx.stroke()
-    }
+    ctx.restore()
+  }
 
-    // Add random horizontal slices with color inversion
-    const numSlices = Math.floor(intensity * this.config.glitchEffectMaxNumSlices)
-    for (let i = 0; i < numSlices; i++) {
-      const y = Math.random() * height
-      const sliceHeight = Math.random() * 20 + 2
-      const sliceShift = (Math.random() - 0.5) * 40 * intensity
-      const sliceImage = ctx.getImageData(0, y, width, sliceHeight)
-      const sliceData = sliceImage.data
-      for (let j = 0; j < sliceData.length; j += 4) {
-        sliceData[j] = 255 - sliceData[j]
-        sliceData[j + 1] = 255 - sliceData[j + 1]
-        sliceData[j + 2] = 255 - sliceData[j + 2]
-      }
-      ctx.putImageData(sliceImage, sliceShift, y)
-    }
+  /**
+   * Tints the current frame flat in one colour on the scratch canvas and blits it offset.
+   */
+  private drawEcho(
+    ctx: CanvasRenderingContext2D,
+    tintCtx: CanvasRenderingContext2D,
+    source: HTMLCanvasElement,
+    color: string,
+    dx: number,
+  ): void {
+    const w = source.width
+    const h = source.height
+    tintCtx.globalCompositeOperation = 'source-over'
+    tintCtx.clearRect(0, 0, w, h)
+    tintCtx.drawImage(source, 0, 0)
+    tintCtx.globalCompositeOperation = 'source-in'
+    tintCtx.fillStyle = color
+    tintCtx.fillRect(0, 0, w, h)
+    ctx.drawImage(tintCtx.canvas, dx, 0)
+  }
 
-    // Add random color blocks
-    const numBlocks = Math.floor(intensity * this.config.glitchEffectMaxNumBlocks)
-    for (let i = 0; i < numBlocks; i++) {
-      const blockWidth = Math.random() * 100 + 20
-      const blockHeight = Math.random() * 100 + 20
-      const x = Math.random() * (width - blockWidth)
-      const y = Math.random() * (height - blockHeight)
-      ctx.fillStyle = `hsla(${Math.random() * 360}, 100%, 50%, ${Math.random() * 0.5 + 0.2})`
-      ctx.fillRect(x, y, blockWidth, blockHeight)
+  private getTintContext(w: number, h: number): CanvasRenderingContext2D | null {
+    if (!this.tint) {
+      this.tint = document.createElement('canvas')
+      this.tintCtx = this.tint.getContext('2d')
     }
-
-    // Add digital noise
-    const noiseIntensity = intensity * this.config.glitchEffectNoiseIntensityFactor
-    for (let i = 0; i < dataLength; i += 4) {
-      if (Math.random() < noiseIntensity) {
-        const noise = Math.random() * 255
-        data[i] = data[i + 1] = data[i + 2] = noise
-      }
+    if (this.tint.width !== w || this.tint.height !== h) {
+      this.tint.width = w
+      this.tint.height = h
     }
-    ctx.putImageData(imageData, 0, 0)
-
-    // Add scanlines
-    ctx.globalAlpha = intensity * 0.1
-    for (let y = 0; y < height; y += 2) {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
-      ctx.fillRect(0, y, width, 1)
-    }
+    return this.tintCtx
   }
 }

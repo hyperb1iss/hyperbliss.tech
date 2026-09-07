@@ -22,9 +22,7 @@ export class PerformanceMonitor {
    */
   private readonly baseline: {
     baseParticleCount: number
-    glitchEffectMaxAmount: number
-    glitchEffectMaxNumLines: number
-    glitchEffectMaxNumSlices: number
+    glitchMaxSlices: number
     mobileParticleReductionFactor: number
     numberOfShapes: number
     numberOfShapesMobile: number
@@ -40,9 +38,7 @@ export class PerformanceMonitor {
     const c = this.config
     this.baseline = {
       baseParticleCount: c.baseParticleCount,
-      glitchEffectMaxAmount: c.glitchEffectMaxAmount,
-      glitchEffectMaxNumLines: c.glitchEffectMaxNumLines,
-      glitchEffectMaxNumSlices: c.glitchEffectMaxNumSlices,
+      glitchMaxSlices: c.glitchMaxSlices,
       mobileParticleReductionFactor: c.mobileParticleReductionFactor,
       numberOfShapes: c.numberOfShapes,
       numberOfShapesMobile: c.numberOfShapesMobile,
@@ -106,9 +102,7 @@ export class PerformanceMonitor {
       effectsScaleFactor: level,
 
       // Visual effects adjustments
-      glitchEffectMaxAmount: Math.floor(b.glitchEffectMaxAmount * level),
-      glitchEffectMaxNumLines: Math.floor(b.glitchEffectMaxNumLines * level),
-      glitchEffectMaxNumSlices: Math.floor(b.glitchEffectMaxNumSlices * level),
+      glitchMaxSlices: Math.floor(b.glitchMaxSlices * level),
 
       // Mobile specific adjustments
       mobileParticleReductionFactor: Math.max(0.3, b.mobileParticleReductionFactor * level),

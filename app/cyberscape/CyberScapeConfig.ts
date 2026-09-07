@@ -80,13 +80,13 @@ export class CyberScapeConfig {
   public maxDatastreamParticles = 100
   public datastreamParticleLifespan = 2000
   public datastreamFadeOutDuration = 500
-  public datastreamEnergyLineCount = 20
-  public datastreamMaxRadiusFactor = 0.4
-  public datastreamNoiseSize = 4
-  public datastreamNoiseRadiusFactor = 0.2
+  public datastreamEnergyLineCount = 18
+  public datastreamMaxRadiusFactor = 0.45
   public datastreamShapeRotationSpeed = 0.1
   public datastreamShapeForceMultiplier = 0.01
   public datastreamIntensityMultiplier = 5
+  /** Outward impulse per tick applied to particles as the shockwave passes */
+  public datastreamParticlePush = 0.6
 
   // Interaction settings
   public cursorInfluenceRadius = 300
@@ -110,12 +110,9 @@ export class CyberScapeConfig {
   public glitchIntensityMax = 0.55
 
   // Glitch effect detail settings
-  public glitchEffectMaxAmount = 15
-  public glitchEffectDisplacementThresholdFactor = 0.2
-  public glitchEffectMaxNumLines = 30
-  public glitchEffectMaxNumSlices = 8
-  public glitchEffectMaxNumBlocks = 5
-  public glitchEffectNoiseIntensityFactor = 0.2
+  /** Sideways offset of the chromatic echoes at full intensity, in CSS pixels */
+  public glitchMaxOffsetPx = 6
+  public glitchMaxSlices = 3
 
   // Connection settings
   public particleConnectionDistance = 100

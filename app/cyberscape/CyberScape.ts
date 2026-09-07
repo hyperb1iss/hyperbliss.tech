@@ -55,7 +55,7 @@ export const initializeCyberScape = (
   _logoElement: HTMLAnchorElement,
   navElement: HTMLElement,
 ) => {
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  const ctx = canvas.getContext('2d')
   if (!ctx) return () => {}
 
   const config = CyberScapeConfig.getInstance()
@@ -370,6 +370,7 @@ export const initializeCyberScape = (
   const triggerSpecialAnimation = (x: number, y: number) => {
     isAnimationTriggered = true
     animationProgress = 0
+    datastreamEffect.begin()
     const isMobile = width <= config.mobileWidthThreshold
     if (isMobile) {
       // Adjust coordinates for mobile devices
@@ -644,7 +645,7 @@ export const initializeCyberScape = (
     }
 
     // Apply glitch effects
-    glitchManager.handleGlitchEffects(ctx, width, height, timestamp)
+    glitchManager.handleGlitchEffects(ctx, timestamp)
 
     // Handle triggered animations
     if (isAnimationTriggered) {
@@ -717,6 +718,9 @@ export const initializeCyberScape = (
       case 'stop':
         performanceMonitor.disable()
         console.log('Performance monitoring stopped')
+        break
+      case 'glitch':
+        glitchManager.trigger()
         break
       default:
         console.log('Unknown performance command')

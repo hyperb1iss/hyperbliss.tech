@@ -361,8 +361,10 @@ export abstract class VectorShape {
     if (this.opacity > 0 && !this.isExploded) {
       const baseColor = ColorManager.hexToRgb(this.color)
       if (baseColor) {
-        // Apply color shift
-        const shiftedColor = ColorManager.shiftHue(baseColor, this.colorShift)
+        // Sway the hue a little either side of the palette colour instead of
+        // walking the whole wheel, which is what used to turn shapes orange
+        const sway = Math.sin((this.colorShift * Math.PI) / 180) * 18
+        const shiftedColor = ColorManager.shiftHue(baseColor, sway)
         const { r, g, b } = shiftedColor
 
         // Create a gradient for the shape
