@@ -119,29 +119,33 @@ const introRowStyles = css`
   grid-column: 1 / -1;
 `
 
-/** Link the name inside the tagline to About; everything else is plain text. */
+const NAME = 'Stefanie Jane'
+
+/** `{hyperbliss}` becomes the brand mark and `{name}` the About link; everything else is plain text. */
 function renderTagline(tagline: string) {
-  const name = 'Stefanie Jane'
-  const at = tagline.indexOf(name)
-  if (at < 0) return tagline
-  return (
-    <>
-      {tagline.slice(0, at)}
-      <Link href="/about/">{name}</Link>
-      {tagline.slice(at + name.length)}
-    </>
-  )
+  return tagline.split(/(\{hyperbliss\}|\{name\})/).map((part, index) => {
+    if (part === '{hyperbliss}')
+      return (
+        <Brand className={neonTitle} key={`brand-${index}`}>
+          hyperbliss
+        </Brand>
+      )
+    if (part === '{name}')
+      return (
+        <Link href="/about/" key={`name-${index}`}>
+          {NAME}
+        </Link>
+      )
+    return part
+  })
 }
 
 export default function FrontPage({ lead, items, shipping, now, front, projectCount }: FrontPageProps) {
-  const tagline = front?.tagline ?? 'the open source label of Stefanie Jane.'
+  const tagline = front?.tagline ?? "Hey, I'm {name}, and {hyperbliss} is where I make things."
   return (
     <Wrap>
       <Reveal as="div" className={cx(introRow, introRowStyles)} order={0}>
-        <Intro>
-          <Brand className={neonTitle}>hyperbliss</Brand> is {renderTagline(tagline)}
-          {front?.intro && <> {front.intro}</>}
-        </Intro>
+        <Intro>{renderTagline(tagline)}</Intro>
       </Reveal>
       <Main>
         <Reveal order={0.5}>

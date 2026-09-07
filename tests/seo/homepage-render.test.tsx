@@ -41,11 +41,10 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  intro: 'Developer tools, terminal interfaces, and infrastructure for AI agents.',
   photo: '/images/profile-image.jpg',
   photoAlt: 'Stefanie Jane',
   role: 'Creative technologist, Seattle.',
-  tagline: 'the open source label of Stefanie Jane, a creative technologist in Seattle.',
+  tagline: "Hey, I'm {name}, a creative technologist in Seattle, and {hyperbliss} is where I make things.",
 }
 
 const now: NowData = {
@@ -107,8 +106,11 @@ describe('TerminalHome SSR markup carries real content', () => {
   })
 
   it('opens with the intro sentence and a visible Latest marker', () => {
-    expect(withoutNoscript).toContain('is the open source label of ')
-    expect(withoutNoscript).toMatch(/<a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>, a creative technologist/)
+    expect(withoutNoscript).toMatch(
+      /Hey, I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>, a creative technologist/,
+    )
+    expect(withoutNoscript).toMatch(/<span[^>]*>hyperbliss<\/span> is where I make things\./)
+    expect(withoutNoscript).not.toContain('{name}')
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 

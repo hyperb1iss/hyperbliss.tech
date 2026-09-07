@@ -2,11 +2,10 @@
   "description": "Stefanie Jane builds developer tools, terminal interfaces, and AI agents. Open source all the way down.",
   "front": {
     "bio": "I build software that gives people control over their technology. Developer tools, terminal interfaces, and infrastructure for AI agents, all of it open source.",
-    "intro": "Developer tools, terminal interfaces, and the infrastructure that lets AI agents do real work, all built in the open.",
     "photo": "/images/profile-image.jpg",
     "photoAlt": "Stefanie Jane",
     "role": "Creative technologist, Seattle.",
-    "tagline": "the open source label of Stefanie Jane, a creative technologist in Seattle."
+    "tagline": "Hey, I'm {name}, a creative technologist in Seattle, and {hyperbliss} is where I make things."
   },
   "slug": "home",
   "title": "@hyperb1iss | Stefanie Jane"
