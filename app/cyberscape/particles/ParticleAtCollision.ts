@@ -4,6 +4,7 @@ import { vec3 } from 'gl-matrix'
 import { CyberScapeConfig } from '../CyberScapeConfig'
 import { VectorShape } from '../shapes/VectorShape'
 import { ColorManager } from '../utils/ColorManager'
+import { GlowSprite } from '../utils/GlowSprite'
 import { VectorMath } from '../utils/VectorMath'
 import { Particle } from './Particle'
 
@@ -67,6 +68,9 @@ export class ParticleAtCollision extends Particle {
     this.age = 0
     this.opacity = 1
     this.sparkleIntensity = Math.random()
+    // Burst particles appear the instant they are emitted; the base class's
+    // random appearance delay is for the ambient field only.
+    this.isVisible = true
   }
 
   /**
@@ -125,24 +129,34 @@ export class ParticleAtCollision extends Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public draw(ctx: CanvasRenderingContext2D, _mouseX: number, _mouseY: number, width: number, height: number): void {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    _mouseX: number,
+    _mouseY: number,
+    width: number,
+    height: number,
+    step = 1,
+  ): void {
     if (this.opacity <= 0) return
 
     const pos = VectorMath.project(this.position, width, height)
-    ctx.beginPath()
-    ctx.arc(pos.x, pos.y, this.size * pos.scale, 0, Math.PI * 2)
-    ctx.fillStyle = ColorManager.adjustColorOpacity(this.color, this.opacity)
-    ctx.fill()
+    const radius = this.size * pos.scale
 
-    // Add a subtle motion blur effect for smoother fade-out
-    ctx.shadowBlur = 5 * this.opacity
-    ctx.shadowColor = ColorManager.adjustColorOpacity(this.color, this.opacity)
+    // Halo via the shared sprite cache; a hundred burst particles with shadowBlur
+    // would bring back exactly the cost the ambient field just shed
+    ctx.globalCompositeOperation = 'lighter'
+    ctx.globalAlpha = this.opacity * 0.8
+    GlowSprite.draw(ctx, this.color, pos.x, pos.y, radius * 3)
+    ctx.globalCompositeOperation = 'source-over'
+    ctx.globalAlpha = this.opacity
+    ctx.fillStyle = this.color
+    ctx.beginPath()
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2)
     ctx.fill()
-    ctx.shadowBlur = 0
-    ctx.shadowColor = 'transparent'
+    ctx.globalAlpha = 1
 
     // Add sparkle effect
-    if (Math.random() < this.sparkleIntensity) {
+    if (Math.random() < this.sparkleIntensity * step) {
       ctx.fillStyle = ColorManager.adjustColorOpacity('#FFFFFF', this.opacity * this.sparkleIntensity)
       ctx.beginPath()
       ctx.arc(pos.x, pos.y, this.size * pos.scale * 1.5, 0, Math.PI * 2)

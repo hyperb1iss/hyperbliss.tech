@@ -11,13 +11,16 @@
  */
 export class GlowSprite {
   private static readonly SIZE = 64
-  private static readonly MAX_CACHE = 256
+  private static readonly MAX_CACHE = 640
   private static readonly cache = new Map<string, HTMLCanvasElement>()
 
   /**
    * Returns a cached glow sprite for the given colour, rendering it on first use.
+   * Hex colours are quantised to 32 levels per channel so blended shape colours
+   * cannot grow the cache without bound.
    */
-  public static get(color: string): HTMLCanvasElement {
+  public static get(inputColor: string): HTMLCanvasElement {
+    const color = GlowSprite.quantise(inputColor)
     const cached = GlowSprite.cache.get(color)
     if (cached) return cached
 
@@ -54,6 +57,17 @@ export class GlowSprite {
     const sprite = GlowSprite.get(color)
     const d = radius * 2
     ctx.drawImage(sprite, x - radius, y - radius, d, d)
+  }
+
+  private static quantise(color: string): string {
+    if (color.length !== 7 || color[0] !== '#') return color
+    const n = Number.parseInt(color.slice(1), 16)
+    if (Number.isNaN(n)) return color
+    const q = (v: number) => Math.min(255, Math.round(v / 32) * 32)
+    const r = q((n >> 16) & 255)
+    const g = q((n >> 8) & 255)
+    const b = q(n & 255)
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
   }
 
   /**

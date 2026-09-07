@@ -118,7 +118,9 @@ export class Particle {
       this.appearanceDelay -= dtMs
       if (this.appearanceDelay <= 0) {
         this.isVisible = true
-        this.opacity = 0
+        // Start the fade-in just above zero: the render loop reads opacity 0 as
+        // expired and would reap the particle on the frame it appears.
+        if (this.opacity <= 0) this.opacity = 0.05
       }
     }
   }
@@ -210,6 +212,18 @@ export class Particle {
     )
     vec3.add(this.velocity, this.velocity, this.tempVector)
 
+    // Ambient particles live forever; emitted specks carry a finite lifespan and
+    // must age out, or they slowly replace the field with near-invisible dots
+    if (Number.isFinite(this.lifespan)) {
+      this.age += step * this.config.simulationTickMs
+      const fadeMs = Math.min(500, this.lifespan / 2)
+      if (this.age >= this.lifespan - fadeMs) {
+        this.opacity = Math.max(0, (this.lifespan - this.age) / fadeMs)
+        this.interactWithShapes(shapes, step)
+        return
+      }
+    }
+
     // Gradually increase opacity when the particle becomes visible
     if (this.opacity < 1) {
       this.opacity = Math.min(this.opacity + 0.02 * step, 1)
@@ -218,9 +232,11 @@ export class Particle {
     // Interact with nearby shapes
     this.interactWithShapes(shapes, step)
 
-    // Update visibility
+    // Update visibility against the same buffered bounds isOutOfBounds uses, so a
+    // particle grazing the edge keeps moving instead of freezing in the delay path
     const pos = VectorMath.project(this.position, width, height)
-    this.isVisible = pos.x >= 0 && pos.x <= width && pos.y >= 0 && pos.y <= height
+    const margin = 100
+    this.isVisible = pos.x >= -margin && pos.x <= width + margin && pos.y >= -margin && pos.y <= height + margin
   }
 
   /**

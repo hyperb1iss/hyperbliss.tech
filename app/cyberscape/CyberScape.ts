@@ -637,7 +637,7 @@ export const initializeCyberScape = (
           collisionParticlesArray.splice(i, 1)
         } else {
           octree.insert(particle)
-          particle.draw(ctx, mouseX, mouseY, width, height)
+          particle.draw(ctx, mouseX, mouseY, width, height, step)
         }
       } else {
         particle.updateDelay(dtMs)
@@ -732,10 +732,18 @@ export const initializeCyberScape = (
     // Connect regular particles with animation
     particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height, step)
 
-    // Remove expired regular particles
+    // Remove expired regular particles. Burst particles that the shockwave
+    // pushed into this array go back to their own pool, and the active count
+    // has to drop or the creation gate stays shut for good.
     for (let i = particlesArray.length - 1; i >= 0; i--) {
-      if (particlesArray[i].opacity <= 0) {
-        particlePool.returnParticle(particlesArray[i])
+      const particle = particlesArray[i]
+      if (particle.opacity <= 0) {
+        if (particle instanceof ParticleAtCollision) {
+          particlePool.returnCollisionParticle(particle)
+        } else {
+          particlePool.returnParticle(particle)
+          activeParticles = Math.max(0, activeParticles - 1)
+        }
         particlesArray.splice(i, 1)
       }
     }
@@ -827,6 +835,19 @@ export const initializeCyberScape = (
         break
       case 'glitch':
         glitchManager.trigger()
+        break
+      case 'stats':
+        console.log(
+          JSON.stringify({
+            active: activeParticles,
+            burst: collisionParticlesArray.length,
+            energy: +energy.toFixed(2),
+            particles: particlesArray.length,
+            shapes: shapesArray.length,
+            target: numberOfParticles,
+            visible: particlesArray.filter((p) => p.isReady() && p.opacity > 0).length,
+          }),
+        )
         break
       default:
         console.log('Unknown performance command')

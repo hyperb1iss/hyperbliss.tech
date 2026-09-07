@@ -14,6 +14,7 @@ export class PerformanceMonitor {
   private enabled = true
   private targetFPS = 30
   private adjustmentThreshold = 5 // FPS difference that triggers adjustment
+  private recoveryTolerance = 2 // Within this many fps of target counts as holding it
   private performanceLevel = 1 // Scale from 0 (lowest) to 1 (highest)
 
   /**
@@ -84,12 +85,16 @@ export class PerformanceMonitor {
     const fpsDiff = this.targetFPS - avgFPS
 
     // Running above target (a 120Hz display, say) is not a reason to touch anything.
-    // Step down when we miss the target, step back up only while we are still degraded.
+    // Step down when we miss the target; step back up while degraded as soon as
+    // we are holding the target again. A 60Hz panel can never exceed 60, so
+    // recovery must not wait for fps above target.
     if (fpsDiff > this.adjustmentThreshold && this.performanceLevel > 0) {
       this.performanceLevel = Math.max(0, this.performanceLevel - 0.1)
+      this.fpsHistory.length = 0
       this.adjustSettings()
-    } else if (fpsDiff < -this.adjustmentThreshold && this.performanceLevel < 1) {
-      this.performanceLevel = Math.min(1, this.performanceLevel + 0.1)
+    } else if (fpsDiff < this.recoveryTolerance && this.performanceLevel < 1) {
+      this.performanceLevel = Math.min(1, +(this.performanceLevel + 0.1).toFixed(1))
+      this.fpsHistory.length = 0
       this.adjustSettings()
     }
   }

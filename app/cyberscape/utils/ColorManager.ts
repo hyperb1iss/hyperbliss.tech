@@ -26,8 +26,6 @@ export class ColorManager {
     '#a259ff', // Quantum purple
     '#8b5cf6', // Violet accent
     '#ff75d8', // Plasma pink
-    '#fbbf24', // Fusion gold
-    '#10b981', // Quantum green
   ]
 
   /**

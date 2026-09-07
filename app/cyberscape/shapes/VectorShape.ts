@@ -272,7 +272,7 @@ export abstract class VectorShape {
     }
 
     // Update color
-    this.updateColor()
+    this.updateColor(step)
 
     // Update lifecycle
     this.age += dtMs
@@ -317,9 +317,9 @@ export abstract class VectorShape {
   /**
    * Updates the shape's color smoothly towards the target color.
    */
-  private updateColor(): void {
+  private updateColor(step = 1): void {
     if (this.color !== this.targetColor) {
-      this.color = ColorManager.blendColors(this.color, this.targetColor, this.colorTransitionSpeed)
+      this.color = ColorManager.blendColors(this.color, this.targetColor, this.colorTransitionSpeed * step)
 
       if (this.color === this.targetColor) {
         // When we reach the target color, set a new target
