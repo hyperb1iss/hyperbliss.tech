@@ -64,6 +64,7 @@ export class DatastreamEffect {
     intensity: number,
     hue: number,
     animationProgress: number,
+    step = 1,
   ) {
     // Set centerPos once for reuse
     vec3.set(this.centerPos, centerX, centerY, 0)
@@ -72,7 +73,7 @@ export class DatastreamEffect {
     this.drawExpandingCircles(ctx, width, height, centerX, centerY, intensity, hue)
     this.drawNoiseEffect(ctx, width, height, centerX, centerY, intensity, hue)
     this.emitDatastreamParticles(animationProgress)
-    this.affectNearbyShapes(intensity)
+    this.affectNearbyShapes(intensity, step)
     this.drawEnergyLines(ctx, width, height, centerX, centerY, intensity, hue)
   }
 
@@ -171,7 +172,7 @@ export class DatastreamEffect {
   /**
    * Applies forces to nearby shapes, affecting their rotation and velocity.
    */
-  private affectNearbyShapes(intensity: number) {
+  private affectNearbyShapes(intensity: number, step: number) {
     for (const shape of this.shapesArray) {
       // Update rotation speed based on effect intensity
       shape.rotationSpeed = vec3.fromValues(intensity * 0.1, intensity * 0.1, intensity * 0.1)
@@ -187,7 +188,7 @@ export class DatastreamEffect {
       const forceMagnitude = (intensity * 5) / (distance + 1)
 
       // Apply force to shape's velocity
-      vec3.scaleAndAdd(shape.velocity, shape.velocity, this.forceVector, forceMagnitude * 0.01)
+      vec3.scaleAndAdd(shape.velocity, shape.velocity, this.forceVector, forceMagnitude * 0.01 * step)
     }
   }
 

@@ -4,6 +4,7 @@ import { vec3 } from 'gl-matrix'
 import { CyberScapeConfig } from '../CyberScapeConfig'
 import { VectorShape } from '../shapes/VectorShape'
 import { ColorManager } from '../utils/ColorManager'
+import { GlowSprite } from '../utils/GlowSprite'
 import { VectorMath } from '../utils/VectorMath'
 
 /**
@@ -85,7 +86,7 @@ export class Particle {
     const speedZ = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed
     vec3.set(this.velocity, Math.cos(angleXY) * speedXY, Math.sin(angleXY) * speedXY, Math.cos(angleZ) * speedZ)
 
-    this.hue = ColorManager.getRandomCyberpunkHue()
+    this.hue = Math.round(ColorManager.getRandomCyberpunkHue())
     this.color = `hsl(${this.hue}, 100%, 50%)`
 
     // Set lifespan to infinity
@@ -112,12 +113,12 @@ export class Particle {
   /**
    * Updates the delay for the particle's appearance.
    */
-  public updateDelay(): void {
+  public updateDelay(dtMs: number): void {
     if (!this.isVisible) {
-      this.appearanceDelay -= 16 // Assuming 60 FPS
+      this.appearanceDelay -= dtMs
       if (this.appearanceDelay <= 0) {
         this.isVisible = true
-        this.opacity = 0.5 // Set initial opacity when becoming visible
+        this.opacity = 0
       }
     }
   }
@@ -139,6 +140,7 @@ export class Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    * @param shapes - Array of VectorShape instances for interaction.
+   * @param step - Elapsed simulation ticks since the last update.
    */
   public update(
     isCursorOverCyberScape: boolean,
@@ -147,6 +149,7 @@ export class Particle {
     width: number,
     height: number,
     shapes: VectorShape[],
+    step = 1,
   ): void {
     if (!this.isVisible) return
     if (isCursorOverCyberScape) {
@@ -156,7 +159,7 @@ export class Particle {
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
           ((this.config.cursorInfluenceRadius - distance) / this.config.cursorInfluenceRadius) * this.config.cursorForce
-        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force)
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force * step)
         vec3.add(this.velocity, this.velocity, this.tempVector)
       }
     }
@@ -164,14 +167,14 @@ export class Particle {
     // Apply slight attraction to center (reuse tempVector to avoid allocation)
     vec3.set(
       this.tempVector,
-      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
-      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce * step,
+      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce * step,
       0,
     )
     vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Update position
-    vec3.add(this.position, this.position, this.velocity)
+    vec3.scaleAndAdd(this.position, this.position, this.velocity, step)
 
     // Wrap around edges smoothly
     const buffer = 200 // Ensure objects are fully offscreen before wrapping
@@ -195,17 +198,25 @@ export class Particle {
       vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed)
     }
 
-    // Add small random changes to velocity for more natural movement (reuse tempVector)
-    vec3.set(this.tempVector, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01, (Math.random() - 0.5) * 0.01)
+    // Add small random changes to velocity for more natural movement (reuse tempVector).
+    // Random walks scale with the square root of elapsed time, so the field keeps
+    // the same wander regardless of refresh rate.
+    const jitter = 0.01 * Math.sqrt(step)
+    vec3.set(
+      this.tempVector,
+      (Math.random() - 0.5) * jitter,
+      (Math.random() - 0.5) * jitter,
+      (Math.random() - 0.5) * jitter,
+    )
     vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Gradually increase opacity when the particle becomes visible
     if (this.opacity < 1) {
-      this.opacity = Math.min(this.opacity + 0.02, 1)
+      this.opacity = Math.min(this.opacity + 0.02 * step, 1)
     }
 
     // Interact with nearby shapes
-    this.interactWithShapes(shapes)
+    this.interactWithShapes(shapes, step)
 
     // Update visibility
     const pos = VectorMath.project(this.position, width, height)
@@ -216,25 +227,23 @@ export class Particle {
    * Interacts with nearby shapes, applying forces and influencing rotations.
    * @param shapes - Array of VectorShape instances.
    */
-  protected interactWithShapes(shapes: VectorShape[]): void {
+  protected interactWithShapes(shapes: VectorShape[], step = 1): void {
     const INTERACTION_RADIUS = this.config.particleInteractionRadius
     const INTERACTION_FORCE = this.config.particleInteractionForce
+    const rotationJitter = 0.001 * Math.sqrt(step)
     shapes.forEach((shape) => {
       vec3.subtract(this.tempVector, shape.position, this.position)
       const distance = vec3.length(this.tempVector)
 
       if (distance > 0 && distance < INTERACTION_RADIUS) {
         const force = INTERACTION_FORCE * (1 - distance / INTERACTION_RADIUS)
-        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force)
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force * step)
         vec3.add(this.velocity, this.velocity, this.tempVector)
 
         // Influence shape's rotation
-        const rotationInfluence = vec3.fromValues(
-          (Math.random() - 0.5) * 0.001,
-          (Math.random() - 0.5) * 0.001,
-          (Math.random() - 0.5) * 0.001,
-        )
-        vec3.add(shape.rotationSpeed, shape.rotationSpeed, rotationInfluence)
+        shape.rotationSpeed[0] += (Math.random() - 0.5) * rotationJitter
+        shape.rotationSpeed[1] += (Math.random() - 0.5) * rotationJitter
+        shape.rotationSpeed[2] += (Math.random() - 0.5) * rotationJitter
       }
     })
   }
@@ -248,26 +257,31 @@ export class Particle {
    * @param height - Height of the canvas.
    */
   public draw(ctx: CanvasRenderingContext2D, mouseX: number, mouseY: number, width: number, height: number): void {
-    if (!this.isVisible) return
+    if (!this.isVisible || this.opacity <= 0) return
     const pos = VectorMath.project(this.position, width, height)
+    const radius = this.size * pos.scale
 
-    // Calculate dynamic shadow blur based on position and proximity to cursor
+    // Halo grows as the cursor approaches, the same cue the old shadowBlur gave
     const distanceToCursor = Math.hypot(mouseX - this.position[0], mouseY - this.position[1])
-    const dynamicShadowBlur = 6 + (200 - Math.min(distanceToCursor, 200)) / 25
+    const cursorBoost = ((200 - Math.min(distanceToCursor, 200)) / 200) * this.config.particleGlowCursorBoost
+    const glowRadius = radius * (this.config.particleGlowRadiusFactor + cursorBoost)
 
-    // Set the particle's color and prepare for dynamic glow effect
+    // Depth fog: far particles read a little dimmer, which is what makes the z axis legible
+    const depthAlpha = 0.6 + 0.4 * (pos.scale - 0.5)
+    const alpha = this.opacity * Math.min(1, Math.max(0.4, depthAlpha))
+
+    ctx.globalCompositeOperation = 'lighter'
+    ctx.globalAlpha = alpha
+    GlowSprite.draw(ctx, this.color, pos.x, pos.y, glowRadius)
+    ctx.globalCompositeOperation = 'source-over'
+
+    // Crisp core on top of the halo
+    ctx.globalAlpha = alpha
     ctx.fillStyle = this.color
-    ctx.shadowBlur = dynamicShadowBlur
-    ctx.shadowColor = this.color // Ensure glow matches object color
-
-    // Draw the particle as a circle
     ctx.beginPath()
-    ctx.arc(pos.x, pos.y, this.size * pos.scale, 0, Math.PI * 2)
-    ctx.closePath()
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2)
     ctx.fill()
-
-    // Reset shadow blur to avoid affecting other drawings
-    ctx.shadowBlur = 0
+    ctx.globalAlpha = 1
   }
 
   /**
@@ -303,7 +317,7 @@ export class Particle {
     vec3.set(this.velocity, Math.cos(angleXY) * speedXY, Math.sin(angleXY) * speedXY, Math.cos(angleZ) * speedZ)
 
     // Optionally reset color for variety
-    this.hue = ColorManager.getRandomCyberpunkHue()
+    this.hue = Math.round(ColorManager.getRandomCyberpunkHue())
     this.color = `hsl(${this.hue}, 100%, 50%)`
 
     // Reset lifecycle properties

@@ -49,6 +49,7 @@ export class ParticleConnector {
     timestamp: number,
     width: number,
     height: number,
+    step = 1,
   ) {
     const connectionDistance = this.config.particleConnectionDistance
     // Convert 2D screen distance to approximate 3D query radius
@@ -135,7 +136,7 @@ export class ParticleConnector {
     }
 
     // Handle fading out obsolete connections
-    this.fadeOutObsoleteConnections(activeKeys)
+    this.fadeOutObsoleteConnections(activeKeys, step)
 
     // Draw all active connections
     this.drawConnections(ctx, width, height)
@@ -144,11 +145,11 @@ export class ParticleConnector {
   /**
    * Fades out connections that are no longer active, removing fully faded ones.
    */
-  private fadeOutObsoleteConnections(activeKeys: Set<string>) {
+  private fadeOutObsoleteConnections(activeKeys: Set<string>, step: number) {
     for (const [key, conn] of this.connections) {
       if (!activeKeys.has(key)) {
         // Connection is no longer active, fade it out
-        conn.opacity = Math.max(conn.opacity - 0.02, 0)
+        conn.opacity = Math.max(conn.opacity - 0.02 * step, 0)
         if (conn.opacity <= 0) {
           conn.particleA.decrementConnectionCount()
           conn.particleB.decrementConnectionCount()

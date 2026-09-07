@@ -10,10 +10,28 @@ export class CyberScapeConfig {
   private static instance: CyberScapeConfig
 
   // Animation and rendering
-  // The simulation steps per frame, not per elapsed ms, so raising this also
-  // speeds every particle up. Stays at 30 until the update loop is time-based.
-  public targetFPS = 30
+  public targetFPS = 60
   public frameTime: number = 1000 / this.targetFPS
+  /**
+   * Duration of one simulation tick. Every per-frame constant below (speeds,
+   * forces, fade rates) was tuned against a 30fps loop, so a tick is 1/30s and
+   * the render loop scales its work by elapsed time measured in ticks.
+   */
+  public simulationTickMs = 1000 / 30
+  /** Longest single frame the simulation integrates before clamping (tab switches, jank). */
+  public maxFrameDeltaMs = 100
+
+  // Camera drift and pointer parallax (radians)
+  public cameraDriftYaw = 0.14
+  public cameraDriftPitch = 0.07
+  public cameraDriftPeriodMs = 26000
+  public cameraParallaxYaw = 0.09
+  public cameraParallaxPitch = 0.05
+  public cameraSmoothingMs = 450
+
+  // Glow rendering
+  public particleGlowRadiusFactor = 4
+  public particleGlowCursorBoost = 3
 
   // Particle settings
   public particlePoolSize = 500

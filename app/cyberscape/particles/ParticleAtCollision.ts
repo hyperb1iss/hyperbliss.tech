@@ -73,22 +73,40 @@ export class ParticleAtCollision extends Particle {
    * Updates the particle's position and velocity based on current state and interactions.
    * This method is called every frame to animate the particle.
    */
-  public update(): void {
-    // Update position based on velocity
-    vec3.add(this.position, this.position, this.velocity)
+  public update(
+    _isCursorOverCyberScape?: boolean,
+    _mouseX?: number,
+    _mouseY?: number,
+    _width?: number,
+    _height?: number,
+    _shapes?: VectorShape[],
+    step = 1,
+    dtMs = step * this.config.simulationTickMs,
+  ): void {
+    this.tick(step, dtMs)
+  }
 
-    // Slow down the particle over time
-    const slowdownFactor = this.config.particleAtCollisionSlowdownFactor
+  /**
+   * Advances the burst particle by elapsed simulation ticks and wall-clock ms.
+   * Collision particles ignore the cursor and shapes, so the base update
+   * signature above only exists to keep them substitutable for Particle.
+   */
+  public tick(step = 1, dtMs = step * this.config.simulationTickMs): void {
+    // Update position based on velocity
+    vec3.scaleAndAdd(this.position, this.position, this.velocity, step)
+
+    // Slow down the particle over time (exponential decay, so it is frame-rate independent)
+    const slowdownFactor = this.config.particleAtCollisionSlowdownFactor ** step
     vec3.scale(this.velocity, this.velocity, slowdownFactor)
 
     // Update age and opacity
-    this.age += 16 // Assuming 60 FPS
+    this.age += dtMs
     if (this.age > this.lifespan - this.fadeOutDuration) {
       this.opacity = Math.max(0, (this.lifespan - this.age) / this.fadeOutDuration)
     }
 
     // Update sparkle intensity
-    this.sparkleIntensity = Math.max(0, this.sparkleIntensity - this.config.particleAtCollisionSparkleDecay)
+    this.sparkleIntensity = Math.max(0, this.sparkleIntensity - this.config.particleAtCollisionSparkleDecay * step)
 
     if (this.opacity <= 0) {
       if (typeof this.onExpire === 'function') {

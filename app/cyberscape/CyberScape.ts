@@ -72,6 +72,10 @@ export const initializeCyberScape = (
   let animationFrameId: number
   let lastFrameTime = performance.now()
 
+  // Camera state: a slow orbit plus pointer parallax, smoothed toward its target
+  let cameraYaw = 0
+  let cameraPitch = 0
+
   const shapesArray: VectorShape[] = []
   const particlesArray: Particle[] = []
   const collisionParticlesArray: ParticleAtCollision[] = []
@@ -316,19 +320,39 @@ export const initializeCyberScape = (
   /**
    * Updates the hue for color transitions.
    */
-  const updateHue = () => {
-    hue = (hue + 0.2) % 360
+  const updateHue = (step: number) => {
+    hue = (hue + 0.2 * step) % 360
     if (!ColorManager.isValidCyberpunkHue(hue)) {
       hue = ColorManager.getRandomCyberpunkHue()
     }
   }
 
   /**
+   * Eases the camera toward a slow orbit offset by pointer parallax and hands
+   * the result to the projector. Near objects slide against the pointer and far
+   * ones with it, which is what finally makes the field read as 3D.
+   */
+  const updateCamera = (now: number, dtMs: number) => {
+    const driftPhase = (now / config.cameraDriftPeriodMs) * Math.PI * 2
+    const parallaxX = isCursorOverCyberScape ? Math.max(-1, Math.min(1, mouseX / (width / 2))) : 0
+    const parallaxY = isCursorOverCyberScape ? Math.max(-1, Math.min(1, mouseY / (height / 2))) : 0
+    const targetYaw = Math.sin(driftPhase) * config.cameraDriftYaw + parallaxX * config.cameraParallaxYaw
+    const targetPitch =
+      Math.sin(driftPhase * 0.7 + 1.3) * config.cameraDriftPitch - parallaxY * config.cameraParallaxPitch
+
+    const ease = 1 - Math.exp(-dtMs / config.cameraSmoothingMs)
+    cameraYaw += (targetYaw - cameraYaw) * ease
+    cameraPitch += (targetPitch - cameraPitch) * ease
+    VectorMath.setView(cameraYaw, cameraPitch)
+  }
+
+  /**
    * Updates particle connections by applying small random velocity changes.
    */
-  const updateParticleConnections = (particles: Particle[]) => {
+  const updateParticleConnections = (particles: Particle[], step: number) => {
+    const chance = 0.05 * step
     particles.forEach((particle) => {
-      if (Math.random() < 0.05) {
+      if (Math.random() < chance) {
         vec3.set(velocityJitter, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2)
         vec3.add(particle.velocity, particle.velocity, velocityJitter)
 
@@ -399,254 +423,256 @@ export const initializeCyberScape = (
    */
   const animateCyberScape = (timestamp: number) => {
     const now = performance.now()
-    const deltaTime = now - lastFrameTime
+    const rawDelta = now - lastFrameTime
+    lastFrameTime = now
 
-    if (deltaTime >= config.frameTime) {
-      lastFrameTime = now - (deltaTime % config.frameTime)
+    // Integrate by elapsed time so motion is identical at 30, 60, or 120Hz.
+    // A tab switch or a long GC pause clamps to one long-ish frame instead of a jump.
+    const dtMs = Math.min(rawDelta, config.maxFrameDeltaMs)
+    const step = dtMs / config.simulationTickMs
 
-      updateCanvasSize()
-      ctx.clearRect(0, 0, width, height)
+    updateCanvasSize()
+    ctx.clearRect(0, 0, width, height)
 
-      updateHue()
-      updateParticleConnections(particlesArray)
-      updateParticleConnections(collisionParticlesArray)
+    updateHue(step)
+    updateCamera(now, dtMs)
+    updateParticleConnections(particlesArray, step)
+    updateParticleConnections(collisionParticlesArray, step)
 
-      // Clear the octree before adding new objects
-      octree.clear()
+    // Clear the octree before adding new objects
+    octree.clear()
 
-      // Update frustum culling
-      mat4.perspective(projectionMatrix, Math.PI / 4, width / height, 0.1, 1000)
-      mat4.lookAt(viewMatrix, cameraEye, cameraCenter, cameraUp)
-      frustumCuller.updateFrustum(projectionMatrix, viewMatrix)
+    // Update frustum culling
+    mat4.perspective(projectionMatrix, Math.PI / 4, width / height, 0.1, 1000)
+    mat4.lookAt(viewMatrix, cameraEye, cameraCenter, cameraUp)
+    frustumCuller.updateFrustum(projectionMatrix, viewMatrix)
 
-      // Adjust particle creation logic
-      const baseCreationChance = 0.1
-      const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2)
-      const totalCreationChance = baseCreationChance + additionalChance
+    // Adjust particle creation logic
+    const baseCreationChance = 0.1
+    const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2)
+    const totalCreationChance = baseCreationChance + additionalChance
 
-      // Replace the existing particle creation logic with this new implementation
-      if (activeParticles < numberOfParticles && Math.random() < totalCreationChance) {
-        const particlesToAdd = Math.min(
-          2 + Math.floor(recentlyExpiredParticles / 5),
-          numberOfParticles - activeParticles,
-        )
+    // Replace the existing particle creation logic with this new implementation
+    if (activeParticles < numberOfParticles && Math.random() < totalCreationChance * step) {
+      const particlesToAdd = Math.min(2 + Math.floor(recentlyExpiredParticles / 5), numberOfParticles - activeParticles)
 
-        // Divide the screen into a grid (reuse pre-allocated arrays)
-        const cellWidth = width / GRID_SIZE
-        const cellHeight = height / GRID_SIZE
+      // Divide the screen into a grid (reuse pre-allocated arrays)
+      const cellWidth = width / GRID_SIZE
+      const cellHeight = height / GRID_SIZE
 
-        // Reset and count particles in each cell (reuse pre-allocated grid)
-        for (let y = 0; y < GRID_SIZE; y++) {
-          for (let x = 0; x < GRID_SIZE; x++) {
-            particleGrid[y][x] = 0
-          }
-        }
-        particlesArray.forEach((particle) => {
-          const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth)
-          const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight)
-          if (cellX >= 0 && cellX < GRID_SIZE && cellY >= 0 && cellY < GRID_SIZE) {
-            particleGrid[cellY][cellX]++
-          }
-        })
-
-        // Update pre-allocated cellsWithCounts and sort
-        for (let i = 0; i < cellsWithCounts.length; i++) {
-          const cell = cellsWithCounts[i]
-          cell.count = particleGrid[cell.y][cell.x]
-        }
-        cellsWithCounts.sort((a, b) => a.count - b.count)
-
-        for (let i = 0; i < particlesToAdd; i++) {
-          const cell = cellsWithCounts[i % cellsWithCounts.length]
-          const newParticle = particlePool.getParticle(width, height)
-
-          // Set position within the chosen cell
-          newParticle.position[0] = cell.x * cellWidth + Math.random() * cellWidth - width / 2
-          newParticle.position[1] = cell.y * cellHeight + Math.random() * cellHeight - height / 2
-          newParticle.position[2] = Math.random() * 200 - 100
-
-          newParticle.setDelayedAppearance()
-          particlesArray.push(newParticle)
-          activeParticles++
-          cell.count++ // Update the count for this cell
-        }
-
-        recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
-      }
-
-      // Update and draw regular particles
-      for (let i = particlesArray.length - 1; i >= 0; i--) {
-        const particle = particlesArray[i]
-        if (particle.isReady()) {
-          particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray)
-          preventClustering(particle) // Add this line to prevent clustering
-          if (particle.isOutOfBounds(width, height)) {
-            // Remove the particle if it's out of the viewport
-            particle.setOffScreen() // Set the off-screen time
-            particlePool.returnParticle(particle)
-            particlesArray.splice(i, 1)
-            activeParticles--
-            recentlyExpiredParticles++
-          } else {
-            octree.insert(particle)
-            particle.draw(ctx, mouseX, mouseY, width, height)
-          }
-        } else {
-          particle.updateDelay()
+      // Reset and count particles in each cell (reuse pre-allocated grid)
+      for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+          particleGrid[y][x] = 0
         }
       }
-
-      // Update and draw collision particles
-      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
-        const particle = collisionParticlesArray[i]
-        if (particle.isReady()) {
-          particle.update()
-          if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
-            // Remove the collision particle if it's out of the viewport
-            particlePool.returnCollisionParticle(particle)
-            collisionParticlesArray.splice(i, 1)
-          } else {
-            octree.insert(particle)
-            particle.draw(ctx, mouseX, mouseY, width, height)
-          }
-        } else {
-          particle.updateDelay()
+      particlesArray.forEach((particle) => {
+        const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth)
+        const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight)
+        if (cellX >= 0 && cellX < GRID_SIZE && cellY >= 0 && cellY < GRID_SIZE) {
+          particleGrid[cellY][cellX]++
         }
+      })
+
+      // Update pre-allocated cellsWithCounts and sort
+      for (let i = 0; i < cellsWithCounts.length; i++) {
+        const cell = cellsWithCounts[i]
+        cell.count = particleGrid[cell.y][cell.x]
+      }
+      cellsWithCounts.sort((a, b) => a.count - b.count)
+
+      for (let i = 0; i < particlesToAdd; i++) {
+        const cell = cellsWithCounts[i % cellsWithCounts.length]
+        const newParticle = particlePool.getParticle(width, height)
+
+        // Set position within the chosen cell
+        newParticle.position[0] = cell.x * cellWidth + Math.random() * cellWidth - width / 2
+        newParticle.position[1] = cell.y * cellHeight + Math.random() * cellHeight - height / 2
+        newParticle.position[2] = Math.random() * 200 - 100
+
+        newParticle.setDelayedAppearance()
+        particlesArray.push(newParticle)
+        activeParticles++
+        cell.count++ // Update the count for this cell
       }
 
-      // Update and draw shapes
-      frameShapePositions.clear()
-      for (let i = shapesArray.length - 1; i >= 0; i--) {
-        const shape = shapesArray[i]
-        shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray)
-        if (shape.opacity > 0 && !shape.isExploded) {
-          if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
-            // Reset the shape if it's out of the viewport
-            shape.reset(frameShapePositions, width, height)
-          } else {
-            frameShapePositions.add(shape.getPositionKey())
-            octree.insert(shape)
-            shape.draw(ctx, width, height)
-          }
-        }
-        if (shape.isFadedOut()) {
-          shape.reset(frameShapePositions, width, height)
-        }
-        // Emit small particles from shapes
-        if (Math.random() < 0.01) {
-          const emittedParticle = particlePool.getParticle(width, height)
-          vec3.copy(emittedParticle.position, shape.position)
-          vec3.copy(emittedParticle.velocity, shape.velocity)
-          emittedParticle.size = Math.random() * 1 + 0.5
-          emittedParticle.color = shape.color
-          emittedParticle.lifespan = 1000
-          emittedParticle.setDelayedAppearance()
-          particlesArray.push(emittedParticle)
-          activeParticles++
-        }
-      }
-
-      // Handle collisions using octree
-      const handleCollisions = () => {
-        const bounds = octree.getBounds()
-        const allObjects = octree.query(bounds)
-        CollisionHandler.handleCollisions(
-          allObjects.filter((obj): obj is VectorShape => obj instanceof VectorShape),
-          (shapeA: VectorShape, shapeB: VectorShape) => {
-            const now = Date.now()
-            if (
-              currentExplosions >= config.maxSimultaneousExplosions ||
-              now - lastExplosionTime < config.explosionCooldown
-            ) {
-              return
-            }
-
-            const collisionPos = vec3.create()
-            vec3.add(collisionPos, shapeA.position, shapeB.position)
-            vec3.scale(collisionPos, collisionPos, 0.5)
-
-            if (
-              collisionParticlesArray.length + config.explosionParticlesToEmit <= config.maxExplosionParticles &&
-              explosionParticlesCount + config.explosionParticlesToEmit <= config.maxExplosionParticles
-            ) {
-              for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-                const particle = particlePool.getCollisionParticle(vec3.clone(collisionPos), () => {
-                  explosionParticlesCount--
-                  currentExplosions = Math.max(0, currentExplosions - 1)
-                  particlePool.returnCollisionParticle(particle)
-                }) as ParticleAtCollision
-                particle.lifespan = config.particleAtCollisionLifespan
-                particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
-                collisionParticlesArray.push(particle)
-                explosionParticlesCount++
-              }
-              currentExplosions++
-              lastExplosionTime = now
-            }
-
-            shapeA.explodeAndRespawn()
-            shapeB.explodeAndRespawn()
-          },
-        )
-      }
-
-      handleCollisions()
-
-      ColorBlender.blendColors(shapesArray)
-      ForceHandler.applyForces(shapesArray)
-
-      // Draw connections between shapes
-      drawShapeConnections(ctx)
-
-      // Connect regular particles with animation
-      particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height)
-
-      // Remove expired regular particles
-      for (let i = particlesArray.length - 1; i >= 0; i--) {
-        if (particlesArray[i].opacity <= 0) {
-          particlePool.returnParticle(particlesArray[i])
-          particlesArray.splice(i, 1)
-        }
-      }
-
-      // Remove expired collision particles
-      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
-        if (collisionParticlesArray[i].opacity <= 0) {
-          // The callback in ParticleAtCollision.handleExpire will handle the removal
-          collisionParticlesArray.splice(i, 1)
-        }
-      }
-
-      // Apply glitch effects
-      glitchManager.handleGlitchEffects(ctx, width, height, timestamp)
-
-      // Handle triggered animations
-      if (isAnimationTriggered) {
-        animationProgress += 0.02
-        if (animationProgress >= 1) {
-          isAnimationTriggered = false
-          animationProgress = 0
-        } else {
-          const intensity = Math.sin(animationProgress * Math.PI)
-          datastreamEffect.draw(
-            ctx,
-            width,
-            height,
-            animationCenterX,
-            animationCenterY,
-            intensity,
-            hue,
-            animationProgress,
-          )
-        }
-      }
-
-      // Update the performance monitor
-      performanceMonitor.update(timestamp, deltaTime)
+      recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
     }
 
+    // Update and draw regular particles
+    for (let i = particlesArray.length - 1; i >= 0; i--) {
+      const particle = particlesArray[i]
+      if (particle.isReady()) {
+        particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray, step)
+        preventClustering(particle) // Add this line to prevent clustering
+        if (particle.isOutOfBounds(width, height)) {
+          // Remove the particle if it's out of the viewport
+          particle.setOffScreen() // Set the off-screen time
+          particlePool.returnParticle(particle)
+          particlesArray.splice(i, 1)
+          activeParticles--
+          recentlyExpiredParticles++
+        } else {
+          octree.insert(particle)
+          particle.draw(ctx, mouseX, mouseY, width, height)
+        }
+      } else {
+        particle.updateDelay(dtMs)
+      }
+    }
+
+    // Update and draw collision particles
+    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+      const particle = collisionParticlesArray[i]
+      if (particle.isReady()) {
+        particle.tick(step, dtMs)
+        if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
+          // Remove the collision particle if it's out of the viewport
+          particlePool.returnCollisionParticle(particle)
+          collisionParticlesArray.splice(i, 1)
+        } else {
+          octree.insert(particle)
+          particle.draw(ctx, mouseX, mouseY, width, height)
+        }
+      } else {
+        particle.updateDelay(dtMs)
+      }
+    }
+
+    // Update and draw shapes
+    const emissionChance = 0.01 * step
+    frameShapePositions.clear()
+    for (let i = shapesArray.length - 1; i >= 0; i--) {
+      const shape = shapesArray[i]
+      shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray, step, dtMs)
+      if (shape.opacity > 0 && !shape.isExploded) {
+        if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
+          // Reset the shape if it's out of the viewport
+          shape.reset(frameShapePositions, width, height)
+        } else {
+          frameShapePositions.add(shape.getPositionKey())
+          octree.insert(shape)
+          shape.draw(ctx, width, height)
+        }
+      }
+      if (shape.isFadedOut()) {
+        shape.reset(frameShapePositions, width, height)
+      }
+      // Emit small particles from shapes
+      if (Math.random() < emissionChance) {
+        const emittedParticle = particlePool.getParticle(width, height)
+        vec3.copy(emittedParticle.position, shape.position)
+        vec3.copy(emittedParticle.velocity, shape.velocity)
+        emittedParticle.size = Math.random() * 1 + 0.5
+        emittedParticle.color = shape.color
+        emittedParticle.lifespan = 1000
+        emittedParticle.setDelayedAppearance()
+        particlesArray.push(emittedParticle)
+        activeParticles++
+      }
+    }
+
+    // Handle collisions using octree
+    const handleCollisions = () => {
+      const bounds = octree.getBounds()
+      const allObjects = octree.query(bounds)
+      CollisionHandler.handleCollisions(
+        allObjects.filter((obj): obj is VectorShape => obj instanceof VectorShape),
+        (shapeA: VectorShape, shapeB: VectorShape) => {
+          const now = Date.now()
+          if (
+            currentExplosions >= config.maxSimultaneousExplosions ||
+            now - lastExplosionTime < config.explosionCooldown
+          ) {
+            return
+          }
+
+          const collisionPos = vec3.create()
+          vec3.add(collisionPos, shapeA.position, shapeB.position)
+          vec3.scale(collisionPos, collisionPos, 0.5)
+
+          if (
+            collisionParticlesArray.length + config.explosionParticlesToEmit <= config.maxExplosionParticles &&
+            explosionParticlesCount + config.explosionParticlesToEmit <= config.maxExplosionParticles
+          ) {
+            for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+              const particle = particlePool.getCollisionParticle(vec3.clone(collisionPos), () => {
+                explosionParticlesCount--
+                currentExplosions = Math.max(0, currentExplosions - 1)
+                particlePool.returnCollisionParticle(particle)
+              }) as ParticleAtCollision
+              particle.lifespan = config.particleAtCollisionLifespan
+              particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
+              collisionParticlesArray.push(particle)
+              explosionParticlesCount++
+            }
+            currentExplosions++
+            lastExplosionTime = now
+          }
+
+          shapeA.explodeAndRespawn()
+          shapeB.explodeAndRespawn()
+        },
+      )
+    }
+
+    handleCollisions()
+
+    ColorBlender.blendColors(shapesArray, step)
+    ForceHandler.applyForces(shapesArray, step)
+
+    // Draw connections between shapes
+    drawShapeConnections(ctx)
+
+    // Connect regular particles with animation
+    particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height, step)
+
+    // Remove expired regular particles
+    for (let i = particlesArray.length - 1; i >= 0; i--) {
+      if (particlesArray[i].opacity <= 0) {
+        particlePool.returnParticle(particlesArray[i])
+        particlesArray.splice(i, 1)
+      }
+    }
+
+    // Remove expired collision particles
+    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+      if (collisionParticlesArray[i].opacity <= 0) {
+        // The callback in ParticleAtCollision.handleExpire will handle the removal
+        collisionParticlesArray.splice(i, 1)
+      }
+    }
+
+    // Apply glitch effects
+    glitchManager.handleGlitchEffects(ctx, width, height, timestamp)
+
+    // Handle triggered animations
+    if (isAnimationTriggered) {
+      animationProgress += 0.02 * step
+      if (animationProgress >= 1) {
+        isAnimationTriggered = false
+        animationProgress = 0
+      } else {
+        const intensity = Math.sin(animationProgress * Math.PI)
+        datastreamEffect.draw(
+          ctx,
+          width,
+          height,
+          animationCenterX,
+          animationCenterY,
+          intensity,
+          hue,
+          animationProgress,
+          step,
+        )
+      }
+    }
+
+    // Update the performance monitor
+    performanceMonitor.update(timestamp, rawDelta)
+
     // Decay the recentlyExpiredParticles counter over time
-    recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - 0.1)
+    recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - 0.1 * step)
 
     // Schedule the next frame
     animationFrameId = requestAnimationFrame(animateCyberScape)
