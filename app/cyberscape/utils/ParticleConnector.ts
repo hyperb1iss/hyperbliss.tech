@@ -18,6 +18,8 @@ function getConnectionKey(a: Particle, b: Particle): string {
 
 export class ParticleConnector {
   private connections: Map<string, Connection> = new Map()
+  /** Particles drawn this frame, for pruning connections whose endpoint left the field */
+  private readonly present = new Set<Particle>()
   private config: CyberScapeConfig
 
   // Pre-allocated objects to avoid GC pressure
@@ -73,6 +75,8 @@ export class ParticleConnector {
 
     // Track which connections are still valid this frame
     const activeKeys = new Set<string>()
+    this.present.clear()
+    for (const particle of visibleParticles) this.present.add(particle)
 
     // For each particle, query nearby particles using octree
     for (const particleA of visibleParticles) {
@@ -148,6 +152,11 @@ export class ParticleConnector {
   private fadeOutObsoleteConnections(activeKeys: Set<string>, step: number) {
     for (const [key, conn] of this.connections) {
       if (!activeKeys.has(key)) {
+        // An endpoint that left the field may already be back in the pool at a
+        // new position, so a fading line would snap across the band. Drop it.
+        if (!this.present.has(conn.particleA) || !this.present.has(conn.particleB)) {
+          conn.opacity = 0
+        }
         // Connection is no longer active, fade it out
         conn.opacity = Math.max(conn.opacity - 0.02 * step, 0)
         if (conn.opacity <= 0) {

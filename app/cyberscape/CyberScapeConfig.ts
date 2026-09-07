@@ -33,6 +33,21 @@ export class CyberScapeConfig {
   public particleGlowRadiusFactor = 4
   public particleGlowCursorBoost = 3
 
+  // Context response: calm when unattended, alive when touched
+  /** Time without pointer activity over the band before the field eases into calm */
+  public idleCalmDelayMs = 12000
+  /** Motion time scale while calm (1 is full speed) */
+  public idleCalmEnergy = 0.45
+  public energySmoothingMs = 1800
+  /** Pull toward a hovered nav link: reach in world units, px per tick at the rim, orbit radius */
+  public navMagnetRadius = 190
+  public navMagnetPull = 1.1
+  public navMagnetInnerRadius = 26
+  /** Page scroll nudges particles along z; the nudge decays over scrollDepthDecayMs */
+  public scrollDepthFactor = 0.04
+  public scrollDepthMax = 4
+  public scrollDepthDecayMs = 350
+
   // Particle settings
   public particlePoolSize = 500
   public particlesPerPixel: number = 1 / 3200

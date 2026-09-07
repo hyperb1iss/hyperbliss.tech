@@ -76,6 +76,16 @@ export const initializeCyberScape = (
   let cameraYaw = 0
   let cameraPitch = 0
 
+  // Context state: the field calms when nobody is over it, and reacts to what they touch
+  let energy = 1
+  let lastActivityAt = performance.now()
+  let scrollDrift = 0
+  let lastScrollY = typeof window === 'undefined' ? 0 : window.scrollY
+  const magnet = { strength: 0, target: 0, x: 0, y: 0 }
+  const noteActivity = () => {
+    lastActivityAt = performance.now()
+  }
+
   const shapesArray: VectorShape[] = []
   const particlesArray: Particle[] = []
   const collisionParticlesArray: ParticleAtCollision[] = []
@@ -202,26 +212,75 @@ export const initializeCyberScape = (
   const resizeObserver = new ResizeObserver(handleResize)
   resizeObserver.observe(navElement)
 
-  const handlePointerEnter = () => {
-    isCursorOverCyberScape = true
-  }
-  const handlePointerLeave = () => {
-    isCursorOverCyberScape = false
-  }
-  navElement.addEventListener('pointerenter', handlePointerEnter)
-  navElement.addEventListener('pointerleave', handlePointerLeave)
-
   /**
-   * Handles mouse movement and updates cursor position.
+   * Handles mouse movement and updates cursor position. The nav itself has
+   * pointer-events: none, so containment is tested against the canvas rect
+   * rather than relying on enter/leave events from its children.
    */
   const handleMouseMove = (event: MouseEvent) => {
-    if (!isCursorOverCyberScape) return
     const rect = canvas.getBoundingClientRect()
+    const inside =
+      event.clientX >= rect.left &&
+      event.clientX <= rect.right &&
+      event.clientY >= rect.top &&
+      event.clientY <= rect.bottom
+    isCursorOverCyberScape = inside
+    if (!inside) return
     mouseX = event.clientX - rect.left - width / 2
     mouseY = event.clientY - rect.top - height / 2
+    noteActivity()
   }
   const throttledHandleMouseMove = throttle(handleMouseMove, 16)
   window.addEventListener('mousemove', throttledHandleMouseMove)
+
+  /** Pointer left the window entirely, so nothing is over the band */
+  const handleWindowMouseOut = (event: MouseEvent) => {
+    if (event.relatedTarget === null) {
+      isCursorOverCyberScape = false
+    }
+  }
+  window.addEventListener('mouseout', handleWindowMouseOut)
+
+  /**
+   * Hovering a nav link turns it into a gentle magnet for nearby particles.
+   */
+  const linkUnder = (target: EventTarget | null): HTMLAnchorElement | null => {
+    if (!(target instanceof Element)) return null
+    const link = target.closest('a[href]')
+    return link instanceof HTMLAnchorElement && navElement.contains(link) ? link : null
+  }
+  const handleLinkOver = (event: PointerEvent) => {
+    const link = linkUnder(event.target)
+    if (!link) return
+    const rect = canvas.getBoundingClientRect()
+    const linkRect = link.getBoundingClientRect()
+    magnet.x = linkRect.left + linkRect.width / 2 - rect.left - width / 2
+    magnet.y = linkRect.top + linkRect.height / 2 - rect.top - height / 2
+    magnet.target = 1
+    noteActivity()
+  }
+  const handleLinkOut = (event: PointerEvent) => {
+    if (!linkUnder(event.target)) return
+    if (linkUnder(event.relatedTarget)) return
+    magnet.target = 0
+  }
+  navElement.addEventListener('pointerover', handleLinkOver)
+  navElement.addEventListener('pointerout', handleLinkOut)
+
+  /**
+   * Scrolling nudges the field along z, so it recedes as you read down and
+   * comes back as you return.
+   */
+  const handleScroll = () => {
+    const y = window.scrollY
+    const delta = y - lastScrollY
+    lastScrollY = y
+    scrollDrift = Math.max(
+      -config.scrollDepthMax,
+      Math.min(config.scrollDepthMax, scrollDrift + delta * config.scrollDepthFactor),
+    )
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true })
 
   /**
    * Adjusts the number of shapes based on the current configuration and screen size.
@@ -347,6 +406,47 @@ export const initializeCyberScape = (
   }
 
   /**
+   * Eases the motion time scale toward calm after a stretch with nobody over
+   * the band, and back to full speed the moment they return. Also settles the
+   * nav magnet and lets scroll drift decay.
+   */
+  const updateContext = (now: number, dtMs: number) => {
+    const idle = now - lastActivityAt > config.idleCalmDelayMs && !isAnimationTriggered
+    const energyTarget = idle ? config.idleCalmEnergy : 1
+    const ease = 1 - Math.exp(-dtMs / config.energySmoothingMs)
+    energy += (energyTarget - energy) * ease
+
+    magnet.strength += (magnet.target - magnet.strength) * (1 - Math.exp(-dtMs / 220))
+    scrollDrift *= Math.exp(-dtMs / config.scrollDepthDecayMs)
+  }
+
+  /**
+   * Pulls particles near a hovered nav link toward it and applies scroll depth drift.
+   */
+  const applyContextForces = (particle: Particle, step: number) => {
+    if (magnet.strength > 0.01) {
+      const dx = magnet.x - particle.position[0]
+      const dy = magnet.y - particle.position[1]
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      if (distance > config.navMagnetInnerRadius && distance < config.navMagnetRadius) {
+        // Positional pull rather than a velocity impulse, so it is not erased by
+        // the per-tick speed clamp. Falls off linearly and stops short of the
+        // link so dots gather around it instead of piling onto it.
+        const reach = (distance - config.navMagnetInnerRadius) / (config.navMagnetRadius - config.navMagnetInnerRadius)
+        const pull = Math.min(
+          distance - config.navMagnetInnerRadius,
+          (1 - reach) * config.navMagnetPull * magnet.strength * step,
+        )
+        particle.position[0] += (dx / distance) * pull
+        particle.position[1] += (dy / distance) * pull
+      }
+    }
+    if (Math.abs(scrollDrift) > 0.01) {
+      particle.position[2] += scrollDrift * step
+    }
+  }
+
+  /**
    * Updates particle connections by applying small random velocity changes.
    */
   const updateParticleConnections = (particles: Particle[], step: number) => {
@@ -370,6 +470,7 @@ export const initializeCyberScape = (
   const triggerSpecialAnimation = (x: number, y: number) => {
     isAnimationTriggered = true
     animationProgress = 0
+    noteActivity()
     datastreamEffect.begin()
     const isMobile = width <= config.mobileWidthThreshold
     if (isMobile) {
@@ -430,7 +531,9 @@ export const initializeCyberScape = (
     // Integrate by elapsed time so motion is identical at 30, 60, or 120Hz.
     // A tab switch or a long GC pause clamps to one long-ish frame instead of a jump.
     const dtMs = Math.min(rawDelta, config.maxFrameDeltaMs)
-    const step = dtMs / config.simulationTickMs
+    updateContext(now, dtMs)
+    // The field's motion runs on its own clock, which slows while calm
+    const step = (dtMs / config.simulationTickMs) * energy
 
     updateCanvasSize()
     ctx.clearRect(0, 0, width, height)
@@ -505,6 +608,7 @@ export const initializeCyberScape = (
       const particle = particlesArray[i]
       if (particle.isReady()) {
         particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray, step)
+        applyContextForces(particle, step)
         preventClustering(particle) // Add this line to prevent clustering
         if (particle.isOutOfBounds(width, height)) {
           // Remove the particle if it's out of the viewport
@@ -644,8 +748,10 @@ export const initializeCyberScape = (
       }
     }
 
-    // Apply glitch effects
-    glitchManager.handleGlitchEffects(ctx, timestamp)
+    // Apply glitch effects, but never while the field is resting
+    if (energy > 0.8) {
+      glitchManager.handleGlitchEffects(ctx, timestamp)
+    }
 
     // Handle triggered animations
     if (isAnimationTriggered) {
@@ -736,9 +842,11 @@ export const initializeCyberScape = (
   const cleanup = () => {
     window.removeEventListener('resize', handleResize)
     resizeObserver.disconnect()
-    navElement.removeEventListener('pointerenter', handlePointerEnter)
-    navElement.removeEventListener('pointerleave', handlePointerLeave)
+    navElement.removeEventListener('pointerover', handleLinkOver)
+    navElement.removeEventListener('pointerout', handleLinkOut)
     window.removeEventListener('mousemove', throttledHandleMouseMove)
+    window.removeEventListener('mouseout', handleWindowMouseOut)
+    window.removeEventListener('scroll', handleScroll)
     cancelAnimationFrame(animationFrameId)
   }
 
