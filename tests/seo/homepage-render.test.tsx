@@ -41,9 +41,11 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
+  intro: 'Developer tools, terminal interfaces, and infrastructure for AI agents.',
   photo: '/images/profile-image.jpg',
   photoAlt: 'Stefanie Jane',
   role: 'Creative technologist, Seattle.',
+  tagline: 'the open source label of Stefanie Jane, a creative technologist in Seattle.',
 }
 
 const now: NowData = {
@@ -102,6 +104,12 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toContain('href="https://github.com/hyperb1iss/sibyl/releases/tag/v1.3.1"')
     expect(withoutNoscript).toMatch(/href="\/blog\/regex-deep-dive\/?"/)
     expect(withoutNoscript).toMatch(/href="\/projects\/chromacat\/?"/)
+  })
+
+  it('opens with the intro sentence and a visible Latest marker', () => {
+    expect(withoutNoscript).toContain('is the open source label of ')
+    expect(withoutNoscript).toMatch(/<a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>, a creative technologist/)
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 
   it('renders the rail: byline, now, shipping, elsewhere', () => {

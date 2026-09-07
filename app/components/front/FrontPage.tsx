@@ -5,9 +5,11 @@
 import Link from 'next/link'
 import type { FrontSection, NowData } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
+import { css, cx } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
+import { neonTitle } from './neon'
 import Rail, { type ShippingRow } from './Rail'
 import Reveal from './Reveal'
 
@@ -43,6 +45,58 @@ const Main = styled.div`
   min-width: 0;
 `
 
+const Intro = styled.p`
+  grid-column: 1 / -1;
+  font-size: clamp(2rem, 1.7rem + 0.8vw, 2.7rem);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--silk-steel-50);
+  margin: 0 0 4.4rem;
+  max-width: 104rem;
+  text-wrap: pretty;
+
+  & a {
+    color: var(--silk-plasma-pink);
+    text-decoration: none;
+    transition: color var(--duration-normal) var(--ease-silk);
+  }
+  & a:hover {
+    color: var(--silk-steel-50);
+  }
+
+  @media (max-width: 1024px) {
+    margin-bottom: 0;
+  }
+`
+
+const Brand = styled.span`
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1em;
+  letter-spacing: -0.03em;
+`
+
+const Marker = styled.h2`
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-shadow: none;
+  color: var(--silk-quantum-purple);
+  margin: 0 0 2.4rem;
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(162, 89, 255, 0.45), transparent);
+  }
+`
+
 const Foot = styled.div`
   display: flex;
   gap: 2.4rem;
@@ -60,17 +114,46 @@ const Foot = styled.div`
   }
 `
 
+const introRow = 'front-intro'
+const introRowStyles = css`
+  grid-column: 1 / -1;
+`
+
+/** Link the name inside the tagline to About; everything else is plain text. */
+function renderTagline(tagline: string) {
+  const name = 'Stefanie Jane'
+  const at = tagline.indexOf(name)
+  if (at < 0) return tagline
+  return (
+    <>
+      {tagline.slice(0, at)}
+      <Link href="/about/">{name}</Link>
+      {tagline.slice(at + name.length)}
+    </>
+  )
+}
+
 export default function FrontPage({ lead, items, shipping, now, front, projectCount }: FrontPageProps) {
+  const tagline = front?.tagline ?? 'the open source label of Stefanie Jane.'
   return (
     <Wrap>
+      <Reveal as="div" className={cx(introRow, introRowStyles)} order={0}>
+        <Intro>
+          <Brand className={neonTitle}>hyperbliss</Brand> is {renderTagline(tagline)}
+          {front?.intro && <> {front.intro}</>}
+        </Intro>
+      </Reveal>
       <Main>
+        <Reveal order={0.5}>
+          <Marker>Latest</Marker>
+        </Reveal>
         {lead && (
-          <Reveal order={0}>
+          <Reveal order={1}>
             <LeadStory item={lead} />
           </Reveal>
         )}
-        <FeedList items={items} startOrder={1} />
-        <Reveal order={1 + items.length * 0.5}>
+        <FeedList heading={null} items={items} startOrder={1.5} />
+        <Reveal order={1.5 + items.length * 0.5}>
           <Foot>
             <Link href="/blog/">All writing →</Link>
             <Link href="/projects/">All projects →</Link>

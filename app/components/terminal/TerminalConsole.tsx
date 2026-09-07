@@ -141,6 +141,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   // The console is mounted by the layout and survives navigation, so a command
   // that links into a route (projects, blog, ...) closes it as the page changes.
   useEffect(() => {
+    if (!pathname) return
     setConsoleOpen(false)
     setIsExpanded(false)
   }, [pathname, setConsoleOpen, setIsExpanded])

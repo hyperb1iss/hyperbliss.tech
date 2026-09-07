@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import type { FeedItem } from '@/lib/feed'
-import { cx } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
 import { KIND_VERB, longDate } from './format'

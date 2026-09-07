@@ -305,6 +305,10 @@ export interface FrontSection {
   bio: string | null
   photo: string | null
   photoAlt: string | null
+  /** What follows "hyperbliss is" in the front page intro. */
+  tagline: string | null
+  /** One or two sentences after the tagline. */
+  intro: string | null
 }
 
 export interface PageData {
@@ -338,6 +342,8 @@ interface RawPageJson {
     bio?: string
     photo?: string
     photoAlt?: string
+    tagline?: string
+    intro?: string
   }
 }
 
@@ -371,9 +377,11 @@ export async function getPage(slug: string): Promise<PageData> {
     front: raw.front
       ? {
           bio: raw.front.bio ?? null,
+          intro: raw.front.intro ?? null,
           photo: raw.front.photo ?? null,
           photoAlt: raw.front.photoAlt ?? null,
           role: raw.front.role ?? null,
+          tagline: raw.front.tagline ?? null,
         }
       : null,
     slug: raw.slug,
