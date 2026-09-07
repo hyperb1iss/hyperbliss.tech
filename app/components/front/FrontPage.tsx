@@ -76,6 +76,14 @@ const Brand = styled.span`
   letter-spacing: -0.03em;
 `
 
+// A span, not <code>: the global code rule paints a boxed pink chip.
+const Mono = styled.span`
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  color: var(--silk-circuit-cyan);
+  letter-spacing: 0;
+`
+
 const Marker = styled.h2`
   display: flex;
   align-items: center;
@@ -121,9 +129,14 @@ const introRowStyles = css`
 
 const NAME = 'Stefanie Jane'
 
-/** `{hyperbliss}` becomes the brand mark and `{name}` the About link; everything else is plain text. */
+/**
+ * `{hyperbliss}` becomes the brand mark, `{name}` the About link, and anything
+ * in backticks renders in mono; everything else is plain text.
+ */
 function renderTagline(tagline: string) {
-  return tagline.split(/(\{hyperbliss\}|\{name\})/).map((part, index) => {
+  return tagline.split(/(\{hyperbliss\}|\{name\}|`[^`]+`)/).map((part, index) => {
+    if (part.startsWith('`') && part.endsWith('`') && part.length > 2)
+      return <Mono key={`mono-${index}`}>{part.slice(1, -1)}</Mono>
     if (part === '{hyperbliss}')
       return (
         <Brand className={neonTitle} key={`brand-${index}`}>

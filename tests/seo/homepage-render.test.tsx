@@ -44,7 +44,7 @@ const front: FrontSection = {
   photo: '/images/profile-image.jpg',
   photoAlt: 'Stefanie Jane',
   role: 'Creative technologist, Seattle.',
-  tagline: "Hey, I'm {name}, a creative technologist in Seattle, and {hyperbliss} is where I make things.",
+  tagline: "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`.",
 }
 
 const now: NowData = {
@@ -107,10 +107,11 @@ describe('TerminalHome SSR markup carries real content', () => {
 
   it('opens with the intro sentence and a visible Latest marker', () => {
     expect(withoutNoscript).toMatch(
-      /Hey, I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>, a creative technologist/,
+      /Hi! I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>! Welcome to my personal site/,
     )
-    expect(withoutNoscript).toMatch(/<span[^>]*>hyperbliss<\/span> is where I make things\./)
+    expect(withoutNoscript).toMatch(/<span[^>]*>\/etc<\/span>\./)
     expect(withoutNoscript).not.toContain('{name}')
+    expect(withoutNoscript).not.toContain('`')
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 

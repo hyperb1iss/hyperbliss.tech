@@ -5,7 +5,7 @@
     "photo": "/images/profile-image.jpg",
     "photoAlt": "Stefanie Jane",
     "role": "Creative technologist, Seattle.",
-    "tagline": "Hey, I'm {name}, a creative technologist in Seattle, and {hyperbliss} is where I make things."
+    "tagline": "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`."
   },
   "slug": "home",
   "title": "@hyperb1iss | Stefanie Jane"
