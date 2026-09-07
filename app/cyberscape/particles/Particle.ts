@@ -107,7 +107,9 @@ export class Particle {
    */
   public setDelayedAppearance(): void {
     this.appearanceDelay = Math.random() * 1000 // Reduce max delay to 1 second
-    this.isVisible = this.appearanceDelay === 0
+    this.isVisible = false
+    // Fade in from just above zero (zero reads as expired to the render loop)
+    this.opacity = 0.05
   }
 
   /**
@@ -272,7 +274,14 @@ export class Particle {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    */
-  public draw(ctx: CanvasRenderingContext2D, mouseX: number, mouseY: number, width: number, height: number): void {
+  public draw(
+    ctx: CanvasRenderingContext2D,
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number,
+    _step = 1,
+  ): void {
     if (!this.isVisible || this.opacity <= 0) return
     const pos = VectorMath.project(this.position, width, height)
     const radius = this.size * pos.scale

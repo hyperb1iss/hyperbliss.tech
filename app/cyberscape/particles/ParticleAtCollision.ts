@@ -17,6 +17,7 @@ export class ParticleAtCollision extends Particle {
   private static readonly connectionProjectionB = VectorMath.createProjectionResult()
 
   private onExpire: () => void
+  private expired = false
   private fadeOutDuration: number
   private sparkleIntensity: number
   private initialSpeed: number
@@ -68,6 +69,7 @@ export class ParticleAtCollision extends Particle {
     this.age = 0
     this.opacity = 1
     this.sparkleIntensity = Math.random()
+    this.expired = false
     // Burst particles appear the instant they are emitted; the base class's
     // random appearance delay is for the ambient field only.
     this.isVisible = true
@@ -113,12 +115,19 @@ export class ParticleAtCollision extends Particle {
     this.sparkleIntensity = Math.max(0, this.sparkleIntensity - this.config.particleAtCollisionSparkleDecay * step)
 
     if (this.opacity <= 0) {
-      if (typeof this.onExpire === 'function') {
-        this.onExpire()
-      } else {
-        console.warn('ParticleAtCollision: onExpire is not a function', this)
-      }
+      this.expire()
     }
+  }
+
+  /**
+   * Ends the particle's life and settles its owner's bookkeeping exactly once,
+   * whether it faded out or was culled at the viewport edge.
+   */
+  public expire(): void {
+    this.opacity = 0
+    if (this.expired) return
+    this.expired = true
+    this.onExpire()
   }
 
   /**

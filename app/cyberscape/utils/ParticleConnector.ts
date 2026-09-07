@@ -140,7 +140,7 @@ export class ParticleConnector {
     }
 
     // Handle fading out obsolete connections
-    this.fadeOutObsoleteConnections(activeKeys, step)
+    this.fadeOutObsoleteConnections(activeKeys, step, width, height)
 
     // Draw all active connections
     this.drawConnections(ctx, width, height)
@@ -149,13 +149,25 @@ export class ParticleConnector {
   /**
    * Fades out connections that are no longer active, removing fully faded ones.
    */
-  private fadeOutObsoleteConnections(activeKeys: Set<string>, step: number) {
+  private fadeOutObsoleteConnections(activeKeys: Set<string>, step: number, width: number, height: number) {
+    const snapDistance = this.config.particleConnectionDistance * 2.5
+    const snapDistanceSq = snapDistance * snapDistance
     for (const [key, conn] of this.connections) {
       if (!activeKeys.has(key)) {
         // An endpoint that left the field may already be back in the pool at a
         // new position, so a fading line would snap across the band. Drop it.
         if (!this.present.has(conn.particleA) || !this.present.has(conn.particleB)) {
           conn.opacity = 0
+        } else {
+          // A far particle can wrap in world space while still projecting on
+          // screen; the line would then snap across the band while it fades
+          VectorMath.project(conn.particleA.position, width, height, this.projA)
+          VectorMath.project(conn.particleB.position, width, height, this.projB)
+          const dx = this.projA.x - this.projB.x
+          const dy = this.projA.y - this.projB.y
+          if (dx * dx + dy * dy > snapDistanceSq) {
+            conn.opacity = 0
+          }
         }
         // Connection is no longer active, fade it out
         conn.opacity = Math.max(conn.opacity - 0.02 * step, 0)

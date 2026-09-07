@@ -162,8 +162,10 @@ export const initializeCyberScape = (
       canvasScaleFactor = 1.5 // Increase scale factor for widescreen
     }
 
-    const scaledWidth = newWidth * canvasScaleFactor
-    const scaledHeight = newHeight * canvasScaleFactor
+    // Backing store sizes are integers; comparing against a fractional target
+    // reallocates the canvas on every frame at odd widths
+    const scaledWidth = Math.round(newWidth * canvasScaleFactor)
+    const scaledHeight = Math.round(newHeight * canvasScaleFactor)
 
     if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
       canvas.width = scaledWidth
@@ -217,7 +219,11 @@ export const initializeCyberScape = (
    * pointer-events: none, so containment is tested against the canvas rect
    * rather than relying on enter/leave events from its children.
    */
+  let lastTouchAt = Number.NEGATIVE_INFINITY
   const handleMouseMove = (event: MouseEvent) => {
+    // A tap synthesises mouseover/mousemove at the touch point after pointerup,
+    // and nothing on a touch device ever moves that phantom cursor away
+    if (performance.now() - lastTouchAt < 1000) return
     const rect = canvas.getBoundingClientRect()
     const inside =
       event.clientX >= rect.left &&
@@ -240,6 +246,18 @@ export const initializeCyberScape = (
     }
   }
   window.addEventListener('mouseout', handleWindowMouseOut)
+
+  /** Touch has no hover: a finger that lifts is no longer over anything */
+  const handleTouchPointer = (event: PointerEvent) => {
+    if (event.pointerType !== 'touch') return
+    lastTouchAt = performance.now()
+    if (event.type !== 'pointerdown') {
+      isCursorOverCyberScape = false
+    }
+  }
+  window.addEventListener('pointerdown', handleTouchPointer, { passive: true })
+  window.addEventListener('pointerup', handleTouchPointer, { passive: true })
+  window.addEventListener('pointercancel', handleTouchPointer, { passive: true })
 
   /**
    * Hovering a nav link turns it into a gentle magnet for nearby particles.
@@ -611,15 +629,21 @@ export const initializeCyberScape = (
         applyContextForces(particle, step)
         preventClustering(particle) // Add this line to prevent clustering
         if (particle.isOutOfBounds(width, height)) {
-          // Remove the particle if it's out of the viewport
-          particle.setOffScreen() // Set the off-screen time
-          particlePool.returnParticle(particle)
+          // Remove the particle if it's out of the viewport. Burst particles the
+          // shockwave pushed in here never counted as active and own a pool.
           particlesArray.splice(i, 1)
-          activeParticles--
-          recentlyExpiredParticles++
+          if (particle instanceof ParticleAtCollision) {
+            particle.expire()
+            particlePool.returnCollisionParticle(particle)
+          } else {
+            particle.setOffScreen() // Set the off-screen time
+            particlePool.returnParticle(particle)
+            activeParticles--
+            recentlyExpiredParticles++
+          }
         } else {
           octree.insert(particle)
-          particle.draw(ctx, mouseX, mouseY, width, height)
+          particle.draw(ctx, mouseX, mouseY, width, height, step)
         }
       } else {
         particle.updateDelay(dtMs)
@@ -632,7 +656,9 @@ export const initializeCyberScape = (
       if (particle.isReady()) {
         particle.tick(step, dtMs)
         if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
-          // Remove the collision particle if it's out of the viewport
+          // Remove the collision particle if it's out of the viewport, settling
+          // the explosion bookkeeping it would otherwise leak
+          particle.expire()
           particlePool.returnCollisionParticle(particle)
           collisionParticlesArray.splice(i, 1)
         } else {
@@ -756,9 +782,12 @@ export const initializeCyberScape = (
       }
     }
 
-    // Apply glitch effects, but never while the field is resting
+    // Apply glitch effects, but never while the field is resting. The interval
+    // is held back while calm so waking up does not fire one immediately.
     if (energy > 0.8) {
       glitchManager.handleGlitchEffects(ctx, timestamp)
+    } else {
+      glitchManager.hold(timestamp)
     }
 
     // Handle triggered animations
@@ -867,6 +896,9 @@ export const initializeCyberScape = (
     navElement.removeEventListener('pointerout', handleLinkOut)
     window.removeEventListener('mousemove', throttledHandleMouseMove)
     window.removeEventListener('mouseout', handleWindowMouseOut)
+    window.removeEventListener('pointerdown', handleTouchPointer)
+    window.removeEventListener('pointerup', handleTouchPointer)
+    window.removeEventListener('pointercancel', handleTouchPointer)
     window.removeEventListener('scroll', handleScroll)
     cancelAnimationFrame(animationFrameId)
   }

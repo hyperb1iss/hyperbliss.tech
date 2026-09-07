@@ -37,6 +37,16 @@ export class GlitchManager {
   }
 
   /**
+   * Keeps the interval clock from advancing while the field is calm, so a
+   * pending glitch does not fire the moment the field wakes.
+   */
+  public hold(timestamp: number): void {
+    if (!this.isGlitching) {
+      this.lastGlitchTime = timestamp
+    }
+  }
+
+  /**
    * Fires a glitch on the configured random interval and runs its envelope.
    * @param ctx - The 2D rendering context of the canvas.
    * @param timestamp - The current animation timestamp.
