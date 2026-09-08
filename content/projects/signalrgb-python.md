@@ -1,73 +1,26 @@
 ---
-emoji: '🌈'
+emoji: '💡'
 title: 'signalrgb-python: Python Library for SignalRGB'
 date: '2024-09-25'
 tags: ['Python', 'SignalRGB', 'API', 'CLI', 'RGB', 'Lighting']
-description: 'Python library and CLI for programmatic control of SignalRGB Pro lighting.
-  Effect management, brightness control, layout switching, and sequencing.'
+description: 'A Python client and terminal interface for SignalRGB Pro, with synchronous and asynchronous control of effects, presets, layouts, and brightness.'
 github: 'https://github.com/hyperb1iss/signalrgb-python'
 ---
 
-## Programmatic RGB Control
+A lighting effect can be part of a script, an application, or a larger home automation system. The signalrgb-python library provides the connection: a Python interface to SignalRGB Pro's REST API, with a terminal client for the same everyday operations.
 
-signalrgb-python provides a Python interface for SignalRGB Pro, enabling programmatic control of your RGB lighting ecosystem. Build automation tools, create ambient notifications, or integrate lighting effects into your applications with a clean, typed API.
+You can browse and search effects, apply a preset, switch the active device layout, or adjust the lighting canvas. The CLI makes those actions available from a shell, including next, previous, and random effect selection. A small script can use the synchronous client; an application already running an event loop can use the asynchronous client.
 
-## Key Features
+## An API that fits its caller
 
-- **Effect Management**: Apply and control lighting effects programmatically
-- **Layout Control**: Switch between different lighting configurations
-- **Brightness Control**: Adjust lighting intensity
-- **Preset Management**: Store and load lighting configurations
-- **CLI Interface**: Control your setup through the terminal
-- **Python API**: Full programmatic control with type hints
-- **Effect Sequencing**: Create dynamic lighting sequences
+The two clients cover the same core lighting concepts without forcing every consumer into one execution model. The asynchronous implementation uses an HTTP client with context-managed connections, making it suitable for integrations such as [SignalRGB for Home Assistant](/projects/signalrgb-homeassistant).
 
-## Python API
+Typed models describe effects and layouts. Dedicated exceptions distinguish connection failures from API errors and missing resources, so an application can respond to the actual problem. Effect caching supports repeated navigation through the library without treating every lookup as a fresh catalog request.
 
-```python
-from signalrgb import SignalRGBClient
+## A useful piece of the lighting stack
 
-client = SignalRGBClient()
+The library handles communication with SignalRGB while leaving the sequence and timing of changes to the calling application. That makes it useful for both a single terminal command and custom lighting behavior tied to another system.
 
-# Apply an effect
-client.apply_effect_by_name("Ocean Waves")
+SignalRGB Pro is required for API access. The library is independently developed and maintained, with client documentation and examples alongside the source.
 
-# Adjust brightness
-client.brightness = 75
-
-# Switch layouts
-client.current_layout = "Development Setup"
-
-# Sequence through effects
-for effect in client.get_effects():
-    client.apply_effect(effect.id)
-    time.sleep(5)
-```
-
-## Command Line Interface
-
-```bash
-# List available effects
-signalrgb effect list
-
-# Apply an effect
-signalrgb effect apply "Electric Dreams"
-
-# Set brightness
-signalrgb canvas brightness 75
-
-# Enable RGB control
-signalrgb canvas enable
-```
-
-## Installation
-
-```bash
-pip install signalrgb
-```
-
-For detailed usage instructions and API documentation, visit the [documentation](https://hyperb1iss.github.io/signalrgb-python/).
-
----
-
-_signalrgb-python is an independent project and is not officially associated with SignalRGB. For official SignalRGB support and information, please visit [signalrgb.com](https://www.signalrgb.com)._
+[Explore the Python API and CLI documentation](https://hyperb1iss.github.io/signalrgb-python/).

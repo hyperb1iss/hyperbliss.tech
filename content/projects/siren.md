@@ -1,37 +1,26 @@
 ---
 emoji: '🧜‍♀️'
-title: 'Siren: Multi-Language Linting Frontend'
-description: 'A multi-language linting frontend with smart detection, auto-fixing, and
-  colorful terminal output. Supports Rust, Python, JS/TS, and HTML.'
+title: 'Siren: One Frontend for Code Quality'
+description: 'An in-development Rust frontend that detects project languages, selects existing quality tools, and brings their checks and fixes into one terminal workflow.'
 date: '2025-03-07'
 github: 'https://github.com/hyperb1iss/siren'
-tags: ['Python', 'Rust', 'Linting', 'ESLint', 'Prettier', 'Ruff', 'Mypy', 'Clippy']
+tags: ['Rust', 'CLI', 'Linting', 'Developer Tools', 'Automation', 'Open Source']
 ---
 
-## Overview
+A mixed-language repository can have several perfectly good quality tools and no pleasant way to run them together. Siren brings formatting, linting, and fixing into a common command-line workflow, using project detection to decide which tools belong in the run.
 
-Siren is a multi-language linting frontend that automatically detects your project's languages and runs the right linters, formatters, and type checkers. Smart defaults, colorful terminal output, and auto-fixing across Rust, Python, JavaScript, TypeScript, and HTML.
+Written in Rust, the frontend delegates analysis to existing tools. The project includes integrations for the Rust, Python, and HTML ecosystems, with JavaScript and TypeScript support still developing.
 
-## Key Features
+## Let the tools do their jobs
 
-- **Multi-language**: Supports Rust, Python, JavaScript, TypeScript, and
-  HTML/Templates
-- **Smart Detection**: Automatically identifies project languages and frameworks
-- **Intelligent Tooling**: Picks the right linters and formatters for your
-  project
-- **Colorful Output**: Vibrant terminal experience that makes linting less
-  painful
-- **Fast**: Built with Rust for quick execution
-- **Auto-fixing**: Automatically resolves common issues
-- **Git Integration**: Focus on recently modified files for efficient workflows
-- **Interactive Progress**: Live-updating spinners and progress indicators
+Siren's adapters cover tools such as Clippy, Ruff, and djlint. Each adapter connects an external tool to the common runner and result model, giving the frontend a way to coordinate checks without implementing another language analyzer.
 
-## Tool Matrix
+Project detection and file collection establish what needs checking. Dedicated commands handle checking, formatting, and fixing, while configuration provides room for tool-specific options. The result is a common entry point across repositories that may use very different language tooling underneath.
 
-| Language       | Formatting             | Linting                | Type Checking | Fixing              |
-| -------------- | ---------------------- | ---------------------- | ------------- | ------------------- |
-| Rust           | `rustfmt`              | `clippy`               | -             | `clippy --fix`      |
-| Python         | `black`, `ruff format` | `pylint`, `ruff check` | `mypy`        | `ruff --fix`        |
-| JavaScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
-| TypeScript     | `prettier`             | `eslint`               | -             | `eslint --fix`      |
-| HTML/Templates | `djlint`               | `djlint`               | -             | `djlint --reformat` |
+## Coordination is the interesting part
+
+The runner executes tools in parallel and gathers their results for terminal reporting. Separate modules handle detection, configuration, tool integration, and output, so support for another tool has a defined place in the system.
+
+Color and progress indicators help distinguish what is running from what needs attention. Siren aims to reduce setup across a mixed-language repository while keeping each tool's useful configuration choices available.
+
+The [Siren repository](https://github.com/hyperb1iss/siren) documents current support, configuration, and the remaining development work.

@@ -1,56 +1,26 @@
 ---
 emoji: '🌀'
-title: 'AeonSync: Simple but Powerful Backup Manager'
+title: 'AeonSync: Readable Backup History'
 date: '2024-09-25'
 tags: ['Python', 'rsync', 'Backup', 'CLI', 'DevOps']
-description: 'Incremental remote backups powered by rsync with retention policies,
-  interactive restore, and a clean CLI built on Typer.'
+description: 'A Python backup tool built around rsync and SSH, with dated incremental snapshots, retention settings, and file-version previews.'
 github: 'https://github.com/hyperb1iss/aeonsync'
 ---
 
-AeonSync combines the efficiency of rsync with a clean command-line interface for managing backups across systems. Incremental snapshots, customizable retention, and interactive file restoration in one tool.
+A backup should leave you with a file you can find. AeonSync organizes remote backups into dated directories under a machine's name, with a latest link pointing to the newest snapshot. The structure stays visible on the destination server, alongside metadata describing each backup.
 
-## Key Features
+The Python CLI wraps rsync over SSH. Incremental runs use rsync's link-dest mechanism to share unchanged files with an earlier snapshot through hard links. Daily naming keeps a simple sequence of dates; additional runs can receive numbered suffixes. A retention setting governs cleanup of older snapshots.
 
-- **Incremental Backups**: Uses rsync's `--link-dest` for efficient storage
-- **Secure Remote Syncing**: SSH-based data transfer
-- **Retention Policies**: Automatic cleanup based on user-defined rules
-- **Dry-run Mode**: Test backups without making changes
-- **Metadata Tracking**: Maintains detailed metadata for each backup
-- **Rich CLI**: Powered by Typer with colorized output
-- **Multiple Source Support**: Backup multiple directories in a single operation
-- **Latest Backup Symlink**: Automatically links to the most recent backup
-- **Interactive Restore**: Guided process with version selection, file preview,
-  and diff display
+## Familiar tools, a clearer routine
 
-## Getting Started
+AeonSync brings snapshot naming, transfer options, and backup listings into a single command-line workflow. Exclusion patterns leave regenerable files out of the transfer, while recorded rsync statistics provide a view of what the operation moved.
 
-### Installation
+The approach suits file-based backups to a server or NAS with SSH and rsync available. Its dated directories can be inspected using ordinary filesystem tools, making the storage layout understandable without learning a separate archive format.
 
-```bash
-pip install aeonsync
-```
+## Inspect a version before restoring it
 
-### Basic Usage
+The restore interface includes version selection, syntax-highlighted text previews, and comparisons against a local copy. Those views help answer a practical question: does this snapshot contain the version I meant to recover? A separate output location allows a restored copy to be reviewed alongside the current file.
 
-To create a backup:
+AeonSync is a compact utility with a deliberately visible storage model. Its repository contains the backup and restore implementation, configuration options, and examples for evaluating the workflow against a particular setup.
 
-```bash
-aeon sync --remote user@host:/path/to/backups
-```
-
-To restore a file:
-
-```bash
-aeon restore [OPTIONS] FILE [DATE]
-```
-
-To list available backups:
-
-```bash
-aeon list-backups
-```
-
-## Open Source
-
-AeonSync is open-source software, licensed under the GNU General Public License v3.0. Contributions from the community are welcome! Check out the [GitHub repository](https://github.com/hyperb1iss/aeonsync) to get involved or report issues.
+[Read the backup workflow and restore options](https://github.com/hyperb1iss/aeonsync).

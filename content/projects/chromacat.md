@@ -1,100 +1,24 @@
 ---
 emoji: '😺'
-title: 'ChromaCat: Turbocharged Terminal Colorizer'
+title: 'ChromaCat: Color in Motion'
 date: '2024-09-25'
-tags: ['Rust', 'CLI', 'Terminal', 'Open Source']
-description: 'A turbocharged terminal colorizer written in Rust. Think lolcat with
-  superpowers: advanced gradient patterns, smooth animations, and 40+ themes.'
+tags: ['Rust', 'CLI', 'Terminal', 'Generative Art', 'Open Source']
+description: 'A Rust terminal colorizer with animated gradients, procedural patterns, and an interactive playground for turning ordinary text into moving color.'
 github: 'https://github.com/hyperb1iss/chromacat'
 ---
 
-ChromaCat is a turbocharged terminal colorizer written in Rust that brings gradient patterns and animations to your command-line experience. Think `lolcat` but with superpowers: advanced gradient patterns, smooth animations, and extensive customization options.
+A terminal is a grid of characters. ChromaCat treats that grid as a small canvas: waves travel through text, plasma rolls across a banner, and a quiet gradient gives an ordinary command a little more presence. Written in Rust, it colorizes files and piped input, with an interactive playground for exploring what happens when color starts to move.
 
-## Key Features
+The appeal is immediate, but the controls go deeper than picking a palette. Patterns describe how color moves through space; themes supply the colors. Keeping those choices separate means the same ripple can feel like cold water, a neon sign, or a pastel wash.
 
-- **Rich Pattern Library**: Twelve distinct pattern types from simple gradients
-  to complex effects
-- **40+ Built-in Themes**: Everything from classic rainbow to custom color
-  schemes
-- **Smooth Animations**: Fluid color transitions for your terminal
-- **Interactive Mode**: Real-time control over animations and effects
-- **Precise Control**: Fine-tune every aspect of your gradients
-- **Blazing Fast**: Optimized Rust implementation with minimal overhead
-- **Full Unicode Support**: Works with emojis and international text
-- **Terminal-Aware**: Adapts to terminal dimensions and capabilities
+## A little procedural art in the shell
 
-## Pattern Types
+The pattern engine includes spirals, fire, aurora, and organic noise alongside directional gradients. Parameters expose the character of an effect, so a wave can become broad and gentle or tightly wound. Custom YAML themes let the palette belong to you, and playlists arrange patterns into sequences.
 
-ChromaCat offers twelve unique pattern types for dynamic colorization:
+The playground brings those choices into an animated terminal interface. Piped input can join the playground too, making your own text part of the experiment. For everyday shell use, ChromaCat also works as a colorizing step in a pipeline.
 
-- `diagonal` - Angled gradient with customizable direction
-- `plasma` - Psychedelic plasma effect using sine waves
-- `ripple` - Concentric circles emanating from center
-- `wave` - Flowing wave distortion pattern
-- `spiral` - Hypnotic spiral pattern from center
-- `checkerboard` - Alternating gradient colors in a grid
-- `diamond` - Diamond-shaped gradient pattern
-- `perlin` - Organic, cloud-like noise pattern
-- `rain` - Matrix-style digital rain effect
-- `fire` - Dynamic flame simulation
-- `aurora` - Northern lights simulation
+## Small surface, real rendering work
 
-## Usage Examples
+The project connects procedural graphics with the constraints of terminal output: character positions, terminal dimensions, input streams, and animation timing. A registry gives patterns their own parameters while exposing them through a common command-line interface. Adding another effect extends the visual vocabulary without inventing a new way to use the tool.
 
-```bash
-# Basic usage with cyberpunk theme
-echo "Hello, ChromaCat!" | chromacat -t cyberpunk
-
-# Add some animation
-cat your_file.txt | chromacat -a
-
-# Wave pattern with custom parameters
-chromacat -p wave --param amplitude=1.5,frequency=2.0 file.txt
-
-# Matrix-style digital rain
-chromacat -p rain --param "speed=1.5,density=2.0,length=5,glitch=true"
-
-# Colorful git status
-git status | chromacat -p ripple -t neon
-
-# Build logs with style
-cargo build 2>&1 | chromacat -p plasma -t matrix
-```
-
-## Theme Categories
-
-### Space Themes
-
-Cosmic-inspired gradients for sci-fi interfaces:
-
-- **nebula**: Deep purples and cosmic blues
-- **cosmos**: Starry nights and celestial hues
-- **aurora**: Dancing northern lights
-- **galaxy**: Swirling cosmic patterns
-
-### Tech Themes
-
-Cyberpunk-inspired themes for your digital workspace:
-
-- **matrix**: Classic digital rain
-- **cyberpunk**: Neon city vibes
-- **quantum**: Ethereal data streams
-- **hackerman**: Elite hacker aesthetics
-
-### Aesthetic Themes
-
-Stylish gradients for creative and artistic applications:
-
-- **pastel**: Soft, dreamy color transitions
-- **neon**: Vibrant, electrifying hues
-- **retrowave**: 80s-inspired color schemes
-- **vaporwave**: Modern retro aesthetics
-
-### Party Themes
-
-Energetic themes that bring celebration to your terminal:
-
-- **rave**: Pulsating neon colors
-- **disco**: Classic party vibrancy
-- **festival**: Euphoric color combinations
-- **carnival**: Playful, festive gradients
+Browse the patterns and usage guide in the [ChromaCat repository](https://github.com/hyperb1iss/chromacat).

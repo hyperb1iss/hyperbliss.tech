@@ -1,67 +1,26 @@
 ---
 emoji: '🧿'
-title: 'Sibyl: Build With Agents That Remember'
-description: 'Collective intelligence runtime for AI agents. Persistent memory, agent
-  orchestration, and knowledge graph-powered development.'
+title: 'Sibyl: Memory That Follows Your Work'
+description: 'Self-hosted memory for coding agents, connecting project decisions, debugging lessons, tasks, and source material across tools and sessions.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/sibyl'
-tags: ['Python', 'TypeScript', 'Claude', 'AI Agents', 'Knowledge Graph', 'FalkorDB', 'FastAPI', 'Next.js', 'MCP']
+tags: ['Python', 'TypeScript', 'AI Agents', 'Knowledge Graph', 'SurrealDB', 'FastAPI', 'Next.js', 'MCP']
 ---
 
-## The Vision
+A difficult debugging session leaves more behind than a patch. There is the failed approach, the constraint nobody had written down, and the reason the final fix works. Sibyl gives that knowledge a place to live, so another session or another coding agent can pick it up.
 
-AI agents that remember everything. A collective intelligence that compounds with every session. Orchestration that lets you manage a fleet of autonomous agents, all building on shared knowledge, all tracked in one place.
+Sibyl is my self-hosted memory system for work that moves between tools. Claude Code, Codex, and other agents can read from and contribute to the same project knowledge through a CLI or MCP. Decisions and debugging lessons remain connected to tasks and source material, with a web interface for the humans keeping track of the work.
 
-Today's agents have amnesia. Every session starts fresh. No memory of what worked, what failed, what you learned yesterday. Multiple agents across different features? Chaos.
+## Keep the reasoning close
 
-**Sibyl changes that.**
+The central workflow is deliberately small. Ask for context before starting, capture useful knowledge as it emerges, and reflect on a session when there is something worth keeping. Context packs collect relevant memory around a concrete goal, so an agent can begin with the decisions that bear on its task.
 
-## What You Get
+Underneath, retrieval combines semantic matches with graph relationships and signals such as recency. A memory can lead to the related decision, the task it informed, or the source that supports it. Original captures remain available alongside the derived knowledge, preserving a way to inspect where a claim came from.
 
-| Capability                  | What It Means                                                   |
-| --------------------------- | --------------------------------------------------------------- |
-| **Collective Intelligence** | Every agent contributes. Every session compounds                |
-| **Semantic Search**         | Find knowledge by meaning, not just keywords                    |
-| **Persistent Memory**       | What you learn today helps tomorrow                             |
-| **Agent Orchestration**     | Spawn Claude agents that work autonomously with human approvals |
-| **Task Workflow**           | Plan with epics and tasks. Track parallel work across agents    |
-| **Doc Ingestion**           | Crawl and index external documentation into your graph          |
-| **Graph Visualization**     | Interactive D3 visualization of your knowledge connections      |
+The same system can ingest documentation and agent transcripts. Its synthesis tools draft documents from authorized memory and check citations, freshness, and gaps. The practical value is continuity: the explanation behind yesterday's work can become part of today's starting point.
 
-## Agent Orchestration
+## A system you can run yourself
 
-Sibyl's flagship feature: **spawn AI agents that work autonomously** while you review and approve their actions.
+Sibyl uses SurrealDB for graph, content, and authentication storage, with a Python API and a Next.js interface. The web workspace brings together memory search, a navigable graph, and task tracking. Project and organizational scopes determine where knowledge belongs and who can access it.
 
-- **Task Assignment**: Agents claim tasks and update status automatically
-- **Git Worktrees**: Each agent works in isolation to prevent conflicts
-- **Approval Queue**: Review and approve/deny agent actions before execution
-- **Cost Tracking**: Monitor token usage and USD cost per agent
-- **Checkpointing**: Save/restore agent state for crash recovery
-- **Multi-Agent**: Multiple agents can collaborate on related tasks
-
-## Technical Stack
-
-- **Backend:** Python 3.13 / FastMCP / FastAPI / Graphiti / FalkorDB
-- **Frontend:** Next.js 16 / React 19 / React Query / Tailwind 4
-- **Database:** FalkorDB (graph) + PostgreSQL (relational)
-- **Build:** moonrepo + uv (Python) + pnpm (TypeScript)
-- **Agents:** Claude SDK with human-in-the-loop approvals
-
-## Quick Start
-
-```bash
-# One-liner install
-curl -fsSL https://raw.githubusercontent.com/hyperb1iss/sibyl/main/install.sh | sh
-
-# Or via uv
-uv tool install sibyl-dev
-sibyl local start
-```
-
-## MCP Integration
-
-Connect Claude Code, Cursor, or any MCP client to Sibyl with a simple 4-tool API: `search`, `explore`, `add`, and `manage`. Ships with Claude Code skills and hooks for easy integration.
-
----
-
-The collective gets smarter. The orchestration gets deeper. **Build with agents that remember.**
+Agent guidance ships with the CLI and matches the installed version. Changing coding tools does not require rebuilding the memory workflow around a new integration. The [Sibyl repository](https://github.com/hyperb1iss/sibyl) includes installation paths for a local daemon, containers, and larger self-hosted deployments.

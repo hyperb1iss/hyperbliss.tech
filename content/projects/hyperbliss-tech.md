@@ -1,62 +1,26 @@
 ---
 emoji: '🌃'
-title: 'hyperbliss.tech: Nerd City'
+title: 'hyperbliss.tech: A Personal Space on the Web'
 date: '2024-09-25'
-tags: ['Next.js', 'TypeScript', 'React', 'Panda CSS', 'Framer Motion', 'WebGL']
-description: 'The source code for this very site. Interactive CyberScape particle system,
-  Framer Motion transitions, Panda CSS, and markdown-driven content.'
+tags: ['Next.js', 'TypeScript', 'React', 'Panda CSS', 'Canvas', 'Creative Coding']
+description: 'My portfolio and writing home, combining a reactive particle world, a browsable terminal, and Markdown-driven stories in a custom Next.js site.'
 github: 'https://github.com/hyperb1iss/hyperbliss.tech'
 ---
 
-Welcome to the source code of the very website you're viewing! hyperbliss.tech is a canvas where code meets creativity, showcasing modern web development through interactive experiences and thoughtful design.
+This site is where my software, writing, and visual work meet. Project pages make room for the ideas behind the repositories, the blog follows the technical details, and a few interactive corners invite you to stay and play. Purple light and moving geometry give the space its own atmosphere.
 
-## Key Features
+The implementation combines Next.js and React with Panda CSS and Framer Motion. Markdown files hold the writing, keeping articles and project stories close to the code while giving them a consistent reading experience.
 
-- **CyberScape Header**: Interactive particle system that responds to mouse
-  movement and creates dynamic connections
-- **Page Transitions**: Smooth transitions powered by Framer Motion
-- **Responsive Design**: Adapts to any screen size while maintaining visual
-  integrity
-- **Dynamic Content**: Markdown-powered blog posts and project pages with syntax
-  highlighting
-- **Panda CSS**: Zero-runtime CSS-in-JS with type-safe styling
-- **Performance Optimized**: Fast loading with code splitting and lazy loading
-- **SEO Ready**: Metadata management and optimization
-- **Analytics**: Privacy-focused analytics
+## A world drawn in particles
 
-## Technical Stack
+CyberScape gives the site its moving backdrop. Geometric particles inhabit a simulated three-dimensional space, projected onto a Canvas 2D surface. Pointer interaction influences their movement, while connections and glitch effects add texture to the scene.
 
-### Core Technologies
+Under the animation, an octree organizes nearby objects for collision work. Frustum culling identifies what is in view, and performance monitoring informs the simulation's behavior. The rendering work brings graphics techniques into an ordinary browser canvas, with the controls needed to manage a scene that keeps moving while someone reads.
 
-- **Framework**: Next.js 16 with TypeScript
-- **Styling**: Panda CSS
-- **Animations**: Framer Motion
-- **Content**: Markdown with gray-matter and react-markdown
-- **Icons**: React Icons
+## More than one way to explore
 
-### Interactive Features
+The site also includes a terminal interface for browsing its content. A generated filesystem maps writing and projects into a form you can navigate with commands, giving visitors who live in a shell a familiar way into the same material.
 
-- **CyberScape Engine**: Canvas 2D particle system with 3D projections
-- **Transition System**: Framer Motion page transitions
-- **Dynamic Theming**: Context-based theme management
-- **Code Highlighting**: Custom-themed syntax highlighting
+The conventional pages remain the center of the experience, with a shared content system supplying project listings, articles, and the terminal's view of the site. Keeping those routes connected means the playful interface can explore the actual portfolio instead of presenting a separate demo world.
 
-## CyberScape Animation
-
-The signature header animation features:
-
-- Advanced particle system with physics simulation
-- Dynamic connections between particles
-- Interactive force fields
-- Adaptive performance optimization
-- Glitch effects and visual enhancements
-- Octree-based spatial partitioning for efficient collision detection
-
-## Design Philosophy
-
-1. **Interactive Elegance**: Every interaction should feel natural and
-   delightful
-2. **Performance First**: Beautiful animations don't compromise speed
-3. **Content Focus**: Design enhances rather than overshadows content
-4. **Adaptive Experience**: Consistent across all devices
-5. **Technical Excellence**: Clean code that showcases best practices
+The [hyperbliss.tech repository](https://github.com/hyperb1iss/hyperbliss.tech) contains the site, content pipeline, and CyberScape implementation.

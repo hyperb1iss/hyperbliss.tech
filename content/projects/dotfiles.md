@@ -1,83 +1,24 @@
 ---
 emoji: '🌠'
-title: "Stefanie's Dotfiles"
-description: 'A cross-platform development environment with SilkCircuit theming, AI-powered
-  editing, and unified shell config for Linux, macOS, WSL2, and Windows.'
+title: "Stefanie's Dotfiles: A Workspace That Travels"
+description: 'My development environment across macOS, Linux, Windows, and WSL2: modular shells, Neovim, terminal tooling, and SilkCircuit color throughout.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/dotfiles'
-tags: ['Shell', 'Zsh', 'Bash', 'Neovim', 'Tmux', 'WSL2', 'macOS', 'PowerShell', 'Android']
+tags: ['Shell', 'Zsh', 'Neovim', 'Tmux', 'macOS', 'Linux', 'PowerShell', 'Developer Tools']
 ---
 
-## Overview
+My dotfiles are the working environment around the code: the prompt that tells me where I am, the history that remembers a command, the editor that knows the project, and the colors that make the whole space feel familiar. The repository brings that environment to macOS, Linux, Windows, and WSL2.
 
-Welcome to my dotfiles: a cross-platform development environment that transforms your terminal into an elegant workspace. Unified config for Linux, macOS, WSL2, and Windows, with the SilkCircuit theme tying it all together.
+The Unix setup centers on a modular Zsh configuration with a Bash fallback. Windows gets HyperShell, a PowerShell module with Linux-shaped commands and its own platform integration. Shared habits carry across machines while each operating system keeps the tools it needs.
 
-## Core Features
+## Familiar tools, carefully connected
 
-| Feature                 | Description                                            |
-| ----------------------- | ------------------------------------------------------ |
-| **Shell Environment**   | Unified Bash & Zsh with modern CLI tools               |
-| **Android Development** | Complete AOSP build environment with smart device mgmt |
-| **Terminal Setup**      | Custom Tmux, Starship prompt, fuzzy finding            |
-| **WSL2 Integration**    | Windows/Linux operation with path conversion           |
-| **SilkCircuit Theme**   | Consistent cyberpunk styling across all tools          |
-| **AI Integration**      | AstroNvim + Avante.nvim with Claude Sonnet 4           |
+Ghostty, tmux, and AstroNvim form the main workspace. Starship puts repository context in the prompt; Atuin handles searchable shell history; fuzzy finding makes files and commands easier to reach. Git diff styling, directory navigation, and language tooling fill in the everyday movements between editing and running code.
 
-## Tool Suite
+SilkCircuit ties the visual details together across the editor, terminal, and command-line tools. A diff, a fuzzy finder, and a status bar each have different jobs, but their colors can still feel like parts of the same environment. The repository also includes in-editor and terminal AI tooling alongside the conventional development setup.
 
-### Core Development
+## Configuration that knows its machine
 
-| Tool          | Description          | Highlights                             |
-| ------------- | -------------------- | -------------------------------------- |
-| **Starship**  | Cross-shell prompt   | SilkCircuit theme, Git integration     |
-| **AstroNvim** | Neovim configuration | IDE features, Avante.nvim AI assistant |
-| **Tmux**      | Terminal multiplexer | Custom keybindings, session management |
+The installation model composes a base layer with operating-system and machine-role configuration. A desktop gets its graphical tools; a headless server can take a smaller shell-focused setup. Machine-specific layers provide a place for the exceptions without turning the shared configuration into a pile of competing copies.
 
-### Modern CLI Tools
-
-| Tool        | Description   | Features                          |
-| ----------- | ------------- | --------------------------------- |
-| **FZF**     | Fuzzy finder  | File search, history, completion  |
-| **LSD**     | Modern ls     | Icons, SilkCircuit colors, tree   |
-| **Bat**     | Enhanced cat  | Syntax highlighting, line numbers |
-| **Ripgrep** | Fast searcher | Code search, regex, ignore rules  |
-
-## SilkCircuit Theme
-
-A cyberpunk-inspired color scheme with neon accents applied across:
-
-- **Neovim**: Full theme with 30+ plugin support
-- **Git**: Custom log formatting with `silkcircuit` pretty format
-- **Starship**: Gradient effects and contextual styling
-- **LSDeluxe**: File type colors matching the theme
-- **Tmux**: Status bar with purple and pink accents
-- **Delta**: Git diff viewer with themed colors
-
-## Installation
-
-```bash
-# Linux/WSL2
-git clone https://github.com/hyperb1iss/dotfiles.git ~/dev/dotfiles
-cd ~/dev/dotfiles && make
-
-# macOS
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/hyperb1iss/dotfiles/main/install_macos.sh)"
-
-# Windows PowerShell (as admin)
-git clone https://github.com/hyperb1iss/dotfiles.git $env:USERPROFILE\dev\dotfiles
-cd $env:USERPROFILE\dev\dotfiles && .\install.bat
-```
-
-## HyperShell (PowerShell)
-
-A Linux-like experience for Windows with:
-
-- Modular architecture with 13 specialized modules
-- Linux command aliases using GNU tools
-- Kubernetes support with kubectl aliases and k9s
-- Zoxide for smart directory navigation
-- SilkCircuit branding throughout
-
----
-
-**Beauty meets function. Cross-platform done right.**
+The [dotfiles field manual](https://hyperb1iss.github.io/dotfiles/) explains the setup and everyday commands. The [public repository](https://github.com/hyperb1iss/dotfiles) contains the configuration, installers, and checks for adapting the pieces to your own workspace.

@@ -1,86 +1,24 @@
 ---
 emoji: '🔮'
-title: 'Git-Iris: Your Agentic Git Companion'
-description: 'An intelligent agent that understands your code and crafts perfect Git
-  artifacts: commits, reviews, changelogs, and more.'
+title: 'Git-Iris: The Story Behind the Diff'
+description: 'A Rust Git companion that investigates code and history to draft commits, reviews, pull requests, and release notes in a richly interactive terminal.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/git-iris'
 tags: ['Rust', 'Git', 'AI', 'CLI', 'Developer Tools', 'OpenAI', 'Anthropic', 'GitHub Action']
 ---
 
-## Overview
+A diff shows what changed. Explaining why the change matters takes another kind of work. Git-Iris brings that work into the terminal: an AI companion that can inspect a repository, follow its history, and help turn a patch into something another person can understand.
 
-Git-Iris is powered by **Iris**, an intelligent agent that actively explores your codebase to understand what you're building. Rather than dumping context and hoping for the best, Iris uses tools to gather precisely the information she needs: analyzing diffs, exploring file relationships, and building understanding iteratively.
+I built Git-Iris around Iris, an agent with tools for reading files, searching code, and examining Git history. She can move from a broad summary to an individual change as the question demands. The same foundation supports commit messages, code reviews, and pull request descriptions, with changelog and release-note workflows for the larger picture.
 
-## What Iris Can Do
+## A conversation beside the code
 
-| Capability          | Description                                                     |
-| ------------------- | --------------------------------------------------------------- |
-| **Commit Messages** | Context-aware messages that capture the essence of your changes |
-| **Code Reviews**    | Multi-dimensional analysis covering security and performance    |
-| **Pull Requests**   | PR descriptions for branches or commits                         |
-| **Changelogs**      | Keep a Changelog format with intelligent categorization         |
-| **Release Notes**   | User-focused documentation highlighting impact and benefits     |
-| **Semantic Blame**  | Ask "why does this code exist?" and get real answers            |
+Iris Studio gives those workflows a shared home. The terminal interface uses SilkCircuit's electric palette and lets you talk through a change while refining the document it produces. Ask for a clearer explanation, examine the relevant code, or adjust the emphasis before committing to the result.
 
-## Iris Studio
+The interaction matters as much as the generation. A useful first draft becomes more useful when the evidence and the editing conversation stay close together. Dedicated CLI commands also make the individual workflows available to scripts and CI.
 
-**Studio** is a terminal interface built with the **SilkCircuit Neon** design language. Press `/` to chat with Iris, ask her to refine your commit message or explain changes. She can update content directly through intelligent tool calls.
+## History with receipts
 
-## Installation
+Semantic blame follows a selected piece of code back through its introducing patches and surrounding history. The workflow asks Iris to distinguish documented intent from a plausible explanation and cite the evidence behind her answer. Some history leaves questions open; the output should make those gaps visible.
 
-```bash
-# Quick install
-curl -fsSL https://raw.githubusercontent.com/hyperb1iss/git-iris/main/install.sh | sh
-
-# Homebrew
-brew tap hyperb1iss/tap && brew install git-iris
-
-# Cargo
-cargo install git-iris
-```
-
-## Quick Start
-
-```bash
-# Launch Studio (auto-detects context)
-git-iris
-
-# Generate commit messages
-git add . && git-iris gen
-
-# Review code
-git-iris review --from main --to feature
-
-# Generate changelogs
-git-iris changelog --from v1.0.0 --update
-
-# PR descriptions
-git-iris pr --from main --to feature-branch
-```
-
-## GitHub Action
-
-Automate release notes and changelogs in your CI/CD:
-
-```yaml
-- name: Generate release notes
-  uses: hyperb1iss/git-iris@v1
-  with:
-    from: v1.0.0
-    to: v1.1.0
-    api-key: ${{ secrets.OPENAI_API_KEY }}
-    output-file: RELEASE_NOTES.md
-```
-
-## Multi-Provider Support
-
-Supports **OpenAI**, **Anthropic**, and **Google** AI providers. Configure once:
-
-```bash
-git-iris config --provider anthropic --api-key YOUR_API_KEY
-```
-
----
-
-**An intelligent agent that understands your code.**
+Git-Iris is written in Rust and supports OpenAI, Anthropic, and Google providers. A GitHub Action brings release documentation into automation. The [Git-Iris documentation](https://hyperb1iss.github.io/git-iris/) covers Studio, provider configuration, and the individual Git workflows.

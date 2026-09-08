@@ -3,38 +3,24 @@ emoji: '🏠'
 title: 'SignalRGB Home Assistant Integration'
 date: '2024-09-25'
 tags: ['Home Assistant', 'IoT', 'SignalRGB', 'Smart Home', 'Python']
-description: 'Custom Home Assistant component that integrates SignalRGB lighting control.
-  On/off, effect switching, brightness, and color extraction.'
+description: 'Bring SignalRGB into Home Assistant with lighting, layout, and preset entities for dashboards, scenes, and everyday automations.'
 github: 'https://github.com/hyperb1iss/signalrgb-homeassistant'
 ---
 
-## Overview
+The lights around a computer can belong to the same routines as the rest of the room. The SignalRGB Home Assistant integration exposes a Windows PC's SignalRGB setup as native Home Assistant entities, making its lighting available to automations, scripts, and scenes.
 
-A custom Home Assistant component that brings SignalRGB's RGB lighting control to your home automation setup. Control SignalRGB-enabled devices through automation routines, scenes, and scripts.
+A light entity handles power, brightness, and effect selection. Separate selectors switch device layouts and apply presets for the current effect. Buttons step forward or backward through effects, or choose one at random. A dashboard can offer the immediate controls; an automation can make the same changes when the room's routine calls for them.
 
-## Key Features
+## More than an on switch
 
-- **Light entity** control in Home Assistant
-- **On/off** control
-- **Effect switching** with a wide range of lighting effects
-- **Brightness** adjustment for your entire SignalRGB setup
-- **Current effect** and available effects list
-- **Automatic effect image** and color extraction
-- **Effect parameter control** (coming soon!)
+Changing a room's mood often takes more than adjusting brightness. Layout selection changes how SignalRGB arranges the devices, while an effect preset recalls a particular variation. Exposing those operations as standard Home Assistant controls lets users combine them with the platform's existing automation tools.
 
-## Technologies Used
+Effect artwork and extracted colors travel with the lighting state. The companion [Hyper Light Card](/projects/hyper-light-card) uses that information to show the effect and adapt the dashboard's appearance around it.
 
-- Python 3.12+
-- Home Assistant Custom Component API
-- SignalRGB HTTP API
-- Poetry for dependency management
-- Pytest for unit testing
-- GitHub Actions for CI/CD
+## A native place in Home Assistant
 
-## Installation
+The integration uses an asynchronous Python client and a shared update coordinator to fetch lighting state. Setup happens through Home Assistant's configuration flow, and installation is available through the default HACS catalog.
 
-1. Install [HACS](https://hacs.xyz/) in your Home Assistant instance.
-2. Add the SignalRGB integration through HACS.
-3. Configure the integration by providing your SignalRGB server details.
+SignalRGB must be running on a reachable Windows PC with its HTTP API enabled. API access requires SignalRGB Pro; the integration is an independent community project.
 
-For manual installation and detailed setup instructions, visit the [GitHub repository](https://github.com/hyperb1iss/signalrgb-homeassistant).
+[Read the setup guide and entity reference](https://github.com/hyperb1iss/signalrgb-homeassistant).

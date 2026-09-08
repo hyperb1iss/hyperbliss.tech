@@ -1,68 +1,26 @@
 ---
 emoji: '🌐'
-title: 'next-dynenv: Runtime Environment Variables for Next.js'
-description: 'Dynamic runtime environment variables for Next.js 15/16 & React 19. Build
-  once, deploy many.'
+title: 'next-dynenv: Configuration at Deployment Time'
+description: 'My maintained fork of next-runtime-env, providing runtime public configuration and typed environment helpers for server-rendered Next.js applications.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/next-dynenv'
 tags: ['TypeScript', 'Next.js', 'React', 'Environment', 'DevOps', 'npm']
 ---
 
-## Overview
+Promoting an application from staging to production should not require a different build just to change its API address. My maintained fork, next-dynenv, lets a server-rendered Next.js application read public configuration from its running environment and make those values available to browser code.
 
-**next-dynenv** dynamically injects environment variables into your Next.js application at runtime. This approach adheres to the "build once, deploy many" principle, allowing the same build to be used across various environments without rebuilds.
+The project builds on [next-runtime-env by Expatfile.tax](https://github.com/expatfile/next-runtime-env), preserving credit for the original implementation and approach. My fork updates the integration for newer Next.js and React releases and provides additional helpers for working with environment values.
 
-A Next.js 15/16 & React 19 compatible fork of next-runtime-env.
+## One artifact, different environments
 
-## Highlights
+The public environment script is an async server component. It opts into dynamic rendering, reads the server's public environment variables, and writes them into the page for the browser to consume. A container can therefore use the same application build with different configuration supplied at deployment.
 
-- **Isomorphic**: Works on server, browser, and middleware
-- **Next.js 15/16 & React 19 Ready**: Fully compatible with async server
-  components
-- **`.env` Friendly**: Use `.env` files during development
-- **Type-Safe Parsers**: Convert strings to booleans, numbers, arrays, JSON,
-  URLs, enums
-- **Secure by Default**: XSS protection, immutable values with `Object.freeze`
-- **Zero Config**: Works out of the box
+The rendering model is part of the contract: runtime injection needs a server-rendered context. A pre-generated static export cannot pick up a host's new environment variables merely because those variables were changed after the files were built.
 
-## Quick Start
+## Make configuration explicit
 
-```tsx
-// app/layout.tsx
-import { PublicEnvScript } from 'next-dynenv'
+A shared accessor reads from the appropriate environment on the server or in the browser. Required-value helpers report missing configuration, while parsers handle common conversions such as booleans, numbers, and enumerated values. A server-only helper returns a fallback in the browser for shared modules that also refer to private configuration.
 
-export default function RootLayout({ children }) {
-  return (
-    <html>
-      <head>
-        <PublicEnvScript />
-      </head>
-      <body>{children}</body>
-    </html>
-  )
-}
-```
+The standard public script selects variables with the NEXT_PUBLIC_ prefix. Its generated values are escaped for HTML and frozen in the browser, and a nonce can be supplied for Content Security Policy integration.
 
-```tsx
-// Use anywhere
-import { env, requireEnv, envParsers } from 'next-dynenv'
-
-const apiUrl = env('NEXT_PUBLIC_API_URL')
-const debug = envParsers.boolean('NEXT_PUBLIC_DEBUG')
-const port = envParsers.number('NEXT_PUBLIC_PORT', 3000)
-```
-
-## Security Features
-
-- **XSS Protection**: All values JSON-escaped before injection
-- **Immutable Runtime**: Values wrapped with `Object.freeze()`
-- **Strict Prefix Enforcement**: Only `NEXT_PUBLIC_*` exposed to browser
-- **Server-Only Helper**: `serverOnly()` for graceful client-side fallbacks
-
-## Deployment Ready
-
-Works with Docker, Vercel, Netlify, AWS Amplify, and any static hosting platform. Set environment variables at runtime, no rebuilds needed.
-
----
-
-Build once. Deploy everywhere. **Runtime environment variables done right.**
+The [next-dynenv repository](https://github.com/hyperb1iss/next-dynenv) includes examples and configuration guidance for adopting the library in an existing application.

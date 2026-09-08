@@ -1,56 +1,26 @@
 ---
 emoji: '📡'
-title: 'unifly: Your UniFi Network, at Your Fingertips'
-description: 'Elegant UniFi network management CLI & TUI. 26 commands, 10-screen dashboard,
-  dual API engine, for humans and AI agents alike.'
+title: 'unifly: UniFi from the Terminal'
+description: 'A Rust CLI and live terminal dashboard for UniFi networks, from switch ports and firewall policies to Wi-Fi diagnostics and cloud-managed sites.'
 date: '2026-02-13'
 github: 'https://github.com/hyperb1iss/unifly'
 tags: ['Rust', 'CLI', 'TUI', 'Ratatui', 'Networking', 'UniFi', 'Agent Skills']
 ---
 
-A complete command-line toolkit for managing Ubiquiti UniFi network controllers. One binary with 26 top-level commands for scripting and a built-in TUI dashboard for real-time monitoring, powered by a shared async engine that speaks every UniFi API dialect.
+A network question usually starts small. Which access point has this client? What changed on that switch port? Why did the device roam? The unifly toolkit puts those questions within reach of a terminal, with commands for focused work and an interactive dashboard for watching the network as a whole.
 
-## Features
+The CLI covers device and client management, network configuration, and firewall policy. Wi-Fi diagnostics expose neighboring access points, experience scores, and client roaming history. Named profiles let the same tool move between controllers, with Site Manager support for cloud-managed fleets.
 
-| Capability             | What You Get                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| **Dual API Engine**    | Integration API (REST) + Legacy API (session/CSRF) with automatic negotiation  |
-| **Real-Time TUI**      | 10-screen dashboard with traffic charts, CPU/MEM gauges, zoomable topology     |
-| **26 Commands**        | Devices, clients, networks, WiFi, firewall, zones, ACLs, NAT, DNS, VPN, DPI... |
-| **Flexible Output**    | Table, JSON, YAML, and plain text for scripting                                |
-| **Secure Credentials** | OS keyring storage for API keys and passwords                                  |
-| **Multi-Profile**      | Named profiles for multiple controllers, switch with a single flag             |
-| **WebSocket Events**   | Live event streaming with 10K rolling buffer and severity filtering            |
-| **Historical Stats**   | WAN bandwidth area fills, client counts, DPI app/category breakdown            |
-| **SilkCircuit Theme**  | Neon-on-dark palette powered by opaline with ANSI fallback                     |
+## One interface across UniFi's APIs
 
-## Dual Personality
+UniFi exposes different capabilities through its Integration API, session-based endpoints, and cloud services. A shared asynchronous Rust library handles those paths beneath the CLI and dashboard. Authentication support includes API keys, session credentials, and a hybrid mode for live WebSocket events.
 
-**AI agents** get a dedicated skill bundle with full CLI reference and a ready-made network manager agent that can provision VLANs, audit firewalls, and diagnose connectivity:
+The shared API layer gives both interfaces access to the same network models and operations. Structured JSON and YAML output support scripts, while readable tables serve an operator checking a device by hand. A bundled agent skill documents commands and workflows for coding assistants.
 
-```bash
-npx skills add hyperb1iss/unifly
-```
+## Watch the shape of the network
 
-**Humans** get a gorgeous TUI, shell completions, pipe-friendly output, and the quiet satisfaction of never opening the UniFi web UI again.
+The Ratatui dashboard combines traffic history, device health, live events, and a zoomable topology view. SilkCircuit colors distinguish the interface's controls and data, with terminal graphics support where available and text-based rendering for other environments.
 
-## Quick Start
+Configuration work stays close to observation: inspect port state, review policies, then make a targeted change through the same toolkit. The result is a substantial network management surface that fits the way terminal users already work.
 
-```bash
-# Install
-curl -fsSL https://raw.githubusercontent.com/hyperb1iss/unifly/main/install.sh | sh
-
-# Interactive setup wizard
-unifly config init
-
-# Go
-unifly devices list          # All adopted devices
-unifly clients list          # Connected clients
-unifly networks list         # VLANs and subnets
-unifly events watch          # Live event feed
-unifly tui                   # Launch the dashboard
-```
-
----
-
-**Manage your entire network without leaving the terminal.**
+[Explore the commands, dashboard tour, and authentication guide](https://github.com/hyperb1iss/unifly).

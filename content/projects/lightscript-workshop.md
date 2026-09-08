@@ -1,67 +1,26 @@
 ---
 emoji: '💡'
-title: 'LightScript Workshop: Mind-Bending RGB Effects'
-description: 'Modern TypeScript framework for creating SignalRGB lightscripts. WebGL
-  shaders, hot reloading, audio reactivity, and decorator-based controls.'
+title: 'LightScript Workshop: A Studio for RGB Effects'
+description: 'Write lighting effects in TypeScript and GLSL, preview them in a browser, and build standalone lightscripts for SignalRGB.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/lightscript-workshop'
 tags: ['TypeScript', 'WebGL', 'Three.js', 'GLSL', 'SignalRGB', 'RGB', 'Shaders']
 ---
 
-## Overview
+A black hole bending light around its center. Cellular patterns sliding past one another. Rings opening on the beat. LightScript Workshop is a place to turn those visual ideas into effects for SignalRGB-controlled hardware.
 
-**LightScript Workshop** is a TypeScript framework for creating custom lighting effects for SignalRGB, the app that unifies control of your RGB keyboards, mice, headsets, and other PC peripherals.
+The framework pairs TypeScript with WebGL shaders or Canvas 2D drawing. Its development playground offers a live preview and adjustable controls, with hot reloading to keep changes close to their visual result. When an effect is ready, the build produces a standalone HTML lightscript for SignalRGB.
 
-Write your own effects using **WebGL shaders** or **Canvas 2D** with a modern development experience.
+## The controls belong with the effect
 
-## Features
+An effect is defined as a TypeScript class. Decorators describe the controls a user can adjust, including numeric values, switches, and colors. That metadata generates the SignalRGB control interface, keeping the effect's behavior and its public controls together.
 
-| Feature            | Description                                            |
-| ------------------ | ------------------------------------------------------ |
-| **WebGL + Canvas** | GPU-accelerated shaders or traditional Canvas drawing  |
-| **Decorators**     | `@NumberControl`, `@BooleanControl` for type-safe UI   |
-| **Hot Reloading**  | Edit shader code, see it instantly                     |
-| **Audio Reactive** | Built-in FFT analysis with bass/mid/treble helpers     |
-| **AI-Native**      | Structured patterns that Claude and Copilot understand |
-| **One Command**    | Build standalone HTML files that drop into SignalRGB   |
+The WebGL base class provides rendering through Three.js, along with time and audio uniforms. An effect can use audio levels and frequency bands to drive movement or brightness. Canvas effects offer another route for work better expressed through drawing commands.
 
-## Effect Gallery
+## A collection to learn from
 
-| Effect             | What It Does                                      |
-| ------------------ | ------------------------------------------------- |
-| **Black Hole**     | Gravitational lensing with accretion disk         |
-| **Voronoi Flow**   | Cellular patterns morphing with fluid dynamics    |
-| **Quantum Foam**   | Planck-scale virtual particles popping in/out     |
-| **Cyber Descent**  | Cyberpunk matrix rainfall with scanline artifacts |
-| **Kaleido Tunnel** | Raymarched kaleidoscopic infinity tunnel          |
-| **Audio Pulse**    | Reactive rings that pulse to your music           |
-| **Neural Synapse** | Synaptic networks firing in cascading patterns    |
+The included gallery gives the framework a visual vocabulary: the accretion disk of Black Hole, the shifting cells of Voronoi Flow, the recursive geometry of Kaleido Tunnel, and the music-driven rings of Audio Pulse. Each is source material to inspect, adapt, or take in a different direction.
 
-## Quick Start
+The interesting work lives in that loop between code and perception. A parameter becomes a gesture; a shader becomes a field of color across physical devices. The workshop supplies the preview, controls, and packaging so an author can stay with the effect.
 
-```bash
-git clone https://github.com/hyperb1iss/lightscript-workshop.git
-cd lightscript-workshop
-pnpm install
-pnpm dev
-```
-
-Open [localhost:4096](http://localhost:4096) for live preview with controls.
-
-## How It Works
-
-Effects are TypeScript classes paired with GLSL fragment shaders:
-
-```typescript
-@Effect({ name: 'Neon Dreams', author: 'You' })
-export class NeonDreams extends WebGLEffect<{ speed: number }> {
-  @NumberControl({ label: 'Speed', min: 1, max: 10, default: 5 })
-  speed!: number
-}
-```
-
-The shader receives your control values as uniforms, no registration needed.
-
----
-
-**If you can imagine it, you can build it.**
+[Try the browser playground](https://hyperb1iss.github.io/lightscript-workshop/playground/) or [read the effect development guide](https://hyperb1iss.github.io/lightscript-workshop/).

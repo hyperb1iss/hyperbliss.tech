@@ -1,93 +1,24 @@
 ---
 emoji: '🎭'
-title: 'Ghostty Automator: Playwright for Terminals'
-description: 'Playwright-style terminal control for Ghostty. Async-first Python API with
-  assertions, auto-waiting, and screenshot capture.'
+title: 'Ghostty Automator: A Testable Terminal'
+description: 'Python automation for Ghostty with screen inspection, keyboard and mouse input, assertions, and screenshots for terminal applications.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/ghostty-automator-python'
-tags: ['Python', 'Ghostty', 'Terminal', 'Automation', 'Testing', 'asyncio']
+tags: ['Python', 'Ghostty', 'Terminal', 'Automation', 'Testing', 'MCP']
 ---
 
-## Overview
+A terminal application has a visible interface: focus moves, panels resize, menus open, and text arrives over time. Ghostty Automator makes that interface available to Python, so a script can interact with a running terminal and inspect the result.
 
-**ghostty-automator** brings Playwright-style terminal automation to Ghostty. Familiar, ergonomic API for controlling terminal sessions programmatically.
+The API borrows the familiar shape of browser automation. Connect to Ghostty, find a terminal by its title or working directory, send input, and wait for the expected text. Assertions and PNG screenshots give a test both a programmatic check and a visual record of what appeared.
 
-## Features
+## Work with the screen
 
-- **Playwright-style API**: Familiar, ergonomic interface
-- **Async-first**: Built on anyio for high performance with sync wrapper
-- **Strong typing**: Full type hints with strict pyright compliance
-- **Auto-waiting**: Built-in wait helpers with configurable timeouts
-- **Assertions**: Playwright-style `expect` for testing
-- **Screenshots**: Capture terminal state as PNG images
+The library supports keyboard input and mouse interactions, including scrolling and dragging. Scripts can open tabs or windows, resize a terminal, and read its screen contents. Cell-level inspection exposes more detail when plain text cannot describe the interface sufficiently.
 
-## Quick Start
+Waiting helpers look for text, match a shell prompt, or observe a period of stable screen content. Those are useful conditions to put directly in a test: open a menu, wait for its label, move the selection, then capture the result. The terminal remains the actual surface under inspection.
 
-```python
-from ghostty_automator import Ghostty
+## Python scripts and agent tools
 
-async with Ghostty.connect() as ghostty:
-    terminal = await ghostty.terminals.first()
+The primary API is asynchronous, with a synchronous wrapper for straightforward scripts. An accompanying MCP server exposes terminal operations to compatible assistants, making the same environment available for interactive agent workflows.
 
-    # Send commands
-    await terminal.send("ls -la")
-
-    # Wait for output
-    await terminal.wait_for_text("package.json")
-
-    # Assertions
-    await terminal.expect.to_contain("src/")
-
-    # Screenshots
-    await terminal.screenshot("debug.png")
-```
-
-## API Reference
-
-### Ghostty Client
-
-| Method                      | Description                   |
-| --------------------------- | ----------------------------- |
-| `terminals.all()`           | Get all terminals             |
-| `terminals.first()`         | Get the first terminal        |
-| `terminals.focused()`       | Get the focused terminal      |
-| `terminals.by_title(title)` | Find by title (partial match) |
-| `new_window(command?)`      | Open a new window             |
-| `new_tab(command?)`         | Open a new tab                |
-
-### Terminal
-
-| Method                      | Description                  |
-| --------------------------- | ---------------------------- |
-| `send(text)`                | Send text + Enter            |
-| `type(text, delay_ms?)`     | Type character by character  |
-| `press(key)`                | Press a key (Enter, Ctrl+C)  |
-| `screen()`                  | Get current screen content   |
-| `wait_for_text(pattern)`    | Wait for text to appear      |
-| `wait_for_prompt()`         | Wait for shell prompt        |
-| `wait_for_idle(stable_ms?)` | Wait for screen to stabilize |
-| `screenshot(path)`          | Capture as PNG               |
-
-### Expect Assertions
-
-| Method                 | Description              |
-| ---------------------- | ------------------------ |
-| `to_contain(text)`     | Assert text is present   |
-| `not_to_contain(text)` | Assert text is absent    |
-| `to_match(pattern)`    | Assert regex matches     |
-| `to_have_title(title)` | Assert window title      |
-| `prompt()`             | Assert prompt is visible |
-
-## Installation
-
-```bash
-pip install ghostty-automator
-
-# Requires ghostty-automator fork with IPC support
-brew tap hyperb1iss/bliss
-brew install ghostty-automator
-```
-
----
-
-**Automate your terminal workflows with confidence.**
+Ghostty Automator requires [my Ghostty fork with IPC support](https://github.com/hyperb1iss/ghostty-automator). Standard Ghostty does not provide this automation protocol. The [Python library repository](https://github.com/hyperb1iss/ghostty-automator-python) documents that setup and includes examples for exercising terminal applications.

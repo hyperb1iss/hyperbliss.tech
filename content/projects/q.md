@@ -1,72 +1,24 @@
 ---
 emoji: '⚡'
-title: 'q: The Tiniest Claude Code CLI'
-description: 'A minimal, elegant CLI for Claude. Ask, pipe, chat: one letter, infinite
-  answers.'
+title: 'q: Claude Within Reach'
+description: 'A compact Claude CLI for quick questions, shell pipelines, persistent conversations, and tool-assisted tasks, built with TypeScript, Bun, and Ink.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/q'
 tags: ['TypeScript', 'Bun', 'Ink', 'Claude', 'CLI', 'AI', 'Developer Tools']
 ---
 
-## Overview
+Sometimes the next step is a question: explain this error, summarize this diff, or turn this text into another format. My command-line tool, q, puts Claude a single command away and keeps the answer in the terminal where the work is happening.
 
-**q** is a minimal, elegant CLI for Claude. Ask your question, get back to work. One letter. Infinite answers.
+A quick query streams an answer. Pipe mode accepts input from another command and writes the response to standard output. Interactive mode opens a terminal conversation, while agent mode can use tools to work with local files and run commands.
 
-## Modes
+## Fit the shape of the work
 
-| Mode            | Trigger                   | What It Does                           |
-| --------------- | ------------------------- | -------------------------------------- |
-| **Query**       | `q "question"`            | Quick answer, streamed to terminal     |
-| **Pipe**        | `cat file \| q "convert"` | Transform piped content, raw output    |
-| **Interactive** | `q -i`                    | TUI chat with full context             |
-| **Agent**       | `q -x "task"`             | Execute with tools (read, write, bash) |
+The pipe workflow is especially useful for small transformations. Pass in a configuration file or a patch, describe the output you need, and send the result onward to another command or a file. Diagnostic messages use standard error, keeping them separate from the response. Pipeline mode allows read-only tools and denies write operations that would require an interactive decision.
 
-## Quick Start
+For a task that needs editing or command execution, agent mode presents tool approval prompts. The interactive interface, built with Ink, supports the longer conversation around that work. Local SQLite storage keeps sessions and usage information available for later review or continuation.
 
-```bash
-# Install
-npm i -g @hyperb1iss/q
+## Stay close to the shell
 
-# Set your API key
-export ANTHROPIC_API_KEY="sk-ant-..."
+Optional shell integration adds shortcuts for asking about the previous command or error and resuming a conversation. Color controls include support for plain output and the NO_COLOR convention, so the interface can fit the terminal around it.
 
-# Ask anything
-q "how do I find large files in this directory"
-```
-
-## Pipe Mode
-
-A true Unix pipeline citizen. Pipe content in, get raw output back.
-
-```bash
-# Transform data formats
-cat config.yaml | q "convert to json" > config.json
-
-# Extract information
-cat server.log | q "extract all IP addresses" | sort -u
-
-# Analyze and chain
-git diff | q "summarize" | q "translate to spanish"
-```
-
-## Shell Integration
-
-```bash
-# Add to your shell config
-eval "$(q --shell-init zsh)"
-```
-
-This gives you `qq`, `qctx`, `qerr`, `qx`, `qr`, and Ctrl+Q for quick queries with context from your last command or error.
-
-## Agent Mode
-
-Let Claude execute tools to complete tasks with intelligent approval prompts:
-
-```bash
-q -x "find all TODO comments in this project"
-q -x "refactor this function to use async/await"
-```
-
----
-
-Minimal by design. Powerful by default.
+The implementation uses TypeScript, Bun, and the Claude Agent SDK. The [q repository](https://github.com/hyperb1iss/q) covers configuration, shell integration, and the distinctions between its query, pipeline, interactive, and execution modes.

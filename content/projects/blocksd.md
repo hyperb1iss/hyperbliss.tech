@@ -1,61 +1,24 @@
 ---
 emoji: '🔌'
-title: 'blocksd: Linux Daemon for ROLI Blocks'
-description: 'Keeps ROLI Blocks devices alive on Linux with full protocol support:
-  topology, LED control, touch events, device config, and systemd integration.'
+title: 'blocksd: ROLI Blocks on Linux and macOS'
+description: 'A host daemon that keeps ROLI Blocks connected, drives their LEDs, and exposes touch events to creative software on Linux and macOS.'
 date: '2026-03-15'
 github: 'https://github.com/hyperb1iss/blocksd'
 tags: ['Python', 'Linux', 'MIDI', 'ROLI', 'Hardware', 'Daemon', 'asyncio']
 ---
 
-ROLI Blocks need an active host-side handshake over MIDI SysEx to enter API mode. Without it, they show a searching animation and power off. There's no official Linux support.
+A Lightpad is a small, expressive instrument: a glowing surface that responds to position, pressure, and movement. Getting that surface to work outside ROLI's software means handling the conversation underneath it. Devices need a host handshake and regular keepalive messages before their application interface stays available.
 
-blocksd implements the full ROLI Blocks protocol so your devices stay alive and useful on Linux.
+The blocksd daemon handles that conversation on Linux and macOS. It discovers USB-connected Blocks, follows the magnetic DNA connections between devices, and maintains their operating state. A live web dashboard makes the result visible through device topology, battery status, and LED state.
 
-## ✦ Features
+## A bridge from protocol to play
 
-| Capability                   | Description                                                                   |
-| ---------------------------- | ----------------------------------------------------------------------------- |
-| 🔌 **API Mode Keepalive**    | Periodic pings prevent the 5-second timeout that kills API mode               |
-| 🏗️ **Topology Management**   | Auto-discovers devices over USB, tracks DNA-connected blocks through master   |
-| 🎭 **Full State Machine**    | Serial, topology, API activation, ping loop, matching the C++ reference       |
-| 💡 **LED Control**           | RGB565 bitmap grid with CLI patterns (solid, gradient, rainbow, checkerboard) |
-| 👆 **Touch & Button Events** | Normalized touch data (x/y/z/velocity) and button callbacks                   |
-| ⚙️ **Device Config**         | Read/write device settings (sensitivity, MIDI channel, scale)                 |
-| 🔊 **DAW Friendly**          | ALSA multi-client: blocksd and your DAW share MIDI without conflict           |
-| 🛡️ **systemd Integration**   | Type=notify service, watchdog heartbeat, udev rules for plug-and-play         |
+For Lightpad devices, blocksd exposes an LED grid; LUMI Keys gets individual key colors. Touch and button events travel back to applications, alongside device configuration controls for settings such as sensitivity and MIDI channel. Local software can connect through a Unix socket, while the dashboard and other clients use WebSocket.
 
-## ⚡ Install
+The implementation reaches into the device itself. A small assembler produces LittleFoot programs that render incoming colors on the hardware. The daemon waits for upload acknowledgements and an execution check before sending pixels, keeping protocol acceptance distinct from a device being ready to display them.
 
-```bash
-# Quick install (systemd + udev in one shot)
-curl -fsSL https://raw.githubusercontent.com/hyperb1iss/blocksd/main/install.sh | bash
+## Built around the hardware
 
-# PyPI
-uv tool install blocksd
-blocksd install
+Python's asyncio runtime coordinates device discovery, messages, and client connections. Linux uses ALSA and a systemd user service; macOS uses CoreMIDI and a LaunchAgent. Lighting has been verified on Lightpad Block M and LUMI Keys, with device-specific evidence recorded in the documentation.
 
-# Arch Linux (AUR)
-yay -S blocksd
-```
-
-## 🎮 Usage
-
-```bash
-# Start the daemon
-blocksd start
-
-# List connected devices
-blocksd devices
-
-# Set LED pattern
-blocksd led rainbow
-blocksd led solid --color ff00ff
-
-# Monitor touch events
-blocksd touch --monitor
-```
-
----
-
-**Your Blocks, alive on Linux.**
+[Explore the protocol, supported hardware, and client API](https://hyperb1iss.github.io/blocksd/).

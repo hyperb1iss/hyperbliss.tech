@@ -1,76 +1,26 @@
 ---
 emoji: '🎮'
-title: 'UChroma: RGB Control for Razer on Linux'
-description: 'An advanced driver for Razer Chroma hardware on Linux. Custom animations,
-  GTK4 frontend, D-Bus API, and Rust-powered USB/HID, no kernel mods needed.'
+title: 'UChroma: Razer Lighting on Linux'
+description: 'A Linux driver and animation system for Razer Chroma, pairing hardware control with layered effects, a GTK4 interface, and a D-Bus API.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/uchroma'
 tags: ['Python', 'Rust', 'Linux', 'RGB', 'Razer', 'GTK4', 'D-Bus', 'asyncio']
 ---
 
-## Overview
+A keyboard's LED matrix is a small canvas hiding in plain sight. UChroma gives Linux users control over that canvas, along with the lighting and device features of supported Razer Chroma hardware, without requiring kernel modifications.
 
-The Razer Chroma line of peripherals have flashy features such as embedded LED matrices and macro keys. **UChroma** provides rich support for these features under Linux without requiring kernel modifications.
+The background daemon discovers devices, handles hardware communication, runs animations, and stores preferences. A command-line interface exposes those capabilities for direct control and scripting. The GTK4 frontend adds a live LED matrix preview, making it easier to see how an effect will occupy the device.
 
-_Back after 9 years. Now with GTK4, modern Python, and Rust-powered USB/HID!_
+## Color with depth
 
-## What It Can Do
+UChroma supports both the effects built into a device's firmware and custom animations rendered on the host. The custom renderer treats animations as layers: plasma can move beneath ripples, with blending and opacity shaping the combined image. Layers can run at different frame rates, and the rendering API provides access to input events for reactive effects.
 
-- Supports Razer keyboards, mice, mouse pads, laptops, headsets, and keypads
-- Enables activation of built-in hardware lighting effects
-- Several custom effects included for devices with LED matrices
-- Rich animation/framebuffer API for creation of custom effects
-- **GTK4 frontend** with live LED matrix preview
-- Fan control and power management for laptops
-- Battery monitoring for wireless devices
-- Optimized for low power consumption
-- Full command line interface
-- D-Bus API for integration
-- 100% asyncio-powered Python, 100% open source (LGPL)
+Separate renderers give a simple hardware effect and a custom composition their own appropriate paths. Device capabilities still matter: a keyboard matrix, a mouse logo, and a laptop's lighting zones offer different possibilities.
 
-## Installation
+## A Linux service with an open interface
 
-```bash
-# Ubuntu/Debian (PPA)
-sudo add-apt-repository ppa:hyperb1iss/ppa
-sudo apt install uchroma
+Python's asyncio runtime coordinates the daemon, while Rust handles USB communication through nusb. D-Bus exposes device control to other applications, so the desktop interface and command line share the same service.
 
-# Arch Linux (AUR)
-yay -S uchroma
+Support extends beyond color where the hardware allows it, including wireless battery monitoring and laptop fan and power controls. The device reference documents model coverage and available features.
 
-# PyPI
-pipx install uchroma
-```
-
-## Usage
-
-```bash
-# List devices
-uchroma -l
-
-# Activate an effect
-uchroma -d 0 fx fire --color magenta
-
-# Start an animation
-uchroma -d 0 anim add plasma --color_scheme newer
-
-# Add another layer
-uchroma -d 0 anim add ripples
-```
-
-## Custom Animations
-
-UChroma supports custom animations on devices with LED matrices. Multiple concurrent (stacked) animations are supported with alpha blending. Animations can run at different frame rates and trigger from input events or sound.
-
-Included renderers: **plasma**, **rainflow**, **ripples**, and more.
-
-## Powered By
-
-- Numpy for matrix operations
-- ColorAide for color math
-- dbus-fast for async D-Bus
-- nusb (Rust) for USB/HID communication
-
----
-
-**Make your Razer hardware shine under Linux.**
+[Browse supported devices and the animation development guide](https://github.com/hyperb1iss/uchroma/tree/main/docs).

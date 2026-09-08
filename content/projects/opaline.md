@@ -1,77 +1,26 @@
 ---
 emoji: '✦'
-title: 'Opaline: A Token-Based Theme Engine for Rust'
-description: 'Semantic color tokens, 39 builtin themes, multi-stop gradients, and deep
-  integrations with Ratatui, egui, crossterm, and more.'
+title: 'Opaline: A Shared Language for Color'
+description: 'A Rust theme engine that resolves palettes into semantic tokens, styles, and gradients for terminal interfaces, desktop apps, and CSS.'
 date: '2026-01-15'
 github: 'https://github.com/hyperb1iss/opaline'
 tags: ['Rust', 'TUI', 'Ratatui', 'Theming', 'Design System', 'Open Source']
 ---
 
-Opaline is a token-based theme engine that gives Rust applications beautiful, consistent color systems. Define themes once with 26 semantic tokens, then render them anywhere: Ratatui TUIs, egui GUIs, crossterm, web via CSS, or syntax highlighting via syntect.
+Color becomes difficult to maintain when every widget carries its own idea of purple, every warning chooses a different yellow, and a light theme means revisiting the entire interface. Opaline gives Rust applications a shared language for those decisions.
 
-## Core Concepts
+A theme starts with a palette and assigns colors to semantic roles: primary text, a muted border, an accent, or a code token. Styles and gradients build on those roles. Application code can ask for the meaning it needs while the theme decides how that meaning looks.
 
-| Concept                  | What It Does                                                        |
-| ------------------------ | ------------------------------------------------------------------- |
-| **Semantic Tokens**      | 26 tokens across `text.*`, `bg.*`, `accent.*`, `border.*`, `code.*` |
-| **39 Builtin Themes**    | SilkCircuit, Catppuccin, Dracula, Nord, Tokyo Night, Rose Pine...   |
-| **Multi-Stop Gradients** | Smooth color interpolation with `gradient_bar()` and friends        |
-| **Deep Integrations**    | Ratatui, egui, crossterm, owo-colors, syntect, colored, CSS         |
-| **ThemeBuilder**         | Programmatic theme construction with cycle detection                |
-| **Theme Discovery**      | Scan `~/.config/` for user-defined themes                           |
-| **ThemeSelector**        | Built-in picker widget with live preview and search                 |
+## From a palette to an interface
 
-## Integrations
+Opaline resolves TOML theme definitions through a palette, token, style, and gradient pipeline. A programmatic builder supports themes created in code, and the resolver detects reference cycles and unresolved tokens. Application-specific defaults can extend the common vocabulary while leaving room for user overrides.
 
-```rust
-use opaline::Theme;
+The built-in collection includes SilkCircuit alongside families such as Catppuccin, Nord, and Rose Pine. A shared contract checks that those themes provide the expected core tokens, styles, and gradients. The collection gives applications a starting point and gives users a choice of familiar visual environments.
 
-// Ratatui — direct conversion to Style/Color
-let style = theme.accent_primary().style();
-let span = theme.text_primary().span("hello");
+## Carrying the same decisions across renderers
 
-// Gradients across widgets
-let bar = theme.gradient_bar(area, &[
-    theme.accent_primary(),
-    theme.accent_secondary(),
-]);
+Adapters translate themes into Ratatui styles, egui visuals, iced palettes, terminal colors, syntax-highlighting themes, and CSS. Feature flags let an application select the integrations it uses.
 
-// egui — full Visuals generation
-let visuals = theme.to_egui_visuals();
+The practical details extend to choosing a theme: discovery can find user-defined files, and a Ratatui selector provides search, live preview, and cancel-and-restore behavior. Gradients can run through text and widgets using the same resolved colors as the rest of the interface.
 
-// CSS — generate custom properties
-let css = theme.to_css();
-
-// syntect — syntax highlighting themes
-let syntect_theme = theme.to_syntect_theme();
-```
-
-## Theme Gallery
-
-- **SilkCircuit**: Neon, Vibrant, Soft, Glow, Dawn
-- **Catppuccin**: Latte, Frappe, Macchiato, Mocha
-- **Tokyo Night**: Night, Storm, Day
-- **Rose Pine**: Base, Moon, Dawn
-- **Kanagawa**: Wave, Dragon, Lotus
-- Plus: Dracula, Nord, Gruvbox, Solarized, Monokai Pro, Ayu, Everforest,
-  Flexoki, Palenight, Night Owl, GitHub, One Dark/Light
-
-## Installation
-
-```toml
-[dependencies]
-opaline = "0.4"
-
-# Feature flags
-opaline = { version = "0.4", features = ["ratatui", "gradients", "egui", "css"] }
-```
-
-## Used By
-
-- **git-iris**: AI-powered Git workflow assistant
-- **unifly**: UniFi network management CLI & TUI
-
----
-
-**One theme engine, every rendering target.**
+Explore the theme model in the [Opaline documentation](https://hyperb1iss.github.io/opaline/) or inspect the adapters in the [source repository](https://github.com/hyperb1iss/opaline).

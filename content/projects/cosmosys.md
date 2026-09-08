@@ -1,66 +1,26 @@
 ---
 emoji: '🪐'
-title: 'Cosmosys: Stellar Release Management'
+title: 'Cosmosys: Releases with a Clear Sequence'
 date: '2024-09-25'
-description: 'Customizable release management tool for automating version bumps,
-  changelogs, tagging, and CI/CD integration across languages.'
+description: 'A Python release automation tool that describes version updates, changelogs, builds, and publishing as configurable steps for Python, Rust, and Node.js projects.'
 github: 'https://github.com/hyperb1iss/cosmosys'
-tags: ['Python', 'DevOps', 'CLI', 'Release Management', 'Automation', 'Git', 'CI/CD']
+tags: ['Python', 'DevOps', 'CLI', 'Release Management', 'Automation', 'Git']
 ---
 
-## Key Features
+A release crosses several boundaries before anyone can install it. The version changes in one file, the changelog records what changed, Git captures the milestone, and a package registry receives the build. Cosmosys brings those operations into a configurable sequence for Python, Rust, and Node.js projects.
 
-- **Multiple Color Schemes**: Customize your CLI with built-in and custom color
-  themes
-- **ASCII Art Logo**: Add personality to your release process with customizable
-  ASCII art
-- **Modular Release Flow**: Configure release steps to match your project
-- **Cross-Platform**: Works on Windows, macOS, and Linux
-- **Version Management**: Automatic version bumping and tagging
-- **Git Integration**: Commit changes, create tags, and push to remote repos
-- **Pre-Release Checks**: Configurable checks to ensure release readiness
-- **Release Notes Generation**: Automatic release notes and changelog management
-- **CI/CD Integration**: Hooks into popular CI/CD platforms
-- **Plugin System**: Extend functionality with custom plugins
-- **Dry-Run Mode**: Test your release process without making changes
-- **Rollback**: Safely undo changes if something goes wrong
-- **Multi-Language**: Manage releases for projects in different languages
+The project puts the release procedure in a TOML file. Named steps describe the work and its order, giving maintainers a place to inspect the process alongside the code it ships. A dry run lists the steps that would execute before a real release begins.
 
-## Getting Started
+## A workflow built from steps
 
-### Installation
+Cosmosys includes steps for version updates, changelog changes, Git commits and tags, language-specific builds, and package publishing. Semantic version selection supports the familiar major, minor, and patch increments as well as explicit version choices.
 
-```bash
-# Using pip
-pip install cosmosys
+The Python implementation gives each step a shared context for configuration and console output. Steps register by name, and the release manager resolves those names when it runs the configured sequence. Custom steps can use the same interface, keeping project-specific work inside the release flow.
 
-# Using Poetry
-poetry add cosmosys
-```
+## Making the process visible
 
-### Quick Start
+The command-line interface reports progress and failures, with selectable color themes and optional branding. Those details matter most during an operation where the reader needs to know what happened and where execution stopped.
 
-1. Initialize a new Cosmosys configuration:
+The step interface also includes rollback hooks. They provide a way for individual steps to implement cleanup, although recovery depends on the operation involved. A local file update and a published package have very different consequences.
 
-   ```bash
-   cosmosys config --init
-   ```
-
-2. Customize your `cosmosys.toml` file to fit your project's needs.
-
-3. Run your first release:
-
-   ```bash
-   cosmosys release
-   ```
-
-## Customization
-
-Cosmosys is highly customizable:
-
-- **Themes**: Choose from built-in themes or create your own to match your
-  project's branding
-- **Plugins**: Extend functionality with custom plugins to integrate with your
-  tools and workflows
-- **Release Steps**: Define and order your release steps to create the perfect
-  release process for your project
+The [Cosmosys source and configuration examples](https://github.com/hyperb1iss/cosmosys) show the release model and the available extension points.

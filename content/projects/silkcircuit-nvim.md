@@ -1,70 +1,26 @@
 ---
 emoji: '💜'
-title: 'SilkCircuit: Electric Dreams for Neovim'
-description: 'A vibrant cyberpunk-inspired Neovim colorscheme. Five variants, WCAG AA
-  compliant contrast, <5ms load time, 40+ plugin integrations.'
+title: 'SilkCircuit: Electric Color, Everywhere You Work'
+description: 'A shared color system for editors, terminals, browsers, and command-line tools, with five variants and generated themes drawn from one palette.'
 date: '2025-01-26'
-github: 'https://github.com/hyperb1iss/silkcircuit-nvim'
-tags: ['Neovim', 'Lua', 'Colorscheme', 'Theme', 'Developer Tools']
+github: 'https://github.com/hyperb1iss/silkcircuit'
+tags: ['Design System', 'Neovim', 'Lua', 'Colorscheme', 'Developer Tools', 'Theming']
 ---
 
-## Overview
+SilkCircuit gives a development environment a recognizable visual identity: electric purple, clear cyan, and bright pink against deep backgrounds, with a light variant for a different kind of day. The colors carry through the editor, terminal, and tools around them, making a workspace feel considered down to its smallest details.
 
-**SilkCircuit** pumps maximum visual voltage through your Neovim. Electric purples, blazing pinks, and neon cyans create a coding environment that's both striking and readable.
+Neovim is a central part of the project, with syntax and plugin integrations, but the color system reaches well beyond one editor. Matching themes cover VS Code, Helix, terminal emulators, multiplexers, browsers, and command-line tools.
 
-## Features
+## Five ways to set the mood
 
-- **Electric Color System**: Vibrant palette with semantic color mappings
-- **<5ms Load Time**: Bytecode compilation with intelligent caching
-- **WCAG AA Compliant**: Validated contrast ratios for extended sessions
-- **5 Theme Variants**: Neon, Vibrant, Soft, Glow, and Dawn modes
-- **40+ Plugin Integrations**: Auto-detected support for your entire toolchain
-- **Persistent Preferences**: Settings survive across sessions
+Neon is the signature saturated palette. Vibrant and Soft ease the intensity, Glow puts bright colors against a darker background, and Dawn brings the system into a light theme. The variants share a visual vocabulary while making different choices about background and emphasis.
 
-## Installation
+Semantic color mappings give the palette a job. Syntax, diagnostics, selections, and interface borders need different levels of attention. SilkCircuit carries those decisions into integrations for tools with very different layouts, from a Neovim sidebar to a terminal prompt or a Git diff.
 
-```lua
--- lazy.nvim
-{
-  "hyperb1iss/silkcircuit-nvim",
-  lazy = false,
-  priority = 1000,
-  config = function()
-    vim.cmd.colorscheme("silkcircuit")
-  end,
-}
-```
+## One source for the details
 
-## Theme Variants
+The theme generator produces application-specific files from shared variant definitions. That connection matters: a palette change can propagate through the supported exports without manually repainting dozens of unrelated configurations. Each target translates the colors into the format its application understands.
 
-```vim
-:SilkCircuit neon     " 100% intensity, dark theme
-:SilkCircuit vibrant  " 85% intensity, dark theme
-:SilkCircuit soft     " 70% intensity, dark theme
-:SilkCircuit glow     " Ultra-dark with pure neon colors
-:SilkCircuit dawn     " Light theme for daytime
-```
+Installers help place themes in the right locations, with dry-run support and backups for replaced files. Individual exports remain available for people who want to theme only a few tools or manage configuration themselves.
 
-## Color Palette
-
-| Color  | Hex       | Usage                   |
-| ------ | --------- | ----------------------- |
-| Purple | `#e135ff` | Keywords, importance    |
-| Pink   | `#ff79c6` | Strings, accents        |
-| Cyan   | `#80ffea` | Functions, interactions |
-| Green  | `#50fa7b` | Success, additions      |
-| Yellow | `#f1fa8c` | Warnings, attention     |
-| Orange | `#ffb86c` | Constants, numbers      |
-
-## Complete Environment
-
-SilkCircuit extends beyond Neovim with matching themes for:
-
-- **VSCode/Cursor**: All 5 variants included
-- **Terminal Emulators**: Alacritty, Kitty, Warp, Windows Terminal, iTerm2
-- **Git**: Custom log formatting with conventional commit highlighting
-- **AstroNvim**: Complete integration with enhanced components
-
----
-
-**Pure electric energy for your editor.**
+Browse the variants and application guides in the [SilkCircuit documentation](https://hyperb1iss.github.io/silkcircuit/). The [repository](https://github.com/hyperb1iss/silkcircuit) includes the palettes, generators, and integrations.
