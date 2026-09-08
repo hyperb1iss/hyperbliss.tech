@@ -49,7 +49,7 @@ const lostStarContainerStyles = css`
 const lostStarStyles = css`
   width: 180px;
   height: auto;
-  animation: glow 3s ease-in-out infinite;
+  animation: silkNotFoundPageGlow 3s ease-in-out infinite;
 
   img {
     width: 100%;
@@ -60,18 +60,6 @@ const lostStarStyles = css`
     width: 140px;
   }
 
-  @keyframes glow {
-    0%, 100% {
-      filter: drop-shadow(0 0 20px rgba(162, 89, 255, 0.6))
-              drop-shadow(0 0 40px rgba(0, 255, 240, 0.4));
-      opacity: 0.9;
-    }
-    50% {
-      filter: drop-shadow(0 0 30px rgba(162, 89, 255, 0.8))
-              drop-shadow(0 0 60px rgba(0, 255, 240, 0.6));
-      opacity: 1;
-    }
-  }
 `
 
 const sparkleBaseStyles = css`
@@ -81,12 +69,8 @@ const sparkleBaseStyles = css`
   background: var(--color-secondary);
   border-radius: 50%;
   box-shadow: 0 0 10px var(--color-secondary);
-  animation: sparkle 2s ease-in-out infinite;
+  animation: silkNotFoundPageSparkle 2s ease-in-out infinite;
 
-  @keyframes sparkle {
-    0%, 100% { opacity: 0; transform: scale(0); }
-    50% { opacity: 1; transform: scale(1); }
-  }
 `
 
 const contentWrapperStyles = css`
@@ -114,14 +98,10 @@ const errorCodeStyles = css`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 4s ease infinite;
+  animation: silkGradientShift 4s ease infinite;
   text-shadow: none;
   line-height: 1;
 
-  @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
 `
 
 const titleStyles = css`
@@ -363,14 +343,14 @@ export default function NotFoundPage() {
             <div className={lostStarStyles}>
               <Image alt="Lost shooting star" height={151} priority={true} src="/images/star-icon.png" width={180} />
             </div>
-            {SPARKLES.map((sparkle, i) => (
+            {SPARKLES.map((silkNotFoundPageSparkle, i) => (
               <span
                 className={sparkleBaseStyles}
                 key={i}
                 style={{
-                  animationDelay: `${sparkle.delay}s`,
-                  left: `${sparkle.x}%`,
-                  top: `${sparkle.y}%`,
+                  animationDelay: `${silkNotFoundPageSparkle.delay}s`,
+                  left: `${silkNotFoundPageSparkle.x}%`,
+                  top: `${silkNotFoundPageSparkle.y}%`,
                 }}
               />
             ))}

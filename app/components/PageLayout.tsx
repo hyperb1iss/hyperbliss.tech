@@ -34,14 +34,14 @@ interface PageLayoutProps {
  */
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   return (
-    <motion.main
+    <motion.div
       animate={{ opacity: 1 }}
       className={mainContentWrapperStyles}
       initial={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: 'easeInOut' }}
     >
       {children}
-    </motion.main>
+    </motion.div>
   )
 }
 

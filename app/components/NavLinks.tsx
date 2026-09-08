@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
-import { NAV_ITEMS } from '../lib/navigation'
+import { isNavigationActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
 
 export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
 
@@ -49,12 +49,39 @@ const navLinkBaseStyles = css`
   -webkit-tap-highlight-color: transparent;
   border-radius: var(--radius-md);
   background: transparent;
+  color: var(--text-secondary);
   border: none;
 
   transition:
     color var(--duration-fast) var(--ease-silk),
     text-shadow var(--duration-fast) var(--ease-silk),
     transform var(--duration-fast) var(--ease-silk);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--silk-circuit-cyan) 20%, var(--silk-quantum-purple) 50%, var(--silk-circuit-cyan) 80%, transparent);
+    box-shadow: 0 0 8px var(--silk-circuit-cyan);
+    background-size: 200% 100%;
+    transform: translateX(-50%) scaleX(0);
+    opacity: 0;
+    transition: transform var(--duration-normal) var(--ease-silk), opacity var(--duration-normal) var(--ease-silk);
+  }
+
+  &[aria-current], &:hover, &:focus-visible {
+    color: var(--silk-circuit-cyan);
+    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
+
+    &::after {
+      transform: translateX(-50%) scaleX(1);
+      opacity: 1;
+      animation: silkNavShimmer 6s ease-in-out infinite;
+    }
+  }
 
   &:focus-visible {
     outline: 2px solid rgba(0, 255, 240, 0.5);
@@ -74,7 +101,8 @@ const NavLinks: React.FC = () => {
   const pathname = usePathname()
   const animateAndNavigate = useAnimatedNavigation()
 
-  const handleNavigation = (href: string, event: React.MouseEvent) => {
+  const handleNavigation = (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!shouldHandleNavigation(event)) return
     event.preventDefault()
     animateAndNavigate(href)
   }
@@ -83,13 +111,7 @@ const NavLinks: React.FC = () => {
     <NavLinksContainer>
       {NAV_ITEMS.map((item) => {
         const href = `/${item.toLowerCase()}`
-        const isActive = pathname === href
-
-        // Dynamic styles for active state
-        const dynamicStyles: React.CSSProperties = {
-          color: isActive ? 'var(--silk-circuit-cyan)' : 'var(--text-secondary)',
-          textShadow: isActive ? '0 0 20px rgba(0, 255, 240, 0.6), 0 0 40px rgba(0, 255, 240, 0.3)' : 'none',
-        }
+        const isActive = isNavigationActive(pathname, href)
 
         return (
           <NavItem key={item}>
@@ -98,39 +120,8 @@ const NavLinks: React.FC = () => {
               className={navLinkBaseStyles}
               href={href}
               onClick={(e) => handleNavigation(href, e)}
-              style={dynamicStyles}
               whileTap={{ scale: 0.98 }}
             >
-              <style>{`
-                @keyframes shimmer {
-                  0%, 100% { background-position: 200% 0; }
-                  50% { background-position: -200% 0; }
-                }
-                .${navLinkBaseStyles.split(' ')[0]}::after {
-                  content: '';
-                  position: absolute;
-                  bottom: -2px;
-                  left: 50%;
-                  width: ${isActive ? '100%' : '0'};
-                  height: 2px;
-                  background: linear-gradient(90deg, transparent, var(--silk-circuit-cyan) 20%, var(--silk-quantum-purple) 50%, var(--silk-circuit-cyan) 80%, transparent);
-                  background-size: 200% 100%;
-                  box-shadow: 0 0 8px var(--silk-circuit-cyan), 0 0 16px rgba(0, 255, 240, 0.4);
-                  transform: translateX(-50%);
-                  opacity: ${isActive ? '1' : '0'};
-                  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
-                  ${isActive ? 'animation: shimmer 6s ease-in-out infinite;' : ''}
-                }
-                .${navLinkBaseStyles.split(' ')[0]}:hover::after {
-                  width: 100%;
-                  opacity: 1;
-                  animation: shimmer 6s ease-in-out infinite;
-                }
-                .${navLinkBaseStyles.split(' ')[0]}:hover {
-                  color: var(--silk-circuit-cyan);
-                  text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
-                }
-              `}</style>
               {item}
             </motion.a>
           </NavItem>

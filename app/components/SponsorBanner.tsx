@@ -41,15 +41,8 @@ const heartStyles = css`
   color: #ff75d8;
   margin-bottom: var(--space-3);
   filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.5));
-  animation: heartbeat 2s ease-in-out infinite;
+  animation: silkSponsorBannerHeartbeat 2s ease-in-out infinite;
 
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    15% { transform: scale(1.15); }
-    30% { transform: scale(1); }
-    45% { transform: scale(1.1); }
-    60% { transform: scale(1); }
-  }
 `
 
 const titleStyles = css`

@@ -94,3 +94,51 @@ describe('parseResume skill sub-categories', () => {
     expect(tagNames.some((name) => name.includes('Specialized Domains'))).toBe(false)
   })
 })
+
+describe('parseResume Markdown links', () => {
+  it('preserves angle-delimited and balanced-parenthesis skill destinations', () => {
+    const skills = parseResume(
+      [
+        '# Jane Doe',
+        '## Skills',
+        '### Languages',
+        '[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [Ruby](https://example.com/Ruby_(language))',
+      ].join('\n'),
+    ).skills.Languages
+
+    expect(skills).toEqual([
+      { name: 'C', url: 'https://en.wikipedia.org/wiki/C_(programming_language)' },
+      { name: 'Ruby', url: 'https://example.com/Ruby_(language)' },
+    ])
+  })
+
+  it('keeps delimiters within link labels and URLs, and strips inline formatting', () => {
+    const skills = parseResume(
+      [
+        '# Jane Doe',
+        '## Skills',
+        '### Expertise',
+        '[**API, CLI**](https://example.com/a,b "Tools") | **Linux** | Rust',
+      ].join('\n'),
+    ).skills.Expertise
+
+    expect(skills).toEqual([{ name: 'API, CLI', url: 'https://example.com/a,b' }, { name: 'Linux' }, { name: 'Rust' }])
+  })
+
+  it('parses company headings and contact links with angle-delimited destinations', () => {
+    const resume = parseResume(
+      [
+        '# Jane Doe',
+        '[Email](<mailto:jane@example.com>) | [Web](<https://example.com/profile_(jane)>)',
+        '',
+        '## Experience',
+        '### [Company](<https://example.com/company_(name)>)',
+        '#### Engineer',
+        '- Built things',
+      ].join('\n'),
+    )
+
+    expect(resume.contact).toEqual({ email: 'jane@example.com', website: 'https://example.com/profile_(jane)' })
+    expect(resume.experience[0].companyUrl).toBe('https://example.com/company_(name)')
+  })
+})

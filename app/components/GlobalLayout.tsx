@@ -62,7 +62,9 @@ const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
           }
         }
       `}</style>
-      <ContentWrapper>{children}</ContentWrapper>
+      <ContentWrapper id="main-content" tabIndex={-1}>
+        {children}
+      </ContentWrapper>
       <Footer />
     </div>
   )

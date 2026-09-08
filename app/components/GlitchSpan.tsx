@@ -23,38 +23,15 @@ const GlitchSpan = styled.span`
   &::before {
     left: 1px;
     text-shadow: -1px 0 #00ffff;
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+    animation: silkGlitchPrimary 2s infinite linear alternate-reverse;
   }
 
   &::after {
     left: -1px;
     text-shadow: -1px 0 #ff00ff;
-    animation: glitch-anim-2 2s infinite linear alternate-reverse;
+    animation: silkGlitchSecondary 2s infinite linear alternate-reverse;
   }
 
-  @keyframes glitch-anim-1 {
-    0% {
-      clip: rect(10px, 9999px, 20px, 0);
-    }
-    50% {
-      clip: rect(85px, 9999px, 90px, 0);
-    }
-    100% {
-      clip: rect(45px, 9999px, 55px, 0);
-    }
-  }
-
-  @keyframes glitch-anim-2 {
-    0% {
-      clip: rect(60px, 9999px, 70px, 0);
-    }
-    50% {
-      clip: rect(25px, 9999px, 35px, 0);
-    }
-    100% {
-      clip: rect(5px, 9999px, 15px, 0);
-    }
-  }
 `
 
 export default GlitchSpan

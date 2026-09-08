@@ -27,7 +27,7 @@ const styledTitleStyles = css`
     bottom: 0;
     background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
     background-size: 200% 100%;
-    animation: shimmer 6s linear infinite;
+    animation: silkStyledTitleShimmer 6s linear infinite;
     opacity: 0.5;
     z-index: -1;
   }
@@ -49,14 +49,6 @@ const styledTitleStyles = css`
     }
   }
 
-  @keyframes shimmer {
-    0% {
-      background-position: 100% 0;
-    }
-    100% {
-      background-position: -100% 0;
-    }
-  }
 `
 
 interface StyledTitleProps {

@@ -116,12 +116,7 @@ const Live = styled.span`
   &::before {
     content: '●';
     margin-right: 0.4em;
-    animation: sbPulse 1.6s ease-in-out infinite;
-  }
-
-  @keyframes sbPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
+    animation: silkStatusPulse 1.6s ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {

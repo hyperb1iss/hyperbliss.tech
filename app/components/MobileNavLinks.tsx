@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { css } from '../../styled-system/css'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
-import { NAV_ITEMS } from '../lib/navigation'
+import { isNavigationActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
@@ -173,7 +173,8 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     },
   }
 
-  const handleNavigation = (href: string, event: React.MouseEvent) => {
+  const handleNavigation = (href: string, event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!shouldHandleNavigation(event)) return
     event.preventDefault()
     setMenuOpen(false)
     animateAndNavigate(href)
@@ -200,15 +201,34 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
     }
   }, [handleClickOutside])
 
+  useEffect(() => {
+    if (!open) return
+    panelRef.current?.querySelector('a')?.focus({ preventScroll: true })
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setMenuOpen(false)
+      document.getElementById('mobile-menu-toggle')?.focus()
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [open, setMenuOpen])
+
   const content = (
     <motion.nav
       animate={open ? 'open' : 'closed'}
+      aria-label="Mobile navigation"
       className={navPanelStyles}
+      id="mobile-navigation"
       // The closed panel still occupies its box over the terminal handle, so
       // inert keeps its faded links out of hit-testing, focus, and the a11y
       // tree instead of relying on pointer-events alone.
       inert={!open}
       initial="closed"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget) && event.relatedTarget?.id !== 'mobile-menu-toggle') {
+          setMenuOpen(false)
+        }
+      }}
       ref={panelRef}
       style={{ background: 'rgb(12, 12, 20)' }}
       variants={panelVariants}
@@ -216,7 +236,7 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       <ul className={navListStyles}>
         {NAV_ITEMS.map((item) => {
           const href = `/${item.toLowerCase()}`
-          const isActive = pathname === href
+          const isActive = isNavigationActive(pathname, href)
 
           return (
             <motion.li key={item} style={{ width: '100%' }} variants={itemVariants}>

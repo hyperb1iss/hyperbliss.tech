@@ -68,7 +68,8 @@ describe('Header', () => {
 
     const mobileMenuIcon = screen.getByLabelText('Toggle menu')
     expect(mobileMenuIcon).toBeInTheDocument()
-    expect(mobileMenuIcon).toHaveAttribute('role', 'button')
+    expect(mobileMenuIcon.tagName).toBe('BUTTON')
+    expect(mobileMenuIcon).toHaveAttribute('aria-expanded', 'false')
     expect(mobileMenuIcon).toHaveClass('mobile-menu-icon')
   })
 

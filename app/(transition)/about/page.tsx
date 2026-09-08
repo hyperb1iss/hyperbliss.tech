@@ -1,11 +1,7 @@
 import { notFound } from 'next/navigation'
 import AboutPageContent from '../../components/AboutPageContent'
 import { getPage } from '../../lib/content'
-
-export const metadata = {
-  description: 'Learn about Stefanie Jane--software engineer, open source advocate, and creative technologist.',
-  title: 'About Me | Hyperbliss',
-}
+import { generatePageMetadata } from '../../lib/generateMetadata'
 
 export default async function About() {
   const aboutPage = await getPage('about').catch(() => null)
@@ -16,3 +12,9 @@ export default async function About() {
 
   return <AboutPageContent about={aboutPage.about} />
 }
+
+export const metadata = generatePageMetadata(
+  'About Me',
+  'Learn about Stefanie Jane, software engineer, open source advocate, and creative technologist.',
+  '/about/',
+)

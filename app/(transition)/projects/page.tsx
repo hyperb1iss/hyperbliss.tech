@@ -1,6 +1,7 @@
 // app/(transition)/projects/page.tsx
 import ProjectsPageContent from '../../components/ProjectsPageContent'
 import { getAllProjects } from '../../lib/content'
+import { generatePageMetadata } from '../../lib/generateMetadata'
 import { getReleasesForProjects } from '../../lib/github'
 
 export default async function Projects() {
@@ -42,7 +43,4 @@ export default async function Projects() {
   return <ProjectsPageContent projects={projectsList} />
 }
 
-export const metadata = {
-  description: 'Discover projects developed by Stefanie Jane, showcasing innovation and creativity in technology.',
-  title: 'Hyperbliss | Projects',
-}
+export const metadata = generatePageMetadata('Projects', 'Explore open source projects by Stefanie Jane.', '/projects/')

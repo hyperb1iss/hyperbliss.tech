@@ -216,6 +216,7 @@ const caseVerdictStyles = css`
 `
 
 interface RegexTesterProps {
+  label?: string
   regex: string
   jsCompatible: boolean
   jsRegex?: string
@@ -227,6 +228,7 @@ interface RegexTesterProps {
 }
 
 export default function RegexTester({
+  label = 'Test string',
   regex: rawRegex,
   jsCompatible,
   jsRegex,
@@ -382,6 +384,7 @@ export default function RegexTester({
 
         <div className={inputWrapperStyles}>
           <input
+            aria-label={label}
             className={inputStyles}
             disabled={!canRun || Boolean(syntaxError)}
             onChange={(e) => {

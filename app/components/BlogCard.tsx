@@ -7,6 +7,7 @@ import React from 'react'
 import { FaArrowRight, FaCalendar, FaUser } from 'react-icons/fa6'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import { formatPostDate } from '../lib/formatPostDate'
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -314,7 +315,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
               {date && (
                 <span>
                   <FaCalendar />
-                  {new Date(date).toLocaleDateString()}
+                  {formatPostDate(date)}
                 </span>
               )}
               {author && (

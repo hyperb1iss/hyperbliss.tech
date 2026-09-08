@@ -6,8 +6,11 @@ import { css } from '../../styled-system/css'
 
 const mobileMenuIconContainerStyles = css`
   display: none;
-  width: 30px;
-  height: 30px;
+  width: 44px;
+  height: 44px;
+  padding: 7px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   margin-right: 1rem;
   z-index: 1100;
@@ -15,9 +18,9 @@ const mobileMenuIconContainerStyles = css`
   outline: none;
   -webkit-tap-highlight-color: transparent;
 
-  &:focus,
   &:focus-visible {
-    outline: none;
+    outline: 2px solid var(--silk-circuit-cyan);
+    outline-offset: 4px;
   }
 
   @media (max-width: 768px) {
@@ -66,14 +69,17 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
   }
 
   return (
-    <motion.div
+    <motion.button
+      aria-controls="mobile-navigation"
+      aria-expanded={menuOpen}
       aria-label="Toggle menu"
       className={`${mobileMenuIconContainerStyles} mobile-menu-icon`}
+      id="mobile-menu-toggle"
       onClick={(e) => {
         e.stopPropagation()
         toggleMenu()
       }}
-      role="button"
+      type="button"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
@@ -95,7 +101,7 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
         transition={{ duration: 0.3 }}
         variants={bottomLineVariants}
       />
-    </motion.div>
+    </motion.button>
   )
 }
 

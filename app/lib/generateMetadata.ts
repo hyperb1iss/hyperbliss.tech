@@ -2,6 +2,7 @@
 
 import type { Metadata, ResolvingMetadata } from 'next'
 import type { Metadata as MetadataInterface } from 'next/dist/lib/metadata/types/metadata-interface'
+import siteMetadata from './metadata'
 import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Configuration values
@@ -238,4 +239,15 @@ export async function generateProjectMetadata(
     ...previousMetadata,
     ...metadata,
   } as Metadata
+}
+
+export function generatePageMetadata(title: string, description: string, pathname: string): Metadata {
+  const url = ensureTrailingSlash(new URL(pathname, BASE_URL).href)
+  return {
+    alternates: { canonical: url },
+    description,
+    openGraph: { ...siteMetadata.openGraph, description, title, url },
+    title,
+    twitter: { ...siteMetadata.twitter, description, title },
+  }
 }

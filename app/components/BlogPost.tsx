@@ -3,6 +3,7 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
+import { formatPostDate } from '../lib/formatPostDate'
 import MarkdownRenderer from './MarkdownRenderer'
 import { BlogContent } from './MarkdownStyles'
 import { SparklingName } from './SparklingName'
@@ -13,20 +14,6 @@ interface BlogPostProps {
   content: string
   author?: string
   tags?: string[]
-}
-
-/**
- * Format a post date for display. A bare ISO date ("2026-05-27") parses as UTC
- * midnight, which renders as the previous day in negative-offset timezones, so
- * we build it from local components to keep the displayed date honest.
- */
-function formatPostDate(value: string): string {
-  const trimmed = value.trim()
-  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-    const [year, month, day] = trimmed.split('-').map(Number)
-    return new Date(year, month - 1, day).toLocaleDateString()
-  }
-  return new Date(trimmed).toLocaleDateString()
 }
 
 const BlogPost: React.FC<BlogPostProps> = ({ title, date, content, author, tags }) => {

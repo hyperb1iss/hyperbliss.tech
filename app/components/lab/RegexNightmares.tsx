@@ -306,15 +306,8 @@ const regexDisplayStyles = css`
 `
 
 const glitchStyles = css`
-  @keyframes glitch {
-    0%, 90%, 100% { transform: none; filter: none; }
-    92% { transform: skewX(-2deg) translateX(-2px); filter: hue-rotate(90deg); }
-    94% { transform: skewX(1deg) translateX(1px); filter: hue-rotate(-90deg); }
-    96% { transform: none; filter: none; }
-    98% { transform: skewX(-1deg); filter: hue-rotate(45deg) saturate(1.5); }
-  }
 
-  animation: glitch 8s ease-in-out infinite;
+  animation: silkRegexNightmaresGlitch 8s ease-in-out infinite;
   animation-delay: calc(var(--glitch-offset, 0) * 1s);
 `
 
@@ -424,12 +417,8 @@ const dividerTitleStyles = css`
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: var(--space-2);
-  animation: dividerShift 4s ease infinite;
+  animation: silkGradientShift 4s ease infinite;
 
-  @keyframes dividerShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
 `
 
 const dividerSubStyles = css`
@@ -553,6 +542,7 @@ function EntryCard({ entry }: { entry: RegexNightmareEntry }) {
         jsCompatible={entry.jsCompatible}
         jsRegex={entry.jsRegex}
         jsValidator={entry.jsValidator}
+        label={`Test ${entry.title}`}
         matchMode={entry.matchMode}
         maxInputLength={entry.maxInputLength}
         regex={entry.regex}
@@ -624,16 +614,16 @@ export default function RegexNightmares() {
 
   if (!mounted) {
     return (
-      <main className={staticPageLayoutStyles}>
+      <div className={staticPageLayoutStyles}>
         <PageTitle>Regex Nightmares</PageTitle>
-      </main>
+      </div>
     )
   }
 
   return (
     <>
       <ProgressBar />
-      <main className={staticPageLayoutStyles}>
+      <div className={staticPageLayoutStyles}>
         <PageTitle>Regex Nightmares</PageTitle>
         <p className={introStyles}>
           21 regular expressions dissected down to the molecular level. Step through each one piece by piece, test them
@@ -722,7 +712,7 @@ export default function RegexNightmares() {
             ))}
           </div>
         </div>
-      </main>
+      </div>
     </>
   )
 }

@@ -404,9 +404,12 @@
     *,
     *::before,
     *::after {
-      animation-duration: 0.001ms;
-      animation-iteration-count: 1;
-      transition-duration: 0.001ms;
+      /* biome-ignore lint/complexity/noImportantStyles: User motion preferences must override component animation layers. */
+      animation-duration: 0.001ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: User motion preferences must override component animation layers. */
+      animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: User motion preferences must override component animation layers. */
+      transition-duration: 0.001ms !important;
     }
 
     body {

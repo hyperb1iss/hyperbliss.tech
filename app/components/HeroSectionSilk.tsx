@@ -104,14 +104,9 @@ const TitleGradient = styled.span`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 4s ease infinite;
+  animation: silkGradientShift 4s ease infinite;
   margin-bottom: var(--space-8);
   display: inline-block;
-
-  @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
 
   @media (max-width: 768px) {
     font-size: var(--text-fluid-xl);
@@ -163,6 +158,7 @@ const skillTagStyles = css`
 
 const ctaSectionStyles = css`
   display: flex;
+  margin-bottom: var(--space-10);
   gap: var(--space-4);
   align-items: center;
   flex-wrap: wrap;
@@ -226,19 +222,9 @@ const scrollMouseStyles = css`
     height: 8px;
     background: var(--silk-quantum-purple);
     border-radius: 2px;
-    animation: scrollWheel 2s ease-in-out infinite;
+    animation: silkHeroScrollWheel 2s ease-in-out infinite;
   }
 
-  @keyframes scrollWheel {
-    0% {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    100% {
-      opacity: 0;
-      transform: translateX(-50%) translateY(10px);
-    }
-  }
 `
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -411,6 +397,20 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
           <TitleGradient>@hyperbliss</TitleGradient>
         </motion.div>
 
+        <motion.div className={ctaSectionStyles} variants={itemVariants}>
+          <Link href={heroContent.primaryCtaLink ?? '/projects'} style={{ textDecoration: 'none' }}>
+            <StarButton size="lg" variant="primary">
+              {heroContent.primaryCtaText ?? 'View Projects'}
+            </StarButton>
+          </Link>
+
+          <Link href={heroContent.secondaryCtaLink ?? '/about'} style={{ textDecoration: 'none' }}>
+            <motion.div className={secondaryButtonStyles} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              {heroContent.secondaryCtaText ?? 'Learn More'}
+            </motion.div>
+          </Link>
+        </motion.div>
+
         <motion.div className={tagCloudStyles} variants={itemVariants}>
           {tags.map((tag, index) => (
             <motion.div
@@ -429,20 +429,6 @@ export default function HeroSectionSilk({ hero, techTags }: HeroSectionSilkProps
               {tag}
             </motion.div>
           ))}
-        </motion.div>
-
-        <motion.div className={ctaSectionStyles} variants={itemVariants}>
-          <Link href={heroContent.primaryCtaLink ?? '/projects'} style={{ textDecoration: 'none' }}>
-            <StarButton size="lg" variant="primary">
-              {heroContent.primaryCtaText ?? 'View Projects'}
-            </StarButton>
-          </Link>
-
-          <Link href={heroContent.secondaryCtaLink ?? '/about'} style={{ textDecoration: 'none' }}>
-            <motion.div className={secondaryButtonStyles} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              {heroContent.secondaryCtaText ?? 'Learn More'}
-            </motion.div>
-          </Link>
         </motion.div>
       </motion.div>
 

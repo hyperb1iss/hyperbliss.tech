@@ -35,8 +35,7 @@ describe('BlogCard', () => {
   it('renders date when provided', () => {
     render(<BlogCard {...defaultProps} date="2024-01-15" />)
 
-    // Date is formatted via toLocaleDateString
-    expect(screen.getByText(/2024/)).toBeInTheDocument()
+    expect(screen.getByText('1/15/2024')).toBeInTheDocument()
   })
 
   it('renders author when provided', () => {

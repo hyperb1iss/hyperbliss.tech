@@ -5,14 +5,14 @@
 
 import { motion } from 'framer-motion'
 import React from 'react'
-import { css } from '../../../styled-system/css'
+import { css, cx } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Button Components
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const buttonBaseStyles = css`
+const buttonBaseStyles = css.raw`
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -42,7 +42,7 @@ const buttonBaseStyles = css`
 `
 
 const buttonVariantStyles = {
-  danger: css`
+  danger: css.raw`
     background: var(--silk-error);
     color: var(--silk-white);
     border: 1px solid transparent;
@@ -52,7 +52,7 @@ const buttonVariantStyles = {
       box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
     }
   `,
-  ghost: css`
+  ghost: css.raw`
     background: transparent;
     color: var(--text-primary);
     border: 1px solid transparent;
@@ -62,7 +62,7 @@ const buttonVariantStyles = {
       border-color: var(--border-default);
     }
   `,
-  primary: css`
+  primary: css.raw`
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
     color: var(--silk-white);
     border: 1px solid transparent;
@@ -77,7 +77,7 @@ const buttonVariantStyles = {
       transform: translateY(0);
     }
   `,
-  secondary: css`
+  secondary: css.raw`
     background: var(--surface-raised);
     color: var(--color-secondary);
     border: 1px solid var(--color-secondary);
@@ -90,15 +90,15 @@ const buttonVariantStyles = {
 }
 
 const buttonSizeStyles = {
-  lg: css`
+  lg: css.raw`
     padding: var(--space-4) var(--space-8);
     font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
     min-height: 56px;
   `,
-  md: css`
+  md: css.raw`
     min-height: 44px;
   `,
-  sm: css`
+  sm: css.raw`
     padding: var(--space-2) var(--space-4);
     font-size: var(--text-sm);
     min-height: 36px;
@@ -106,14 +106,14 @@ const buttonSizeStyles = {
 }
 
 interface SilkButtonProps extends React.ComponentProps<typeof motion.button> {
-  $variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
-  $size?: 'sm' | 'md' | 'lg'
+  $variant?: keyof typeof buttonVariantStyles
+  $size?: keyof typeof buttonSizeStyles
 }
 
 export const SilkButton = React.forwardRef<HTMLButtonElement, SilkButtonProps>(
   ({ $variant = 'primary', $size = 'md', className, ...props }, ref) => (
     <motion.button
-      className={`${buttonBaseStyles} ${buttonVariantStyles[$variant]} ${buttonSizeStyles[$size]} ${className || ''}`}
+      className={cx(css(buttonBaseStyles, buttonVariantStyles[$variant], buttonSizeStyles[$size]), className)}
       ref={ref}
       {...props}
     />
@@ -166,12 +166,7 @@ const cardVariantStyles = {
 }
 
 const cardGlowStyles = css`
-  @keyframes glow {
-    0%, 100% { box-shadow: var(--glow-purple); }
-    33% { box-shadow: var(--glow-cyan); }
-    66% { box-shadow: var(--glow-pink); }
-  }
-  animation: glow 4s ease-in-out infinite;
+  animation: silkCardGlow 4s ease-in-out infinite;
 `
 
 interface SilkCardProps extends React.ComponentProps<typeof motion.div> {
@@ -221,11 +216,7 @@ const headingGradientStyles = css`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-  animation: shimmer 3s linear infinite;
+  animation: silkShimmer 3s linear infinite;
 `
 
 interface SilkHeadingProps extends React.ComponentProps<typeof motion.h2> {
@@ -563,10 +554,7 @@ const spinnerBaseStyles = css`
   border: 2px solid var(--border-subtle);
   border-top-color: var(--color-primary);
   border-radius: 50%;
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-  animation: spin 0.6s linear infinite;
+  animation: silkSpin 0.6s linear infinite;
 `
 
 const spinnerSizeStyles = {
@@ -603,11 +591,7 @@ const skeletonBaseStyles = css`
     var(--surface-raised) 100%
   );
   background-size: 200% 100%;
-  @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-  animation: shimmer 1.5s ease-in-out infinite;
+  animation: silkShimmer 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
 `
 
@@ -632,7 +616,7 @@ SilkSkeleton.displayName = 'SilkSkeleton'
 // Star Button Component
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-const starButtonBaseStyles = css`
+const starButtonBaseStyles = css.raw`
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -655,11 +639,7 @@ const starButtonBaseStyles = css`
     height: auto;
     filter: brightness(1.5) drop-shadow(0 0 4px rgba(0, 255, 240, 0.5));
     transition: all var(--duration-normal) var(--ease-silk);
-    @keyframes starFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-2px) rotate(3deg); }
-    }
-    animation: starFloat 2s ease-in-out infinite;
+    animation: silkStarFloat 2s ease-in-out infinite;
   }
 
   &:hover {
@@ -678,13 +658,13 @@ const starButtonBaseStyles = css`
 `
 
 const starButtonVariantStyles = {
-  primary: css`
+  primary: css.raw`
     background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
     color: var(--silk-white);
     border: 1px solid transparent;
     box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   `,
-  secondary: css`
+  secondary: css.raw`
     background: var(--surface-raised);
     color: var(--color-secondary);
     border: 1px solid var(--color-secondary);
@@ -692,7 +672,7 @@ const starButtonVariantStyles = {
 }
 
 const starButtonSizeStyles = {
-  lg: css`
+  lg: css.raw`
     padding: var(--space-4) var(--space-8);
     font-size: clamp(1.8rem, 1.6rem + 0.5vw, 2.2rem);
     gap: var(--space-3);
@@ -702,14 +682,14 @@ const starButtonSizeStyles = {
       width: 28px;
     }
   `,
-  md: css`
+  md: css.raw`
     min-height: 44px;
 
     .star-icon {
       width: 22px;
     }
   `,
-  sm: css`
+  sm: css.raw`
     padding: var(--space-2) var(--space-4);
     font-size: var(--text-sm);
     gap: var(--space-2);
@@ -722,14 +702,17 @@ const starButtonSizeStyles = {
 }
 
 interface StarButtonWrapperProps extends React.ComponentProps<typeof motion.div> {
-  $variant?: 'primary' | 'secondary'
-  $size?: 'sm' | 'md' | 'lg'
+  $variant?: keyof typeof starButtonVariantStyles
+  $size?: keyof typeof starButtonSizeStyles
 }
 
 export const StarButtonWrapper = React.forwardRef<HTMLDivElement, StarButtonWrapperProps>(
   ({ $variant = 'primary', $size = 'md', className, ...props }, ref) => (
     <motion.div
-      className={`${starButtonBaseStyles} ${starButtonVariantStyles[$variant]} ${starButtonSizeStyles[$size]} ${className || ''}`}
+      className={cx(
+        css(starButtonBaseStyles, starButtonVariantStyles[$variant], starButtonSizeStyles[$size]),
+        className,
+      )}
       ref={ref}
       {...props}
     />
@@ -764,11 +747,7 @@ const starDividerBaseStyles = css`
   .star-icon {
     height: auto;
     transition: all var(--duration-normal) var(--ease-silk);
-    @keyframes starGlow {
-      0%, 100% { filter: drop-shadow(0 0 8px rgba(0, 255, 240, 0.4)); }
-      50% { filter: drop-shadow(0 0 16px rgba(162, 89, 255, 0.6)); }
-    }
-    animation: starGlow 3s ease-in-out infinite;
+    animation: silkStarGlow 3s ease-in-out infinite;
 
     &:hover {
       transform: scale(1.1) rotate(5deg);

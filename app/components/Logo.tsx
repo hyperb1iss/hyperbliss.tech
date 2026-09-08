@@ -44,18 +44,9 @@ const logoImageStyles = css`
   width: auto;
   max-width: 100%;
   object-fit: contain;
-  animation: subtleGlow 3s ease-in-out infinite;
+  animation: silkLogoSubtleGlow 3s ease-in-out infinite;
   transition: filter 0.3s ease;
   will-change: filter;
-
-  @keyframes subtleGlow {
-    0%, 100% {
-      filter: drop-shadow(0 0 8px rgba(162, 89, 255, 0.4));
-    }
-    50% {
-      filter: drop-shadow(0 0 12px rgba(0, 255, 240, 0.5));
-    }
-  }
 
   @media (max-width: 768px) {
     height: 60px;
@@ -90,57 +81,11 @@ const TechnologiesText = styled.span`
   position: relative;
   white-space: nowrap;
   animation:
-    slideIn 0.8s ease-out 0.3s both,
-    glitchText 4s ease-in-out infinite,
-    animateGradient 6s linear infinite;
+    silkLogoSlideIn 0.8s ease-out 0.3s both,
+    silkLogoGlitchText 4s ease-in-out infinite,
+    silkLogoAnimateGradient 6s linear infinite;
   align-self: flex-end;
   margin-bottom: 0.8rem;
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateX(-20px);
-      letter-spacing: 0.5em;
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-      letter-spacing: 0.15em;
-    }
-  }
-
-  @keyframes glitchText {
-    0%, 100% {
-      text-shadow:
-        0 0 2px rgba(0, 255, 240, 0.8),
-        -1px 0 rgba(255, 0, 255, 0.5),
-        1px 0 rgba(0, 255, 240, 0.5);
-    }
-    25% {
-      text-shadow:
-        0 0 2px rgba(162, 89, 255, 0.8),
-        -2px 0 rgba(0, 255, 240, 0.5),
-        2px 0 rgba(255, 117, 216, 0.5);
-    }
-    50% {
-      text-shadow:
-        0 0 2px rgba(255, 117, 216, 0.8),
-        -1px 0 rgba(162, 89, 255, 0.5),
-        1px 0 rgba(0, 255, 240, 0.5);
-    }
-    75% {
-      text-shadow:
-        0 0 2px rgba(0, 255, 240, 0.8),
-        -2px 0 rgba(255, 117, 216, 0.5),
-        1px 0 rgba(162, 89, 255, 0.5);
-    }
-  }
-
-  @keyframes animateGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
 
   &::before {
     content: 'technologies';
@@ -156,15 +101,10 @@ const TechnologiesText = styled.span`
       transparent 100%
     );
     background-size: 100% 5px;
-    animation: scanline 8s linear infinite;
+    animation: silkLogoScanline 8s linear infinite;
     opacity: 0.5;
     mix-blend-mode: overlay;
     pointer-events: none;
-  }
-
-  @keyframes scanline {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 10px; }
   }
 
   @media (max-width: 768px) {

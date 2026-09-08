@@ -25,15 +25,10 @@ const titleWrapperStyles = css`
   text-transform: uppercase;
   letter-spacing: 0.15em;
   position: relative;
-  animation: gradientShift 6s ease infinite;
+  animation: silkGradientShift 6s ease infinite;
   filter: drop-shadow(0 0 15px rgba(0, 255, 240, 0.3))
           drop-shadow(0 0 25px rgba(224, 170, 255, 0.2))
           drop-shadow(0 0 20px rgba(255, 117, 216, 0.18));
-
-  @keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
 
   @media (max-width: 768px) {
     font-size: var(--text-fluid-4xl);

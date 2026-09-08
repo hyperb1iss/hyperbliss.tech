@@ -1,6 +1,8 @@
 // app/lib/resumeParser.ts
 // A structure-based resume parser that understands markdown conventions, not specific content
 
+import { remark } from 'remark'
+
 export interface SkillItem {
   name: string
   url?: string
@@ -43,40 +45,42 @@ export interface ParsedResume {
   [key: string]: any // Allow other sections
 }
 
-// Helper to parse markdown links
-function parseMarkdownLink(text: string): { text: string; url?: string } {
-  const match = text.match(/\[(.+?)\]\((.+?)\)/)
-  if (match) {
-    return { text: match[1], url: match[2] }
-  }
-  return { text }
+const markdownParser = remark()
+type MarkdownNode = ReturnType<typeof markdownParser.parse>['children'][number]
+
+function nodeText(node: MarkdownNode): string {
+  if ('value' in node) return node.value
+  return 'children' in node ? node.children.map(nodeText).join('') : ''
 }
 
-// Helper to extract all links from text and return them as SkillItems
+// Parse Markdown before separating items so punctuation inside links stays intact.
 function extractLinksAsItems(text: string): SkillItem[] {
   const items: SkillItem[] = []
-
-  // Split by common delimiters
-  const parts = text.split(/[,|]/)
-
-  for (const part of parts) {
-    const trimmed = part.trim()
-    if (!trimmed) continue
-
-    // Check for markdown link
-    const linkMatch = trimmed.match(/\[(.+?)\]\((.+?)\)/)
-    if (linkMatch) {
-      items.push({ name: linkMatch[1], url: linkMatch[2] })
-    } else {
-      // Remove any markdown formatting
-      const clean = trimmed.replace(/\*\*/g, '').trim()
-      if (clean) {
-        items.push({ name: clean })
-      }
+  let plainText = ''
+  const flushText = () => {
+    for (const name of plainText.split(/[,|]/).map((part) => part.trim())) {
+      if (name) items.push({ name })
+    }
+    plainText = ''
+  }
+  const visit = (node: MarkdownNode) => {
+    if (node.type === 'link') {
+      flushText()
+      items.push({ name: nodeText(node), url: node.url })
+    } else if ('children' in node) {
+      node.children.forEach(visit)
+    } else if ('value' in node) {
+      plainText += node.value
     }
   }
-
+  markdownParser.parse(text).children.forEach(visit)
+  flushText()
   return items
+}
+
+function parseMarkdownLink(text: string): { text: string; url?: string } {
+  const link = extractLinksAsItems(text).find((item) => item.url)
+  return link ? { text: link.name, url: link.url } : { text }
 }
 
 // Helper to detect section type by keywords
@@ -367,7 +371,7 @@ export function parseResume(markdown: string): ParsedResume {
       }
       i = j - 1
 
-      const urls = [...contactText.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)].map((m) => m[1])
+      const urls = extractLinksAsItems(contactText).flatMap((item) => (item.url ? [item.url] : []))
 
       const email = urls.find((url) => url.startsWith('mailto:'))
       if (email) result.contact.email = email.replace(/^mailto:/, '')

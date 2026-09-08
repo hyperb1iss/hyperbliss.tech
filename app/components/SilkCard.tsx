@@ -64,12 +64,7 @@ const cardWrapperStyles = css`
     opacity: 0.6;
     transition: opacity var(--duration-normal) var(--ease-silk);
     background-size: 200% 200%;
-    animation: borderFlow 8s ease infinite;
-  }
-
-  @keyframes borderFlow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    animation: silkCardBorderFlow 8s ease infinite;
   }
 
   &:hover {

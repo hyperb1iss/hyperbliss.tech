@@ -216,13 +216,8 @@ const Hint = styled.span`
   color: var(--text-muted);
 
   & .blink {
-    animation: termCaretBlink 1.1s step-end infinite;
+    animation: silkTerminalCaretBlink 1.1s step-end infinite;
     color: var(--silk-circuit-cyan);
-  }
-
-  @keyframes termCaretBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {

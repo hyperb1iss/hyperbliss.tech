@@ -30,22 +30,21 @@ const resumeWrapperStyles = css`
   max-width: 1400px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "contact" "content" "skills";
   gap: var(--space-10);
 
   @media (min-width: 1024px) {
-    grid-template-columns: 350px 1fr;
-    gap: var(--space-12);
+    grid-template-columns: 350px minmax(0, 1fr);
+    grid-template-areas: "contact content" "skills content";
+    grid-template-rows: auto 1fr;
+    gap: var(--space-6) var(--space-12);
   }
 `
 
-const sidebarStyles = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-`
-
 const contactCardStyles = css`
+  grid-area: contact;
+  align-self: start;
   background: linear-gradient(
     135deg,
     rgba(139, 92, 246, 0.08) 0%,
@@ -81,16 +80,14 @@ const contactCardStyles = css`
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0.6;
-    animation: glow 3s ease-in-out infinite;
+    animation: silkBorderGlow 3s ease-in-out infinite;
   }
 
-  @keyframes glow {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 0.8; }
-  }
 `
 
 const skillsCardStyles = css`
+  grid-area: skills;
+  align-self: start;
   background: linear-gradient(
     135deg,
     rgba(30, 41, 59, 0.6) 0%,
@@ -127,6 +124,8 @@ const skillsCardStyles = css`
 `
 
 const mainContentStyles = css`
+  grid-area: content;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -182,14 +181,10 @@ const contentSectionStyles = css`
       rgba(255, 255, 255, 0.03),
       transparent
     );
-    animation: shimmer 8s infinite;
+    animation: silkResumeShimmer 8s infinite;
     pointer-events: none;
   }
 
-  @keyframes shimmer {
-    0% { background-position: -1000px 0; }
-    100% { background-position: 1000px 0; }
-  }
 `
 
 const downloadButtonStyles = css`
@@ -611,72 +606,43 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
       <PageTitle>Resume</PageTitle>
 
       <motion.div className={resumeWrapperStyles}>
-        <motion.div className={sidebarStyles}>
-          <motion.div
-            animate={{ opacity: 1, x: 0 }}
-            className={contactCardStyles}
-            initial={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <ContactTitle>{name || 'Connect'}</ContactTitle>
-            {contact.email && (
-              <ContactItem href={`mailto:${contact.email}`}>
-                <FiMail />
-                <span>{contact.email}</span>
-              </ContactItem>
-            )}
-            {contact.github && (
-              <ContactItem href={contact.github} rel="noopener noreferrer" target="_blank">
-                <FiGithub />
-                <span>{contact.github.replace('https://github.com/', '')}</span>
-              </ContactItem>
-            )}
-            {contact.linkedin && (
-              <ContactItem href={contact.linkedin} rel="noopener noreferrer" target="_blank">
-                <FiLinkedin />
-                <span>{contact.linkedin.replace('https://www.linkedin.com/in/', '')}</span>
-              </ContactItem>
-            )}
-            {contact.website && (
-              <ContactItem href={contact.website} rel="noopener noreferrer" target="_blank">
-                <FiGlobe />
-                <span>{contact.website.replace(/https?:\/\/(www\.)?/, '')}</span>
-              </ContactItem>
-            )}
-            {contact.links && (
-              <ContactItem href={contact.links} rel="noopener noreferrer" target="_blank">
-                <FiLink />
-                <span>Links</span>
-              </ContactItem>
-            )}
-          </motion.div>
-
-          <motion.div
-            animate={{ opacity: 1, x: 0 }}
-            className={skillsCardStyles}
-            initial={{ opacity: 0, x: -20 }}
-            transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <ContactTitle>Skills</ContactTitle>
-            {displaySkills.map(([category, items]) => (
-              <SkillCategory key={category}>
-                <SkillLabel>{category}</SkillLabel>
-                <SkillTags>
-                  {items.map((skill, idx) => (
-                    <SkillTag
-                      as={skill.url ? 'a' : 'span'}
-                      href={skill.url}
-                      key={idx}
-                      rel={skill.url ? 'noopener noreferrer' : undefined}
-                      target={skill.url ? '_blank' : undefined}
-                    >
-                      {skill.name}
-                    </SkillTag>
-                  ))}
-                </SkillTags>
-              </SkillCategory>
-            ))}
-          </motion.div>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          className={contactCardStyles}
+          initial={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+        >
+          <ContactTitle>{name || 'Connect'}</ContactTitle>
+          {contact.email && (
+            <ContactItem href={`mailto:${contact.email}`}>
+              <FiMail />
+              <span>{contact.email}</span>
+            </ContactItem>
+          )}
+          {contact.github && (
+            <ContactItem href={contact.github} rel="noopener noreferrer" target="_blank">
+              <FiGithub />
+              <span>{contact.github.replace('https://github.com/', '')}</span>
+            </ContactItem>
+          )}
+          {contact.linkedin && (
+            <ContactItem href={contact.linkedin} rel="noopener noreferrer" target="_blank">
+              <FiLinkedin />
+              <span>{contact.linkedin.replace('https://www.linkedin.com/in/', '')}</span>
+            </ContactItem>
+          )}
+          {contact.website && (
+            <ContactItem href={contact.website} rel="noopener noreferrer" target="_blank">
+              <FiGlobe />
+              <span>{contact.website.replace(/https?:\/\/(www\.)?/, '')}</span>
+            </ContactItem>
+          )}
+          {contact.links && (
+            <ContactItem href={contact.links} rel="noopener noreferrer" target="_blank">
+              <FiLink />
+              <span>Links</span>
+            </ContactItem>
+          )}
         </motion.div>
 
         <motion.div className={mainContentStyles}>
@@ -906,6 +872,32 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               </TimelineContent>
             </motion.div>
           )}
+        </motion.div>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          className={skillsCardStyles}
+          initial={{ opacity: 0, x: -20 }}
+          transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+        >
+          <ContactTitle>Skills</ContactTitle>
+          {displaySkills.map(([category, items]) => (
+            <SkillCategory key={category}>
+              <SkillLabel>{category}</SkillLabel>
+              <SkillTags>
+                {items.map((skill, idx) => (
+                  <SkillTag
+                    as={skill.url ? 'a' : 'span'}
+                    href={skill.url}
+                    key={idx}
+                    rel={skill.url ? 'noopener noreferrer' : undefined}
+                    target={skill.url ? '_blank' : undefined}
+                  >
+                    {skill.name}
+                  </SkillTag>
+                ))}
+              </SkillTags>
+            </SkillCategory>
+          ))}
         </motion.div>
       </motion.div>
 
