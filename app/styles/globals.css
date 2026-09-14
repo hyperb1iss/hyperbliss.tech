@@ -444,3 +444,20 @@
     opacity: 1;
   }
 }
+
+/* Terminal handle glow while the console is closed. Referenced by
+   app/components/terminal/TerminalConsole.tsx; the reduced-motion rule above
+   collapses it to a single frame. */
+@keyframes handle-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 6px 24px rgba(0, 0, 0, 0.5),
+      0 0 14px rgba(0, 255, 240, 0.15);
+  }
+  50% {
+    box-shadow:
+      0 6px 24px rgba(0, 0, 0, 0.5),
+      0 0 28px rgba(0, 255, 240, 0.45);
+  }
+}

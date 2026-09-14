@@ -9,7 +9,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { css } from '../../../styled-system/css'
@@ -94,9 +94,14 @@ const handleStyles = css`
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 255, 240, 0.18);
   -webkit-tap-highlight-color: transparent;
   transition: top var(--duration-normal) var(--ease-silk);
+  /* Gentle pulse while closed so the pull-down reads as interactive. A CSS
+     keyframe (declared in globals.css) rather than a Framer loop: it costs no
+     JS per frame and the global reduced-motion rule stops it. */
+  animation: handle-pulse 2.4s ease-in-out infinite;
 
   &[data-open='true'] {
     top: calc(var(--nav-expanded) - 18px);
+    animation: none;
   }
 
   & .prompt {
@@ -153,6 +158,8 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
     setIsExpanded(false)
   }, [setConsoleOpen, setIsExpanded])
 
+  const handleRef = useRef<HTMLButtonElement>(null)
+
   const toggle = useCallback(() => {
     const next = !isConsoleOpen
     setConsoleOpen(next)
@@ -164,7 +171,10 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   useEffect(() => {
     if (!isConsoleOpen) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+      if (e.key !== 'Escape') return
+      close()
+      // Hand focus back to the handle so keyboard users land where they left.
+      handleRef.current?.focus({ preventScroll: true })
     }
     window.addEventListener('keydown', onKey)
 
@@ -211,27 +221,13 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
         )}
       </AnimatePresence>
 
-      <motion.button
-        animate={
-          isConsoleOpen
-            ? { boxShadow: '0 6px 24px rgba(0,0,0,0.5), 0 0 18px rgba(0,255,240,0.18)' }
-            : {
-                // Gentle pulse while closed so the pull-down reads as interactive.
-                boxShadow: [
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 14px rgba(0,255,240,0.15)',
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 28px rgba(0,255,240,0.45)',
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 14px rgba(0,255,240,0.15)',
-                ],
-              }
-        }
+      <button
         aria-expanded={isConsoleOpen}
         aria-label={isConsoleOpen ? 'Close terminal console' : 'Open terminal console'}
         className={handleStyles}
         data-open={isConsoleOpen}
         onClick={toggle}
-        transition={
-          isConsoleOpen ? { duration: 0.2 } : { duration: 2.4, ease: 'easeInOut', repeat: Number.POSITIVE_INFINITY }
-        }
+        ref={handleRef}
         type="button"
       >
         <motion.svg
@@ -248,7 +244,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
         <span className="prompt">guest@hyperbliss:~$</span>
-      </motion.button>
+      </button>
     </div>,
     document.body,
   )
