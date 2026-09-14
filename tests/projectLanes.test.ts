@@ -78,6 +78,38 @@ describe('groupByLane', () => {
 })
 
 describe('pickFeatured', () => {
+  it('falls back to release recency when fewer than half the repos have stats', () => {
+    // A rate-limited build: two of six repos answered. Ranking those two would
+    // crown whichever got through, so recency wins instead.
+    const entries = [
+      entry('a', 'web', { stats: stats(5, '2025-01-01') }),
+      entry('b', 'web', { stats: stats(50, '2025-01-01') }),
+      entry('c', 'web', { releaseDate: '2026-03-01' }),
+      entry('d', 'web', { releaseDate: '2026-02-01' }),
+      entry('e', 'web'),
+      entry('f', 'web'),
+    ]
+    expect(pickFeatured(entries, 2).map((e) => e.project.slug)).toEqual(['c', 'd'])
+  })
+
+  it('falls back to release recency when no project has a GitHub URL', () => {
+    const offGithub = (slug: string, releaseDate: string): ProjectEntry => {
+      const e = entry(slug, 'web', { releaseDate })
+      return { ...e, project: { ...e.project, github: null } }
+    }
+    const picked = pickFeatured([offGithub('a', '2026-01-01'), offGithub('b', '2026-03-01')], 2)
+    expect(picked.map((e) => e.project.slug)).toEqual(['b', 'a'])
+  })
+
+  it('ranks by stars once a majority of repos have stats', () => {
+    const entries = [
+      entry('a', 'web', { stats: stats(5, '2025-01-01') }),
+      entry('b', 'web', { stats: stats(50, '2025-01-01') }),
+      entry('c', 'web', { releaseDate: '2026-03-01' }),
+    ]
+    expect(pickFeatured(entries, 2).map((e) => e.project.slug)).toEqual(['b', 'a'])
+  })
+
   it('takes the most starred, breaking ties on recent pushes, skipping archived', () => {
     const picked = pickFeatured(
       [

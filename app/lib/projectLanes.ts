@@ -72,11 +72,17 @@ export function groupByLane(entries: ProjectEntry[]): Array<{ lane: Lane; entrie
 
 /**
  * The featured trio: most starred first, with recent activity as the
- * tiebreak. Falls back to release recency when no stats came back at all.
+ * tiebreak. Falls back to release recency unless most repos answered with stats.
  */
 export function pickFeatured(entries: ProjectEntry[], count = 3): ProjectEntry[] {
-  const withStats = entries.filter((e) => e.stats && !e.stats.archived)
-  if (withStats.length === 0) return sortEntries(entries).slice(0, count)
+  const candidates = entries.filter((e) => e.project.github)
+  const withStats = candidates.filter((e) => e.stats && !e.stats.archived)
+  // A rate-limited build answers for a handful of repos and nulls the rest.
+  // Ranking that subset would crown whichever repos got through, so anything
+  // short of majority coverage is treated like no coverage at all.
+  if (candidates.length === 0 || withStats.length < Math.ceil(candidates.length / 2)) {
+    return sortEntries(entries).slice(0, count)
+  }
   return [...withStats]
     .sort((a, b) => {
       const byStars = (b.stats?.stars ?? 0) - (a.stats?.stars ?? 0)

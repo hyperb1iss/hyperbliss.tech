@@ -111,6 +111,57 @@ function truncateAtWord(text: string, max: number): string {
 const releaseCache = new Map<string, { data: ReleaseInfo | null; timestamp: number }>()
 const CACHE_TTL = 1000 * 60 * 60 // 1 hour
 
+// Rate-limit backoff shared by every GitHub call in this process. A tokenless
+// build used to log and retry one 403 per repo per route render (900+ warnings
+// in a single build); now the first hit parks every call until GitHub's reset.
+let rateLimitedUntil = 0
+
+/** True while GitHub has told us to back off; callers answer null without a request. */
+export function isGitHubRateLimited(now = Date.now()): boolean {
+  return now < rateLimitedUntil
+}
+
+/** Forget the backoff window. Tests only. */
+export function resetGitHubRateLimit(): void {
+  rateLimitedUntil = 0
+}
+
+/**
+ * 429 is always a limit. A 403 is the primary limit when the budget counter
+ * reads zero or is missing, and the secondary limit when GitHub sends
+ * retry-after (the counter can still be positive then). A 403 with budget
+ * left and no retry-after is a forbidden repo and is cached like a 404.
+ */
+function isRateLimitResponse(response: Response): boolean {
+  if (response.status === 429) return true
+  if (response.status !== 403) return false
+  if (response.headers.has('retry-after')) return true
+  const remaining = response.headers.get('x-ratelimit-remaining')
+  return remaining === null || remaining === '0'
+}
+
+function noteRateLimit(response: Response, what: string): void {
+  const now = Date.now()
+  const reset = Number(response.headers.get('x-ratelimit-reset')) * 1000
+  const retryAfter = Number(response.headers.get('retry-after')) * 1000
+  const newWindow = !isGitHubRateLimited(now)
+  // Wait for the reset when GitHub names a future one, otherwise the minute
+  // its docs ask for. A reset at or before now (window edge, clock skew) must
+  // still park calls rather than reopen the floodgates.
+  const until = Math.max(reset > now ? reset : 0, retryAfter > 0 ? now + retryAfter : 0, now + 60_000)
+  rateLimitedUntil = until
+  if (!newWindow) return
+  console.warn(
+    `GitHub rate limit hit fetching ${what} (HTTP ${response.status}); skipping GitHub until ${new Date(rateLimitedUntil).toISOString()}. Set GITHUB_TOKEN (or GH_TOKEN) in the deploy environment.`,
+  )
+}
+
+/** Accept plus auth headers. Honors GITHUB_TOKEN and the gh CLI's GH_TOKEN. */
+function githubHeaders(accept = 'application/vnd.github.v3+json'): Record<string, string> {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+  return { Accept: accept, ...(token && { Authorization: `token ${token}` }) }
+}
+
 /**
  * Extract owner and repo from a GitHub URL
  * Supports: https://github.com/owner/repo, github.com/owner/repo
@@ -139,29 +190,20 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
     return cached.data
   }
 
+  if (isGitHubRateLimited()) return null
+
   try {
     const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}/releases/latest`, {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        // Add token if available for higher rate limits
-        ...(process.env.GITHUB_TOKEN && {
-          Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        }),
-      },
+      headers: githubHeaders(),
       // Cache for 1 hour in Next.js fetch cache
       next: { revalidate: 3600 },
     })
 
     if (!response.ok) {
-      if (response.status === 403 || response.status === 429) {
-        // Rate limited: say so distinctly so a quiet feed is diagnosable, and
-        // don't cache it, so the next revalidation retries instead of sitting
-        // on an empty result for an hour.
-        const reset = response.headers.get('x-ratelimit-reset')
-        const resetsAt = reset ? `, resets at ${new Date(Number(reset) * 1000).toISOString()}` : ''
-        console.warn(
-          `GitHub rate limit hit fetching ${cacheKey} (HTTP ${response.status})${resetsAt}. Set GITHUB_TOKEN in the deploy environment.`,
-        )
+      if (isRateLimitResponse(response)) {
+        // Not cached, so the next revalidation retries instead of sitting on
+        // an empty result for an hour.
+        noteRateLimit(response, cacheKey)
         return null
       }
       // No releases or repo not found - cache the null result
@@ -209,18 +251,16 @@ export async function getRepoStats(githubUrl: string): Promise<RepoStats | null>
   const cacheKey = `${parsed.owner}/${parsed.repo}`
   const cached = statsCache.get(cacheKey)
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.data
+  if (isGitHubRateLimited()) return null
 
   try {
     const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}`, {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        ...(process.env.GITHUB_TOKEN && { Authorization: `token ${process.env.GITHUB_TOKEN}` }),
-      },
+      headers: githubHeaders(),
       next: { revalidate: 3600 },
     })
     if (!response.ok) {
-      if (response.status === 403 || response.status === 429) {
-        console.warn(`GitHub rate limit hit fetching repo stats for ${cacheKey} (HTTP ${response.status}).`)
+      if (isRateLimitResponse(response)) {
+        noteRateLimit(response, `repo stats for ${cacheKey}`)
         return null
       }
       statsCache.set(cacheKey, { data: null, timestamp: Date.now() })
@@ -455,17 +495,17 @@ function emptyActivity(ok: boolean): ActivitySummary {
  * fall back gracefully. One upstream request; cached 5 minutes via Next.
  */
 export async function getRecentActivity(username = GITHUB_USERNAME): Promise<ActivitySummary> {
+  if (isGitHubRateLimited()) return emptyActivity(false)
   let raw: unknown
   try {
     const response = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'User-Agent': 'hyperbliss.tech',
-        ...(process.env.GITHUB_TOKEN && { Authorization: `token ${process.env.GITHUB_TOKEN}` }),
-      },
+      headers: { ...githubHeaders('application/vnd.github+json'), 'User-Agent': 'hyperbliss.tech' },
       next: { revalidate: 300 },
     })
-    if (!response.ok) return emptyActivity(false)
+    if (!response.ok) {
+      if (isRateLimitResponse(response)) noteRateLimit(response, `activity for ${username}`)
+      return emptyActivity(false)
+    }
     raw = await response.json()
   } catch (error) {
     console.error('Failed to fetch GitHub activity:', error)
