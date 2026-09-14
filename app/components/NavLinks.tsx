@@ -110,12 +110,11 @@ const NavLinks: React.FC = () => {
 
   return (
     <NavLinksContainer>
-      {NAV_ITEMS.map((item) => {
-        const href = `/${item.toLowerCase()}`
+      {NAV_ITEMS.map(({ href, label }) => {
         const isActive = isNavigationActive(pathname, href)
 
         return (
-          <NavItem key={item}>
+          <NavItem key={href}>
             <motion.a
               aria-current={isActive ? 'page' : undefined}
               className={navLinkBaseStyles}
@@ -123,7 +122,7 @@ const NavLinks: React.FC = () => {
               onClick={(e) => handleNavigation(href, e)}
               whileTap={{ scale: 0.98 }}
             >
-              {item}
+              {label}
             </motion.a>
           </NavItem>
         )

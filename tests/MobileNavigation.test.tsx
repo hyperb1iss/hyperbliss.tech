@@ -28,7 +28,7 @@ it('opens by keyboard and closes with Escape, returning focus to the toggle', as
   expect(panel).not.toHaveAttribute('inert')
   expect(screen.getByText('About')).toHaveFocus()
   await user.tab()
-  expect(screen.getByText('Blog')).toHaveFocus()
+  expect(screen.getByText('Writing')).toHaveFocus()
   expect(screen.getByText('Projects')).toHaveAttribute('aria-current', 'page')
   screen.getByText('Projects').focus()
   await user.keyboard('{Escape}')

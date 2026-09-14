@@ -1,9 +1,21 @@
 // app/lib/navigation.ts
+export interface NavItem {
+  label: string
+  href: string
+}
+
 /**
- * Array of navigation item labels
- * Used to generate the main navigation menu
+ * Main navigation, in display order. Labels and routes are decoupled so the
+ * index page, the nav, and the front page can all say "Writing" while the
+ * essays keep living at /blog.
  */
-export const NAV_ITEMS = ['About', 'Blog', 'Projects', 'Lab', 'Resume']
+export const NAV_ITEMS: readonly NavItem[] = [
+  { href: '/about', label: 'About' },
+  { href: '/blog', label: 'Writing' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/lab', label: 'Lab' },
+  { href: '/resume', label: 'Resume' },
+]
 
 export const isNavigationActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)

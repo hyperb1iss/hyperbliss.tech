@@ -143,7 +143,7 @@ function manifestPathSet(manifest: Manifest): Set<string> {
 }
 
 function allowedHrefSet(manifest: Manifest): Set<string> {
-  const routeHrefs = NAV_ITEMS.map((label) => `/${label.toLowerCase()}/`)
+  const routeHrefs = NAV_ITEMS.map((item) => `${item.href}/`)
   return new Set(['/', ...routeHrefs, ...manifest.entries.flatMap((entry) => (entry.href ? [entry.href] : []))])
 }
 

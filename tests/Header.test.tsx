@@ -29,7 +29,7 @@ describe('Header', () => {
   it('renders navigation links', () => {
     render(<Header />)
     const aboutLinks = screen.getAllByText(/about/i)
-    const blogLinks = screen.getAllByText(/blog/i)
+    const blogLinks = screen.getAllByText(/writing/i)
     const projectsLinks = screen.getAllByText(/projects/i)
     const resumeLinks = screen.getAllByText(/resume/i)
 
