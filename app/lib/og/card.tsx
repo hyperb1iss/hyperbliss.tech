@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 export const OG_WIDTH = 1200
 export const OG_HEIGHT = 630
 
-export type OgKind = 'site' | 'blog' | 'project'
+export type OgKind = 'site' | 'blog' | 'project' | 'lab'
 
 export interface OgCardProps {
   kind: OgKind
@@ -30,10 +30,13 @@ function titleSize(title: string): number {
   return 40
 }
 
+const KIND_LABELS: Record<OgKind, string> = { blog: 'BLOG', lab: 'LAB', project: 'PROJECT', site: 'SITE' }
+
 function promptLine({ kind, path }: OgCardProps): string {
   if (path) return `$ ${path}`
   if (kind === 'blog') return '$ cat blog/latest.md'
   if (kind === 'project') return '$ hyperbliss projects --show'
+  if (kind === 'lab') return '$ hyperbliss lab --open'
   return '$ hyperbliss --hello'
 }
 
@@ -189,7 +192,7 @@ function ContentBody(props: OgCardProps): ReactElement {
       </div>
       <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ alignItems: 'center', display: 'flex', gap: 16 }}>
-          <Pill color={NEON_PINK} text={kind === 'blog' ? 'BLOG' : 'PROJECT'} />
+          <Pill color={NEON_PINK} text={KIND_LABELS[kind]} />
           {meta ? <Pill color={COSMIC_PURPLE} text={clamp(meta, 40)} /> : null}
         </div>
         <div style={{ alignItems: 'center', display: 'flex', gap: 18 }}>

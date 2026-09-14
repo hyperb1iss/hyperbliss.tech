@@ -243,7 +243,7 @@ const downloadButtonStyles = css`
 // Static Panda CSS styles
 // ═══════════════════════════════════════════════════════════════════════════
 
-const ContactTitle = styled.h3`
+const ContactTitle = styled.h2`
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 700;
@@ -316,7 +316,7 @@ const SkillCategory = styled.div`
   }
 `
 
-const SkillLabel = styled.h4`
+const SkillLabel = styled.h3`
   font-family: var(--font-mono);
   font-size: 1.3rem;
   font-weight: var(--font-semibold);
@@ -433,7 +433,7 @@ const TimelineItem = styled.div`
   }
 `
 
-const SubLabel = styled.h4`
+const SubLabel = styled.h3`
   font-family: var(--font-mono);
   font-size: 1.1rem;
   font-weight: 700;

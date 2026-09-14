@@ -136,7 +136,13 @@ export default function ProjectRows({
             <div>
               <Name>
                 <Link href={`/projects/${project.slug}/`}>{name}</Link>
-                {sub && <Tagline>{sub}</Tagline>}
+                {/* Space for the accessible name; the flex gap draws the gap. */}
+                {sub && (
+                  <>
+                    {' '}
+                    <Tagline>{sub}</Tagline>
+                  </>
+                )}
               </Name>
               {project.description && <Description>{project.description}</Description>}
               {tags.length > 0 && (

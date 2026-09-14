@@ -7,7 +7,7 @@ import type { NextRequest } from 'next/server'
 import { OG_HEIGHT, OG_WIDTH, OgCard, type OgKind } from '@/lib/og/card'
 import { loadOgFonts } from '@/lib/og/fonts'
 
-const KINDS: readonly OgKind[] = ['site', 'blog', 'project']
+const KINDS: readonly OgKind[] = ['site', 'blog', 'project', 'lab']
 
 let logoCache: string | null = null
 

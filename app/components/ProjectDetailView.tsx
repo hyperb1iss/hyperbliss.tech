@@ -75,7 +75,14 @@ export default function ProjectDetailView({
         </div>
         <h1 className="project-detail__title">
           {name}
-          {sub && <span className="project-detail__tagline">{sub}</span>}
+          {/* The space keeps the accessible name from reading as "SibylMemory";
+              the flex gap draws the visual separation. */}
+          {sub && (
+            <>
+              {' '}
+              <span className="project-detail__tagline">{sub}</span>
+            </>
+          )}
         </h1>
       </Reveal>
 

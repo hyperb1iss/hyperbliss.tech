@@ -72,7 +72,7 @@ const cardStyles = css`
   }
 `
 
-const Name = styled.h3`
+const Name = styled.h2`
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 2.8rem;
