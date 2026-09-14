@@ -194,9 +194,13 @@ export class Particle {
     }
     this.position[2] = ((this.position[2] + 300) % 600) - 300
 
-    // Ensure minimum and maximum speed
+    // Ensure minimum and maximum speed. A stationary particle gets a fresh
+    // heading rather than a divide-by-zero that would poison it with NaN.
     const speed = vec3.length(this.velocity)
-    if (speed < this.minSpeed) {
+    if (speed === 0) {
+      const angle = Math.random() * Math.PI * 2
+      vec3.set(this.velocity, Math.cos(angle) * this.minSpeed, Math.sin(angle) * this.minSpeed, 0)
+    } else if (speed < this.minSpeed) {
       vec3.scale(this.velocity, this.velocity, this.minSpeed / speed)
     } else if (speed > this.maxSpeed) {
       vec3.scale(this.velocity, this.velocity, this.maxSpeed / speed)

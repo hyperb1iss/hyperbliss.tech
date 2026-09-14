@@ -24,6 +24,9 @@ describe('particle lifecycle', () => {
     particle.update(false, 0, 0, 800, 200, [], 1)
     expect(particle.isOutOfBounds(800, 200)).toBe(false)
     expect(particle.isReady()).toBe(true)
+    // A zero velocity used to become NaN through the min-speed rescale.
+    expect(Array.from(particle.velocity).every(Number.isFinite)).toBe(true)
+    expect(vec3.length(particle.velocity)).toBeGreaterThan(0)
   })
 
   it('burst particles are visible the frame they are emitted and expire once', () => {

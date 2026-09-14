@@ -432,7 +432,8 @@ export const initializeCyberScape = (
     const idle = now - lastActivityAt > config.idleCalmDelayMs && !isAnimationTriggered
     const energyTarget = idle ? config.idleCalmEnergy : 1
     const ease = 1 - Math.exp(-dtMs / config.energySmoothingMs)
-    energy += (energyTarget - energy) * ease
+    // Clamped so a bad delta can never push the field past full speed or below rest.
+    energy = Math.min(1, Math.max(0, energy + (energyTarget - energy) * ease))
 
     magnet.strength += (magnet.target - magnet.strength) * (1 - Math.exp(-dtMs / 220))
     scrollDrift *= Math.exp(-dtMs / config.scrollDepthDecayMs)
@@ -547,8 +548,9 @@ export const initializeCyberScape = (
     lastFrameTime = now
 
     // Integrate by elapsed time so motion is identical at 30, 60, or 120Hz.
-    // A tab switch or a long GC pause clamps to one long-ish frame instead of a jump.
-    const dtMs = Math.min(rawDelta, config.maxFrameDeltaMs)
+    // A tab switch or a long GC pause clamps to one long-ish frame instead of a jump,
+    // and a non-monotonic clock can never run the simulation backwards.
+    const dtMs = Math.max(0, Math.min(rawDelta, config.maxFrameDeltaMs))
     updateContext(now, dtMs)
     // The field's motion runs on its own clock, which slows while calm
     const step = (dtMs / config.simulationTickMs) * energy
