@@ -9,9 +9,10 @@ export function generatePersonSchema(): WithContext<Person> {
     '@context': 'https://schema.org',
     '@type': 'Person',
     alternateName: 'hyperb1iss',
-    description: 'Developer, designer, and tech enthusiast. Open source contributor and creative technologist.',
+    description:
+      'Creative technologist building open source developer tools, terminal interfaces, and infrastructure for AI agents.',
     image: `${BASE_URL}/images/profile-image.jpg`,
-    jobTitle: 'Full Stack Engineer & Creative Technologist',
+    jobTitle: 'Creative Technologist',
     knowsAbout: Array.from(TECH_TAGS),
     name: 'Stefanie Jane',
     sameAs: ['https://github.com/hyperb1iss', 'https://twitter.com/hyperb1iss', 'https://linkedin.com/in/stefaniejane'],
@@ -28,7 +29,8 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
       name: 'Stefanie Jane',
       url: BASE_URL,
     },
-    description: 'The personal website of Stefanie Jane—developer, designer, and tech enthusiast.',
+    description:
+      "Stefanie Jane's personal site: open source developer tools, terminal interfaces, and infrastructure for AI agents, plus essays and lab experiments.",
     name: 'Hyperbliss',
     potentialAction: {
       '@type': 'SearchAction',

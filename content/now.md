@@ -1,16 +1,16 @@
 ---
 title: Now
 emoji: '🌊'
-focus: 'Rebuilding the hyperbliss.tech front page, rewriting Sibyl retrieval with an agent in the loop, and writing about loop engineering.'
-updated: '2026-09-04'
+focus: 'Shipping the new hyperbliss.tech, rewriting Sibyl retrieval with an agent in the loop, and writing about loop engineering.'
+updated: '2026-09-14'
 location: 'Seattle, WA'
 ---
 
 ## What I'm doing now
 
-The front door of this site is becoming a front page: the newest thing
-first, everything else in one feed, and a quiet rail for what's shipping.
-The terminal is still here. Pull the handle or run `help`.
+This site just got a new front door: the newest thing first, everything
+else in one feed, and a quiet rail for what's shipping. The terminal is
+still here. Pull the handle or run `help`.
 
 ## Currently shipping
 
