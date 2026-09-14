@@ -1,8 +1,8 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Front page + all inner pages built and reviewed (PASS). Ready for Bliss's eyes and a PR.** · Branch: `nova/front-page` ·
+> Status: **Ship-readiness pass done 2026-09-14; fixes landed. Ready for a PR.** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
-> Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-04
+> Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-14
 
 ## Why
 
@@ -168,6 +168,32 @@ transform: none }` frame). Wrappers fade; rows and blocks inside lift.
       here); Resume headings calmed. `0964083`
 - [x] **P4** Independent review of the pages wave (round 1 fixed in
       `d24b423`, round 2 pending).
+
+### Ship-readiness pass (2026-09-14)
+
+Gates green at `e30c8eb` (lint, typecheck, 320 tests, build); Playwright
+sweep of all 44 sitemap routes at 1440 and 390 clean. Codex was out of
+quota, so a fresh-context Claude reviewer covered the unreviewed range
+`c1f4d8c..e30c8eb` (context independence only): NEEDS_CHANGES on two
+counts, both confirmed and fixed here along with the smaller items.
+
+- Rate-limited builds ranked whichever repos answered before the budget
+  ran out and shipped them as the flagship trio. `pickFeatured` now needs
+  majority coverage; GitHub calls share one backoff after the first hit
+  and honor `GH_TOKEN` as well as `GITHUB_TOKEN`.
+- The terminal handle's Framer box-shadow loop ran on every route and
+  ignored reduced motion; it is a CSS keyframe now, and Escape returns
+  focus to the handle.
+- Heading order on Projects and Resume; project h1 accessible name; lab
+  pages get an og:image (new `lab` card kind); one site description;
+  nav says Writing (route stays `/blog`); CyberScape clock and energy
+  clamps; `now.md` no longer says the front page is being rebuilt.
+- The emoji-to-Feather `ProjectIcon` swap that sat uncommitted since
+  2026-09-08 is committed as its own checkpoint.
+
+Still open: `GITHUB_TOKEN` (or `GH_TOKEN`) must be set in the Netlify
+environment; the OG renderer still sets Jura and Exo 2; resume chrome;
+date-prefixed essay slugs; a unified feed archive route.
 
 ## Open taste items
 

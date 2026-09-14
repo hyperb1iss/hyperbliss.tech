@@ -18,7 +18,9 @@ Components, Edge Functions **Deployment**: Netlify with performance optimization
 - Canvas2D particle system with 3D projections using gl-matrix
 - Interactive particles responding to mouse/touch
 - Multiple shapes (cubes, pyramids, octahedrons)
-- Glitch effects, datastream, chromatic aberration
+- Glitch effects and datastream, all on the SilkCircuit palette
+- Time-based stepping (identical motion at 30, 60, or 120Hz) with an
+  energy clock that calms the field when nobody is over the band
 - Spatial partitioning with Octree for collision detection
 - Performance-adaptive particle counts
 
@@ -26,12 +28,17 @@ Components, Edge Functions **Deployment**: Netlify with performance optimization
 
 ```
 /(transition)/
-├── Home — Interactive hero with CyberScape
-├── About — Personal narrative
-├── Blog — Technical articles with syntax highlighting
-├── Projects — GitHub-integrated portfolio pieces
+├── Home — Front page: lead story, unified feed, rail (who, now, shipping)
+├── About — Personal narrative (the CyanogenMod story lives here)
+├── Blog — "Writing" in the nav; essays at /blog/<slug>
+├── Projects — Flagship trio, lanes, live GitHub facts, detail pages
+├── Lab — Interactive experiments
 └── Resume — Professional summary
 ```
+
+The pull-down terminal console mounts on every route from
+`TransitionShell`; the header (logo, nav, CyberScape band, handle) is the
+one piece of chrome that survived the 2026 redesign unchanged in shape.
 
 ## 🎨 Design System
 
@@ -107,9 +114,13 @@ pnpm format          # Biome + Prettier formatting
 
 ### Core Systems
 
-- `app/cyberscape/CyberScape.tsx` — Current particle system
-- `app/cyberscape2/` — WebGL migration (in progress)
-- `app/lib/navigation.ts` — Route configuration
+- `app/cyberscape/CyberScape.ts` — Header particle system
+- `app/components/front/` — Front page (lead, feed, rail, entrance)
+- `app/components/terminal/` — Pull-down console and its commands
+- `app/lib/feed.ts` — Merges essays, lab, releases, launches into the feed
+- `app/lib/github.ts` — Releases, repo stats, activity (needs GITHUB_TOKEN
+  or GH_TOKEN in the deploy env; one rate-limit hit parks all calls)
+- `app/lib/navigation.ts` — Nav labels and routes
 - `app/components/Header.tsx` — Main navigation
 
 ### Configuration
