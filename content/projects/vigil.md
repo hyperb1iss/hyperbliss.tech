@@ -1,5 +1,5 @@
 ---
-emoji: '⚡'
+category: 'agents'
 title: 'Vigil: Keep Your Pull Requests Moving'
 description: 'A terminal workspace for tracking GitHub reviews, CI, and conflicts, with specialized agents to help move pull requests toward merge.'
 date: '2026-02-19'

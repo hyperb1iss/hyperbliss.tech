@@ -1,6 +1,5 @@
 ---
 category: 'agents'
-emoji: '🧿'
 title: 'Sibyl: Memory That Follows Your Work'
 description: 'Self-hosted memory for coding agents, connecting project decisions, debugging lessons, tasks, and source material across tools and sessions.'
 date: '2025-01-26'

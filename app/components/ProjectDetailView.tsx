@@ -14,8 +14,10 @@ import { formatStars, LANES, laneOf, languageColor, relativeTime } from '@/lib/p
 import type { Heading } from '@/lib/reading'
 import Reveal from './front/Reveal'
 import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
+import ProjectIcon from './projects/ProjectIcon'
 
 interface ProjectDetailViewProps {
+  slug: string
   title: string
   github: string
   body: string | null
@@ -32,6 +34,7 @@ interface ProjectDetailViewProps {
 }
 
 export default function ProjectDetailView({
+  slug,
   title,
   github,
   body,
@@ -55,6 +58,7 @@ export default function ProjectDetailView({
     <article className="project-detail">
       <Reveal as="div" className="project-detail__hero" order={0}>
         <div className="project-detail__meta">
+          <ProjectIcon slug={slug} />
           {lane && (
             <Link className="project-detail__repo" href={`/projects/#${lane.id}`}>
               {lane.label}

@@ -10,6 +10,7 @@ import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import { neonTitle } from '../front/neon'
 import Reveal from '../front/Reveal'
+import ProjectIcon from './ProjectIcon'
 import ProjectMeta from './ProjectMeta'
 
 const Grid = styled.div`
@@ -71,12 +72,6 @@ const cardStyles = css`
   }
 `
 
-const Sigil = styled.span`
-  font-size: 3rem;
-  line-height: 1;
-  filter: drop-shadow(0 0 14px rgba(162, 89, 255, 0.55));
-`
-
 const Name = styled.h3`
   font-family: var(--font-display);
   font-weight: 800;
@@ -132,7 +127,7 @@ export default function FeaturedProjects({ entries, now }: { entries: ProjectEnt
         return (
           <Reveal className={cardStyles} key={entry.project.slug} order={index}>
             <Rank aria-hidden="true">{String(index + 1).padStart(2, '0')}</Rank>
-            {entry.project.emoji && <Sigil aria-hidden="true">{entry.project.emoji}</Sigil>}
+            <ProjectIcon size={32} slug={entry.project.slug} />
             <Name className={neonTitle}>
               <Link href={`/projects/${entry.project.slug}/`}>{name}</Link>
             </Name>

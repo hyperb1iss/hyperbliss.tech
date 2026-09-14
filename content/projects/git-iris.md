@@ -1,6 +1,5 @@
 ---
 category: 'agents'
-emoji: '🔮'
 title: 'Git-Iris: The Story Behind the Diff'
 description: 'A Rust Git companion that investigates code and history to draft commits, reviews, pull requests, and release notes in a richly interactive terminal.'
 date: '2025-01-26'

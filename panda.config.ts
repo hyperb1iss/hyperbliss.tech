@@ -123,11 +123,11 @@ export default defineConfig({
           from: {
             letterSpacing: '0.5em',
             opacity: '0',
-            transform: 'translateX(-20px)',
+            transform: 'translateX(-12px)',
           },
           to: {
-            letterSpacing: '0.15em',
-            opacity: '1',
+            letterSpacing: '0.26em',
+            opacity: '0.85',
             transform: 'translateX(0)',
           },
         },

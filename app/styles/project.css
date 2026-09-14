@@ -101,7 +101,6 @@
   font-size: clamp(1.6rem, 1.2vw, 2rem);
   line-height: 1.7;
   color: var(--color-text);
-  max-width: 96rem;
 }
 
 .project-detail__actions {

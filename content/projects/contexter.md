@@ -1,6 +1,5 @@
 ---
 category: 'agents'
-emoji: '📋'
 title: 'Contexter: Bring the Right Code to the Conversation'
 description: 'A Rust context server, CLI, and Chrome extension for selecting project files and assembling readable source material for an AI conversation.'
 date: '2024-09-25'

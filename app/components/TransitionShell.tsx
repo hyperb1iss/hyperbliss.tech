@@ -4,8 +4,8 @@
 // pull-down terminal, and the page wrapper. The server layout feeds it the
 // terminal's manifest and broadcast so the console is summonable on every route.
 
-import { css } from '../../styled-system/css'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
+import { css } from '../../styled-system/css'
 import ClientComponents from './ClientComponents'
 import GlobalLayout from './GlobalLayout'
 import Header from './Header'
@@ -41,7 +41,9 @@ export default function TransitionShell({ manifest, broadcast, children }: Trans
     <PageLoadProvider>
       <HeaderProvider>
         <ClientComponents />
-        <a className={skipLinkStyles} href="#main-content">Skip to content</a>
+        <a className={skipLinkStyles} href="#main-content">
+          Skip to content
+        </a>
         <Header />
         <TerminalConsole broadcast={broadcast} manifest={manifest} />
         <HyperspaceLoader />

@@ -1,6 +1,5 @@
 ---
 category: 'terminal'
-emoji: '📡'
 title: 'unifly: UniFi from the Terminal'
 description: 'A Rust CLI and live terminal dashboard for UniFi networks, from switch ports and firewall policies to Wi-Fi diagnostics and cloud-managed sites.'
 date: '2026-02-13'

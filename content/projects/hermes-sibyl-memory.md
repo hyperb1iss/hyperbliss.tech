@@ -1,5 +1,5 @@
 ---
-emoji: '🧠'
+category: 'agents'
 title: 'Sibyl Memory for Hermes'
 description: 'A Hermes Agent memory provider that recalls project context, preserves completed conversations, and queues writes durably through Sibyl.'
 date: '2026-07-26'

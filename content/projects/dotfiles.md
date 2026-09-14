@@ -1,6 +1,5 @@
 ---
 category: 'web'
-emoji: '🌠'
 title: "Stefanie's Dotfiles: A Workspace That Travels"
 description: 'My development environment across macOS, Linux, Windows, and WSL2: modular shells, Neovim, terminal tooling, and SilkCircuit color throughout.'
 date: '2025-01-26'

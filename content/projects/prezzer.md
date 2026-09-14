@@ -1,5 +1,5 @@
 ---
-emoji: '🎭'
+category: 'web'
 title: 'Prezzer: Presentations That Perform'
 description: 'A React presentation engine for live demos, carefully paced reveals, and cinematic talks that travel as a single offline HTML file.'
 date: '2026-01-28'

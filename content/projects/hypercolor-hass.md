@@ -1,5 +1,5 @@
 ---
-emoji: '🏠'
+category: 'lighting'
 title: 'Hypercolor for Home Assistant'
 description: 'Bring Hypercolor effects, spatial layouts, and live lighting controls into Home Assistant scenes, dashboards, and automations.'
 date: '2026-05-05'

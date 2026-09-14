@@ -8,6 +8,7 @@ import type { ProjectEntry } from '@/lib/projectLanes'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import Reveal from './front/Reveal'
+import ProjectIcon from './projects/ProjectIcon'
 import ProjectMeta from './projects/ProjectMeta'
 
 const List = styled.ol`
@@ -38,12 +39,6 @@ const rowStyles = css`
       grid-column: 2;
     }
   }
-`
-
-const Sigil = styled.span`
-  font-size: 2rem;
-  line-height: 1.4;
-  filter: drop-shadow(0 0 10px rgba(162, 89, 255, 0.45));
 `
 
 const Name = styled.h3`
@@ -137,7 +132,7 @@ export default function ProjectRows({
         const tags = (project.tags ?? []).filter((t): t is string => t !== null).slice(0, 4)
         return (
           <Reveal as="li" className={rowStyles} key={project.slug} order={startOrder + index * 0.5}>
-            <Sigil aria-hidden="true">{project.emoji ?? ''}</Sigil>
+            <ProjectIcon slug={project.slug} />
             <div>
               <Name>
                 <Link href={`/projects/${project.slug}/`}>{name}</Link>
