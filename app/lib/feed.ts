@@ -185,6 +185,18 @@ export function splitLead(feed: FeedItem[], limit = 10): FrontPageFeed {
   return { items: rest.slice(0, limit), lead }
 }
 
+/** Feed items grouped by year, newest year first, order within a year preserved. */
+export function groupByYear(feed: FeedItem[]): Array<{ year: string; items: FeedItem[] }> {
+  const groups = new Map<string, FeedItem[]>()
+  for (const item of feed) {
+    const year = item.date.slice(0, 4)
+    const bucket = groups.get(year)
+    if (bucket) bucket.push(item)
+    else groups.set(year, [item])
+  }
+  return [...groups.entries()].sort(([a], [b]) => b.localeCompare(a)).map(([year, items]) => ({ items, year }))
+}
+
 /** Projects with a known release, newest release first, for the Shipping rail. */
 export function shippingList(
   projects: ProjectSummary[],

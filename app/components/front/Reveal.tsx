@@ -6,12 +6,16 @@
 // prefers-reduced-motion query removes it entirely so the page simply appears.
 // The keyframes are declared in globals.css: Panda drops @keyframes bodies
 // written inside a css`` template, so the class here only references them.
+// Fill mode is `backwards`, not `both`: the base state already matches the
+// final frame, and a `forwards` fill keeps the animation applied for the life
+// of the element, which makes it a stacking context (a fixed child could then
+// never out-stack a later sibling such as the footer).
 
 import type { CSSProperties, ReactNode } from 'react'
 import { css, cx } from '../../../styled-system/css'
 
 const revealStyles = css`
-  animation: front-reveal 560ms var(--ease-silk) both;
+  animation: front-reveal 560ms var(--ease-silk) backwards;
   animation-delay: calc(320ms + var(--reveal-delay, 0ms));
 
   @media (prefers-reduced-motion: reduce) {
@@ -22,7 +26,7 @@ const revealStyles = css`
 // Wrappers that may contain position:fixed descendants fade without moving:
 // an animated transform, even at identity, would become their containing block.
 const fadeStyles = css`
-  animation: front-reveal-fade 560ms var(--ease-silk) both;
+  animation: front-reveal-fade 560ms var(--ease-silk) backwards;
   animation-delay: calc(320ms + var(--reveal-delay, 0ms));
 
   @media (prefers-reduced-motion: reduce) {

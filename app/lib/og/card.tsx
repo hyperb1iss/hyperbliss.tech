@@ -69,7 +69,7 @@ function Pill({ text, color }: { text: string; color: string }): ReactElement {
         borderRadius: 999,
         color,
         display: 'flex',
-        fontFamily: 'Exo 2',
+        fontFamily: 'IBM Plex Sans',
         fontSize: 22,
         fontWeight: 600,
         padding: '6px 20px',
@@ -97,10 +97,10 @@ function SiteBody({ logoSrc }: OgCardProps): ReactElement {
         style={{
           color: '#ffffff',
           display: 'flex',
-          fontFamily: 'Jura',
-          fontSize: 88,
+          fontFamily: 'Syne',
+          fontSize: 84,
           fontWeight: 700,
-          letterSpacing: 14,
+          letterSpacing: 6,
           marginTop: 40,
           textShadow: `0 0 32px ${NEON_PINK}, 0 0 90px rgba(255, 117, 216, 0.55)`,
         }}
@@ -111,7 +111,7 @@ function SiteBody({ logoSrc }: OgCardProps): ReactElement {
         style={{
           color: TEXT_GRAY,
           display: 'flex',
-          fontFamily: 'Exo 2',
+          fontFamily: 'IBM Plex Sans',
           fontSize: 32,
           marginTop: 28,
           textAlign: 'center',
@@ -164,7 +164,7 @@ function ContentBody(props: OgCardProps): ReactElement {
           style={{
             color: '#ffffff',
             display: 'flex',
-            fontFamily: 'Jura',
+            fontFamily: 'Syne',
             fontSize: titleSize(title),
             fontWeight: 700,
             lineHeight: 1.15,
@@ -180,7 +180,7 @@ function ContentBody(props: OgCardProps): ReactElement {
             style={{
               color: TEXT_GRAY,
               display: 'flex',
-              fontFamily: 'Exo 2',
+              fontFamily: 'IBM Plex Sans',
               fontSize: 30,
               lineHeight: 1.4,
               marginTop: 26,

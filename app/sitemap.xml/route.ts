@@ -75,6 +75,12 @@ export async function GET(): Promise<Response> {
       priority: 0.7,
       url: ensureTrailingSlash(`${baseUrl}/resume`),
     },
+    {
+      changeFrequency: 'weekly' as const,
+      lastModified: new Date(),
+      priority: 0.6,
+      url: ensureTrailingSlash(`${baseUrl}/archive`),
+    },
   ]
 
   const sitemap = [...staticPages, ...dynamicUrls]

@@ -80,6 +80,20 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
 
+  async redirects() {
+    return [
+      // Essay URLs used to carry the file's date prefix
+      // (/blog/2026.07.21_loop-engineering). The slug is the name after it.
+      // The explicit slug pattern matters: a bare :slug after a literal "_"
+      // is compiled to exclude underscores, which developing_cyberscape has.
+      {
+        destination: '/blog/:slug/',
+        permanent: true,
+        source: '/blog/:date(\\d{4}\\.\\d{2}\\.\\d{1,2})_:slug([^/]+)',
+      },
+    ]
+  },
+
   // Ensure consistent URL format (with or without trailing slashes)
   trailingSlash: true,
 

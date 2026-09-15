@@ -17,6 +17,6 @@ export default async function ResumePage() {
 
 export const metadata = generatePageMetadata(
   'Resume',
-  'Professional resume of Stefanie Jane, full-stack developer and designer.',
+  'Professional resume of Stefanie Jane, creative technologist and open source builder.',
   '/resume/',
 )

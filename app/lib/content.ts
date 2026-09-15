@@ -5,7 +5,14 @@
 // Helpers
 // ============================================================
 
-import { getMarkdownSlugs, readJsonContent, readMarkdown, readMarkdownOrNull } from './contentCollections'
+import {
+  getMarkdownSlugs,
+  readJsonContent,
+  readMarkdown,
+  readMarkdownOrNull,
+  resolveMarkdownFile,
+  resolveMarkdownFileOrNull,
+} from './contentCollections'
 
 export { readRawContentFile } from './contentCollections'
 
@@ -52,7 +59,7 @@ export async function getAllPosts(): Promise<PostSummary[]> {
   const posts: PostSummary[] = []
 
   for (const slug of slugs) {
-    const { data } = await readMarkdown(`posts/${slug}.md`)
+    const { data } = await readMarkdown(await resolveMarkdownFile('posts', slug))
     posts.push({
       author: (data.author as string) ?? null,
       coverImage: (data.coverImage as string) ?? null,
@@ -78,7 +85,8 @@ export async function getAllPosts(): Promise<PostSummary[]> {
 }
 
 export async function getPost(slug: string): Promise<PostDetail | null> {
-  const parsed = await readMarkdownOrNull(`posts/${slug}.md`)
+  const relativePath = await resolveMarkdownFileOrNull('posts', slug)
+  const parsed = relativePath ? await readMarkdownOrNull(relativePath) : null
   if (!parsed) return null
   const { data, content } = parsed
 
