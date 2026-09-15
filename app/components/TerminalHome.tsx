@@ -3,10 +3,11 @@
 // Keep this a server component so the content corpus never becomes hydration
 // payload.
 
-import type { FrontSection, NowData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
+import type { FrontSection, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
+import type { ActivitySummary } from '@/lib/github'
+import type { ProjectEntry } from '@/lib/projectLanes'
 import FrontPage from './front/FrontPage'
-import type { ShippingRow } from './front/Rail'
 import HomeFallbackContent from './HomeFallback'
 
 interface TerminalHomeProps {
@@ -14,8 +15,8 @@ interface TerminalHomeProps {
   projects: ProjectSummary[]
   lead: FeedItem | null
   items: FeedItem[]
-  shipping: ShippingRow[]
-  now: NowData
+  featured: ProjectEntry[]
+  activity: ActivitySummary | null
   front: FrontSection | null
   siteConfig?: SiteConfig | null
 }
@@ -28,14 +29,21 @@ export default function TerminalHome({
   projects,
   lead,
   items,
-  shipping,
-  now,
+  featured,
+  activity,
   front,
   siteConfig,
 }: TerminalHomeProps) {
   return (
     <>
-      <FrontPage front={front} items={items} lead={lead} now={now} projectCount={projects.length} shipping={shipping} />
+      <FrontPage
+        activity={activity}
+        featured={featured}
+        front={front}
+        items={items}
+        lead={lead}
+        projectCount={projects.length}
+      />
 
       <noscript>
         <HomeFallbackContent

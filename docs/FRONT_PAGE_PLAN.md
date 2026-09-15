@@ -212,6 +212,29 @@ PR #9 merged 2026-09-14 as `8a07a9c`; `GITHUB_TOKEN` is set on Netlify.
   hairline row language; entrances moved to Reveal.
 - Sidequest logged in Sibyl: retire the global uppercase heading rule.
 
+## Single column (2026-09-14, branch `nova/front-column`)
+
+Bliss's read after a day on the live page: the rail repeated the main
+column (Shipping was the feed's release rows re-sorted, Elsewhere was
+the footer, Who was the intro), she did not want the portrait on the
+front page, and `now.md` was prose with a date on it, guaranteed to rot.
+Below 1024px the rail also stacked under ten feed rows, so on phones it
+was invisible rather than redundant.
+
+- Rail deleted, `shippingList` and `NowData` gone from the home route.
+  One column at `max-width: 116rem`.
+- `Building`: the flagship trio from `pickFeatured` (shared with
+  Projects) as a hairline strip between the lead and the feed, each cell
+  name, tagline, version, stars. No push date: under a "Building" marker
+  a months-old push reads as a contradiction, and the feed already
+  carries recency.
+- `Pulse`: one computed mono line under the intro from the public events
+  feed (pushes and repos over 14 days). Nothing hand-typed, so nothing
+  to rot; renders nothing when GitHub is unreachable or quiet.
+- Markers: Latest (lead), Building (strip), Recently (feed).
+- `now.md` still drives the terminal status board; the front page no
+  longer reads it.
+
 ## Open taste items
 
 - Bliss (2026-09-05): not sure about the "squished" large display type
@@ -246,4 +269,5 @@ PR #9 merged 2026-09-14 as `8a07a9c`; `GITHUB_TOKEN` is set on Netlify.
   inherit it.
 - A unified archive route for the feed ("Older →" currently splits to
   /blog and /projects).
-- `now.md` copy is a draft; Bliss to approve or rewrite.
+- `now.md` copy is a draft; Bliss to approve or rewrite. It only reaches
+  the terminal now.

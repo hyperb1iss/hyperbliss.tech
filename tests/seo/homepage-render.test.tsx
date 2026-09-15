@@ -9,8 +9,10 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { PageLoadProvider } from '@/components/PageLoadOrchestrator'
 import TerminalHome from '@/components/TerminalHome'
-import type { FrontSection, LabSummary, NowData, PostSummary, ProjectSummary } from '@/lib/content'
-import { buildFeed, type FeedRelease, shippingList, splitLead } from '@/lib/feed'
+import type { FrontSection, LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
+import { buildFeed, type FeedRelease, splitLead } from '@/lib/feed'
+import type { ActivitySummary } from '@/lib/github'
+import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 
 const project = (slug: string, title: string, date: string): ProjectSummary => ({
   category: null,
@@ -41,19 +43,17 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  photo: '/images/profile-image.jpg',
-  photoAlt: 'Stefanie Jane',
-  role: 'Creative technologist, Seattle.',
   tagline: "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`.",
 }
 
-const now: NowData = {
-  body: null,
-  emoji: null,
-  focus: 'Rebuilding the front door.',
-  location: 'Seattle, WA',
-  title: 'Now',
-  updated: '2026-09-01',
+const activity: ActivitySummary = {
+  events: [],
+  generatedAt: '2026-09-14T00:00:00Z',
+  ok: true,
+  pushesPerDay: [],
+  repos: ['sibyl', 'chromacat'],
+  totalPushes: 7,
+  windowDays: 14,
 }
 
 const projects = [project('sibyl', 'Sibyl', '2025-01-26'), project('chromacat', 'ChromaCat', '2024-11-02')]
@@ -72,18 +72,29 @@ const releases = new Map<string, FeedRelease>([
 ])
 
 const { lead, items } = splitLead(buildFeed({ lab, posts, projects, releases }), 10)
-const shipping = shippingList(projects, releases)
+const entries: ProjectEntry[] = projects.map((project) => {
+  const release = releases.get(project.slug)
+  return {
+    project,
+    releaseDate: release?.publishedAt ?? null,
+    releaseUrl: release?.url ?? null,
+    stats:
+      project.slug === 'sibyl' ? { archived: false, forks: 3, language: 'Rust', pushedAt: null, stars: 412 } : null,
+    version: release?.version ?? null,
+  }
+})
+const featured = pickFeatured(entries, 3)
 
 const html = renderToStaticMarkup(
   <PageLoadProvider>
     <TerminalHome
+      activity={activity}
+      featured={featured}
       front={front}
       items={items}
       lead={lead}
-      now={now}
       posts={posts}
       projects={projects}
-      shipping={shipping}
       siteConfig={null}
     />
   </PageLoadProvider>,
@@ -115,14 +126,29 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 
-  it('renders the rail: byline, now, shipping, elsewhere', () => {
-    expect(withoutNoscript).toContain('Stefanie Jane')
-    expect(withoutNoscript).toContain('Creative technologist, Seattle.')
-    expect(withoutNoscript).toMatch(/href="\/about\/?"/)
-    expect(withoutNoscript).toMatch(/href="\/resume\/?"/)
-    expect(withoutNoscript).toContain('Rebuilding the front door.')
-    expect(withoutNoscript).toContain('v1.3.1')
-    expect(withoutNoscript).toContain('https://github.com/hyperb1iss')
+  it('renders the Building strip with the featured trio and live facts', () => {
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Building<\/h2>/)
+    expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/sibyl\/?"[^>]*>Sibyl<\/a><\/h3>/)
+    expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/chromacat\/?"[^>]*>ChromaCat<\/a><\/h3>/)
+    expect(withoutNoscript).toContain('★ 412')
+    expect(withoutNoscript).toMatch(
+      /href="https:\/\/github\.com\/hyperb1iss\/sibyl\/releases\/tag\/v1\.3\.1"[^>]*>v1\.3\.1</,
+    )
+    expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All 2 projects/)
+  })
+
+  it('renders the computed pulse line and carries no hand-written now, photo, or rail', () => {
+    expect(withoutNoscript).toContain('last 14 days')
+    expect(withoutNoscript).toContain('7 pushes')
+    expect(withoutNoscript).toContain('sibyl, chromacat')
+    expect(withoutNoscript).not.toContain('profile-image')
+    expect(withoutNoscript).not.toContain('Creative technologist')
+    expect(withoutNoscript).not.toContain('<aside')
+    expect(withoutNoscript).not.toMatch(/<h2[^>]*>(Now|Shipping|Elsewhere)<\/h2>/)
+  })
+
+  it('keeps the feed under its own Recently marker', () => {
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Recently<\/h2>/)
   })
 
   it('keeps the no-JS fallback with every project and post', () => {

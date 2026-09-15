@@ -1,50 +1,63 @@
 import { notFound } from 'next/navigation'
 import TerminalHome from '@/components/TerminalHome'
-import { buildFeed, shippingList, splitLead } from '@/lib/feed'
-import { getReleasesForProjects } from '@/lib/github'
-import { DEFAULT_NOW } from '@/lib/terminal/getTerminalData'
+import { buildFeed, splitLead } from '@/lib/feed'
+import { getRecentActivity, getReleasesForProjects, getRepoStatsForProjects, type RepoStats } from '@/lib/github'
+import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 import type { ReleaseLike } from '@/lib/terminal/releases'
-import { getAllLab, getAllPosts, getAllProjects, getNow, getPage, getSiteConfig } from '../lib/content'
+import { getAllLab, getAllPosts, getAllProjects, getPage, getSiteConfig } from '../lib/content'
 
-// Re-validate hourly so the feed (releases, latest post) stays fresh and the
-// GitHub release lookups stay inside their cache window.
+// Ceiling for the route's ISR window. The events feed underneath fetches with
+// a 5 minute revalidate and the shortest fetch window wins, so the page
+// regenerates about every 5 minutes; releases and stats stay behind their own
+// hourly fetch cache, so GitHub sees no extra calls from that cadence.
 export const revalidate = 3600
 
 export default async function Home() {
   try {
-    const [pageData, siteConfig, posts, projects, labExperiments, now] = await Promise.all([
+    const [pageData, siteConfig, posts, projects, labExperiments] = await Promise.all([
       getPage('home'),
       getSiteConfig().catch(() => null),
       getAllPosts(),
       getAllProjects(),
       getAllLab(),
-      getNow().catch(() => DEFAULT_NOW),
     ])
 
-    // Latest release for every project with a repo. Each lookup is cached in
-    // memory and by the fetch cache for an hour, so this is one GitHub call per
-    // repo per hour at most.
-    const withRepo = projects.filter((p) => p.github)
-    let releases = new Map<string, ReleaseLike>()
-    try {
-      releases = await getReleasesForProjects(withRepo.map((p) => ({ github: p.github, slug: p.slug })))
-    } catch {
-      // Rate-limited or offline — the feed still renders from local content.
-    }
+    // Latest release and repo stats for every project with a repo, plus the
+    // public events feed. Each lookup is cached in memory and by the fetch
+    // cache for an hour, so this is one GitHub call per repo per hour at most;
+    // when GitHub is rate-limited or offline the page renders from local
+    // content and the strip falls back to release recency, then launch date.
+    const repos = projects.filter((p) => p.github).map((p) => ({ github: p.github, slug: p.slug }))
+    const [releases, stats, activity] = await Promise.all([
+      getReleasesForProjects(repos).catch(() => new Map<string, ReleaseLike>()),
+      getRepoStatsForProjects(repos).catch(() => new Map<string, RepoStats>()),
+      getRecentActivity().catch(() => null),
+    ])
 
     const feed = buildFeed({ lab: labExperiments, posts, projects, releases })
     const { lead, items } = splitLead(feed, 10)
-    const shipping = shippingList(projects, releases, 6)
+
+    const entries: ProjectEntry[] = projects.map((project) => {
+      const release = releases.get(project.slug)
+      return {
+        project,
+        releaseDate: release?.publishedAt ?? null,
+        releaseUrl: release?.url ?? null,
+        stats: stats.get(project.slug) ?? null,
+        version: release?.version ?? null,
+      }
+    })
+    const featured = pickFeatured(entries, 3)
 
     return (
       <TerminalHome
+        activity={activity}
+        featured={featured}
         front={pageData.front}
         items={items}
         lead={lead}
-        now={now}
         posts={posts}
         projects={projects}
-        shipping={shipping}
         siteConfig={siteConfig}
       />
     )

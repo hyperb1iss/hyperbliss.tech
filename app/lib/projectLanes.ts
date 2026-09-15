@@ -49,7 +49,11 @@ const time = (iso: string | null | undefined): number => {
   return Number.isNaN(t) ? 0 : t
 }
 
-/** Newest release first, then most recently pushed, then most starred, then by name. */
+/**
+ * Newest release first, then most recently pushed, then most starred, then
+ * newest launch, then by name. The launch date keeps a GitHub-less render
+ * (rate limited, offline) from featuring an alphabetical trio.
+ */
 export function sortEntries(entries: ProjectEntry[]): ProjectEntry[] {
   return [...entries].sort((a, b) => {
     const byRelease = time(b.releaseDate) - time(a.releaseDate)
@@ -58,6 +62,8 @@ export function sortEntries(entries: ProjectEntry[]): ProjectEntry[] {
     if (byPush !== 0) return byPush
     const byStars = (b.stats?.stars ?? 0) - (a.stats?.stars ?? 0)
     if (byStars !== 0) return byStars
+    const byLaunch = time(b.project.date) - time(a.project.date)
+    if (byLaunch !== 0) return byLaunch
     return a.project.title.localeCompare(b.project.title)
   })
 }
