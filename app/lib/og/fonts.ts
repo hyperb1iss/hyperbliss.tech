@@ -19,16 +19,16 @@ let cached: OgFont[] | null = null
 export async function loadOgFonts(): Promise<OgFont[]> {
   if (cached) return cached
   const dir = join(process.cwd(), 'app', 'lib', 'og', 'fonts')
-  const [jura700, exo400, exo600, mono400] = await Promise.all([
-    readFile(join(dir, 'jura-700.woff')),
-    readFile(join(dir, 'exo-2-400.woff')),
-    readFile(join(dir, 'exo-2-600.woff')),
+  const [syne700, plex400, plex600, mono400] = await Promise.all([
+    readFile(join(dir, 'syne-700.woff')),
+    readFile(join(dir, 'ibm-plex-sans-400.woff')),
+    readFile(join(dir, 'ibm-plex-sans-600.woff')),
     readFile(join(dir, 'space-mono-400.woff')),
   ])
   cached = [
-    { data: jura700, name: 'Jura', style: 'normal', weight: 700 },
-    { data: exo400, name: 'Exo 2', style: 'normal', weight: 400 },
-    { data: exo600, name: 'Exo 2', style: 'normal', weight: 600 },
+    { data: syne700, name: 'Syne', style: 'normal', weight: 700 },
+    { data: plex400, name: 'IBM Plex Sans', style: 'normal', weight: 400 },
+    { data: plex600, name: 'IBM Plex Sans', style: 'normal', weight: 600 },
     { data: mono400, name: 'Space Mono', style: 'normal', weight: 400 },
   ]
   return cached
