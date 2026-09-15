@@ -28,7 +28,7 @@ Components, Edge Functions **Deployment**: Netlify with performance optimization
 
 ```
 /(transition)/
-├── Home — Front page: lead story, unified feed, rail (who, now, shipping)
+├── Home — Front page, one column: intro, pulse line, lead story, Building trio, feed
 ├── About — Personal narrative (the CyanogenMod story lives here)
 ├── Blog — "Writing" in the nav; essays at /blog/<slug>
 ├── Projects — Flagship trio, lanes, live GitHub facts, detail pages
@@ -115,7 +115,7 @@ pnpm format          # Biome + Prettier formatting
 ### Core Systems
 
 - `app/cyberscape/CyberScape.ts` — Header particle system
-- `app/components/front/` — Front page (lead, feed, rail, entrance)
+- `app/components/front/` — Front page (lead, Building strip, Pulse, feed, entrance)
 - `app/components/terminal/` — Pull-down console and its commands
 - `app/lib/feed.ts` — Merges essays, lab, releases, launches into the feed
 - `app/lib/github.ts` — Releases, repo stats, activity. With GITHUB_TOKEN
