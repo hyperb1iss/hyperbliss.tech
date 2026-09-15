@@ -172,8 +172,7 @@ export default function FrontPage({ lead, items, shipping, now, front, projectCo
         <FeedList heading={null} items={items} startOrder={1.5} />
         <Reveal order={1.5 + items.length * 0.5}>
           <Foot>
-            <Link href="/blog/">All writing →</Link>
-            <Link href="/projects/">All projects →</Link>
+            <Link href="/archive/">Everything, by year →</Link>
           </Foot>
         </Reveal>
       </Main>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
-import { buildFeed, type FeedRelease, shippingList, shortName, splitLead, toIsoDay } from '@/lib/feed'
+import { buildFeed, type FeedRelease, groupByYear, shippingList, shortName, splitLead, toIsoDay } from '@/lib/feed'
 import { summarizeRelease } from '@/lib/github'
 
 const post = (slug: string, date: string | null, title = slug): PostSummary => ({
@@ -237,5 +237,21 @@ describe('summarizeRelease', () => {
     const out = summarizeRelease(null, long, '1.0.0')
     expect(out?.length).toBeLessThanOrEqual(160)
     expect(out?.endsWith('…')).toBe(true)
+  })
+})
+
+describe('groupByYear', () => {
+  it('buckets items by year, newest year first, keeping order within a year', () => {
+    const feed = buildFeed(input)
+    const years = groupByYear(feed)
+    expect(years.map((y) => y.year)).toEqual([...years.map((y) => y.year)].sort().reverse())
+    expect(years.flatMap((y) => y.items)).toEqual(feed)
+    for (const { year, items } of years) {
+      for (const item of items) expect(item.date.startsWith(year)).toBe(true)
+    }
+  })
+
+  it('returns no groups for an empty feed', () => {
+    expect(groupByYear([])).toEqual([])
   })
 })
