@@ -185,14 +185,6 @@ export default defineConfig({
             transform: 'skewX(-1deg)',
           },
         },
-        silkResumeShimmer: {
-          '0%': {
-            backgroundPosition: '-1000px 0',
-          },
-          '100%': {
-            backgroundPosition: '1000px 0',
-          },
-        },
         silkShimmer: {
           '0%': { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition: '200% center' },

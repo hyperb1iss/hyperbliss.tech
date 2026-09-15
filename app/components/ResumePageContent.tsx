@@ -19,6 +19,7 @@ import ReactMarkdown from 'react-markdown'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import { parseResume } from '../lib/resumeParser'
+import Reveal from './front/Reveal'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 
@@ -45,82 +46,11 @@ const resumeWrapperStyles = css`
 const contactCardStyles = css`
   grid-area: contact;
   align-self: start;
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.08) 0%,
-    rgba(30, 41, 59, 0.6) 40%,
-    rgba(0, 255, 240, 0.05) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.2);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 30px rgba(139, 92, 246, 0.2),
-    0 0 50px rgba(0, 255, 240, 0.1),
-    inset 0 0 20px rgba(224, 170, 255, 0.05);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      #8b5cf6,
-      #00fff0,
-      #ff75d8,
-      #e0aaff
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.6;
-    animation: silkBorderGlow 3s ease-in-out infinite;
-  }
-
 `
 
 const skillsCardStyles = css`
   grid-area: skills;
   align-self: start;
-  background: linear-gradient(
-    135deg,
-    rgba(30, 41, 59, 0.6) 0%,
-    rgba(217, 70, 239, 0.05) 100%
-  );
-  backdrop-filter: blur(15px) saturate(1.1);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-8);
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 25px rgba(217, 70, 239, 0.15),
-    inset 0 0 20px rgba(139, 92, 246, 0.03);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(217, 70, 239, 0.4),
-      transparent,
-      rgba(139, 92, 246, 0.4)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.4;
-  }
 `
 
 const mainContentStyles = css`
@@ -131,60 +61,11 @@ const mainContentStyles = css`
   gap: var(--space-8);
 `
 
+/* Sections read as rows under a hairline, like every other page, instead
+   of glass cards. */
 const contentSectionStyles = css`
-  background: linear-gradient(
-    135deg,
-    rgba(162, 89, 255, 0.06) 0%,
-    rgba(30, 41, 59, 0.5) 50%,
-    rgba(0, 255, 240, 0.04) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.15);
-  border: 2px solid transparent;
-  background-clip: padding-box;
-  border-radius: var(--radius-xl);
-  padding: var(--space-10);
-  position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 30px rgba(162, 89, 255, 0.15),
-    0 0 50px rgba(0, 255, 240, 0.08),
-    inset 0 0 25px rgba(139, 92, 246, 0.04);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-xl);
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(162, 89, 255, 0.3),
-      transparent 40%,
-      rgba(0, 255, 240, 0.3)
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.03),
-      transparent
-    );
-    animation: silkResumeShimmer 8s infinite;
-    pointer-events: none;
-  }
-
+  padding-top: var(--space-8);
+  border-top: 1px solid rgba(162, 89, 255, 0.25);
 `
 
 const downloadButtonStyles = css`
@@ -212,7 +93,8 @@ const downloadButtonStyles = css`
     0 0 30px rgba(255, 117, 216, 0.5),
     0 10px 40px rgba(139, 92, 246, 0.3);
   transition: all var(--duration-normal) var(--ease-silk);
-  z-index: 100;
+  /* Above the footer (1100) so the button stays reachable at the page end. */
+  z-index: 1200;
 
   svg {
     font-size: 2rem;
@@ -262,47 +144,20 @@ const ContactItem = styled.a`
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3);
-  margin-bottom: var(--space-2);
-  background: linear-gradient(
-    135deg,
-    rgba(139, 92, 246, 0.05),
-    rgba(0, 255, 240, 0.02)
-  );
-  border: 1px solid rgba(139, 92, 246, 0.2);
-  border-radius: var(--radius-lg);
-  color: var(--text-secondary);
+  padding: var(--space-1-5) 0;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  color: var(--silk-circuit-cyan);
   text-decoration: none;
-  transition: all var(--duration-normal) var(--ease-silk);
-  position: relative;
-  z-index: 1;
+  transition: color var(--duration-fast) var(--ease-silk);
 
   svg {
-    color: var(--silk-circuit-cyan);
-    font-size: 1.8rem;
-    filter: drop-shadow(0 0 6px rgba(0, 255, 240, 0.4));
-  }
-
-  span {
-    font-family: var(--font-body);
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    opacity: 0.8;
   }
 
   &:hover {
-    transform: translateX(5px);
-    border-color: var(--silk-circuit-cyan);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.1),
-      rgba(139, 92, 246, 0.05)
-    );
-    color: var(--silk-lavender);
-    box-shadow: 0 0 20px rgba(0, 255, 240, 0.3);
-
-    svg {
-      color: var(--silk-plasma-pink);
-      filter: drop-shadow(0 0 10px rgba(255, 117, 216, 0.6));
-    }
+    color: var(--silk-plasma-pink);
   }
 `
 
@@ -330,35 +185,26 @@ const SkillLabel = styled.h3`
 const SkillTags = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: var(--space-1) var(--space-3);
 `
 
 const SkillTag = styled.a`
-  display: inline-block;
-  text-decoration: none;
-  cursor: pointer;
-  padding: var(--space-1) var(--space-2-5);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 117, 216, 0.1),
-    rgba(224, 170, 255, 0.08)
-  );
-  border: 1px solid rgba(255, 117, 216, 0.25);
-  border-radius: var(--radius-full);
-  font-size: 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
   color: var(--silk-lavender);
-  transition: all var(--duration-fast) var(--ease-silk);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-silk);
 
-  &:hover {
-    transform: translateY(-2px);
-    border-color: var(--silk-circuit-cyan);
+  /* Multi-word skills ("Android OS") need more than a gap to read as one item. */
+  & + &::before {
+    content: '·';
+    margin-right: var(--space-3);
+    color: var(--silk-quantum-purple);
+    opacity: 0.7;
+  }
+
+  &[href]:hover {
     color: var(--silk-circuit-cyan);
-    background: linear-gradient(
-      135deg,
-      rgba(0, 255, 240, 0.15),
-      rgba(139, 92, 246, 0.1)
-    );
-    text-shadow: 0 0 6px rgba(0, 255, 240, 0.5);
   }
 `
 
@@ -429,7 +275,6 @@ const TimelineItem = styled.div`
     background: var(--silk-circuit-cyan);
     border: 2px solid var(--silk-quantum-purple);
     border-radius: var(--radius-full);
-    box-shadow: 0 0 20px rgba(0, 255, 240, 0.6);
   }
 `
 
@@ -593,13 +438,8 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
     <PageLayout>
       <PageTitle>Resume</PageTitle>
 
-      <motion.div className={resumeWrapperStyles}>
-        <motion.div
-          animate={{ opacity: 1, x: 0 }}
-          className={contactCardStyles}
-          initial={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-        >
+      <div className={resumeWrapperStyles}>
+        <Reveal className={contactCardStyles} order={0}>
           <ContactTitle>{name || 'Connect'}</ContactTitle>
           {contact.email && (
             <ContactItem href={`mailto:${contact.email}`}>
@@ -631,16 +471,11 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               <span>Links</span>
             </ContactItem>
           )}
-        </motion.div>
+        </Reveal>
 
-        <motion.div className={mainContentStyles}>
+        <div className={mainContentStyles}>
           {summary && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={contentSectionStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
+            <Reveal className={contentSectionStyles} order={3}>
               <SectionHeader>
                 <SectionIcon>
                   <FiAward />
@@ -659,15 +494,10 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </p>
                 ))}
               </TimelineContent>
-            </motion.div>
+            </Reveal>
           )}
 
-          <motion.div
-            animate={{ opacity: 1, y: 0 }}
-            className={contentSectionStyles}
-            initial={{ opacity: 0, y: 20 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-          >
+          <Reveal className={contentSectionStyles} order={4}>
             <SectionHeader>
               <SectionIcon>
                 <FiBriefcase />
@@ -743,15 +573,10 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                 </TimelineContent>
               </TimelineItem>
             ))}
-          </motion.div>
+          </Reveal>
 
           {projects.length > 0 && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={contentSectionStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.4, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
+            <Reveal className={contentSectionStyles} order={5}>
               <SectionHeader>
                 <SectionIcon>
                   <FiCode />
@@ -786,16 +611,11 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </TimelineItem>
                 ))}
               </TimelineContent>
-            </motion.div>
+            </Reveal>
           )}
 
           {(speaking.length > 0 || awards.length > 0) && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={contentSectionStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.5, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
+            <Reveal className={contentSectionStyles} order={6}>
               <SectionHeader>
                 <SectionIcon>
                   <FiAward />
@@ -830,16 +650,11 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   </div>
                 )}
               </TimelineContent>
-            </motion.div>
+            </Reveal>
           )}
 
           {interests.length > 0 && (
-            <motion.div
-              animate={{ opacity: 1, y: 0 }}
-              className={contentSectionStyles}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.6, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-            >
+            <Reveal className={contentSectionStyles} order={7}>
               <SectionHeader>
                 <SectionIcon>
                   <FiHeart />
@@ -856,15 +671,10 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
                   ))}
                 </ul>
               </TimelineContent>
-            </motion.div>
+            </Reveal>
           )}
-        </motion.div>
-        <motion.div
-          animate={{ opacity: 1, x: 0 }}
-          className={skillsCardStyles}
-          initial={{ opacity: 0, x: -20 }}
-          transition={{ delay: 0.1, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-        >
+        </div>
+        <Reveal className={skillsCardStyles} order={1}>
           <ContactTitle>Skills</ContactTitle>
           {displaySkills.map(([category, items]) => (
             <SkillCategory key={category}>
@@ -884,8 +694,8 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
               </SkillTags>
             </SkillCategory>
           ))}
-        </motion.div>
-      </motion.div>
+        </Reveal>
+      </div>
 
       <motion.a
         className={downloadButtonStyles}
