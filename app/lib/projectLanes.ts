@@ -71,25 +71,37 @@ export function groupByLane(entries: ProjectEntry[]): Array<{ lane: Lane; entrie
 }
 
 /**
- * The featured trio: most starred first, with recent activity as the
- * tiebreak. Falls back to release recency unless most repos answered with stats.
+ * The featured trio. Projects pinned with a `featured` rank in their
+ * frontmatter come first, in rank order. Any remaining slots go to the most
+ * starred repos, recent activity as the tiebreak, falling back to release
+ * recency unless most repos answered with stats.
  */
 export function pickFeatured(entries: ProjectEntry[], count = 3): ProjectEntry[] {
+  const pinned = entries
+    .filter((e) => typeof e.project.featured === 'number')
+    .sort((a, b) => (a.project.featured ?? 0) - (b.project.featured ?? 0))
+    .slice(0, count)
+  if (pinned.length === count) return pinned
+  const taken = new Set(pinned.map((e) => e.project.slug))
+  const rest = rankEntries(entries.filter((e) => !taken.has(e.project.slug)))
+  return [...pinned, ...rest.slice(0, count - pinned.length)]
+}
+
+/** Every entry in flagship order: stars when most repos answered, otherwise recency. */
+function rankEntries(entries: ProjectEntry[]): ProjectEntry[] {
   const candidates = entries.filter((e) => e.project.github)
   const withStats = candidates.filter((e) => e.stats && !e.stats.archived)
   // A rate-limited build answers for a handful of repos and nulls the rest.
   // Ranking that subset would crown whichever repos got through, so anything
   // short of majority coverage is treated like no coverage at all.
   if (candidates.length === 0 || withStats.length < Math.ceil(candidates.length / 2)) {
-    return sortEntries(entries).slice(0, count)
+    return sortEntries(entries)
   }
-  return [...withStats]
-    .sort((a, b) => {
-      const byStars = (b.stats?.stars ?? 0) - (a.stats?.stars ?? 0)
-      if (byStars !== 0) return byStars
-      return time(b.stats?.pushedAt) - time(a.stats?.pushedAt)
-    })
-    .slice(0, count)
+  return [...withStats].sort((a, b) => {
+    const byStars = (b.stats?.stars ?? 0) - (a.stats?.stars ?? 0)
+    if (byStars !== 0) return byStars
+    return time(b.stats?.pushedAt) - time(a.stats?.pushedAt)
+  })
 }
 
 /** "3d ago", "2h ago", "5mo ago", "2y ago"; null for unusable input. */

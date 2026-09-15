@@ -2,6 +2,7 @@
 category: 'agents'
 title: 'Sibyl: Memory That Follows Your Work'
 description: 'Self-hosted memory for coding agents, connecting project decisions, debugging lessons, tasks, and source material across tools and sessions.'
+featured: 2
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/sibyl'
 tags: ['Python', 'TypeScript', 'AI Agents', 'Knowledge Graph', 'SurrealDB', 'FastAPI', 'Next.js', 'MCP']

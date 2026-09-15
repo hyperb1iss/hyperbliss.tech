@@ -2,6 +2,7 @@
 category: 'lighting'
 title: 'Hypercolor: A Canvas for Your Lights'
 description: 'An open-source RGB engine that turns keyboards, LED strips, and room lighting into a shared canvas for shaders, music, and interaction.'
+featured: 1
 date: '2026-03-03'
 github: 'https://github.com/hyperb1iss/hypercolor'
 tags: ['Rust', 'RGB', 'Servo', 'wgpu', 'TypeScript', 'Linux', 'Windows', 'macOS']

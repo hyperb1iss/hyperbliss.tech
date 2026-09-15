@@ -127,6 +127,30 @@ describe('pickFeatured', () => {
     const picked = pickFeatured([entry('a', 'web'), entry('b', 'web', { releaseDate: '2026-01-01' })], 1)
     expect(picked[0].project.slug).toBe('b')
   })
+
+  it('puts pinned projects first in rank order, whatever their stars', () => {
+    const pin = (slug: string, rank: number, stars = 1): ProjectEntry => {
+      const e = entry(slug, 'web', { stats: stats(stars, '2026-01-01T00:00:00Z') })
+      return { ...e, project: { ...e.project, featured: rank } }
+    }
+    const entries = [
+      entry('popular', 'web', { stats: stats(900, '2026-08-01T00:00:00Z') }),
+      pin('third', 3),
+      pin('first', 1),
+      pin('second', 2, 500),
+    ]
+    expect(pickFeatured(entries, 3).map((e) => e.project.slug)).toEqual(['first', 'second', 'third'])
+  })
+
+  it('fills open slots by stars when fewer projects are pinned than the count', () => {
+    const pinned = { ...entry('pinned', 'web'), project: { ...entry('pinned', 'web').project, featured: 1 } }
+    const entries = [
+      entry('small', 'web', { stats: stats(3, '2026-01-01T00:00:00Z') }),
+      pinned,
+      entry('big', 'web', { stats: stats(300, '2026-01-01T00:00:00Z') }),
+    ]
+    expect(pickFeatured(entries, 2).map((e) => e.project.slug)).toEqual(['pinned', 'big'])
+  })
 })
 
 describe('relativeTime and formatStars', () => {

@@ -1,7 +1,8 @@
-// The flagship trio at the top of Projects: the most starred repos as glass
-// cards with the project's own sigil, a gradient name, the tagline, and live
-// facts. Everything here is real data; when GitHub is unreachable the cards
-// fall back to the newest releases and simply omit stars.
+// The flagship trio at the top of Projects: the projects pinned with a
+// `featured` rank in their frontmatter (most starred fill any open slot) as
+// glass cards with the project's own sigil, a gradient name, the tagline, and
+// live facts. Everything here is real data; when GitHub is unreachable the
+// cards simply omit stars.
 
 import Link from 'next/link'
 import { shortName, tagline } from '@/lib/feed'
