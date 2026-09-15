@@ -229,17 +229,19 @@ PR #9 merged 2026-09-14 as `8a07a9c`; `GITHUB_TOKEN` is set on Netlify.
   redirect map would clean the URLs.
 - Terminal `help` still lists `blog`; nav says Blog while the index page
   is titled Writing. Pick one word.
-- GitHub calls per hour are now up to 48 (24 releases + 24 repo stats)
-  plus the events feed; fine with a token, tight without one.
+- GitHub facts (releases and stats for every repo) are one GraphQL
+  request an hour with a token, plus the events feed. Without a token
+  the REST fallback is ~60 calls an hour against an anonymous budget of
+  60, so a tokenless build still parks itself; the token on Netlify is
+  what makes the limit unreachable.
 - The terminal's manifest and broadcast now ship with every route's
   layout payload. It is small (bodies load lazily), but worth a look at
   the RSC payload size if the content corpus grows.
 - CyberScape steps per frame, not per elapsed time, so a 60fps budget
   doubles every speed. Make the update loop time-based, then raise
   `targetFPS` to 60 (the plan's original motion target).
-- Deploy env needs `GITHUB_TOKEN`; without it 24 repos consume 40% of
-  the unauthenticated hourly budget per revalidation. Rate-limit
-  responses are logged and uncached, but a token is the real fix.
+- `GITHUB_TOKEN` is set on Netlify. It also selects the GraphQL path;
+  the REST fallback exists for tokenless local runs.
 - Global `h1..h6` uppercase + text-shadow rule; the other pages still
   inherit it.
 - A unified archive route for the feed ("Older →" currently splits to

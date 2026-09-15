@@ -118,8 +118,10 @@ pnpm format          # Biome + Prettier formatting
 - `app/components/front/` — Front page (lead, feed, rail, entrance)
 - `app/components/terminal/` — Pull-down console and its commands
 - `app/lib/feed.ts` — Merges essays, lab, releases, launches into the feed
-- `app/lib/github.ts` — Releases, repo stats, activity (needs GITHUB_TOKEN
-  or GH_TOKEN in the deploy env; one rate-limit hit parks all calls)
+- `app/lib/github.ts` — Releases, repo stats, activity. With GITHUB_TOKEN
+  or GH_TOKEN (set on Netlify) every repo's facts come from one GraphQL
+  request an hour; without a token it falls back to REST per repo, and one
+  rate-limit hit parks all calls until GitHub's reset
 - `app/lib/navigation.ts` — Nav labels and routes
 - `app/components/Header.tsx` — Main navigation
 
