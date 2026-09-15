@@ -1,5 +1,7 @@
 // app/lib/github.ts
-// GitHub API utilities for fetching release information
+// GitHub facts for the site: latest releases, repo stats, and recent public
+// activity. Pages should reach for getRepoFactsForProjects (one GraphQL call
+// for every repo); the per-repo REST functions are its tokenless fallback.
 
 interface GitHubRelease {
   tag_name: string
@@ -176,7 +178,8 @@ export function parseGitHubUrl(url: string): { owner: string; repo: string } | n
 }
 
 /**
- * Fetch the latest release for a GitHub repository
+ * Latest release for one repository over REST. Tokenless fallback for the
+ * facts batch; pages should call getRepoFacts or getRepoFactsForProjects.
  */
 export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo | null> {
   const parsed = parseGitHubUrl(githubUrl)
@@ -244,7 +247,10 @@ export interface RepoStats {
 
 const statsCache = new Map<string, { data: RepoStats | null; timestamp: number }>()
 
-/** Stars, primary language, and last push for a repository, cached for an hour. */
+/**
+ * Stars, primary language, and last push for one repository over REST,
+ * cached for an hour. Tokenless fallback for the facts batch.
+ */
 export async function getRepoStats(githubUrl: string): Promise<RepoStats | null> {
   const parsed = parseGitHubUrl(githubUrl)
   if (!parsed) return null
@@ -289,44 +295,249 @@ export async function getRepoStats(githubUrl: string): Promise<RepoStats | null>
   }
 }
 
-/** Repo stats for many projects in parallel, keyed by slug. */
+// ─── Batched facts (GraphQL) ──────────────────────────────────────────────────
+// Every page that shows GitHub facts wants the same thing for the same ~30
+// repos: the latest release and the repo stats. One REST call per repo per
+// fact meant ~60 requests an hour and a tokenless build blew the anonymous
+// 60/hr budget in its first minute. With a token, GraphQL answers for every
+// repo in a single request that costs one point of a 5000/hr budget, so a
+// rate limit is no longer reachable from this site. GraphQL has no anonymous
+// tier, so the REST calls above remain the tokenless fallback.
+
+/** Latest release and repo stats for one repository; either may be null. */
+export interface RepoFacts {
+  release: ReleaseInfo | null
+  stats: RepoStats | null
+}
+
+const EMPTY_FACTS: RepoFacts = { release: null, stats: null }
+const factsCache = new Map<string, { data: RepoFacts; timestamp: number }>()
+/** Concurrent callers for the same batch share one request. */
+const factsInflight = new Map<string, Promise<Map<string, RepoFacts> | null>>()
+/** Aliases per GraphQL request. Well under the 500k node limit; keeps the body small. */
+const FACTS_BATCH = 50
+
+const FACTS_FRAGMENT = `fragment Facts on Repository {
+  stargazerCount
+  forkCount
+  pushedAt
+  isArchived
+  primaryLanguage { name }
+  latestRelease { tagName name description publishedAt url isPrerelease isDraft }
+}`
+
+/** One aliased `repository` field per owner/repo key, plus the shared fragment. */
+export function buildFactsQuery(keys: string[]): string {
+  const fields = keys.map((key, index) => {
+    const slash = key.indexOf('/')
+    const owner = key.slice(0, slash)
+    const repo = key.slice(slash + 1)
+    return `  r${index}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(repo)}) { ...Facts }`
+  })
+  return `${FACTS_FRAGMENT}\nquery RepoFacts {\n${fields.join('\n')}\n}`
+}
+
+interface GraphQLRelease {
+  tagName: string
+  name: string | null
+  description: string | null
+  publishedAt: string | null
+  url: string
+  isPrerelease: boolean
+  isDraft: boolean
+}
+
+interface GraphQLRepo {
+  stargazerCount?: number
+  forkCount?: number
+  pushedAt?: string | null
+  isArchived?: boolean
+  primaryLanguage?: { name: string } | null
+  latestRelease?: GraphQLRelease | null
+}
+
+interface GraphQLResponse {
+  data?: Record<string, GraphQLRepo | null> | null
+  errors?: Array<{ type?: string; message?: string; path?: string[] }>
+}
+
+/**
+ * `latestRelease` mirrors the REST "latest" endpoint (no drafts, no
+ * prereleases); the guards are belt and braces so a schema change cannot
+ * promote a draft to the feed.
+ */
+function releaseFromNode(rel: GraphQLRelease | null | undefined): ReleaseInfo | null {
+  if (!rel?.publishedAt || rel.isDraft || rel.isPrerelease) return null
+  const version = rel.tagName.replace(/^v/, '')
+  return {
+    publishedAt: rel.publishedAt,
+    summary: summarizeRelease(rel.name, rel.description, version),
+    url: rel.url,
+    version,
+  }
+}
+
+/** Map one repository node to the REST-shaped facts. */
+function factsFromNode(node: GraphQLRepo): RepoFacts {
+  return {
+    release: releaseFromNode(node.latestRelease),
+    stats: {
+      archived: Boolean(node.isArchived),
+      forks: node.forkCount ?? 0,
+      language: node.primaryLanguage?.name ?? null,
+      pushedAt: node.pushedAt ?? null,
+      stars: node.stargazerCount ?? 0,
+    },
+  }
+}
+
+/**
+ * One GraphQL request for up to FACTS_BATCH repos. Resolves to a map for
+ * every key on success (a repo GitHub cannot resolve maps to empty facts, so
+ * it is not asked again for an hour) and to null when the request failed,
+ * in which case nothing is cached and the next revalidation retries.
+ */
+async function fetchFactsBatch(keys: string[]): Promise<Map<string, RepoFacts> | null> {
+  const label = `facts for ${keys.length} repos`
+  let payload: GraphQLResponse
+  let response: Response
+  try {
+    response = await fetch('https://api.github.com/graphql', {
+      body: JSON.stringify({ query: buildFactsQuery(keys) }),
+      // POST is only cached when asked; matched on URL, method, headers, body.
+      cache: 'force-cache',
+      headers: { ...githubHeaders('application/vnd.github+json'), 'Content-Type': 'application/json' },
+      method: 'POST',
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) {
+      if (isRateLimitResponse(response)) noteRateLimit(response, label)
+      else console.error(`GitHub GraphQL ${label} failed: HTTP ${response.status}`)
+      return null
+    }
+    payload = (await response.json()) as GraphQLResponse
+  } catch (error) {
+    console.error(`Failed to fetch GitHub ${label}:`, error)
+    return null
+  }
+
+  // A rate limit can also arrive as HTTP 200 with a typed error and no data.
+  if (payload.errors?.some((e) => e.type === 'RATE_LIMITED')) {
+    noteRateLimit(response, label)
+    return null
+  }
+  if (!payload.data) {
+    console.error(`GitHub GraphQL ${label} returned no data:`, payload.errors?.[0]?.message ?? 'unknown error')
+    return null
+  }
+
+  const out = new Map<string, RepoFacts>()
+  keys.forEach((key, index) => {
+    const node = payload.data?.[`r${index}`]
+    out.set(key, node ? factsFromNode(node) : EMPTY_FACTS)
+  })
+  return out
+}
+
+/** Fetch a batch once even when several renders ask for it at the same moment. */
+function fetchFactsBatchShared(keys: string[]): Promise<Map<string, RepoFacts> | null> {
+  const id = keys.join(',')
+  const pending = factsInflight.get(id)
+  if (pending) return pending
+  const request = fetchFactsBatch(keys).finally(() => factsInflight.delete(id))
+  factsInflight.set(id, request)
+  return request
+}
+
+/** Tokenless fallback: the two REST calls, each with its own cache and backoff. */
+async function fetchFactsRest(key: string): Promise<RepoFacts> {
+  const url = `https://github.com/${key}`
+  const [release, stats] = await Promise.all([getLatestRelease(url), getRepoStats(url)])
+  return { release, stats }
+}
+
+/**
+ * Latest release and repo stats for many projects, keyed by slug. With a
+ * token this is one GraphQL request per 50 repos, memoized for an hour in
+ * this process and in the fetch cache; without one it falls back to REST.
+ * Projects whose repo GitHub cannot resolve get empty facts. Never throws.
+ */
+export async function getRepoFactsForProjects(
+  projects: Array<{ slug: string; github: string | null }>,
+): Promise<Map<string, RepoFacts>> {
+  const keyBySlug = new Map<string, string>()
+  for (const project of projects) {
+    const parsed = project.github ? parseGitHubUrl(project.github) : null
+    if (parsed) keyBySlug.set(project.slug, `${parsed.owner}/${parsed.repo}`)
+  }
+
+  const now = Date.now()
+  const missing = [...new Set(keyBySlug.values())].filter((key) => {
+    const cached = factsCache.get(key)
+    return !cached || now - cached.timestamp >= CACHE_TTL
+  })
+
+  if (missing.length > 0 && !isGitHubRateLimited(now)) {
+    if (process.env.GITHUB_TOKEN || process.env.GH_TOKEN) {
+      const chunks: string[][] = []
+      for (let i = 0; i < missing.length; i += FACTS_BATCH) chunks.push(missing.slice(i, i + FACTS_BATCH))
+      const results = await Promise.all(chunks.map(fetchFactsBatchShared))
+      for (const batch of results) {
+        if (!batch) continue
+        for (const [key, facts] of batch) factsCache.set(key, { data: facts, timestamp: Date.now() })
+      }
+    } else {
+      // REST caches per call, so the facts cache only mirrors what came back.
+      await Promise.all(
+        missing.map(async (key) => {
+          const facts = await fetchFactsRest(key)
+          if (facts.release || facts.stats) factsCache.set(key, { data: facts, timestamp: Date.now() })
+        }),
+      )
+    }
+  }
+
+  const out = new Map<string, RepoFacts>()
+  for (const [slug, key] of keyBySlug) {
+    const cached = factsCache.get(key)
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) out.set(slug, cached.data)
+  }
+  return out
+}
+
+/** Facts for one repository URL, through the same batch and caches. */
+export async function getRepoFacts(githubUrl: string): Promise<RepoFacts> {
+  const parsed = parseGitHubUrl(githubUrl)
+  if (!parsed) return EMPTY_FACTS
+  const key = `${parsed.owner}/${parsed.repo}`
+  const facts = await getRepoFactsForProjects([{ github: githubUrl, slug: key }])
+  return facts.get(key) ?? EMPTY_FACTS
+}
+
+/** Repo stats for many projects, keyed by slug. Projects without stats are omitted. */
 export async function getRepoStatsForProjects(
   projects: Array<{ slug: string; github: string | null }>,
 ): Promise<Map<string, RepoStats>> {
   const out = new Map<string, RepoStats>()
-  const results = await Promise.all(
-    projects.map(async (project) => ({
-      slug: project.slug,
-      stats: project.github ? await getRepoStats(project.github) : null,
-    })),
-  )
-  for (const { slug, stats } of results) if (stats) out.set(slug, stats)
+  for (const [slug, facts] of await getRepoFactsForProjects(projects)) if (facts.stats) out.set(slug, facts.stats)
   return out
 }
 
-/**
- * Fetch releases for multiple GitHub URLs in parallel
- */
+/** Latest releases for many projects, keyed by slug. Projects without a release are omitted. */
 export async function getReleasesForProjects(
   projects: Array<{ slug: string; github: string | null }>,
 ): Promise<Map<string, ReleaseInfo>> {
-  const releaseMap = new Map<string, ReleaseInfo>()
+  const out = new Map<string, ReleaseInfo>()
+  for (const [slug, facts] of await getRepoFactsForProjects(projects)) if (facts.release) out.set(slug, facts.release)
+  return out
+}
 
-  const results = await Promise.all(
-    projects.map(async (project) => {
-      if (!project.github) return { release: null, slug: project.slug }
-      const release = await getLatestRelease(project.github)
-      return { release, slug: project.slug }
-    }),
-  )
-
-  for (const { slug, release } of results) {
-    if (release) {
-      releaseMap.set(slug, release)
-    }
-  }
-
-  return releaseMap
+/** Forget every in-memory facts cache. Tests only. */
+export function resetGitHubFactsCache(): void {
+  factsCache.clear()
+  factsInflight.clear()
+  releaseCache.clear()
+  statsCache.clear()
 }
 
 // ─── Live activity ────────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import ProjectDetailView from '../../../components/ProjectDetailView'
 import { getAllProjectSlugs, getAllProjects, getProject } from '../../../lib/content'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getLatestRelease, getRepoStats } from '../../../lib/github'
+import { getRepoFacts } from '../../../lib/github'
 import { laneOf } from '../../../lib/projectLanes'
 import { extractHeadings } from '../../../lib/reading'
 import { PageProps } from '../../../types'
@@ -41,9 +41,8 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = await getProject(slug)
   if (!project) notFound()
 
-  const [release, stats, all] = await Promise.all([
-    project.github ? getLatestRelease(project.github).catch(() => null) : null,
-    project.github ? getRepoStats(project.github).catch(() => null) : null,
+  const [{ release, stats }, all] = await Promise.all([
+    project.github ? getRepoFacts(project.github) : { release: null, stats: null },
     getAllProjects(),
   ])
 
