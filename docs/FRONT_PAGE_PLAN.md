@@ -1,6 +1,6 @@
 # Front Page Redesign — Plan & Ledger
 
-> Status: **Ship-readiness pass done 2026-09-14; fixes landed. Ready for a PR.** · Branch: `nova/front-page` ·
+> Status: **Shipped in PR #9 (2026-09-14). Post-launch follow-ups on `nova/post-launch`.** · Branch: `nova/front-page` ·
 > Worktree: `~/dev/worktrees/hyperbliss.tech/nova/front-page` ·
 > Design: Round 3 on the "hyperbliss.tech Landing Directions" canvas · Updated: 2026-09-14
 
@@ -191,9 +191,26 @@ counts, both confirmed and fixed here along with the smaller items.
 - The emoji-to-Feather `ProjectIcon` swap that sat uncommitted since
   2026-09-08 is committed as its own checkpoint.
 
-Still open: `GITHUB_TOKEN` (or `GH_TOKEN`) must be set in the Netlify
-environment; the OG renderer still sets Jura and Exo 2; resume chrome;
-date-prefixed essay slugs; a unified feed archive route.
+PR #9 merged 2026-09-14 as `8a07a9c`; `GITHUB_TOKEN` is set on Netlify.
+
+### Post-launch follow-ups (2026-09-14, branch `nova/post-launch`)
+
+- `pnpm audit --prod` had failed CI on main since 2026-08-06 (15
+  advisories). Mermaid 11.16.1 plus pnpm overrides bounded to each
+  package's major clear it. Gotcha: an open-ended `js-yaml >=3.15.2`
+  override resolved 5.x and broke gray-matter's `safeLoad`.
+- OG cards render in Syne 700 and IBM Plex Sans 400/600 (vendored static
+  woff); the site card's name drops to 84px with 6px tracking.
+- Essay URLs lose the date prefix. The collection layer derives slugs
+  from filenames and keeps a slug-to-file index; a next.config redirect
+  308s `/blog/<date>_<slug>` to `/blog/<slug>/`. Gotcha: a bare `:slug`
+  after a literal `_` compiles to exclude underscores in Next's
+  path-to-regexp, so the pattern is `:slug([^/]+)`.
+- `/archive/` lists the whole feed under year markers; the front page
+  foot links there instead of splitting to Writing and Projects.
+- Resume containers, contact rows, and skill pills replaced with the
+  hairline row language; entrances moved to Reveal.
+- Sidequest logged in Sibyl: retire the global uppercase heading rule.
 
 ## Open taste items
 
@@ -204,7 +221,6 @@ date-prefixed essay slugs; a unified feed archive route.
 
 ## Follow-ups (not this round)
 
-- OG image renderer still sets Jura and Exo 2; move it to Syne + Plex.
 - Resume still wears its glass-card chrome (bordered panels, pill
   skills, boxed contact rows). Headings are done; the containers are a
   later pass.
