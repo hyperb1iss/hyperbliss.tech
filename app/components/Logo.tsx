@@ -63,52 +63,24 @@ const logoImageStyles = css`
 
 const TechnologiesText = styled.span`
   font-family: var(--font-mono);
-  font-size: 1.4rem;
-  font-weight: 600;
-  background: linear-gradient(
-    90deg,
-    var(--silk-circuit-cyan),
-    var(--silk-quantum-purple),
-    var(--silk-plasma-pink),
-    var(--silk-circuit-cyan)
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 0.15em;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
+  color: var(--silk-circuit-cyan);
+  opacity: 0.85;
   position: relative;
   white-space: nowrap;
-  animation:
-    silkLogoSlideIn 0.8s ease-out 0.3s both,
-    silkLogoGlitchText 4s ease-in-out infinite,
-    silkLogoAnimateGradient 6s linear infinite;
   align-self: flex-end;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  animation: silkLogoSlideIn 0.8s var(--ease-silk) 0.3s both;
+  transition: opacity var(--duration-normal) var(--ease-silk);
 
-  &::before {
-    content: 'technologies';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(0, 255, 240, 0.03) 50%,
-      transparent 100%
-    );
-    background-size: 100% 5px;
-    animation: silkLogoScanline 8s linear infinite;
-    opacity: 0.5;
-    mix-blend-mode: overlay;
-    pointer-events: none;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
     display: none;
   }
 `

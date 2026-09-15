@@ -1,62 +1,54 @@
 // app/components/PageTitle.tsx
-import { motion } from 'framer-motion'
-import { css } from '../../styled-system/css'
+// The page-level heading shared by every index and utility page. Sentence case
+// in the display face, left-aligned, with an optional one-line lede. Opts out of
+// the global uppercase-and-glow heading rule so it matches the front page.
 
-const titleWrapperStyles = css`
-  font-family: var(--font-heading);
-  font-size: var(--text-fluid-5xl);
-  font-weight: var(--font-black);
-  text-align: center;
-  margin-bottom: var(--space-10);
-  line-height: var(--leading-tight);
-  background: linear-gradient(
-    135deg,
-    #00fff0 0%,
-    #e0aaff 20%,
-    #d946ef 40%,
-    #ff75d8 60%,
-    #a855f7 80%,
-    #00fff0 100%
-  );
-  background-size: 300% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  position: relative;
-  animation: silkGradientShift 6s ease infinite;
-  filter: drop-shadow(0 0 15px rgba(0, 255, 240, 0.3))
-          drop-shadow(0 0 25px rgba(224, 170, 255, 0.2))
-          drop-shadow(0 0 20px rgba(255, 117, 216, 0.18));
+import type { ReactNode } from 'react'
+import { css, cx } from '../../styled-system/css'
+import { neonTitle } from './front/neon'
 
-  @media (max-width: 768px) {
-    font-size: var(--text-fluid-4xl);
-    margin-bottom: var(--space-8);
-  }
+const headerStyles = css`
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-bottom: 2.8rem;
+  margin-bottom: 3.2rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+`
+
+const titleStyles = css`
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(3.4rem, 2.8rem + 1.6vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-transform: none;
+  text-shadow: none;
+  margin: 0;
+  text-wrap: balance;
+`
+
+const ledeStyles = css`
+  font-size: 1.8rem;
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 68rem;
+  text-wrap: pretty;
 `
 
 interface PageTitleProps {
-  children: React.ReactNode
+  children: ReactNode
+  /** One sentence under the title. Optional; most pages need none. */
+  lede?: ReactNode
 }
 
-/**
- * PageTitle component
- * Renders a page title with animation effects.
- * @param {PageTitleProps} props - The component props
- * @returns {JSX.Element} Animated page title
- */
-const PageTitle: React.FC<PageTitleProps> = ({ children }) => {
+export default function PageTitle({ children, lede }: PageTitleProps) {
   return (
-    <motion.h1
-      animate={{ opacity: 1, y: 0 }}
-      className={titleWrapperStyles}
-      initial={{ opacity: 0, y: -40 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
-    >
-      {children}
-    </motion.h1>
+    <header className={headerStyles}>
+      <h1 className={cx(titleStyles, neonTitle)}>{children}</h1>
+      {lede && <p className={ledeStyles}>{lede}</p>}
+    </header>
   )
 }
-
-export default PageTitle

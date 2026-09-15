@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
 import remarkGfm from 'remark-gfm'
+import { createHeadingIdAssigner, type Heading } from '@/lib/reading'
 import {
   ProjectBlockquote,
   ProjectH1,
@@ -41,6 +42,18 @@ const sanitizeSchema = {
   tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
 }
 
+/** Plain text of a heading's rendered children, for id assignment. */
+function childrenText(children: React.ReactNode): string {
+  return React.Children.toArray(children)
+    .map((child) => {
+      if (typeof child === 'string' || typeof child === 'number') return String(child)
+      if (React.isValidElement<{ children?: React.ReactNode }>(child)) return childrenText(child.props.children)
+      return ''
+    })
+    .join('')
+    .trim()
+}
+
 function classNames(...values: Array<string | undefined>): string {
   return values.filter(Boolean).join(' ')
 }
@@ -51,6 +64,8 @@ function isInlineCode(node?: Element): boolean {
 
 interface ProjectMarkdownRendererProps {
   content: string
+  /** Headings extracted from `content`; when given, h2/h3 get matching ids for in-page links. */
+  headings?: Heading[]
 }
 
 interface CodeComponentProps {
@@ -133,7 +148,8 @@ const SafeLink: React.FC<any> = ({ children, href, node: _node, ...rest }) => {
   return <ProjectLink {...safeProps}>{children}</ProjectLink>
 }
 
-const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content }) => {
+const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ content, headings }) => {
+  const assignId = createHeadingIdAssigner(headings ?? [])
   return (
     <ProjectMarkdownContent>
       <ReactMarkdown
@@ -152,8 +168,16 @@ const ProjectMarkdownRenderer: React.FC<ProjectMarkdownRendererProps> = ({ conte
             )
           },
           h1: ({ node: _node, ...props }) => <ProjectH1 {...props} />,
-          h2: ({ node: _node, ...props }) => <ProjectH2 {...props} />,
-          h3: ({ node: _node, ...props }) => <ProjectH3 {...props} />,
+          h2: ({ node: _node, children, ...props }) => (
+            <ProjectH2 id={headings ? assignId(2, childrenText(children)) : undefined} {...props}>
+              {children}
+            </ProjectH2>
+          ),
+          h3: ({ node: _node, children, ...props }) => (
+            <ProjectH3 id={headings ? assignId(3, childrenText(children)) : undefined} {...props}>
+              {children}
+            </ProjectH3>
+          ),
           hr: ({ node: _node, ...props }) => <ProjectHr {...props} />,
           img: ({ node: _node, ...props }) => <ProjectImage {...props} />,
           li: ({ node: _node, ...props }) => <ProjectLi {...props} />,

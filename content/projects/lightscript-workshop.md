@@ -1,5 +1,5 @@
 ---
-emoji: '💡'
+category: 'lighting'
 title: 'LightScript Workshop: A Studio for RGB Effects'
 description: 'Write lighting effects in TypeScript and GLSL, preview them in a browser, and build standalone lightscripts for SignalRGB.'
 date: '2025-01-26'

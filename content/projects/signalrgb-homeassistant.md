@@ -1,5 +1,5 @@
 ---
-emoji: '🏠'
+category: 'lighting'
 title: 'SignalRGB Home Assistant Integration'
 date: '2024-09-25'
 tags: ['Home Assistant', 'IoT', 'SignalRGB', 'Smart Home', 'Python']

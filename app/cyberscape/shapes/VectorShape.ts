@@ -191,6 +191,8 @@ export abstract class VectorShape {
    * @param width - Width of the canvas.
    * @param height - Height of the canvas.
    * @param particles - Array of Particle instances for interaction.
+   * @param step - Elapsed simulation ticks since the last update.
+   * @param dtMs - Elapsed wall-clock milliseconds since the last update.
    */
   public update(
     isCursorOverHeader: boolean,
@@ -199,8 +201,11 @@ export abstract class VectorShape {
     width: number,
     height: number,
     particles: Particle[],
+    step = 1,
+    dtMs = 16,
   ): void {
     if (this.isExploded) return // Do not update if exploded
+    const noise = Math.sqrt(step)
 
     if (isCursorOverHeader) {
       vec3.set(this.tempVector, mouseX - this.position[0], mouseY - this.position[1], 0)
@@ -209,7 +214,7 @@ export abstract class VectorShape {
       if (distance > 0 && distance < this.config.cursorInfluenceRadius) {
         const force =
           ((this.config.cursorInfluenceRadius - distance) / this.config.cursorInfluenceRadius) * this.config.cursorForce
-        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force)
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force * step)
         vec3.add(this.velocity, this.velocity, this.tempVector)
       }
     }
@@ -217,17 +222,17 @@ export abstract class VectorShape {
     // Apply slight attraction to center (reuse tempVector to avoid allocation)
     vec3.set(
       this.tempVector,
-      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce,
-      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce,
+      (-this.position[0] / (width * 10)) * this.config.centerAttractionForce * step,
+      (-this.position[1] / (height * 10)) * this.config.centerAttractionForce * step,
       0,
     )
     vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Introduce Z-Drift Over Time
-    this.velocity[2] += (Math.random() - 0.5) * 0.005 // Small random drift
+    this.velocity[2] += (Math.random() - 0.5) * 0.005 * noise // Small random drift
 
     // Update position
-    vec3.add(this.position, this.position, this.velocity)
+    vec3.scaleAndAdd(this.position, this.position, this.velocity, step)
 
     // Wrap around edges smoothly
     const buffer = 200 // Ensure objects are fully offscreen before wrapping
@@ -249,27 +254,28 @@ export abstract class VectorShape {
     // Add small random changes to velocity for more natural movement (reuse tempVector)
     vec3.set(
       this.tempVector,
-      (Math.random() - 0.5) * 0.005,
-      (Math.random() - 0.5) * 0.005,
-      (Math.random() - 0.5) * 0.005,
+      (Math.random() - 0.5) * 0.005 * noise,
+      (Math.random() - 0.5) * 0.005 * noise,
+      (Math.random() - 0.5) * 0.005 * noise,
     )
     vec3.add(this.velocity, this.velocity, this.tempVector)
 
     // Update rotation on all axes
-    vec3.add(this.rotation, this.rotation, this.rotationSpeed)
+    vec3.scaleAndAdd(this.rotation, this.rotation, this.rotationSpeed, step)
 
     // Update scale towards target scale for morphing effect
+    const scaleDelta = this.scaleSpeed * step
     if (this.scale < this.scaleTarget) {
-      this.scale = Math.min(this.scale + this.scaleSpeed, this.scaleTarget)
+      this.scale = Math.min(this.scale + scaleDelta, this.scaleTarget)
     } else if (this.scale > this.scaleTarget) {
-      this.scale = Math.max(this.scale - this.scaleSpeed, this.scaleTarget)
+      this.scale = Math.max(this.scale - scaleDelta, this.scaleTarget)
     }
 
     // Update color
-    this.updateColor()
+    this.updateColor(step)
 
     // Update lifecycle
-    this.age += 16 // Assuming 60 FPS
+    this.age += dtMs
 
     if (this.age >= this.lifespan && !this.isFadingOut) {
       this.isFadingOut = true
@@ -290,7 +296,7 @@ export abstract class VectorShape {
     }
 
     // Interact with nearby particles
-    this.interactWithParticles(particles)
+    this.interactWithParticles(particles, step)
 
     // Apply temporary distortion
     vec3.add(this.position, this.position, this.temporaryDistortion)
@@ -299,21 +305,21 @@ export abstract class VectorShape {
     vec3.set(this.temporaryDistortion, 0, 0, 0)
 
     // Update glow intensity
-    this.glowIntensity += this.pulseDirection * 0.2
+    this.glowIntensity += this.pulseDirection * 0.2 * step
     if (this.glowIntensity > 30 || this.glowIntensity < 10) {
       this.pulseDirection *= -1
     }
 
     // Update color shift
-    this.colorShift = (this.colorShift + this.colorShiftSpeed) % 360
+    this.colorShift = (this.colorShift + this.colorShiftSpeed * step) % 360
   }
 
   /**
    * Updates the shape's color smoothly towards the target color.
    */
-  private updateColor(): void {
+  private updateColor(step = 1): void {
     if (this.color !== this.targetColor) {
-      this.color = ColorManager.blendColors(this.color, this.targetColor, this.colorTransitionSpeed)
+      this.color = ColorManager.blendColors(this.color, this.targetColor, this.colorTransitionSpeed * step)
 
       if (this.color === this.targetColor) {
         // When we reach the target color, set a new target
@@ -326,7 +332,7 @@ export abstract class VectorShape {
    * Interacts with nearby particles, applying forces and potentially emitting particles.
    * @param particles - Array of Particle instances.
    */
-  private interactWithParticles(particles: Particle[]): void {
+  private interactWithParticles(particles: Particle[], step = 1): void {
     const INTERACTION_RADIUS = this.config.shapeParticleInteractionRadius
     const INTERACTION_FORCE = this.config.shapeParticleInteractionForce
     particles.forEach((particle) => {
@@ -335,7 +341,7 @@ export abstract class VectorShape {
 
       if (distance > 0 && distance < INTERACTION_RADIUS) {
         const force = INTERACTION_FORCE * (1 - distance / INTERACTION_RADIUS)
-        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force)
+        vec3.scale(this.tempVector, this.tempVector, (1 / distance) * force * step)
         vec3.add(this.velocity, this.velocity, this.tempVector)
 
         // Optionally, influence particle's velocity
@@ -355,8 +361,10 @@ export abstract class VectorShape {
     if (this.opacity > 0 && !this.isExploded) {
       const baseColor = ColorManager.hexToRgb(this.color)
       if (baseColor) {
-        // Apply color shift
-        const shiftedColor = ColorManager.shiftHue(baseColor, this.colorShift)
+        // Sway the hue a little either side of the palette colour instead of
+        // walking the whole wheel, which is what used to turn shapes orange
+        const sway = Math.sin((this.colorShift * Math.PI) / 180) * 18
+        const shiftedColor = ColorManager.shiftHue(baseColor, sway)
         const { r, g, b } = shiftedColor
 
         // Create a gradient for the shape
@@ -376,7 +384,7 @@ export abstract class VectorShape {
           ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity * 0.5})`
         }
 
-        ctx.lineWidth = 2
+        ctx.lineWidth = 1.25
 
         // Apply dynamic glow based on opacity and glow intensity
         const glowEffect = this.opacity * this.glowIntensity * 1.5
@@ -409,7 +417,7 @@ export abstract class VectorShape {
         // Add a subtle inner glow
         ctx.globalCompositeOperation = 'lighter'
         ctx.shadowBlur = glowEffect * 0.5
-        ctx.globalAlpha = 0.3
+        ctx.globalAlpha = 0.18
         ctx.stroke()
         ctx.globalAlpha = 1
         ctx.globalCompositeOperation = 'source-over'

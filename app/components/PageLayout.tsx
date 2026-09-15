@@ -1,48 +1,34 @@
 // app/components/PageLayout.tsx
-import { motion } from 'framer-motion'
-import { css } from '../../styled-system/css'
+// Content column for every page under the header. GlobalLayout already renders
+// the <main> landmark, so this is a plain wrapper; the entrance rides the same
+// CSS keyframe as the front page and honors prefers-reduced-motion.
 
-const mainContentWrapperStyles = css`
+import type { ReactNode } from 'react'
+import { css } from '../../styled-system/css'
+import Reveal from './front/Reveal'
+
+const wrapperStyles = css`
   flex: 1;
   width: 100%;
-  max-width: var(--container-xl);
+  max-width: 144rem;
   margin: 0 auto;
-  padding: var(--space-24) var(--space-12) var(--space-16);
-  min-height: 100vh;
+  padding: 4.8rem 6.4rem 6.4rem;
+  min-height: 60vh;
   position: relative;
-  background: transparent;
 
-  @media (max-width: 1200px) {
-    padding: var(--space-20) var(--space-6) var(--space-12);
-  }
-
-  @media (max-width: 768px) {
-    padding: var(--space-16) var(--space-4) var(--space-8);
+  @media (max-width: 1024px) {
+    padding: 3.2rem 2.4rem 4.8rem;
   }
 `
 
 interface PageLayoutProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-/**
- * PageLayout component
- * Provides a consistent layout wrapper for page content with animations.
- * Adjusted styling for better widescreen support and responsiveness.
- * @param {PageLayoutProps} props - The component props
- * @returns {JSX.Element} Rendered page layout
- */
-const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
+export default function PageLayout({ children }: PageLayoutProps) {
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className={mainContentWrapperStyles}
-      initial={{ opacity: 0 }}
-      transition={{ duration: 0.6, ease: 'easeInOut' }}
-    >
+    <Reveal className={wrapperStyles} lift={false}>
       {children}
-    </motion.div>
+    </Reveal>
   )
 }
-
-export default PageLayout

@@ -1,5 +1,5 @@
 ---
-emoji: '🌃'
+category: 'web'
 title: 'hyperbliss.tech: A Personal Space on the Web'
 date: '2024-09-25'
 tags: ['Next.js', 'TypeScript', 'React', 'Panda CSS', 'Canvas', 'Creative Coding']

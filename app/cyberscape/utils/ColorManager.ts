@@ -26,8 +26,6 @@ export class ColorManager {
     '#a259ff', // Quantum purple
     '#8b5cf6', // Violet accent
     '#ff75d8', // Plasma pink
-    '#fbbf24', // Fusion gold
-    '#10b981', // Quantum green
   ]
 
   /**
@@ -55,6 +53,30 @@ export class ColorManager {
    */
   public static getRandomCyberpunkColor(): string {
     return ColorManager.CYBERPUNK_COLORS[Math.floor(Math.random() * ColorManager.CYBERPUNK_COLORS.length)]
+  }
+
+  /**
+   * Parses a hex, hsl(), or rgb()/rgba() colour string to RGB values.
+   * Particles carry hsl strings while shapes carry hex, so anything that blends
+   * the two has to go through here rather than hexToRgb.
+   * @param color - The colour string.
+   * @returns An object containing r, g, b values, or null if unparseable.
+   */
+  public static toRgb(color: string): { r: number; g: number; b: number } | null {
+    if (color.startsWith('#')) return ColorManager.hexToRgb(color)
+    const hsl = /^hsla?\(\s*([\d.]+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%/.exec(color)
+    if (hsl) {
+      return ColorManager.hslToRgb(
+        (Number.parseFloat(hsl[1]) % 360) / 360,
+        Number.parseFloat(hsl[2]) / 100,
+        Number.parseFloat(hsl[3]) / 100,
+      )
+    }
+    const rgb = /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/.exec(color)
+    if (rgb) {
+      return { b: Math.round(Number(rgb[3])), g: Math.round(Number(rgb[2])), r: Math.round(Number(rgb[1])) }
+    }
+    return null
   }
 
   /**
@@ -139,7 +161,7 @@ export class ColorManager {
    * @returns The color string with adjusted opacity.
    */
   public static adjustColorOpacity(color: string, opacity: number): string {
-    const rgb = ColorManager.hexToRgb(color)
+    const rgb = ColorManager.toRgb(color)
     if (!rgb) return color
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`
   }

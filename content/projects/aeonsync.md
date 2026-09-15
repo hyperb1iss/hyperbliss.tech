@@ -1,5 +1,5 @@
 ---
-emoji: '🌀'
+category: 'terminal'
 title: 'AeonSync: Readable Backup History'
 date: '2024-09-25'
 tags: ['Python', 'rsync', 'Backup', 'CLI', 'DevOps']

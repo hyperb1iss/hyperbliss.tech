@@ -1,5 +1,5 @@
 ---
-emoji: '🪐'
+category: 'terminal'
 title: 'Cosmosys: Releases with a Clear Sequence'
 date: '2024-09-25'
 description: 'A Python release automation tool that describes version updates, changelogs, builds, and publishing as configurable steps for Python, Rust, and Node.js projects.'

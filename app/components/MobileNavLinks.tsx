@@ -123,11 +123,11 @@ const navIconStyles = css`
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const NAV_ICONS: Record<string, string> = {
-  About: '◆',
-  Blog: '◈',
-  Lab: '◇',
-  Projects: '▣',
-  Resume: '◉',
+  '/about': '◆',
+  '/blog': '◈',
+  '/lab': '◇',
+  '/projects': '▣',
+  '/resume': '◉',
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -234,12 +234,11 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       variants={panelVariants}
     >
       <ul className={navListStyles}>
-        {NAV_ITEMS.map((item) => {
-          const href = `/${item.toLowerCase()}`
+        {NAV_ITEMS.map(({ href, label }) => {
           const isActive = isNavigationActive(pathname, href)
 
           return (
-            <motion.li key={item} style={{ width: '100%' }} variants={itemVariants}>
+            <motion.li key={href} style={{ width: '100%' }} variants={itemVariants}>
               <motion.a
                 aria-current={isActive ? 'page' : undefined}
                 className={navLinkStyles}
@@ -247,9 +246,9 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
                 onClick={(e) => handleNavigation(href, e)}
               >
                 <span className={navIconStyles} style={{ opacity: isActive ? 1 : 0.5 }}>
-                  {NAV_ICONS[item]}
+                  {NAV_ICONS[href]}
                 </span>
-                {item}
+                {label}
               </motion.a>
             </motion.li>
           )

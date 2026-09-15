@@ -18,7 +18,7 @@ export class ForceHandler {
    * Handles attraction and repulsion forces between shapes.
    * @param shapes - Array of VectorShape instances to apply forces to.
    */
-  public static applyForces(shapes: VectorShape[]): void {
+  public static applyForces(shapes: VectorShape[], step = 1): void {
     const config = CyberScapeConfig.getInstance()
     const ATTRACTION_RADIUS = config.shapeAttractionRadius
     const REPULSION_RADIUS = config.shapeRepulsionRadius
@@ -35,7 +35,7 @@ export class ForceHandler {
 
         if (distance > 0 && distance < ATTRACTION_RADIUS && distance > REPULSION_RADIUS) {
           // Attraction
-          const forceMagnitude = ATTRACTION_FORCE * (1 - distance / ATTRACTION_RADIUS)
+          const forceMagnitude = ATTRACTION_FORCE * (1 - distance / ATTRACTION_RADIUS) * step
           vec3.normalize(ForceHandler.tempVector, ForceHandler.tempVector)
           vec3.scale(ForceHandler.tempVector, ForceHandler.tempVector, forceMagnitude)
           shapeA.applyForce(ForceHandler.tempVector)
@@ -43,7 +43,7 @@ export class ForceHandler {
           shapeB.applyForce(ForceHandler.tempVector)
         } else if (distance > 0 && distance <= REPULSION_RADIUS) {
           // Repulsion
-          const forceMagnitude = REPULSION_FORCE * (1 - distance / REPULSION_RADIUS)
+          const forceMagnitude = REPULSION_FORCE * (1 - distance / REPULSION_RADIUS) * step
           vec3.normalize(ForceHandler.tempVector, ForceHandler.tempVector)
           vec3.scale(ForceHandler.tempVector, ForceHandler.tempVector, forceMagnitude)
           // Negate into pre-allocated vector instead of creating new one

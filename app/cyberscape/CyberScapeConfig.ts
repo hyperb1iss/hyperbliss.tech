@@ -10,13 +10,48 @@ export class CyberScapeConfig {
   private static instance: CyberScapeConfig
 
   // Animation and rendering
-  public targetFPS = 30
+  public targetFPS = 60
   public frameTime: number = 1000 / this.targetFPS
+  /**
+   * Duration of one simulation tick. Every per-frame constant below (speeds,
+   * forces, fade rates) was tuned against a 30fps loop, so a tick is 1/30s and
+   * the render loop scales its work by elapsed time measured in ticks.
+   */
+  public simulationTickMs = 1000 / 30
+  /** Longest single frame the simulation integrates before clamping (tab switches, jank). */
+  public maxFrameDeltaMs = 100
+
+  // Camera drift and pointer parallax (radians)
+  public cameraDriftYaw = 0.14
+  public cameraDriftPitch = 0.07
+  public cameraDriftPeriodMs = 26000
+  public cameraParallaxYaw = 0.09
+  public cameraParallaxPitch = 0.05
+  public cameraSmoothingMs = 450
+
+  // Glow rendering
+  public particleGlowRadiusFactor = 4
+  public particleGlowCursorBoost = 3
+
+  // Context response: calm when unattended, alive when touched
+  /** Time without pointer activity over the band before the field eases into calm */
+  public idleCalmDelayMs = 12000
+  /** Motion time scale while calm (1 is full speed) */
+  public idleCalmEnergy = 0.45
+  public energySmoothingMs = 1800
+  /** Pull toward a hovered nav link: reach in world units, px per tick at the rim, orbit radius */
+  public navMagnetRadius = 190
+  public navMagnetPull = 1.1
+  public navMagnetInnerRadius = 26
+  /** Page scroll nudges particles along z; the nudge decays over scrollDepthDecayMs */
+  public scrollDepthFactor = 0.04
+  public scrollDepthMax = 4
+  public scrollDepthDecayMs = 350
 
   // Particle settings
   public particlePoolSize = 500
-  public particlesPerPixel: number = 1 / 2000
-  public baseParticleCount = 100
+  public particlesPerPixel: number = 1 / 3200
+  public baseParticleCount = 70
   public particleMinSpeed = 0.1
   public particleMaxSpeed = 0.5
   public particleSizeMin = 1.5
@@ -40,15 +75,15 @@ export class CyberScapeConfig {
   public particleAtCollisionShapeDistortionFactor = 0.1
 
   // Shape settings
-  public numberOfShapes = 6
-  public numberOfShapesMobile = 5
+  public numberOfShapes = 4
+  public numberOfShapesMobile = 3
   public shapeMinSpeed = 0.05
   public shapeMaxSpeed = 0.3
   public shapeLifespanMin = 10000
   public shapeLifespanMax = 25000
   public shapeFadeOutDuration = 3000
-  public shapeGlowIntensityMin = 15
-  public shapeGlowIntensityMax = 25
+  public shapeGlowIntensityMin = 8
+  public shapeGlowIntensityMax = 14
 
   // Explosion settings
   public maxExplosionParticles = 100
@@ -60,13 +95,13 @@ export class CyberScapeConfig {
   public maxDatastreamParticles = 100
   public datastreamParticleLifespan = 2000
   public datastreamFadeOutDuration = 500
-  public datastreamEnergyLineCount = 20
-  public datastreamMaxRadiusFactor = 0.4
-  public datastreamNoiseSize = 4
-  public datastreamNoiseRadiusFactor = 0.2
+  public datastreamEnergyLineCount = 18
+  public datastreamMaxRadiusFactor = 0.45
   public datastreamShapeRotationSpeed = 0.1
   public datastreamShapeForceMultiplier = 0.01
   public datastreamIntensityMultiplier = 5
+  /** Outward impulse per tick applied to particles as the shockwave passes */
+  public datastreamParticlePush = 0.6
 
   // Interaction settings
   public cursorInfluenceRadius = 300
@@ -82,20 +117,17 @@ export class CyberScapeConfig {
   public shapeRepulsionForce = 0.001
 
   // Glitch effect settings
-  public glitchIntervalMin = 10000
-  public glitchIntervalMax = 20000
+  public glitchIntervalMin = 25000
+  public glitchIntervalMax = 45000
   public glitchDurationMin = 100
   public glitchDurationMax = 400
-  public glitchIntensityMin = 0.3
-  public glitchIntensityMax = 1
+  public glitchIntensityMin = 0.2
+  public glitchIntensityMax = 0.55
 
   // Glitch effect detail settings
-  public glitchEffectMaxAmount = 15
-  public glitchEffectDisplacementThresholdFactor = 0.2
-  public glitchEffectMaxNumLines = 30
-  public glitchEffectMaxNumSlices = 8
-  public glitchEffectMaxNumBlocks = 5
-  public glitchEffectNoiseIntensityFactor = 0.2
+  /** Sideways offset of the chromatic echoes at full intensity, in CSS pixels */
+  public glitchMaxOffsetPx = 6
+  public glitchMaxSlices = 3
 
   // Connection settings
   public particleConnectionDistance = 100

@@ -1,70 +1,46 @@
-// Terminal-first homepage composition. Keep this as a server component so the
-// full content corpus renders as HTML without becoming hydration payload.
+// The home route: the front page as crawlable server-rendered HTML. The
+// pull-down terminal is mounted by the (transition) layout on every route.
+// Keep this a server component so the content corpus never becomes hydration
+// payload.
 
-import type { LabSummary, PageData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
-import { pickFeaturedProjects, projectRotationSeed, toLatestContent, toProjectCards } from '@/lib/homeContent'
-import type { Broadcast, Manifest } from '@/lib/terminal/types'
-import { styled } from '../../styled-system/jsx'
-import FeaturedProjectsSectionSilk from './FeaturedProjectsSectionSilk'
-import HeroSectionSilk from './HeroSectionSilk'
+import type { FrontSection, NowData, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
+import type { FeedItem } from '@/lib/feed'
+import FrontPage from './front/FrontPage'
+import type { ShippingRow } from './front/Rail'
 import HomeFallbackContent from './HomeFallback'
-import LatestBlogPostsSilk from './LatestBlogPostsSilk'
-import TerminalConsole from './terminal/TerminalConsole'
 
 interface TerminalHomeProps {
-  manifest: Manifest
-  broadcast: Broadcast
   posts: PostSummary[]
   projects: ProjectSummary[]
-  labExperiments?: LabSummary[]
-  pageData: PageData
+  lead: FeedItem | null
+  items: FeedItem[]
+  shipping: ShippingRow[]
+  now: NowData
+  front: FrontSection | null
   siteConfig?: SiteConfig | null
 }
 
 const DEFAULT_TAGLINE =
   'I build software that gives people control over their technology. Open source all the way down.'
 
-const Below = styled.div`
-  width: 100%;
-  max-width: var(--container-xl, 1400px);
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-`
-
 export default function TerminalHome({
-  manifest,
-  broadcast,
   posts,
   projects,
-  labExperiments = [],
-  pageData,
+  lead,
+  items,
+  shipping,
+  now,
+  front,
   siteConfig,
 }: TerminalHomeProps) {
-  const projectSeed = projectRotationSeed(new Date(broadcast.generatedAt))
-  const projectCards = pickFeaturedProjects(toProjectCards(projects), 8, projectSeed)
-  const latest = toLatestContent(posts, labExperiments)
-  const hero = pageData.hero
-  const name = hero?.name ?? 'Stefanie Jane'
-  const tagline = hero?.subtitle ?? DEFAULT_TAGLINE
-
   return (
     <>
-      {/* The full identity hero is the landing; the terminal is a summonable
-          pull-down console layered on top (portaled, defaults closed). */}
-      <TerminalConsole broadcast={broadcast} manifest={manifest} />
-
-      <HeroSectionSilk hero={hero} techTags={siteConfig?.techTags ?? null} />
-
-      <Below>
-        <LatestBlogPostsSilk posts={latest} />
-        <FeaturedProjectsSectionSilk projects={projectCards} selectionSeed={null} />
-      </Below>
+      <FrontPage front={front} items={items} lead={lead} now={now} projectCount={projects.length} shipping={shipping} />
 
       <noscript>
         <HomeFallbackContent
-          aboutSummary={tagline}
-          aboutTitle={name}
+          aboutSummary={front?.bio ?? DEFAULT_TAGLINE}
+          aboutTitle="Stefanie Jane"
           posts={posts.map((p) => ({ slug: p.slug, title: p.displayTitle }))}
           projects={projects.map((p) => ({ description: p.description, slug: p.slug, title: p.displayTitle }))}
           siteDescription={siteConfig?.seo?.siteDescription}

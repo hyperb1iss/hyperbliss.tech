@@ -14,8 +14,9 @@ export class ColorBlender {
    * Handles proximity-based color blending between shapes.
    * @param shapes - Array of VectorShape instances to blend colors with.
    */
-  public static blendColors(shapes: VectorShape[]): void {
+  public static blendColors(shapes: VectorShape[], step = 1): void {
     const INFLUENCE_RADIUS = 150 // Adjust as needed
+    const blend = 1 - 0.95 ** step
     const influenceRadiusSquared = INFLUENCE_RADIUS * INFLUENCE_RADIUS
 
     for (let i = 0; i < shapes.length; i++) {
@@ -55,9 +56,9 @@ export class ColorBlender {
         // Blend the current shape's color towards the average color
         const currentColor = ColorManager.hexToRgb(shapeA.color)
         if (currentColor) {
-          const blendedR = Math.round(currentColor.r + (avgR - currentColor.r) * 0.05)
-          const blendedG = Math.round(currentColor.g + (avgG - currentColor.g) * 0.05)
-          const blendedB = Math.round(currentColor.b + (avgB - currentColor.b) * 0.05)
+          const blendedR = Math.round(currentColor.r + (avgR - currentColor.r) * blend)
+          const blendedG = Math.round(currentColor.g + (avgG - currentColor.g) * blend)
+          const blendedB = Math.round(currentColor.b + (avgB - currentColor.b) * blend)
 
           shapeA.color = ColorManager.rgbToHex(blendedR, blendedG, blendedB)
         }

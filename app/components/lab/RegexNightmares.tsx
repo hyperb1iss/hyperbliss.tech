@@ -7,6 +7,7 @@ import { css } from '../../../styled-system/css'
 import { REGEX_NIGHTMARES } from '../../lib/regex-nightmares/data'
 import type { RegexNightmareEntry } from '../../lib/regex-nightmares/types'
 import MarkdownRenderer from '../MarkdownRenderer'
+import PageLayout from '../PageLayout'
 import PageTitle from '../PageTitle'
 import RegexDissector from './RegexDissector'
 import RegexTester from './RegexTester'
@@ -22,25 +23,6 @@ const DANGER_COLORS = ['#50fa7b', '#f1fa8c', '#ffb74d', '#ff6363', '#ff3333']
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Styles
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const staticPageLayoutStyles = css`
-  flex: 1;
-  width: 100%;
-  max-width: var(--container-xl);
-  margin: 0 auto;
-  padding: var(--space-24) var(--space-12) var(--space-16);
-  min-height: 100vh;
-  position: relative;
-  background: transparent;
-
-  @media (max-width: 1200px) {
-    padding: var(--space-20) var(--space-6) var(--space-12);
-  }
-
-  @media (max-width: 768px) {
-    padding: var(--space-16) var(--space-4) var(--space-8);
-  }
-`
 
 const progressBarContainerStyles = css`
   position: fixed;
@@ -168,27 +150,17 @@ const contentStyles = css`
   gap: var(--space-16);
 `
 
-const introStyles = css`
-  font-family: var(--font-body);
-  font-size: var(--text-fluid-lg);
-  color: var(--text-secondary);
-  line-height: var(--leading-relaxed);
-  max-width: 720px;
-  margin: 0 auto var(--space-8);
-  text-align: center;
-`
-
 const quoteStyles = css`
   font-family: var(--font-body);
-  font-size: var(--text-fluid-base);
-  color: rgba(255, 255, 255, 0.35);
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--silk-steel-400);
   font-style: italic;
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto var(--space-10);
-  padding: var(--space-4) var(--space-6);
-  border-left: 2px solid rgba(0, 255, 240, 0.15);
-  border-right: 2px solid rgba(0, 255, 240, 0.15);
+  max-width: 64rem;
+  margin: -1.2rem 0 4rem;
+  padding: 0 0 0 1.6rem;
+  border-left: 2px solid rgba(0, 255, 240, 0.25);
+  line-height: 1.5;
 `
 
 const entryStyles = css`
@@ -612,23 +584,22 @@ export default function RegexNightmares() {
   const mainEntries = useMemo(() => REGEX_NIGHTMARES.filter((e) => e.section === 'main'), [])
   const appendixEntries = useMemo(() => REGEX_NIGHTMARES.filter((e) => e.section === 'appendix'), [])
 
+  const lede =
+    '21 regular expressions dissected down to the molecular level. Step through each one piece by piece, test them live, and read the stories of the production outages they caused.'
+
   if (!mounted) {
     return (
-      <div className={staticPageLayoutStyles}>
-        <PageTitle>Regex Nightmares</PageTitle>
-      </div>
+      <PageLayout>
+        <PageTitle lede={lede}>Regex Nightmares</PageTitle>
+      </PageLayout>
     )
   }
 
   return (
     <>
       <ProgressBar />
-      <div className={staticPageLayoutStyles}>
-        <PageTitle>Regex Nightmares</PageTitle>
-        <p className={introStyles}>
-          21 regular expressions dissected down to the molecular level. Step through each one piece by piece, test them
-          live, and read the stories of the production outages they caused.
-        </p>
+      <PageLayout>
+        <PageTitle lede={lede}>Regex Nightmares</PageTitle>
         <blockquote className={quoteStyles}>
           "Some people, when confronted with a problem, think 'I know, I'll use regular expressions.' Now they have two
           problems."
@@ -712,7 +683,7 @@ export default function RegexNightmares() {
             ))}
           </div>
         </div>
-      </div>
+      </PageLayout>
     </>
   )
 }

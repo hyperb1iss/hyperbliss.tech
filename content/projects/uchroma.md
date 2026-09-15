@@ -1,5 +1,5 @@
 ---
-emoji: '🎮'
+category: 'lighting'
 title: 'UChroma: Razer Lighting on Linux'
 description: 'A Linux driver and animation system for Razer Chroma, pairing hardware control with layered effects, a GTK4 interface, and a D-Bus API.'
 date: '2025-01-26'

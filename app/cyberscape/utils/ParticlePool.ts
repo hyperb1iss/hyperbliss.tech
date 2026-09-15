@@ -89,7 +89,9 @@ export class ParticlePool {
    * @param particle - The collision particle to return to the pool.
    */
   public returnCollisionParticle(particle: ParticleAtCollision): void {
-    if (this.collisionPool.length < this.maxCollisionPoolSize) {
+    // The expiry callback and the viewport cull can both return the same
+    // particle; a pool holding one object twice would hand it out twice
+    if (this.collisionPool.length < this.maxCollisionPoolSize && !this.collisionPool.includes(particle)) {
       this.collisionPool.push(particle)
     }
   }

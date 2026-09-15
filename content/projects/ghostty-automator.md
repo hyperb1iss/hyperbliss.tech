@@ -1,5 +1,5 @@
 ---
-emoji: '🎭'
+category: 'terminal'
 title: 'Ghostty Automator: A Testable Terminal'
 description: 'Python automation for Ghostty with screen inspection, keyboard and mouse input, assertions, and screenshots for terminal applications.'
 date: '2025-01-26'

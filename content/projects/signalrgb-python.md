@@ -1,5 +1,5 @@
 ---
-emoji: '💡'
+category: 'lighting'
 title: 'signalrgb-python: Python Library for SignalRGB'
 date: '2024-09-25'
 tags: ['Python', 'SignalRGB', 'API', 'CLI', 'RGB', 'Lighting']

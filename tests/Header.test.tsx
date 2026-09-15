@@ -29,7 +29,7 @@ describe('Header', () => {
   it('renders navigation links', () => {
     render(<Header />)
     const aboutLinks = screen.getAllByText(/about/i)
-    const blogLinks = screen.getAllByText(/blog/i)
+    const blogLinks = screen.getAllByText(/writing/i)
     const projectsLinks = screen.getAllByText(/projects/i)
     const resumeLinks = screen.getAllByText(/resume/i)
 
@@ -71,17 +71,5 @@ describe('Header', () => {
     expect(mobileMenuIcon.tagName).toBe('BUTTON')
     expect(mobileMenuIcon).toHaveAttribute('aria-expanded', 'false')
     expect(mobileMenuIcon).toHaveClass('mobile-menu-icon')
-  })
-
-  it('shows the expand chevron off the home route', () => {
-    nav.pathname = '/about'
-    render(<Header />)
-    expect(screen.queryByTitle('Toggle header expansion')).toBeInTheDocument()
-  })
-
-  it('hides the expand chevron on home, where the terminal console owns the affordance', () => {
-    nav.pathname = '/'
-    render(<Header />)
-    expect(screen.queryByTitle('Toggle header expansion')).not.toBeInTheDocument()
   })
 })

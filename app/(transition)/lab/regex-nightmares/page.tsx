@@ -1,12 +1,25 @@
 import type { Metadata } from 'next'
 import RegexNightmares from '../../../components/lab/RegexNightmares'
 import StructuredData from '../../../components/StructuredData'
+import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '../../../lib/ogImage'
 import { generateArticleSchema, generateBreadcrumbSchema } from '../../../lib/structuredData'
 
 const BASE_URL = 'https://hyperbliss.tech'
 const TITLE = 'Regex Nightmares'
 const DESCRIPTION =
   '21 regular expressions dissected down to the molecular level. Interactive step-throughs, live testers, and the real-world disasters they caused.'
+const OG_IMAGE = {
+  alt: `${TITLE}: ${DESCRIPTION}`,
+  height: OG_IMAGE_HEIGHT,
+  url: buildOgImageUrl({
+    kind: 'lab',
+    meta: 'April 8, 2026',
+    path: 'open lab/regex-nightmares',
+    subtitle: DESCRIPTION,
+    title: TITLE,
+  }),
+  width: OG_IMAGE_WIDTH,
+}
 
 export const metadata: Metadata = {
   alternates: {
@@ -33,6 +46,7 @@ export const metadata: Metadata = {
   openGraph: {
     authors: ['Stefanie Jane'],
     description: DESCRIPTION,
+    images: [OG_IMAGE],
     locale: 'en_US',
     publishedTime: '2026-04-08',
     siteName: 'Hyperbliss',
@@ -46,6 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     creator: '@hyperb1iss',
     description: DESCRIPTION,
+    images: [OG_IMAGE.url],
     title: `${TITLE} | The Lab | Hyperbliss`,
   },
 }

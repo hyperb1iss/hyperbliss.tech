@@ -7,7 +7,8 @@ import { DEFAULT_OG_IMAGE_URL, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage
 const AUTHOR_NAME = 'Stefanie Jane'
 const BASE_URL = 'https://hyperbliss.tech'
 const SITE_TITLE = '@hyperb1iss | Stefanie Jane'
-const SITE_DESCRIPTION = 'The personal website of Stefanie Jane—developer, designer, and tech enthusiast.'
+const SITE_DESCRIPTION =
+  "Stefanie Jane's personal site: open source developer tools, terminal interfaces, and infrastructure for AI agents, plus essays and lab experiments."
 const SITE_NAME = '🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹'
 const OG_LOCALE = 'en_US'
 

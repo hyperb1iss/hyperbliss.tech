@@ -1,5 +1,5 @@
 ---
-emoji: '🧠'
+category: 'agents'
 title: 'Hyperskills: Better Judgment for Coding Agents'
 description: 'A focused library of agent skills for research, implementation, review, and collaboration, with concrete guidance for the decisions models still miss.'
 date: '2026-02-01'

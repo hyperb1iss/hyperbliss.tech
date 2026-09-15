@@ -55,7 +55,7 @@ export const initializeCyberScape = (
   _logoElement: HTMLAnchorElement,
   navElement: HTMLElement,
 ) => {
-  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  const ctx = canvas.getContext('2d')
   if (!ctx) return () => {}
 
   const config = CyberScapeConfig.getInstance()
@@ -71,6 +71,20 @@ export const initializeCyberScape = (
   let hue = 210
   let animationFrameId: number
   let lastFrameTime = performance.now()
+
+  // Camera state: a slow orbit plus pointer parallax, smoothed toward its target
+  let cameraYaw = 0
+  let cameraPitch = 0
+
+  // Context state: the field calms when nobody is over it, and reacts to what they touch
+  let energy = 1
+  let lastActivityAt = performance.now()
+  let scrollDrift = 0
+  let lastScrollY = typeof window === 'undefined' ? 0 : window.scrollY
+  const magnet = { strength: 0, target: 0, x: 0, y: 0 }
+  const noteActivity = () => {
+    lastActivityAt = performance.now()
+  }
 
   const shapesArray: VectorShape[] = []
   const particlesArray: Particle[] = []
@@ -148,8 +162,10 @@ export const initializeCyberScape = (
       canvasScaleFactor = 1.5 // Increase scale factor for widescreen
     }
 
-    const scaledWidth = newWidth * canvasScaleFactor
-    const scaledHeight = newHeight * canvasScaleFactor
+    // Backing store sizes are integers; comparing against a fractional target
+    // reallocates the canvas on every frame at odd widths
+    const scaledWidth = Math.round(newWidth * canvasScaleFactor)
+    const scaledHeight = Math.round(newHeight * canvasScaleFactor)
 
     if (canvas.width !== scaledWidth || canvas.height !== scaledHeight) {
       canvas.width = scaledWidth
@@ -198,26 +214,91 @@ export const initializeCyberScape = (
   const resizeObserver = new ResizeObserver(handleResize)
   resizeObserver.observe(navElement)
 
-  const handlePointerEnter = () => {
-    isCursorOverCyberScape = true
-  }
-  const handlePointerLeave = () => {
-    isCursorOverCyberScape = false
-  }
-  navElement.addEventListener('pointerenter', handlePointerEnter)
-  navElement.addEventListener('pointerleave', handlePointerLeave)
-
   /**
-   * Handles mouse movement and updates cursor position.
+   * Handles mouse movement and updates cursor position. The nav itself has
+   * pointer-events: none, so containment is tested against the canvas rect
+   * rather than relying on enter/leave events from its children.
    */
+  let lastTouchAt = Number.NEGATIVE_INFINITY
   const handleMouseMove = (event: MouseEvent) => {
-    if (!isCursorOverCyberScape) return
+    // A tap synthesises mouseover/mousemove at the touch point after pointerup,
+    // and nothing on a touch device ever moves that phantom cursor away
+    if (performance.now() - lastTouchAt < 1000) return
     const rect = canvas.getBoundingClientRect()
+    const inside =
+      event.clientX >= rect.left &&
+      event.clientX <= rect.right &&
+      event.clientY >= rect.top &&
+      event.clientY <= rect.bottom
+    isCursorOverCyberScape = inside
+    if (!inside) return
     mouseX = event.clientX - rect.left - width / 2
     mouseY = event.clientY - rect.top - height / 2
+    noteActivity()
   }
   const throttledHandleMouseMove = throttle(handleMouseMove, 16)
   window.addEventListener('mousemove', throttledHandleMouseMove)
+
+  /** Pointer left the window entirely, so nothing is over the band */
+  const handleWindowMouseOut = (event: MouseEvent) => {
+    if (event.relatedTarget === null) {
+      isCursorOverCyberScape = false
+    }
+  }
+  window.addEventListener('mouseout', handleWindowMouseOut)
+
+  /** Touch has no hover: a finger that lifts is no longer over anything */
+  const handleTouchPointer = (event: PointerEvent) => {
+    if (event.pointerType !== 'touch') return
+    lastTouchAt = performance.now()
+    if (event.type !== 'pointerdown') {
+      isCursorOverCyberScape = false
+    }
+  }
+  window.addEventListener('pointerdown', handleTouchPointer, { passive: true })
+  window.addEventListener('pointerup', handleTouchPointer, { passive: true })
+  window.addEventListener('pointercancel', handleTouchPointer, { passive: true })
+
+  /**
+   * Hovering a nav link turns it into a gentle magnet for nearby particles.
+   */
+  const linkUnder = (target: EventTarget | null): HTMLAnchorElement | null => {
+    if (!(target instanceof Element)) return null
+    const link = target.closest('a[href]')
+    return link instanceof HTMLAnchorElement && navElement.contains(link) ? link : null
+  }
+  const handleLinkOver = (event: PointerEvent) => {
+    const link = linkUnder(event.target)
+    if (!link) return
+    const rect = canvas.getBoundingClientRect()
+    const linkRect = link.getBoundingClientRect()
+    magnet.x = linkRect.left + linkRect.width / 2 - rect.left - width / 2
+    magnet.y = linkRect.top + linkRect.height / 2 - rect.top - height / 2
+    magnet.target = 1
+    noteActivity()
+  }
+  const handleLinkOut = (event: PointerEvent) => {
+    if (!linkUnder(event.target)) return
+    if (linkUnder(event.relatedTarget)) return
+    magnet.target = 0
+  }
+  navElement.addEventListener('pointerover', handleLinkOver)
+  navElement.addEventListener('pointerout', handleLinkOut)
+
+  /**
+   * Scrolling nudges the field along z, so it recedes as you read down and
+   * comes back as you return.
+   */
+  const handleScroll = () => {
+    const y = window.scrollY
+    const delta = y - lastScrollY
+    lastScrollY = y
+    scrollDrift = Math.max(
+      -config.scrollDepthMax,
+      Math.min(config.scrollDepthMax, scrollDrift + delta * config.scrollDepthFactor),
+    )
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true })
 
   /**
    * Adjusts the number of shapes based on the current configuration and screen size.
@@ -316,19 +397,81 @@ export const initializeCyberScape = (
   /**
    * Updates the hue for color transitions.
    */
-  const updateHue = () => {
-    hue = (hue + 0.2) % 360
+  const updateHue = (step: number) => {
+    hue = (hue + 0.2 * step) % 360
     if (!ColorManager.isValidCyberpunkHue(hue)) {
       hue = ColorManager.getRandomCyberpunkHue()
     }
   }
 
   /**
+   * Eases the camera toward a slow orbit offset by pointer parallax and hands
+   * the result to the projector. Near objects slide against the pointer and far
+   * ones with it, which is what finally makes the field read as 3D.
+   */
+  const updateCamera = (now: number, dtMs: number) => {
+    const driftPhase = (now / config.cameraDriftPeriodMs) * Math.PI * 2
+    const parallaxX = isCursorOverCyberScape ? Math.max(-1, Math.min(1, mouseX / (width / 2))) : 0
+    const parallaxY = isCursorOverCyberScape ? Math.max(-1, Math.min(1, mouseY / (height / 2))) : 0
+    const targetYaw = Math.sin(driftPhase) * config.cameraDriftYaw + parallaxX * config.cameraParallaxYaw
+    const targetPitch =
+      Math.sin(driftPhase * 0.7 + 1.3) * config.cameraDriftPitch - parallaxY * config.cameraParallaxPitch
+
+    const ease = 1 - Math.exp(-dtMs / config.cameraSmoothingMs)
+    cameraYaw += (targetYaw - cameraYaw) * ease
+    cameraPitch += (targetPitch - cameraPitch) * ease
+    VectorMath.setView(cameraYaw, cameraPitch)
+  }
+
+  /**
+   * Eases the motion time scale toward calm after a stretch with nobody over
+   * the band, and back to full speed the moment they return. Also settles the
+   * nav magnet and lets scroll drift decay.
+   */
+  const updateContext = (now: number, dtMs: number) => {
+    const idle = now - lastActivityAt > config.idleCalmDelayMs && !isAnimationTriggered
+    const energyTarget = idle ? config.idleCalmEnergy : 1
+    const ease = 1 - Math.exp(-dtMs / config.energySmoothingMs)
+    // Clamped so a bad delta can never push the field past full speed or below rest.
+    energy = Math.min(1, Math.max(0, energy + (energyTarget - energy) * ease))
+
+    magnet.strength += (magnet.target - magnet.strength) * (1 - Math.exp(-dtMs / 220))
+    scrollDrift *= Math.exp(-dtMs / config.scrollDepthDecayMs)
+  }
+
+  /**
+   * Pulls particles near a hovered nav link toward it and applies scroll depth drift.
+   */
+  const applyContextForces = (particle: Particle, step: number) => {
+    if (magnet.strength > 0.01) {
+      const dx = magnet.x - particle.position[0]
+      const dy = magnet.y - particle.position[1]
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      if (distance > config.navMagnetInnerRadius && distance < config.navMagnetRadius) {
+        // Positional pull rather than a velocity impulse, so it is not erased by
+        // the per-tick speed clamp. Falls off linearly and stops short of the
+        // link so dots gather around it instead of piling onto it.
+        const reach = (distance - config.navMagnetInnerRadius) / (config.navMagnetRadius - config.navMagnetInnerRadius)
+        const pull = Math.min(
+          distance - config.navMagnetInnerRadius,
+          (1 - reach) * config.navMagnetPull * magnet.strength * step,
+        )
+        particle.position[0] += (dx / distance) * pull
+        particle.position[1] += (dy / distance) * pull
+      }
+    }
+    if (Math.abs(scrollDrift) > 0.01) {
+      particle.position[2] += scrollDrift * step
+    }
+  }
+
+  /**
    * Updates particle connections by applying small random velocity changes.
    */
-  const updateParticleConnections = (particles: Particle[]) => {
+  const updateParticleConnections = (particles: Particle[], step: number) => {
+    const chance = 0.05 * step
     particles.forEach((particle) => {
-      if (Math.random() < 0.05) {
+      if (Math.random() < chance) {
         vec3.set(velocityJitter, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2, (Math.random() - 0.5) * 0.2)
         vec3.add(particle.velocity, particle.velocity, velocityJitter)
 
@@ -346,6 +489,8 @@ export const initializeCyberScape = (
   const triggerSpecialAnimation = (x: number, y: number) => {
     isAnimationTriggered = true
     animationProgress = 0
+    noteActivity()
+    datastreamEffect.begin()
     const isMobile = width <= config.mobileWidthThreshold
     if (isMobile) {
       // Adjust coordinates for mobile devices
@@ -399,254 +544,281 @@ export const initializeCyberScape = (
    */
   const animateCyberScape = (timestamp: number) => {
     const now = performance.now()
-    const deltaTime = now - lastFrameTime
+    const rawDelta = now - lastFrameTime
+    lastFrameTime = now
 
-    if (deltaTime >= config.frameTime) {
-      lastFrameTime = now - (deltaTime % config.frameTime)
+    // Integrate by elapsed time so motion is identical at 30, 60, or 120Hz.
+    // A tab switch or a long GC pause clamps to one long-ish frame instead of a jump,
+    // and a non-monotonic clock can never run the simulation backwards.
+    const dtMs = Math.max(0, Math.min(rawDelta, config.maxFrameDeltaMs))
+    updateContext(now, dtMs)
+    // The field's motion runs on its own clock, which slows while calm
+    const step = (dtMs / config.simulationTickMs) * energy
 
-      updateCanvasSize()
-      ctx.clearRect(0, 0, width, height)
+    updateCanvasSize()
+    ctx.clearRect(0, 0, width, height)
 
-      updateHue()
-      updateParticleConnections(particlesArray)
-      updateParticleConnections(collisionParticlesArray)
+    updateHue(step)
+    updateCamera(now, dtMs)
+    updateParticleConnections(particlesArray, step)
+    updateParticleConnections(collisionParticlesArray, step)
 
-      // Clear the octree before adding new objects
-      octree.clear()
+    // Clear the octree before adding new objects
+    octree.clear()
 
-      // Update frustum culling
-      mat4.perspective(projectionMatrix, Math.PI / 4, width / height, 0.1, 1000)
-      mat4.lookAt(viewMatrix, cameraEye, cameraCenter, cameraUp)
-      frustumCuller.updateFrustum(projectionMatrix, viewMatrix)
+    // Update frustum culling
+    mat4.perspective(projectionMatrix, Math.PI / 4, width / height, 0.1, 1000)
+    mat4.lookAt(viewMatrix, cameraEye, cameraCenter, cameraUp)
+    frustumCuller.updateFrustum(projectionMatrix, viewMatrix)
 
-      // Adjust particle creation logic
-      const baseCreationChance = 0.1
-      const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2)
-      const totalCreationChance = baseCreationChance + additionalChance
+    // Adjust particle creation logic
+    const baseCreationChance = 0.1
+    const additionalChance = Math.min(recentlyExpiredParticles * 0.02, 0.2)
+    const totalCreationChance = baseCreationChance + additionalChance
 
-      // Replace the existing particle creation logic with this new implementation
-      if (activeParticles < numberOfParticles && Math.random() < totalCreationChance) {
-        const particlesToAdd = Math.min(
-          2 + Math.floor(recentlyExpiredParticles / 5),
-          numberOfParticles - activeParticles,
-        )
+    // Replace the existing particle creation logic with this new implementation
+    if (activeParticles < numberOfParticles && Math.random() < totalCreationChance * step) {
+      const particlesToAdd = Math.min(2 + Math.floor(recentlyExpiredParticles / 5), numberOfParticles - activeParticles)
 
-        // Divide the screen into a grid (reuse pre-allocated arrays)
-        const cellWidth = width / GRID_SIZE
-        const cellHeight = height / GRID_SIZE
+      // Divide the screen into a grid (reuse pre-allocated arrays)
+      const cellWidth = width / GRID_SIZE
+      const cellHeight = height / GRID_SIZE
 
-        // Reset and count particles in each cell (reuse pre-allocated grid)
-        for (let y = 0; y < GRID_SIZE; y++) {
-          for (let x = 0; x < GRID_SIZE; x++) {
-            particleGrid[y][x] = 0
-          }
-        }
-        particlesArray.forEach((particle) => {
-          const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth)
-          const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight)
-          if (cellX >= 0 && cellX < GRID_SIZE && cellY >= 0 && cellY < GRID_SIZE) {
-            particleGrid[cellY][cellX]++
-          }
-        })
-
-        // Update pre-allocated cellsWithCounts and sort
-        for (let i = 0; i < cellsWithCounts.length; i++) {
-          const cell = cellsWithCounts[i]
-          cell.count = particleGrid[cell.y][cell.x]
-        }
-        cellsWithCounts.sort((a, b) => a.count - b.count)
-
-        for (let i = 0; i < particlesToAdd; i++) {
-          const cell = cellsWithCounts[i % cellsWithCounts.length]
-          const newParticle = particlePool.getParticle(width, height)
-
-          // Set position within the chosen cell
-          newParticle.position[0] = cell.x * cellWidth + Math.random() * cellWidth - width / 2
-          newParticle.position[1] = cell.y * cellHeight + Math.random() * cellHeight - height / 2
-          newParticle.position[2] = Math.random() * 200 - 100
-
-          newParticle.setDelayedAppearance()
-          particlesArray.push(newParticle)
-          activeParticles++
-          cell.count++ // Update the count for this cell
-        }
-
-        recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
-      }
-
-      // Update and draw regular particles
-      for (let i = particlesArray.length - 1; i >= 0; i--) {
-        const particle = particlesArray[i]
-        if (particle.isReady()) {
-          particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray)
-          preventClustering(particle) // Add this line to prevent clustering
-          if (particle.isOutOfBounds(width, height)) {
-            // Remove the particle if it's out of the viewport
-            particle.setOffScreen() // Set the off-screen time
-            particlePool.returnParticle(particle)
-            particlesArray.splice(i, 1)
-            activeParticles--
-            recentlyExpiredParticles++
-          } else {
-            octree.insert(particle)
-            particle.draw(ctx, mouseX, mouseY, width, height)
-          }
-        } else {
-          particle.updateDelay()
+      // Reset and count particles in each cell (reuse pre-allocated grid)
+      for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+          particleGrid[y][x] = 0
         }
       }
-
-      // Update and draw collision particles
-      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
-        const particle = collisionParticlesArray[i]
-        if (particle.isReady()) {
-          particle.update()
-          if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
-            // Remove the collision particle if it's out of the viewport
-            particlePool.returnCollisionParticle(particle)
-            collisionParticlesArray.splice(i, 1)
-          } else {
-            octree.insert(particle)
-            particle.draw(ctx, mouseX, mouseY, width, height)
-          }
-        } else {
-          particle.updateDelay()
+      particlesArray.forEach((particle) => {
+        const cellX = Math.floor((particle.position[0] + width / 2) / cellWidth)
+        const cellY = Math.floor((particle.position[1] + height / 2) / cellHeight)
+        if (cellX >= 0 && cellX < GRID_SIZE && cellY >= 0 && cellY < GRID_SIZE) {
+          particleGrid[cellY][cellX]++
         }
+      })
+
+      // Update pre-allocated cellsWithCounts and sort
+      for (let i = 0; i < cellsWithCounts.length; i++) {
+        const cell = cellsWithCounts[i]
+        cell.count = particleGrid[cell.y][cell.x]
+      }
+      cellsWithCounts.sort((a, b) => a.count - b.count)
+
+      for (let i = 0; i < particlesToAdd; i++) {
+        const cell = cellsWithCounts[i % cellsWithCounts.length]
+        const newParticle = particlePool.getParticle(width, height)
+
+        // Set position within the chosen cell
+        newParticle.position[0] = cell.x * cellWidth + Math.random() * cellWidth - width / 2
+        newParticle.position[1] = cell.y * cellHeight + Math.random() * cellHeight - height / 2
+        newParticle.position[2] = Math.random() * 200 - 100
+
+        newParticle.setDelayedAppearance()
+        particlesArray.push(newParticle)
+        activeParticles++
+        cell.count++ // Update the count for this cell
       }
 
-      // Update and draw shapes
-      frameShapePositions.clear()
-      for (let i = shapesArray.length - 1; i >= 0; i--) {
-        const shape = shapesArray[i]
-        shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray)
-        if (shape.opacity > 0 && !shape.isExploded) {
-          if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
-            // Reset the shape if it's out of the viewport
-            shape.reset(frameShapePositions, width, height)
-          } else {
-            frameShapePositions.add(shape.getPositionKey())
-            octree.insert(shape)
-            shape.draw(ctx, width, height)
-          }
-        }
-        if (shape.isFadedOut()) {
-          shape.reset(frameShapePositions, width, height)
-        }
-        // Emit small particles from shapes
-        if (Math.random() < 0.01) {
-          const emittedParticle = particlePool.getParticle(width, height)
-          vec3.copy(emittedParticle.position, shape.position)
-          vec3.copy(emittedParticle.velocity, shape.velocity)
-          emittedParticle.size = Math.random() * 1 + 0.5
-          emittedParticle.color = shape.color
-          emittedParticle.lifespan = 1000
-          emittedParticle.setDelayedAppearance()
-          particlesArray.push(emittedParticle)
-          activeParticles++
-        }
-      }
-
-      // Handle collisions using octree
-      const handleCollisions = () => {
-        const bounds = octree.getBounds()
-        const allObjects = octree.query(bounds)
-        CollisionHandler.handleCollisions(
-          allObjects.filter((obj): obj is VectorShape => obj instanceof VectorShape),
-          (shapeA: VectorShape, shapeB: VectorShape) => {
-            const now = Date.now()
-            if (
-              currentExplosions >= config.maxSimultaneousExplosions ||
-              now - lastExplosionTime < config.explosionCooldown
-            ) {
-              return
-            }
-
-            const collisionPos = vec3.create()
-            vec3.add(collisionPos, shapeA.position, shapeB.position)
-            vec3.scale(collisionPos, collisionPos, 0.5)
-
-            if (
-              collisionParticlesArray.length + config.explosionParticlesToEmit <= config.maxExplosionParticles &&
-              explosionParticlesCount + config.explosionParticlesToEmit <= config.maxExplosionParticles
-            ) {
-              for (let i = 0; i < config.explosionParticlesToEmit; i++) {
-                const particle = particlePool.getCollisionParticle(vec3.clone(collisionPos), () => {
-                  explosionParticlesCount--
-                  currentExplosions = Math.max(0, currentExplosions - 1)
-                  particlePool.returnCollisionParticle(particle)
-                }) as ParticleAtCollision
-                particle.lifespan = config.particleAtCollisionLifespan
-                particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
-                collisionParticlesArray.push(particle)
-                explosionParticlesCount++
-              }
-              currentExplosions++
-              lastExplosionTime = now
-            }
-
-            shapeA.explodeAndRespawn()
-            shapeB.explodeAndRespawn()
-          },
-        )
-      }
-
-      handleCollisions()
-
-      ColorBlender.blendColors(shapesArray)
-      ForceHandler.applyForces(shapesArray)
-
-      // Draw connections between shapes
-      drawShapeConnections(ctx)
-
-      // Connect regular particles with animation
-      particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height)
-
-      // Remove expired regular particles
-      for (let i = particlesArray.length - 1; i >= 0; i--) {
-        if (particlesArray[i].opacity <= 0) {
-          particlePool.returnParticle(particlesArray[i])
-          particlesArray.splice(i, 1)
-        }
-      }
-
-      // Remove expired collision particles
-      for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
-        if (collisionParticlesArray[i].opacity <= 0) {
-          // The callback in ParticleAtCollision.handleExpire will handle the removal
-          collisionParticlesArray.splice(i, 1)
-        }
-      }
-
-      // Apply glitch effects
-      glitchManager.handleGlitchEffects(ctx, width, height, timestamp)
-
-      // Handle triggered animations
-      if (isAnimationTriggered) {
-        animationProgress += 0.02
-        if (animationProgress >= 1) {
-          isAnimationTriggered = false
-          animationProgress = 0
-        } else {
-          const intensity = Math.sin(animationProgress * Math.PI)
-          datastreamEffect.draw(
-            ctx,
-            width,
-            height,
-            animationCenterX,
-            animationCenterY,
-            intensity,
-            hue,
-            animationProgress,
-          )
-        }
-      }
-
-      // Update the performance monitor
-      performanceMonitor.update(timestamp, deltaTime)
+      recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - particlesToAdd)
     }
 
+    // Update and draw regular particles
+    for (let i = particlesArray.length - 1; i >= 0; i--) {
+      const particle = particlesArray[i]
+      if (particle.isReady()) {
+        particle.update(isCursorOverCyberScape, mouseX, mouseY, width, height, shapesArray, step)
+        applyContextForces(particle, step)
+        preventClustering(particle) // Add this line to prevent clustering
+        if (particle.isOutOfBounds(width, height)) {
+          // Remove the particle if it's out of the viewport. Burst particles the
+          // shockwave pushed in here never counted as active and own a pool.
+          particlesArray.splice(i, 1)
+          if (particle instanceof ParticleAtCollision) {
+            particle.expire()
+            particlePool.returnCollisionParticle(particle)
+          } else {
+            particle.setOffScreen() // Set the off-screen time
+            particlePool.returnParticle(particle)
+            activeParticles--
+            recentlyExpiredParticles++
+          }
+        } else {
+          octree.insert(particle)
+          particle.draw(ctx, mouseX, mouseY, width, height, step)
+        }
+      } else {
+        particle.updateDelay(dtMs)
+      }
+    }
+
+    // Update and draw collision particles
+    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+      const particle = collisionParticlesArray[i]
+      if (particle.isReady()) {
+        particle.tick(step, dtMs)
+        if (!isWithinViewport(particle.position[0], particle.position[1], particle.position[2])) {
+          // Remove the collision particle if it's out of the viewport, settling
+          // the explosion bookkeeping it would otherwise leak
+          particle.expire()
+          particlePool.returnCollisionParticle(particle)
+          collisionParticlesArray.splice(i, 1)
+        } else {
+          octree.insert(particle)
+          particle.draw(ctx, mouseX, mouseY, width, height, step)
+        }
+      } else {
+        particle.updateDelay(dtMs)
+      }
+    }
+
+    // Update and draw shapes
+    const emissionChance = 0.01 * step
+    frameShapePositions.clear()
+    for (let i = shapesArray.length - 1; i >= 0; i--) {
+      const shape = shapesArray[i]
+      shape.update(isCursorOverCyberScape, mouseX, mouseY, width, height, particlesArray, step, dtMs)
+      if (shape.opacity > 0 && !shape.isExploded) {
+        if (!isWithinViewport(shape.position[0], shape.position[1], shape.position[2])) {
+          // Reset the shape if it's out of the viewport
+          shape.reset(frameShapePositions, width, height)
+        } else {
+          frameShapePositions.add(shape.getPositionKey())
+          octree.insert(shape)
+          shape.draw(ctx, width, height)
+        }
+      }
+      if (shape.isFadedOut()) {
+        shape.reset(frameShapePositions, width, height)
+      }
+      // Emit small particles from shapes
+      if (Math.random() < emissionChance) {
+        const emittedParticle = particlePool.getParticle(width, height)
+        vec3.copy(emittedParticle.position, shape.position)
+        vec3.copy(emittedParticle.velocity, shape.velocity)
+        emittedParticle.size = Math.random() * 1 + 0.5
+        emittedParticle.color = shape.color
+        emittedParticle.lifespan = 1000
+        emittedParticle.setDelayedAppearance()
+        particlesArray.push(emittedParticle)
+        activeParticles++
+      }
+    }
+
+    // Handle collisions using octree
+    const handleCollisions = () => {
+      const bounds = octree.getBounds()
+      const allObjects = octree.query(bounds)
+      CollisionHandler.handleCollisions(
+        allObjects.filter((obj): obj is VectorShape => obj instanceof VectorShape),
+        (shapeA: VectorShape, shapeB: VectorShape) => {
+          const now = Date.now()
+          if (
+            currentExplosions >= config.maxSimultaneousExplosions ||
+            now - lastExplosionTime < config.explosionCooldown
+          ) {
+            return
+          }
+
+          const collisionPos = vec3.create()
+          vec3.add(collisionPos, shapeA.position, shapeB.position)
+          vec3.scale(collisionPos, collisionPos, 0.5)
+
+          if (
+            collisionParticlesArray.length + config.explosionParticlesToEmit <= config.maxExplosionParticles &&
+            explosionParticlesCount + config.explosionParticlesToEmit <= config.maxExplosionParticles
+          ) {
+            for (let i = 0; i < config.explosionParticlesToEmit; i++) {
+              const particle = particlePool.getCollisionParticle(vec3.clone(collisionPos), () => {
+                explosionParticlesCount--
+                currentExplosions = Math.max(0, currentExplosions - 1)
+                particlePool.returnCollisionParticle(particle)
+              }) as ParticleAtCollision
+              particle.lifespan = config.particleAtCollisionLifespan
+              particle.setFadeOutDuration(config.particleAtCollisionFadeOutDuration)
+              collisionParticlesArray.push(particle)
+              explosionParticlesCount++
+            }
+            currentExplosions++
+            lastExplosionTime = now
+          }
+
+          shapeA.explodeAndRespawn()
+          shapeB.explodeAndRespawn()
+        },
+      )
+    }
+
+    handleCollisions()
+
+    ColorBlender.blendColors(shapesArray, step)
+    ForceHandler.applyForces(shapesArray, step)
+
+    // Draw connections between shapes
+    drawShapeConnections(ctx)
+
+    // Connect regular particles with animation
+    particleConnector.connectParticles(particlesArray, ctx, timestamp, width, height, step)
+
+    // Remove expired regular particles. Burst particles that the shockwave
+    // pushed into this array go back to their own pool, and the active count
+    // has to drop or the creation gate stays shut for good.
+    for (let i = particlesArray.length - 1; i >= 0; i--) {
+      const particle = particlesArray[i]
+      if (particle.opacity <= 0) {
+        if (particle instanceof ParticleAtCollision) {
+          particlePool.returnCollisionParticle(particle)
+        } else {
+          particlePool.returnParticle(particle)
+          activeParticles = Math.max(0, activeParticles - 1)
+        }
+        particlesArray.splice(i, 1)
+      }
+    }
+
+    // Remove expired collision particles
+    for (let i = collisionParticlesArray.length - 1; i >= 0; i--) {
+      if (collisionParticlesArray[i].opacity <= 0) {
+        // The callback in ParticleAtCollision.handleExpire will handle the removal
+        collisionParticlesArray.splice(i, 1)
+      }
+    }
+
+    // Apply glitch effects, but never while the field is resting. The interval
+    // is held back while calm so waking up does not fire one immediately.
+    if (energy > 0.8) {
+      glitchManager.handleGlitchEffects(ctx, timestamp)
+    } else {
+      glitchManager.hold(timestamp)
+    }
+
+    // Handle triggered animations
+    if (isAnimationTriggered) {
+      animationProgress += 0.02 * step
+      if (animationProgress >= 1) {
+        isAnimationTriggered = false
+        animationProgress = 0
+      } else {
+        const intensity = Math.sin(animationProgress * Math.PI)
+        datastreamEffect.draw(
+          ctx,
+          width,
+          height,
+          animationCenterX,
+          animationCenterY,
+          intensity,
+          hue,
+          animationProgress,
+          step,
+        )
+      }
+    }
+
+    // Update the performance monitor
+    performanceMonitor.update(timestamp, rawDelta)
+
     // Decay the recentlyExpiredParticles counter over time
-    recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - 0.1)
+    recentlyExpiredParticles = Math.max(0, recentlyExpiredParticles - 0.1 * step)
 
     // Schedule the next frame
     animationFrameId = requestAnimationFrame(animateCyberScape)
@@ -692,6 +864,22 @@ export const initializeCyberScape = (
         performanceMonitor.disable()
         console.log('Performance monitoring stopped')
         break
+      case 'glitch':
+        glitchManager.trigger()
+        break
+      case 'stats':
+        console.log(
+          JSON.stringify({
+            active: activeParticles,
+            burst: collisionParticlesArray.length,
+            energy: +energy.toFixed(2),
+            particles: particlesArray.length,
+            shapes: shapesArray.length,
+            target: numberOfParticles,
+            visible: particlesArray.filter((p) => p.isReady() && p.opacity > 0).length,
+          }),
+        )
+        break
       default:
         console.log('Unknown performance command')
     }
@@ -706,9 +894,14 @@ export const initializeCyberScape = (
   const cleanup = () => {
     window.removeEventListener('resize', handleResize)
     resizeObserver.disconnect()
-    navElement.removeEventListener('pointerenter', handlePointerEnter)
-    navElement.removeEventListener('pointerleave', handlePointerLeave)
+    navElement.removeEventListener('pointerover', handleLinkOver)
+    navElement.removeEventListener('pointerout', handleLinkOut)
     window.removeEventListener('mousemove', throttledHandleMouseMove)
+    window.removeEventListener('mouseout', handleWindowMouseOut)
+    window.removeEventListener('pointerdown', handleTouchPointer)
+    window.removeEventListener('pointerup', handleTouchPointer)
+    window.removeEventListener('pointercancel', handleTouchPointer)
+    window.removeEventListener('scroll', handleScroll)
     cancelAnimationFrame(animationFrameId)
   }
 

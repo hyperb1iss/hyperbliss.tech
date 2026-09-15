@@ -1,5 +1,5 @@
 ---
-emoji: '😺'
+category: 'terminal'
 title: 'ChromaCat: Color in Motion'
 date: '2024-09-25'
 tags: ['Rust', 'CLI', 'Terminal', 'Generative Art', 'Open Source']

@@ -8,7 +8,8 @@
 // renders nothing until mounted so the server pass stays SSR-safe.
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { css } from '../../../styled-system/css'
@@ -93,9 +94,14 @@ const handleStyles = css`
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 255, 240, 0.18);
   -webkit-tap-highlight-color: transparent;
   transition: top var(--duration-normal) var(--ease-silk);
+  /* Gentle pulse while closed so the pull-down reads as interactive. A CSS
+     keyframe (declared in globals.css) rather than a Framer loop: it costs no
+     JS per frame and the global reduced-motion rule stops it. */
+  animation: handle-pulse 2.4s ease-in-out infinite;
 
   &[data-open='true'] {
     top: calc(var(--nav-expanded) - 18px);
+    animation: none;
   }
 
   & .prompt {
@@ -124,11 +130,11 @@ interface TerminalConsoleProps {
 export default function TerminalConsole({ manifest, broadcast }: TerminalConsoleProps) {
   const { isConsoleOpen, setConsoleOpen, setIsExpanded } = useHeaderContext()
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname()
 
-  // The identity hero is the landing, so the console always starts closed and is
-  // summoned from the handle. Just gate the portal until the client has mounted,
-  // and make sure leaving home tears the header expansion back down (isExpanded
-  // is global; a stranded `true` would leave other routes' navs expanded).
+  // The console always starts closed and is summoned from the handle. Gate the
+  // portal until the client has mounted, and tear the expansion down on unmount
+  // (isExpanded is global; a stranded `true` would leave the nav expanded).
   useEffect(() => {
     setMounted(true)
     return () => {
@@ -137,12 +143,22 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
     }
   }, [setConsoleOpen, setIsExpanded])
 
+  // The console is mounted by the layout and survives navigation, so a command
+  // that links into a route (projects, blog, ...) closes it as the page changes.
+  useEffect(() => {
+    if (!pathname) return
+    setConsoleOpen(false)
+    setIsExpanded(false)
+  }, [pathname, setConsoleOpen, setIsExpanded])
+
   // The console IS the header expansion: move both flags together so the nav
   // blooms (revealing CyberScape) exactly as the terminal drops.
   const close = useCallback(() => {
     setConsoleOpen(false)
     setIsExpanded(false)
   }, [setConsoleOpen, setIsExpanded])
+
+  const handleRef = useRef<HTMLButtonElement>(null)
 
   const toggle = useCallback(() => {
     const next = !isConsoleOpen
@@ -155,7 +171,10 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   useEffect(() => {
     if (!isConsoleOpen) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
+      if (e.key !== 'Escape') return
+      close()
+      // Hand focus back to the handle so keyboard users land where they left.
+      handleRef.current?.focus({ preventScroll: true })
     }
     window.addEventListener('keydown', onKey)
 
@@ -202,27 +221,13 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
         )}
       </AnimatePresence>
 
-      <motion.button
-        animate={
-          isConsoleOpen
-            ? { boxShadow: '0 6px 24px rgba(0,0,0,0.5), 0 0 18px rgba(0,255,240,0.18)' }
-            : {
-                // Gentle pulse while closed so the pull-down reads as interactive.
-                boxShadow: [
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 14px rgba(0,255,240,0.15)',
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 28px rgba(0,255,240,0.45)',
-                  '0 6px 24px rgba(0,0,0,0.5), 0 0 14px rgba(0,255,240,0.15)',
-                ],
-              }
-        }
+      <button
         aria-expanded={isConsoleOpen}
         aria-label={isConsoleOpen ? 'Close terminal console' : 'Open terminal console'}
         className={handleStyles}
         data-open={isConsoleOpen}
         onClick={toggle}
-        transition={
-          isConsoleOpen ? { duration: 0.2 } : { duration: 2.4, ease: 'easeInOut', repeat: Number.POSITIVE_INFINITY }
-        }
+        ref={handleRef}
         type="button"
       >
         <motion.svg
@@ -239,7 +244,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
         <span className="prompt">guest@hyperbliss:~$</span>
-      </motion.button>
+      </button>
     </div>,
     document.body,
   )

@@ -1,5 +1,5 @@
 ---
-emoji: '💜'
+category: 'web'
 title: 'SilkCircuit: Electric Color, Everywhere You Work'
 description: 'A shared color system for editors, terminals, browsers, and command-line tools, with five variants and generated themes drawn from one palette.'
 date: '2025-01-26'

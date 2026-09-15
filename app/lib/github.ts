@@ -3,19 +3,164 @@
 
 interface GitHubRelease {
   tag_name: string
+  name: string | null
+  body: string | null
   published_at: string
   html_url: string
 }
 
-interface ReleaseInfo {
+export interface ReleaseInfo {
   version: string
   publishedAt: string
   url: string
+  /** One plain-text line describing the release, or null when the notes are empty or boilerplate. */
+  summary: string | null
+}
+
+const RELEASE_SUMMARY_MAX = 160
+
+/**
+ * Reduce GitHub release notes to one plain line for the front-page feed.
+ * Skips headings, badges, and changelog boilerplate, strips markdown from the
+ * first real sentence, and falls back to the release title when it says more
+ * than the tag does.
+ */
+export function summarizeRelease(name: string | null, body: string | null, version: string): string | null {
+  const lines = (body ?? '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const isNoise = (line: string) =>
+    /^#{1,6}\s/.test(line) ||
+    /^!\[/.test(line) ||
+    /^<!--/.test(line) ||
+    /^<[a-z!/]/i.test(line) ||
+    /^\|/.test(line) ||
+    /^(release|version)\s+v?\d+(\.\d+)*$/i.test(line) ||
+    /^(\*\*)?full changelog/i.test(line) ||
+    /^(what'?s changed|changelog|release notes|highlights)\s*:?$/i.test(line) ||
+    /^released:?\s/i.test(line) ||
+    /^-{3,}$/.test(line)
+
+  // Test both the raw line and its stripped form, so "**Released:** date"
+  // is recognized as boilerplate just like the plain version.
+  // Skip fenced code blocks wholesale (a fence closes only on the same marker
+  // at least as wide as the one that opened it, so a four-backtick fence can
+  // wrap a three-backtick example), then apply the noise test to both the raw
+  // line and its stripped form ("**Released:** date" counts as noise).
+  const prose: string[] = []
+  let fence: { char: string; width: number } | null = null
+  for (const line of lines) {
+    const marker = /^(`{3,}|~{3,})/.exec(line)
+    if (marker) {
+      const char = marker[1][0]
+      const width = marker[1].length
+      if (!fence) {
+        fence = { char, width }
+        continue
+      }
+      // A closer is the bare marker (trailing whitespace only); a marker
+      // followed by text is content inside the fence.
+      if (fence.char === char && width >= fence.width && /^(`{3,}|~{3,})\s*$/.test(line)) {
+        fence = null
+        continue
+      }
+    }
+    if (!fence) prose.push(line)
+  }
+  const first = prose.find((line) => !isNoise(line) && !isNoise(stripMarkdown(line)))
+  const cleaned = first ? firstSentence(stripMarkdown(first), RELEASE_SUMMARY_MAX) : ''
+  if (cleaned) return truncateAtWord(cleaned, RELEASE_SUMMARY_MAX)
+
+  const title = stripMarkdown((name ?? '').trim())
+  if (!title || isNoise(title)) return null
+  const bare = title.replace(/^v/i, '')
+  if (bare === version || bare === `v${version}`) return null
+  return truncateAtWord(title, RELEASE_SUMMARY_MAX)
+}
+
+function stripMarkdown(line: string): string {
+  return line
+    .replace(/^(>\s?)+/, '')
+    .replace(/^[-*+]\s+/, '')
+    .replace(/^\d+\.\s+/, '')
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[*_`~]/g, '')
+    .replace(/\s+by\s+@[\w-]+\s+in\s+\S+$/i, '')
+    .replace(/\s+\(#\d+\)$/, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/** Keep the whole first sentence when it fits, so a summary ends on a period instead of an ellipsis. */
+function firstSentence(text: string, max: number): string {
+  const match = /^(.+?[.!?])(?:\s|$)/.exec(text)
+  if (match && match[1].length >= 24 && match[1].length <= max) return match[1]
+  return text
+}
+
+function truncateAtWord(text: string, max: number): string {
+  if (text.length <= max) return text
+  const cut = text.slice(0, max - 1)
+  const at = cut.lastIndexOf(' ')
+  return `${(at > max * 0.6 ? cut.slice(0, at) : cut).trimEnd()}…`
 }
 
 // Cache for GitHub release data (in-memory for build time)
 const releaseCache = new Map<string, { data: ReleaseInfo | null; timestamp: number }>()
 const CACHE_TTL = 1000 * 60 * 60 // 1 hour
+
+// Rate-limit backoff shared by every GitHub call in this process. A tokenless
+// build used to log and retry one 403 per repo per route render (900+ warnings
+// in a single build); now the first hit parks every call until GitHub's reset.
+let rateLimitedUntil = 0
+
+/** True while GitHub has told us to back off; callers answer null without a request. */
+export function isGitHubRateLimited(now = Date.now()): boolean {
+  return now < rateLimitedUntil
+}
+
+/** Forget the backoff window. Tests only. */
+export function resetGitHubRateLimit(): void {
+  rateLimitedUntil = 0
+}
+
+/**
+ * 429 is always a limit. A 403 is the primary limit when the budget counter
+ * reads zero or is missing, and the secondary limit when GitHub sends
+ * retry-after (the counter can still be positive then). A 403 with budget
+ * left and no retry-after is a forbidden repo and is cached like a 404.
+ */
+function isRateLimitResponse(response: Response): boolean {
+  if (response.status === 429) return true
+  if (response.status !== 403) return false
+  if (response.headers.has('retry-after')) return true
+  const remaining = response.headers.get('x-ratelimit-remaining')
+  return remaining === null || remaining === '0'
+}
+
+function noteRateLimit(response: Response, what: string): void {
+  const now = Date.now()
+  const reset = Number(response.headers.get('x-ratelimit-reset')) * 1000
+  const retryAfter = Number(response.headers.get('retry-after')) * 1000
+  const newWindow = !isGitHubRateLimited(now)
+  // Wait for the reset when GitHub names a future one, otherwise the minute
+  // its docs ask for. A reset at or before now (window edge, clock skew) must
+  // still park calls rather than reopen the floodgates.
+  const until = Math.max(reset > now ? reset : 0, retryAfter > 0 ? now + retryAfter : 0, now + 60_000)
+  rateLimitedUntil = until
+  if (!newWindow) return
+  console.warn(
+    `GitHub rate limit hit fetching ${what} (HTTP ${response.status}); skipping GitHub until ${new Date(rateLimitedUntil).toISOString()}. Set GITHUB_TOKEN (or GH_TOKEN) in the deploy environment.`,
+  )
+}
+
+/** Accept plus auth headers. Honors GITHUB_TOKEN and the gh CLI's GH_TOKEN. */
+function githubHeaders(accept = 'application/vnd.github.v3+json'): Record<string, string> {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN
+  return { Accept: accept, ...(token && { Authorization: `token ${token}` }) }
+}
 
 /**
  * Extract owner and repo from a GitHub URL
@@ -45,20 +190,22 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
     return cached.data
   }
 
+  if (isGitHubRateLimited()) return null
+
   try {
     const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}/releases/latest`, {
-      headers: {
-        Accept: 'application/vnd.github.v3+json',
-        // Add token if available for higher rate limits
-        ...(process.env.GITHUB_TOKEN && {
-          Authorization: `token ${process.env.GITHUB_TOKEN}`,
-        }),
-      },
+      headers: githubHeaders(),
       // Cache for 1 hour in Next.js fetch cache
       next: { revalidate: 3600 },
     })
 
     if (!response.ok) {
+      if (isRateLimitResponse(response)) {
+        // Not cached, so the next revalidation retries instead of sitting on
+        // an empty result for an hour.
+        noteRateLimit(response, cacheKey)
+        return null
+      }
       // No releases or repo not found - cache the null result
       releaseCache.set(cacheKey, { data: null, timestamp: Date.now() })
       return null
@@ -66,10 +213,12 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
 
     const release: GitHubRelease = await response.json()
 
+    const version = release.tag_name.replace(/^v/, '')
     const releaseInfo: ReleaseInfo = {
       publishedAt: release.published_at,
+      summary: summarizeRelease(release.name, release.body, version),
       url: release.html_url,
-      version: release.tag_name.replace(/^v/, ''),
+      version,
     }
 
     // Cache the result
@@ -81,6 +230,78 @@ export async function getLatestRelease(githubUrl: string): Promise<ReleaseInfo |
     releaseCache.set(cacheKey, { data: null, timestamp: Date.now() })
     return null
   }
+}
+
+// ─── Repo stats ───────────────────────────────────────────────────────────────
+
+export interface RepoStats {
+  stars: number
+  forks: number
+  language: string | null
+  pushedAt: string | null
+  archived: boolean
+}
+
+const statsCache = new Map<string, { data: RepoStats | null; timestamp: number }>()
+
+/** Stars, primary language, and last push for a repository, cached for an hour. */
+export async function getRepoStats(githubUrl: string): Promise<RepoStats | null> {
+  const parsed = parseGitHubUrl(githubUrl)
+  if (!parsed) return null
+  const cacheKey = `${parsed.owner}/${parsed.repo}`
+  const cached = statsCache.get(cacheKey)
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.data
+  if (isGitHubRateLimited()) return null
+
+  try {
+    const response = await fetch(`https://api.github.com/repos/${parsed.owner}/${parsed.repo}`, {
+      headers: githubHeaders(),
+      next: { revalidate: 3600 },
+    })
+    if (!response.ok) {
+      if (isRateLimitResponse(response)) {
+        noteRateLimit(response, `repo stats for ${cacheKey}`)
+        return null
+      }
+      statsCache.set(cacheKey, { data: null, timestamp: Date.now() })
+      return null
+    }
+    const repo = (await response.json()) as {
+      stargazers_count?: number
+      forks_count?: number
+      language?: string | null
+      pushed_at?: string | null
+      archived?: boolean
+    }
+    const stats: RepoStats = {
+      archived: Boolean(repo.archived),
+      forks: repo.forks_count ?? 0,
+      language: repo.language ?? null,
+      pushedAt: repo.pushed_at ?? null,
+      stars: repo.stargazers_count ?? 0,
+    }
+    statsCache.set(cacheKey, { data: stats, timestamp: Date.now() })
+    return stats
+  } catch (error) {
+    console.error(`Failed to fetch repo stats for ${cacheKey}:`, error)
+    statsCache.set(cacheKey, { data: null, timestamp: Date.now() })
+    return null
+  }
+}
+
+/** Repo stats for many projects in parallel, keyed by slug. */
+export async function getRepoStatsForProjects(
+  projects: Array<{ slug: string; github: string | null }>,
+): Promise<Map<string, RepoStats>> {
+  const out = new Map<string, RepoStats>()
+  const results = await Promise.all(
+    projects.map(async (project) => ({
+      slug: project.slug,
+      stats: project.github ? await getRepoStats(project.github) : null,
+    })),
+  )
+  for (const { slug, stats } of results) if (stats) out.set(slug, stats)
+  return out
 }
 
 /**
@@ -274,17 +495,17 @@ function emptyActivity(ok: boolean): ActivitySummary {
  * fall back gracefully. One upstream request; cached 5 minutes via Next.
  */
 export async function getRecentActivity(username = GITHUB_USERNAME): Promise<ActivitySummary> {
+  if (isGitHubRateLimited()) return emptyActivity(false)
   let raw: unknown
   try {
     const response = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`, {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        'User-Agent': 'hyperbliss.tech',
-        ...(process.env.GITHUB_TOKEN && { Authorization: `token ${process.env.GITHUB_TOKEN}` }),
-      },
+      headers: { ...githubHeaders('application/vnd.github+json'), 'User-Agent': 'hyperbliss.tech' },
       next: { revalidate: 300 },
     })
-    if (!response.ok) return emptyActivity(false)
+    if (!response.ok) {
+      if (isRateLimitResponse(response)) noteRateLimit(response, `activity for ${username}`)
+      return emptyActivity(false)
+    }
     raw = await response.json()
   } catch (error) {
     console.error('Failed to fetch GitHub activity:', error)

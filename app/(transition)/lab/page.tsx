@@ -1,8 +1,16 @@
 import type { Metadata } from 'next'
 import LabList from '../../components/LabList'
 import { getAllLab } from '../../lib/content'
+import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '../../lib/ogImage'
 
 const BASE_URL = 'https://hyperbliss.tech'
+const OG_DESCRIPTION = 'Interactive experiments, deep dives, and weird beautiful things on the web.'
+const OG_IMAGE = {
+  alt: `The Lab: ${OG_DESCRIPTION}`,
+  height: OG_IMAGE_HEIGHT,
+  url: buildOgImageUrl({ kind: 'lab', path: 'ls lab/', subtitle: OG_DESCRIPTION, title: 'The Lab' }),
+  width: OG_IMAGE_WIDTH,
+}
 
 export const metadata: Metadata = {
   alternates: {
@@ -12,7 +20,8 @@ export const metadata: Metadata = {
     'Interactive experiments, deep dives, and weird beautiful things on the web. Explore regex dissections, visual playgrounds, and more.',
   keywords: ['interactive experiments', 'web playground', 'regex', 'deep dive', 'developer tools', 'Stefanie Jane'],
   openGraph: {
-    description: 'Interactive experiments, deep dives, and weird beautiful things on the web.',
+    description: OG_DESCRIPTION,
+    images: [OG_IMAGE],
     locale: 'en_US',
     siteName: 'Hyperbliss',
     title: 'The Lab',
@@ -23,7 +32,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     creator: '@hyperb1iss',
-    description: 'Interactive experiments, deep dives, and weird beautiful things on the web.',
+    description: OG_DESCRIPTION,
+    images: [OG_IMAGE.url],
     title: 'The Lab | Hyperbliss',
   },
 }
