@@ -202,6 +202,8 @@ export interface ProjectSummary {
   status: string | null
   image: string | null
   coverImage: string | null
+  /** Pinned position in the flagship trio (1 is first); null when unpinned. */
+  featured?: number | null
   latestVersion?: string | null
   releaseDate?: string | null
   releaseUrl?: string | null
@@ -240,6 +242,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       description: (data.description as string) ?? null,
       displayTitle: formatDisplayTitle(data.emoji as string | undefined, data.title as string),
       emoji: (data.emoji as string) ?? null,
+      featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
       image: (data.image as string) ?? null,
       slug,

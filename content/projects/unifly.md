@@ -2,6 +2,7 @@
 category: 'terminal'
 title: 'unifly: UniFi from the Terminal'
 description: 'A Rust CLI and live terminal dashboard for UniFi networks, from switch ports and firewall policies to Wi-Fi diagnostics and cloud-managed sites.'
+featured: 3
 date: '2026-02-13'
 github: 'https://github.com/hyperb1iss/unifly'
 tags: ['Rust', 'CLI', 'TUI', 'Ratatui', 'Networking', 'UniFi', 'Agent Skills']
