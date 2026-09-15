@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import ProjectDetailView from '../../../components/ProjectDetailView'
 import { getAllProjectSlugs, getAllProjects, getProject } from '../../../lib/content'
 import { generateProjectMetadata, type ProjectFrontmatter } from '../../../lib/generateMetadata'
-import { getRepoFacts } from '../../../lib/github'
+import { getRepoFactsForProjects } from '../../../lib/github'
 import { laneOf } from '../../../lib/projectLanes'
 import { extractHeadings } from '../../../lib/reading'
 import { PageProps } from '../../../types'
@@ -41,10 +41,11 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = await getProject(slug)
   if (!project) notFound()
 
-  const [{ release, stats }, all] = await Promise.all([
-    project.github ? getRepoFacts(project.github) : { release: null, stats: null },
-    getAllProjects(),
-  ])
+  // Ask for every project, not just this one, so the lookup joins the same
+  // batch (and fetch-cache entry) the index and layout already use.
+  const all = await getAllProjects()
+  const facts = await getRepoFactsForProjects(all.map((p) => ({ github: p.github, slug: p.slug })))
+  const { release, stats } = facts.get(slug) ?? { release: null, stats: null }
 
   // Other projects in the same lane, newest first, capped so the rail stays short.
   const lane = laneOf(project.category)

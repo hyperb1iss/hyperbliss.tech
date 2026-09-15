@@ -67,7 +67,8 @@ describe('GitHub facts batch', () => {
   })
 
   it('answers releases and stats for every project from one POST', async () => {
-    fetchMock.mockResolvedValueOnce(graphql({ r0: node(59, 'v1.3.2'), r1: node(7) }))
+    // Keys are sorted into the query, so dotfiles is r0 and sibyl is r1.
+    fetchMock.mockResolvedValueOnce(graphql({ r0: node(7), r1: node(59, 'v1.3.2') }))
     const facts = await getRepoFactsForProjects([project('sibyl'), project('dotfiles')])
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -91,7 +92,7 @@ describe('GitHub facts batch', () => {
   })
 
   it('serves the projections and single lookups from the same cached batch', async () => {
-    fetchMock.mockResolvedValueOnce(graphql({ r0: node(59, 'v1.3.2'), r1: node(7) }))
+    fetchMock.mockResolvedValueOnce(graphql({ r0: node(7), r1: node(59, 'v1.3.2') }))
     const repos = [project('sibyl'), project('dotfiles')]
     const releases = await getReleasesForProjects(repos)
     const stats = await getRepoStatsForProjects(repos)
@@ -117,7 +118,7 @@ describe('GitHub facts batch', () => {
 
   it('caches an unresolvable repo as empty facts instead of asking again', async () => {
     fetchMock.mockResolvedValueOnce(
-      graphql({ r0: node(1), r1: null }, [{ message: 'Could not resolve', path: ['r1'], type: 'NOT_FOUND' }]),
+      graphql({ r0: null, r1: node(1) }, [{ message: 'Could not resolve', path: ['r0'], type: 'NOT_FOUND' }]),
     )
     const repos = [project('real'), project('gone')]
     const first = await getRepoFactsForProjects(repos)
@@ -180,6 +181,48 @@ describe('GitHub facts batch', () => {
     const facts = await getRepoFactsForProjects(repos)
     expect(fetchMock).toHaveBeenCalledTimes(2)
     expect(facts.size).toBe(60)
+  })
+
+  it('sends one canonical sorted body no matter which subset a caller wants', async () => {
+    fetchMock.mockImplementation(async (_url, init) => {
+      const count = (JSON.parse(String(init?.body)).query.match(/repository\(/g) ?? []).length
+      const data: Record<string, unknown> = {}
+      for (let i = 0; i < count; i += 1) data[`r${i}`] = node(i)
+      return graphql(data)
+    })
+    const repos = [project('zeta'), project('alpha'), project('mid')]
+    await getRepoFactsForProjects(repos)
+    const body = JSON.parse(String(fetchMock.mock.calls[0][1]?.body)).query
+    expect(body.indexOf('name: "alpha"')).toBeLessThan(body.indexOf('name: "mid"'))
+    expect(body.indexOf('name: "mid"')).toBeLessThan(body.indexOf('name: "zeta"'))
+    // A reordered list is the same batch and the same cache; nothing new is fetched.
+    await getRepoFactsForProjects([project('mid'), project('zeta'), project('alpha')])
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('fetches only the facts a tokenless caller asked for', async () => {
+    vi.stubEnv('GITHUB_TOKEN', '')
+    fetchMock.mockImplementation(async (url) =>
+      String(url).endsWith('/releases/latest')
+        ? new Response(
+            JSON.stringify({
+              body: '',
+              html_url: 'https://x/v1',
+              name: null,
+              published_at: '2026-01-01T00:00:00Z',
+              tag_name: 'v1.0.0',
+            }),
+            { status: 200 },
+          )
+        : new Response(JSON.stringify({ stargazers_count: 4 }), { status: 200 }),
+    )
+    await getReleasesForProjects([project('sibyl')])
+    expect(fetchMock.mock.calls.map(([u]) => String(u))).toEqual([
+      'https://api.github.com/repos/hyperb1iss/sibyl/releases/latest',
+    ])
+    await getRepoStatsForProjects([project('other')])
+    expect(fetchMock.mock.calls.map(([u]) => String(u))).toContain('https://api.github.com/repos/hyperb1iss/other')
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 
   it('falls back to REST per repo without a token', async () => {

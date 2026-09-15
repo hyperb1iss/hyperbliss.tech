@@ -329,10 +329,8 @@ const FACTS_FRAGMENT = `fragment Facts on Repository {
 /** One aliased `repository` field per owner/repo key, plus the shared fragment. */
 export function buildFactsQuery(keys: string[]): string {
   const fields = keys.map((key, index) => {
-    const slash = key.indexOf('/')
-    const owner = key.slice(0, slash)
-    const repo = key.slice(slash + 1)
-    return `  r${index}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(repo)}) { ...Facts }`
+    const [owner, repo] = key.split('/', 2)
+    return `  r${index}: repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(repo ?? '')}) { ...Facts }`
   })
   return `${FACTS_FRAGMENT}\nquery RepoFacts {\n${fields.join('\n')}\n}`
 }
@@ -422,6 +420,8 @@ async function fetchFactsBatch(keys: string[]): Promise<Map<string, RepoFacts> |
   }
 
   // A rate limit can also arrive as HTTP 200 with a typed error and no data.
+  // The fetch cache keeps that 200 for an hour, so the park repeats until it
+  // expires; only reachable when the token is shared with a heavier consumer.
   if (payload.errors?.some((e) => e.type === 'RATE_LIMITED')) {
     noteRateLimit(response, label)
     return null
@@ -449,10 +449,16 @@ function fetchFactsBatchShared(keys: string[]): Promise<Map<string, RepoFacts> |
   return request
 }
 
-/** Tokenless fallback: the two REST calls, each with its own cache and backoff. */
-async function fetchFactsRest(key: string): Promise<RepoFacts> {
+/** Which facts a caller needs; the REST fallback fetches nothing beyond that. */
+type FactsWant = 'release' | 'stats' | 'both'
+
+/** Tokenless fallback: the REST calls, each with its own cache and backoff. */
+async function fetchFactsRest(key: string, want: FactsWant): Promise<RepoFacts> {
   const url = `https://github.com/${key}`
-  const [release, stats] = await Promise.all([getLatestRelease(url), getRepoStats(url)])
+  const [release, stats] = await Promise.all([
+    want === 'stats' ? null : getLatestRelease(url),
+    want === 'release' ? null : getRepoStats(url),
+  ])
   return { release, stats }
 }
 
@@ -461,43 +467,50 @@ async function fetchFactsRest(key: string): Promise<RepoFacts> {
  * token this is one GraphQL request per 50 repos, memoized for an hour in
  * this process and in the fetch cache; without one it falls back to REST.
  * Projects whose repo GitHub cannot resolve get empty facts. Never throws.
+ *
+ * Pass the whole project list, even for one repo: the batch always covers
+ * every key it was handed, sorted, so each caller produces the same request
+ * body and every build worker and route shares one fetch-cache entry
+ * instead of fragmenting into per-subset requests.
  */
 export async function getRepoFactsForProjects(
   projects: Array<{ slug: string; github: string | null }>,
+  want: FactsWant = 'both',
 ): Promise<Map<string, RepoFacts>> {
   const keyBySlug = new Map<string, string>()
   for (const project of projects) {
     const parsed = project.github ? parseGitHubUrl(project.github) : null
     if (parsed) keyBySlug.set(project.slug, `${parsed.owner}/${parsed.repo}`)
   }
+  const keys = [...new Set(keyBySlug.values())].sort()
+  const out = new Map<string, RepoFacts>()
+
+  if (!(process.env.GITHUB_TOKEN || process.env.GH_TOKEN)) {
+    // REST caches and backs off per call; nothing to memoize here.
+    const facts = await Promise.all(keys.map((key) => fetchFactsRest(key, want)))
+    const byKey = new Map(keys.map((key, index) => [key, facts[index]]))
+    for (const [slug, key] of keyBySlug) {
+      const found = byKey.get(key)
+      if (found && (found.release || found.stats)) out.set(slug, found)
+    }
+    return out
+  }
 
   const now = Date.now()
-  const missing = [...new Set(keyBySlug.values())].filter((key) => {
+  const fresh = (key: string) => {
     const cached = factsCache.get(key)
-    return !cached || now - cached.timestamp >= CACHE_TTL
-  })
-
-  if (missing.length > 0 && !isGitHubRateLimited(now)) {
-    if (process.env.GITHUB_TOKEN || process.env.GH_TOKEN) {
-      const chunks: string[][] = []
-      for (let i = 0; i < missing.length; i += FACTS_BATCH) chunks.push(missing.slice(i, i + FACTS_BATCH))
-      const results = await Promise.all(chunks.map(fetchFactsBatchShared))
-      for (const batch of results) {
-        if (!batch) continue
-        for (const [key, facts] of batch) factsCache.set(key, { data: facts, timestamp: Date.now() })
-      }
-    } else {
-      // REST caches per call, so the facts cache only mirrors what came back.
-      await Promise.all(
-        missing.map(async (key) => {
-          const facts = await fetchFactsRest(key)
-          if (facts.release || facts.stats) factsCache.set(key, { data: facts, timestamp: Date.now() })
-        }),
-      )
+    return cached !== undefined && now - cached.timestamp < CACHE_TTL
+  }
+  if (!keys.every(fresh) && !isGitHubRateLimited(now)) {
+    const chunks: string[][] = []
+    for (let i = 0; i < keys.length; i += FACTS_BATCH) chunks.push(keys.slice(i, i + FACTS_BATCH))
+    const results = await Promise.all(chunks.map(fetchFactsBatchShared))
+    for (const batch of results) {
+      if (!batch) continue
+      for (const [key, facts] of batch) factsCache.set(key, { data: facts, timestamp: Date.now() })
     }
   }
 
-  const out = new Map<string, RepoFacts>()
   for (const [slug, key] of keyBySlug) {
     const cached = factsCache.get(key)
     if (cached && Date.now() - cached.timestamp < CACHE_TTL) out.set(slug, cached.data)
@@ -505,7 +518,10 @@ export async function getRepoFactsForProjects(
   return out
 }
 
-/** Facts for one repository URL, through the same batch and caches. */
+/**
+ * Facts for one repository URL. Prefer getRepoFactsForProjects with the
+ * full project list when you have it, so the request joins the shared batch.
+ */
 export async function getRepoFacts(githubUrl: string): Promise<RepoFacts> {
   const parsed = parseGitHubUrl(githubUrl)
   if (!parsed) return EMPTY_FACTS
@@ -519,7 +535,8 @@ export async function getRepoStatsForProjects(
   projects: Array<{ slug: string; github: string | null }>,
 ): Promise<Map<string, RepoStats>> {
   const out = new Map<string, RepoStats>()
-  for (const [slug, facts] of await getRepoFactsForProjects(projects)) if (facts.stats) out.set(slug, facts.stats)
+  for (const [slug, facts] of await getRepoFactsForProjects(projects, 'stats'))
+    if (facts.stats) out.set(slug, facts.stats)
   return out
 }
 
@@ -528,7 +545,8 @@ export async function getReleasesForProjects(
   projects: Array<{ slug: string; github: string | null }>,
 ): Promise<Map<string, ReleaseInfo>> {
   const out = new Map<string, ReleaseInfo>()
-  for (const [slug, facts] of await getRepoFactsForProjects(projects)) if (facts.release) out.set(slug, facts.release)
+  for (const [slug, facts] of await getRepoFactsForProjects(projects, 'release'))
+    if (facts.release) out.set(slug, facts.release)
   return out
 }
 
