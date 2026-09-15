@@ -6,8 +6,10 @@ import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 import type { ReleaseLike } from '@/lib/terminal/releases'
 import { getAllLab, getAllPosts, getAllProjects, getPage, getSiteConfig } from '../lib/content'
 
-// Re-validate hourly so the feed (releases, latest post) stays fresh and the
-// GitHub release lookups stay inside their cache window.
+// Ceiling for the route's ISR window. The events feed underneath fetches with
+// a 5 minute revalidate and the shortest fetch window wins, so the page
+// regenerates about every 5 minutes; releases and stats stay behind their own
+// hourly fetch cache, so GitHub sees no extra calls from that cadence.
 export const revalidate = 3600
 
 export default async function Home() {
@@ -24,7 +26,7 @@ export default async function Home() {
     // public events feed. Each lookup is cached in memory and by the fetch
     // cache for an hour, so this is one GitHub call per repo per hour at most;
     // when GitHub is rate-limited or offline the page renders from local
-    // content and the strip falls back to release recency.
+    // content and the strip falls back to release recency, then launch date.
     const repos = projects.filter((p) => p.github).map((p) => ({ github: p.github, slug: p.slug }))
     const [releases, stats, activity] = await Promise.all([
       getReleasesForProjects(repos).catch(() => new Map<string, ReleaseLike>()),

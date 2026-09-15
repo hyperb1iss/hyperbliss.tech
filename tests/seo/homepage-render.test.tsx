@@ -43,9 +43,6 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  photo: '/images/profile-image.jpg',
-  photoAlt: 'Stefanie Jane',
-  role: 'Creative technologist, Seattle.',
   tagline: "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`.",
 }
 

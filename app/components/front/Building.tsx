@@ -137,23 +137,26 @@ export default function Building({ entries, projectCount, startOrder = 0 }: Buil
         {entries.map((entry, index) => {
           const { project, version, releaseUrl, stats } = entry
           const sub = tagline(project.title) ?? project.description
+          const stars = stats && stats.stars > 0 ? formatStars(stats.stars) : null
           return (
             <Reveal as="li" className={cellStyles} key={project.slug} order={startOrder + index * 0.3}>
               <Name className={neonTitle}>
                 <Link href={`/projects/${project.slug}/`}>{shortName(project.title)}</Link>
               </Name>
               {sub && <Tagline>{sub}</Tagline>}
-              <Facts>
-                {version &&
-                  (releaseUrl ? (
-                    <a href={releaseUrl} rel="noopener noreferrer">
-                      v{version}
-                    </a>
-                  ) : (
-                    <span>v{version}</span>
-                  ))}
-                {stats && stats.stars > 0 && <Stars>★ {formatStars(stats.stars)}</Stars>}
-              </Facts>
+              {(version || stars) && (
+                <Facts>
+                  {version &&
+                    (releaseUrl ? (
+                      <a href={releaseUrl} rel="noopener noreferrer">
+                        v{version}
+                      </a>
+                    ) : (
+                      <span>v{version}</span>
+                    ))}
+                  {stars && <Stars>★ {stars}</Stars>}
+                </Facts>
+              )}
             </Reveal>
           )
         })}
