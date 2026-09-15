@@ -38,15 +38,66 @@ export function contentPath(...segments: string[]): string {
   return resolved
 }
 
+export function isSafeSlug(slug: string): boolean {
+  return /^[\w.-]+$/.test(slug)
+}
+
 export function assertSafeSlug(slug: string): void {
-  if (!/^[\w.-]+$/.test(slug)) {
+  if (!isSafeSlug(slug)) {
     throw new ContentNotFoundError(slug)
   }
 }
 
-export function markdownRelativePath(directory: MarkdownDirectory, slug: string): string {
-  assertSafeSlug(slug)
-  return `${MARKDOWN_COLLECTIONS[directory].directory}/${slug}.md`
+// Essay files carry a date prefix (2026.07.21_loop-engineering.md) so the
+// directory reads chronologically; the public slug is everything after it.
+const DATED_FILENAME = /^\d{4}\.\d{2}\.\d{1,2}_/
+
+/** Public slug for a markdown filename in a collection. */
+export function slugFromFilename(directory: MarkdownDirectory, filename: string): string {
+  const base = filename.replace(/\.md$/, '')
+  return directory === 'posts' ? base.replace(DATED_FILENAME, '') : base
+}
+
+const fileIndexes = new Map<MarkdownDirectory, Promise<Map<string, string>>>()
+
+/**
+ * Slug to filename for one collection. Cached per process in production;
+ * re-read on every call in development so a new file shows up without a
+ * restart.
+ */
+function fileIndex(directory: MarkdownDirectory): Promise<Map<string, string>> {
+  const cached = fileIndexes.get(directory)
+  if (cached && process.env.NODE_ENV === 'production') return cached
+  const pending = (async () => {
+    const files = await fs.readdir(contentPath(MARKDOWN_COLLECTIONS[directory].directory))
+    const index = new Map<string, string>()
+    for (const filename of files) {
+      if (!filename.endsWith('.md')) continue
+      const slug = slugFromFilename(directory, filename)
+      const taken = index.get(slug)
+      if (taken) throw new Error(`Duplicate ${directory} slug "${slug}": ${taken} and ${filename}`)
+      index.set(slug, filename)
+    }
+    return index
+  })()
+  fileIndexes.set(directory, pending)
+  // A failed listing must not be served from cache for the life of the process.
+  pending.catch(() => fileIndexes.delete(directory))
+  return pending
+}
+
+/** Content-relative path of the file behind a slug, or null when nothing backs it. */
+export async function resolveMarkdownFileOrNull(directory: MarkdownDirectory, slug: string): Promise<string | null> {
+  // A traversal attempt is "nothing here", not an exception, same as a bad path.
+  if (!isSafeSlug(slug)) return null
+  const filename = (await fileIndex(directory)).get(slug)
+  return filename ? `${MARKDOWN_COLLECTIONS[directory].directory}/${filename}` : null
+}
+
+export async function resolveMarkdownFile(directory: MarkdownDirectory, slug: string): Promise<string> {
+  const relativePath = await resolveMarkdownFileOrNull(directory, slug)
+  if (!relativePath) throw new ContentNotFoundError(`${MARKDOWN_COLLECTIONS[directory].directory}/${slug}.md`)
+  return relativePath
 }
 
 export function markdownVirtualPath(directory: MarkdownDirectory, slug: string): string {
@@ -98,16 +149,15 @@ export async function readRawContentFile(relativePath: string): Promise<string> 
 }
 
 export async function getMarkdownSlugs(directory: MarkdownDirectory): Promise<string[]> {
-  const files = await fs.readdir(contentPath(MARKDOWN_COLLECTIONS[directory].directory))
-  return files.filter((filename) => filename.endsWith('.md')).map((filename) => filename.replace(/\.md$/, ''))
+  return [...(await fileIndex(directory)).keys()]
 }
 
 export async function getMarkdownSource(directory: MarkdownDirectory, slug: string) {
-  const relativePath = markdownRelativePath(directory, slug)
+  const relativePath = await resolveMarkdownFile(directory, slug)
   const { data, content } = await readMarkdown(relativePath)
   return { content, data, relativePath, slug }
 }
 
 export async function getRawMarkdownSource(directory: MarkdownDirectory, slug: string): Promise<string> {
-  return readRawContentFile(markdownRelativePath(directory, slug))
+  return readRawContentFile(await resolveMarkdownFile(directory, slug))
 }
