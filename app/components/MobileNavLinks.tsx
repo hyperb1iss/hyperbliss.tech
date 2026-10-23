@@ -123,8 +123,8 @@ const navIconStyles = css`
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 const NAV_ICONS: Record<string, string> = {
+  '/about': '◆',
   '/blog': '◈',
-  '/company': '◆',
   '/lab': '◇',
   '/projects': '▣',
 }

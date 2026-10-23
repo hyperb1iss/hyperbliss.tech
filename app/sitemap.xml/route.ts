@@ -52,12 +52,6 @@ export async function GET(): Promise<Response> {
       url: ensureTrailingSlash(`${baseUrl}/about`),
     },
     {
-      changeFrequency: 'monthly' as const,
-      lastModified: new Date(),
-      priority: 0.8,
-      url: ensureTrailingSlash(`${baseUrl}/company`),
-    },
-    {
       changeFrequency: 'daily' as const,
       lastModified: new Date(),
       priority: 0.9,

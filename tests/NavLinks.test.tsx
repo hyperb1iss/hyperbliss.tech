@@ -53,19 +53,16 @@ describe('NavLinks', () => {
     expect(screen.getAllByRole('link').filter((link) => link.hasAttribute('aria-current'))).toHaveLength(1)
   })
 
-  it.each(['/company/', '/about/', '/resume/'])(
-    'lights Company for the company and founder pages on %s',
-    (pathname) => {
-      mockUsePathname.mockReturnValue(pathname)
-      render(<NavLinks />)
-      expect(screen.getByText('Company')).toHaveAttribute('aria-current', 'page')
-      expect(screen.getAllByRole('link').filter((link) => link.hasAttribute('aria-current'))).toHaveLength(1)
-    },
-  )
+  it.each(['/about/', '/resume/'])('lights About for the about page and the resume on %s', (pathname) => {
+    mockUsePathname.mockReturnValue(pathname)
+    render(<NavLinks />)
+    expect(screen.getByText('About')).toHaveAttribute('aria-current', 'page')
+    expect(screen.getAllByRole('link').filter((link) => link.hasAttribute('aria-current'))).toHaveLength(1)
+  })
 
   it('preserves browser navigation for modified clicks', () => {
     render(<NavLinks />)
-    fireEvent.click(screen.getByText('Company'), { metaKey: true })
+    fireEvent.click(screen.getByText('About'), { metaKey: true })
     fireEvent.click(screen.getByText('Writing'), { ctrlKey: true })
     expect(navigate).not.toHaveBeenCalled()
   })
@@ -74,8 +71,8 @@ describe('NavLinks', () => {
     const user = userEvent.setup()
     render(<NavLinks />)
 
-    const companyLink = screen.getByText('Company')
-    await user.click(companyLink)
-    expect(navigate).toHaveBeenCalledWith('/company')
+    const aboutLink = screen.getByText('About')
+    await user.click(aboutLink)
+    expect(navigate).toHaveBeenCalledWith('/about')
   })
 })

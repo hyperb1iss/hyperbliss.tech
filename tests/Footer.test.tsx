@@ -46,7 +46,8 @@ describe('Footer', () => {
       for (const { href, label } of column.links) {
         // Link normalizes the trailing slash per the router config, so compare the path.
         const link = within(nav).getByRole('link', { name: label })
-        expect(link.getAttribute('href')?.replace(/\/$/, '')).toBe(href.replace(/\/$/, ''))
+        const bare = (value: string) => value.replace(/\/(?=#|$)/, '')
+        expect(bare(link.getAttribute('href') ?? '')).toBe(bare(href))
       }
     }
   })

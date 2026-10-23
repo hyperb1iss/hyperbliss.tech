@@ -29,7 +29,6 @@ describe('Sitemap Generation', () => {
     // Check static pages
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/about\/<\/loc>/)
-    expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/company\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/blog\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/<\/loc>/)
 

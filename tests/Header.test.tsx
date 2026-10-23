@@ -28,7 +28,7 @@ describe('Header', () => {
 
   it('renders navigation links', () => {
     render(<Header />)
-    for (const label of [/products/i, /writing/i, /lab/i, /company/i]) {
+    for (const label of [/products/i, /writing/i, /lab/i, /about/i]) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)
     }
   })

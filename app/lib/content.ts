@@ -345,12 +345,10 @@ export interface Principle {
   description: string
 }
 
-/** The Company page: who publishes the software, how it works, how to reach it. */
+/** The company half of the About page: who publishes the software, how it works, how to reach it. */
 export interface CompanySection {
   lede: string | null
   principles: Principle[] | null
-  /** Markdown paragraph about the founder; links to the founder page are added by the page. */
-  founder: string | null
   contactIntro: string | null
   contactEmail: string | null
   legalName: string | null
@@ -391,7 +389,6 @@ interface RawPageJson {
   company?: {
     lede?: string
     principles?: Array<{ title?: string; description?: string }>
-    founder?: string
     contactIntro?: string
     contactEmail?: string
     legalName?: string
@@ -429,7 +426,6 @@ export async function getPage(slug: string): Promise<PageData> {
       ? {
           contactEmail: raw.company.contactEmail ?? null,
           contactIntro: raw.company.contactIntro ?? null,
-          founder: raw.company.founder ?? null,
           lede: raw.company.lede ?? null,
           legalName: raw.company.legalName ?? null,
           location: raw.company.location ?? null,

@@ -2,7 +2,7 @@
 export interface NavItem {
   label: string
   href: string
-  /** Other sections that light this item up, like the founder page under Company. */
+  /** Other sections that light this item up, like the resume under About. */
   also?: readonly string[]
 }
 
@@ -15,7 +15,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { href: '/projects', label: 'Products' },
   { href: '/blog', label: 'Writing' },
   { href: '/lab', label: 'Lab' },
-  { also: ['/about', '/resume'], href: '/company', label: 'Company' },
+  { also: ['/resume'], href: '/about', label: 'About' },
 ]
 
 /** Footer columns. Products follow the flagship order set by `featured` in content/projects. */
@@ -31,8 +31,8 @@ export const FOOTER_COLUMNS: ReadonlyArray<{ title: string; links: readonly NavI
   },
   {
     links: [
-      { href: '/company/', label: 'Company' },
-      { href: '/about/', label: 'Founder' },
+      { href: '/about/', label: 'About' },
+      { href: '/about/#founder', label: 'Founder' },
       { href: '/blog/', label: 'Writing' },
       { href: '/lab/', label: 'Lab' },
     ],
