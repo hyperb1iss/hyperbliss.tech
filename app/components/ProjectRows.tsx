@@ -26,11 +26,11 @@ const rowStyles = css`
   column-gap: 2rem;
   align-items: start;
   padding: 2rem 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  border-bottom: 1px solid rgba(244, 240, 255, 0.08);
   transition: background var(--duration-normal) var(--ease-silk);
 
   &:hover {
-    background: linear-gradient(90deg, rgba(162, 89, 255, 0.06), transparent 60%);
+    background: linear-gradient(90deg, rgba(225, 53, 255, 0.07), transparent 60%);
   }
 
   @media (max-width: 760px) {
@@ -44,12 +44,11 @@ const rowStyles = css`
 
 const Name = styled.h3`
   font-family: var(--font-display);
-  font-weight: 700;
+  font-stretch: 112%;
+  font-weight: 800;
   font-size: 2.4rem;
   line-height: 1.1;
-  letter-spacing: -0.02em;
-  text-transform: none;
-  text-shadow: none;
+  letter-spacing: -0.015em;
   margin: 0;
   display: flex;
   flex-wrap: wrap;
@@ -57,31 +56,29 @@ const Name = styled.h3`
   gap: 0 1.2rem;
 
   & a {
-    color: var(--silk-circuit-cyan);
+    color: #f6f2ff;
     text-decoration: none;
-    transition:
-      color var(--duration-normal) var(--ease-silk),
-      text-shadow var(--duration-normal) var(--ease-silk);
+    transition: color var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-steel-50);
-    text-shadow: 0 0 18px rgba(0, 255, 240, 0.6);
+    color: var(--silk-circuit-cyan);
   }
 `
 
 const Tagline = styled.span`
   font-family: var(--font-body);
+  font-stretch: 100%;
   font-weight: 400;
   font-size: 1.6rem;
   letter-spacing: 0;
-  color: var(--text-secondary);
+  color: #b9b0cc;
 `
 
 const Description = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 300;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  line-height: 1.55;
+  color: #cfc8de;
   margin: 0.8rem 0 0;
   max-width: 72rem;
   text-wrap: pretty;

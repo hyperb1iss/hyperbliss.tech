@@ -6,59 +6,27 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import type { CSSProperties } from 'react'
 import { shortName, tagline } from '@/lib/feed'
-import { LANES, type LaneId, laneOf, type ProjectEntry, shownStars } from '@/lib/projectLanes'
+import { LANES, laneOf, type ProjectEntry, shownStars } from '@/lib/projectLanes'
 import { css, cx } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
-
-/** Each product line's light: the pool behind the chapter, its label ink, and its action fill. */
-const LINE_LIGHT: Record<LaneId, Record<string, string>> = {
-  agents: {
-    '--cta-a': '#8f6bff',
-    '--cta-b': '#e135ff',
-    '--cta-ink': '#0d0618',
-    '--label': '#c3b3ff',
-    '--pool-a': 'rgba(120, 90, 255, 0.5)',
-    '--pool-b': 'rgba(225, 53, 255, 0.16)',
-    '--shot-glow': 'rgba(120, 90, 255, 0.4)',
-  },
-  lighting: {
-    '--cta-a': '#e135ff',
-    '--cta-b': '#ff6ac1',
-    '--cta-ink': '#12040f',
-    '--label': '#ff9bdc',
-    '--pool-a': 'rgba(225, 53, 255, 0.5)',
-    '--pool-b': 'rgba(255, 106, 193, 0.18)',
-    '--shot-glow': 'rgba(225, 53, 255, 0.35)',
-  },
-  terminal: {
-    '--cta-a': '#80ffea',
-    '--cta-b': '#7aa8ff',
-    '--cta-ink': '#031512',
-    '--label': '#80ffea',
-    '--pool-a': 'rgba(128, 255, 234, 0.36)',
-    '--pool-b': 'rgba(80, 160, 255, 0.14)',
-    '--shot-glow': 'rgba(128, 255, 234, 0.28)',
-  },
-  web: {
-    '--cta-a': '#8f6bff',
-    '--cta-b': '#80ffea',
-    '--cta-ink': '#0d0618',
-    '--label': '#c3b3ff',
-    '--pool-a': 'rgba(120, 90, 255, 0.36)',
-    '--pool-b': 'rgba(128, 255, 234, 0.12)',
-    '--shot-glow': 'rgba(120, 90, 255, 0.3)',
-  },
-}
+import { lineLight } from './lineLight'
 
 const chapterStyles = css`
   position: relative;
   isolation: isolate;
   padding: 11rem 0 13rem;
 
+  &[data-compact='true'] {
+    padding: 4.8rem 0 7.2rem;
+  }
+
   @media (max-width: 760px) {
     padding: 6.4rem 0 8rem;
+
+    &[data-compact='true'] {
+      padding: 3.2rem 0 5.6rem;
+    }
   }
 `
 
@@ -231,10 +199,18 @@ interface ProductChapterProps {
   flip?: boolean
   /** Load the screenshot eagerly (the first chapter on a page). */
   priority?: boolean
+  /** Tighter vertical rhythm, for a chapter that sits under its line's own heading. */
+  compact?: boolean
   className?: string
 }
 
-export default function ProductChapter({ entry, flip = false, priority = false, className }: ProductChapterProps) {
+export default function ProductChapter({
+  entry,
+  flip = false,
+  priority = false,
+  compact = false,
+  className,
+}: ProductChapterProps) {
   const { project, version } = entry
   const lane = laneOf(project.category)
   const laneLabel = LANES.find((l) => l.id === lane)?.label
@@ -242,7 +218,10 @@ export default function ProductChapter({ entry, flip = false, priority = false, 
   const page = `/projects/${project.slug}/`
   const pitch = project.pitch ?? tagline(project.title)
   const stars = shownStars(entry.stats?.stars)
-  const label = [laneLabel?.toUpperCase(), version && `v${version}`, stars && `★ ${stars}`].filter(Boolean).join(' · ')
+  // Under its line's own heading (compact) the line name would repeat, so it drops out.
+  const label = [!compact && laneLabel?.toUpperCase(), version && `v${version}`, stars && `★ ${stars}`]
+    .filter(Boolean)
+    .join(' · ')
 
   const primary = project.website
     ? { href: project.website, label: `Get ${name} ↗`, rel: 'noopener noreferrer' }
@@ -267,7 +246,8 @@ export default function ProductChapter({ entry, flip = false, priority = false, 
     <section
       aria-labelledby={`chapter-${project.slug}`}
       className={cx(chapterStyles, className)}
-      style={LINE_LIGHT[lane] as CSSProperties}
+      data-compact={String(compact)}
+      style={lineLight(project.category)}
     >
       <Pool aria-hidden="true" data-side={flip ? 'left' : 'right'} />
       <Grid>

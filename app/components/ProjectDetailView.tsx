@@ -16,6 +16,7 @@ import { LANES, laneOf, languageColor, recentPush, relativeTime, shownStars } fr
 import type { Heading } from '@/lib/reading'
 import Reveal from './front/Reveal'
 import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
+import { lineLight } from './projects/lineLight'
 import { PrimaryAction, ProductShot, SecondaryAction } from './projects/ProductParts'
 import ProjectIcon from './projects/ProjectIcon'
 
@@ -68,7 +69,7 @@ export default function ProjectDetailView({
   const hasInstall = headings.some((h) => h.id === 'install')
 
   return (
-    <article className="project-detail">
+    <article className="project-detail" style={lineLight(category)}>
       <Reveal as="div" className="project-detail__hero" order={0}>
         <div className="project-detail__meta">
           <ProjectIcon slug={slug} />
