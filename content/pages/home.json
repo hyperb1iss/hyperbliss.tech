@@ -1,9 +1,9 @@
 {
-  "description": "Stefanie Jane builds developer tools, terminal interfaces, and AI agents. Open source all the way down.",
+  "description": "Hyperbliss Technologies makes open source software that puts you in control: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.",
   "front": {
-    "bio": "I build software that gives people control over their technology. Developer tools, terminal interfaces, and infrastructure for AI agents, all of it open source.",
-    "tagline": "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`."
+    "bio": "An independent software company in Seattle, founded by Stefanie Jane. Open source at the core.",
+    "tagline": "{hyperbliss} makes software that puts you in control of your own technology: a lighting engine for every RGB device you own, memory for your coding agents, and terminal tools worth living in."
   },
   "slug": "home",
-  "title": "@hyperb1iss | Stefanie Jane"
+  "title": "Hyperbliss Technologies"
 }

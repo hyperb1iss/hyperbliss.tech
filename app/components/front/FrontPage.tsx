@@ -148,7 +148,7 @@ function renderTagline(tagline: string) {
 }
 
 export default function FrontPage({ lead, items, featured, activity, front, projectCount }: FrontPageProps) {
-  const tagline = front?.tagline ?? "Hey, I'm {name}, and {hyperbliss} is where I make things."
+  const tagline = front?.tagline ?? '{hyperbliss} makes software that puts you in control of your own technology.'
   const buildingStart = 1.6
   const feedStart = buildingStart + featured.length * 0.3 + 0.8
   return (

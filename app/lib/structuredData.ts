@@ -1,8 +1,41 @@
-import type { BlogPosting, BreadcrumbList, Person, SoftwareApplication, WebSite, WithContext } from 'schema-dts'
+import type {
+  BlogPosting,
+  BreadcrumbList,
+  Organization,
+  Person,
+  SoftwareApplication,
+  WebSite,
+  WithContext,
+} from 'schema-dts'
 import { TECH_TAGS } from './constants'
 import { buildOgImageUrl } from './ogImage'
 
 const BASE_URL = 'https://hyperbliss.tech'
+const ORGANIZATION_ID = `${BASE_URL}/#organization`
+
+export function generateOrganizationSchema(): WithContext<Organization> {
+  return {
+    '@context': 'https://schema.org',
+    '@id': ORGANIZATION_ID,
+    '@type': 'Organization',
+    description:
+      'Independent software company making open source tools that put people in control of their own technology.',
+    founder: {
+      '@type': 'Person',
+      name: 'Stefanie Jane',
+      url: `${BASE_URL}/about/`,
+    },
+    legalName: 'Hyperbliss Technologies LLC',
+    location: {
+      '@type': 'Place',
+      name: 'Seattle, Washington',
+    },
+    logo: `${BASE_URL}/images/logo.png`,
+    name: 'Hyperbliss Technologies',
+    sameAs: ['https://github.com/hyperb1iss', 'https://bsky.app/profile/hyperbliss.tech'],
+    url: BASE_URL,
+  }
+}
 
 export function generatePersonSchema(): WithContext<Person> {
   return {
@@ -12,11 +45,12 @@ export function generatePersonSchema(): WithContext<Person> {
     description:
       'Creative technologist building open source developer tools, terminal interfaces, and infrastructure for AI agents.',
     image: `${BASE_URL}/images/profile-image.jpg`,
-    jobTitle: 'Creative Technologist',
+    jobTitle: 'Founder',
     knowsAbout: Array.from(TECH_TAGS),
     name: 'Stefanie Jane',
     sameAs: ['https://github.com/hyperb1iss', 'https://twitter.com/hyperb1iss', 'https://linkedin.com/in/stefaniejane'],
-    url: BASE_URL,
+    url: `${BASE_URL}/about/`,
+    worksFor: { '@id': ORGANIZATION_ID },
   }
 }
 
@@ -24,14 +58,9 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    author: {
-      '@type': 'Person',
-      name: 'Stefanie Jane',
-      url: BASE_URL,
-    },
     description:
-      "Stefanie Jane's personal site: open source developer tools, terminal interfaces, and infrastructure for AI agents, plus essays and lab experiments.",
-    name: 'Hyperbliss',
+      'Hyperbliss Technologies makes open source software that puts you in control: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.',
+    name: 'Hyperbliss Technologies',
     potentialAction: {
       '@type': 'SearchAction',
       query: 'required name=search_term_string',
@@ -40,6 +69,7 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
         urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
       },
     },
+    publisher: { '@id': ORGANIZATION_ID },
     url: BASE_URL,
   }
 }
@@ -85,10 +115,7 @@ export function generateProjectSchema(
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     applicationCategory: 'DeveloperApplication',
-    author: {
-      '@type': 'Person',
-      name: 'Stefanie Jane',
-    },
+    author: { '@id': ORGANIZATION_ID },
     description,
     keywords: tags,
     name: title,

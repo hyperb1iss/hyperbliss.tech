@@ -2,7 +2,7 @@
 import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
-import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
+import { generateOrganizationSchema, generateWebsiteSchema } from './lib/structuredData'
 import { plexSans, spaceMono, syne } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
@@ -25,7 +25,7 @@ export const viewport: Viewport = {
  * The main layout component that wraps the entire application.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
+  const structuredData = [generateWebsiteSchema(), generateOrganizationSchema()]
 
   return (
     <html

@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
 import AboutPageContent from '../../components/AboutPageContent'
+import StructuredData from '../../components/StructuredData'
 import { getPage } from '../../lib/content'
 import { generatePageMetadata } from '../../lib/generateMetadata'
+import { generatePersonSchema } from '../../lib/structuredData'
 
 export default async function About() {
   const aboutPage = await getPage('about').catch(() => null)
@@ -10,7 +12,12 @@ export default async function About() {
     notFound()
   }
 
-  return <AboutPageContent about={aboutPage.about} />
+  return (
+    <>
+      <StructuredData data={generatePersonSchema()} />
+      <AboutPageContent about={aboutPage.about} />
+    </>
+  )
 }
 
 export const metadata = generatePageMetadata(

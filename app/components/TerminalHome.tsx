@@ -21,8 +21,7 @@ interface TerminalHomeProps {
   siteConfig?: SiteConfig | null
 }
 
-const DEFAULT_TAGLINE =
-  'I build software that gives people control over their technology. Open source all the way down.'
+const DEFAULT_SUMMARY = 'An independent software company in Seattle. Open source at the core.'
 
 export default function TerminalHome({
   posts,
@@ -47,8 +46,8 @@ export default function TerminalHome({
 
       <noscript>
         <HomeFallbackContent
-          aboutSummary={front?.bio ?? DEFAULT_TAGLINE}
-          aboutTitle="Stefanie Jane"
+          aboutSummary={front?.bio ?? DEFAULT_SUMMARY}
+          aboutTitle="Hyperbliss Technologies"
           posts={posts.map((p) => ({ slug: p.slug, title: p.displayTitle }))}
           projects={projects.map((p) => ({ description: p.description, slug: p.slug, title: p.displayTitle }))}
           siteDescription={siteConfig?.seo?.siteDescription}
