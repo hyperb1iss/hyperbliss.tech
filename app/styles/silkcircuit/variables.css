@@ -27,7 +27,7 @@
   --silk-periwinkle: #9d4edd;
 
   /* Foundation */
-  --silk-void-black: #0a0a14;
+  --silk-void-black: #050308;
   --silk-void-darker: #0f0f1a;
   --silk-void-darkest: #050508;
 
@@ -95,14 +95,14 @@
      ═══════════════════════════════════════════════════════════════ */
 
   /* Font Stacks
-     Syne (display) + IBM Plex Sans (body) + Space Mono (code, data)
+     Archivo (display, run expanded) + Geist (body) + Geist Mono (code, data)
      Powered by `next/font` CSS variables (see `app/styles/fonts.ts`).
   */
-  --font-display: var(--font-syne, system-ui), "Avenir Next", system-ui, -apple-system, sans-serif;
-  --font-heading: var(--font-syne, system-ui), "Avenir Next", system-ui, -apple-system, sans-serif;
-  --font-body: var(--font-plex-sans, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-archivo, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-archivo, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-geist, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
   --font-mono:
-    var(--font-space-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    var(--font-geist-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
   --font-logo: var(--font-display);
 

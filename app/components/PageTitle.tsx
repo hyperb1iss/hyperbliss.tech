@@ -1,11 +1,11 @@
 // app/components/PageTitle.tsx
 // The page-level heading shared by every index and utility page. Sentence case
 // in the display face, left-aligned, with an optional one-line lede. Opts out of
-// the global uppercase-and-glow heading rule so it matches the front page.
+// the global heading rule so it matches the front page.
 
 import type { ReactNode } from 'react'
 import { css, cx } from '../../styled-system/css'
-import { neonTitle } from './front/neon'
+import { displayInk } from './front/neon'
 
 const headerStyles = css`
   display: flex;
@@ -18,10 +18,11 @@ const headerStyles = css`
 
 const titleStyles = css`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(3.4rem, 2.8rem + 1.6vw, 4.8rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(3.6rem, 2.4rem + 2.6vw, 6.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
   text-transform: none;
   text-shadow: none;
   margin: 0;
@@ -47,7 +48,7 @@ interface PageTitleProps {
 export default function PageTitle({ children, lede }: PageTitleProps) {
   return (
     <header className={headerStyles}>
-      <h1 className={cx(titleStyles, neonTitle)}>{children}</h1>
+      <h1 className={cx(titleStyles, displayInk)}>{children}</h1>
       {lede && <p className={ledeStyles}>{lede}</p>}
     </header>
   )

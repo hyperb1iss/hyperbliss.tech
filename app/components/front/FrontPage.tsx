@@ -10,7 +10,7 @@ import type { ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
-import { neonTitle } from './neon'
+import { displayInk } from './neon'
 import ProductStrip from './ProductStrip'
 import Pulse from './Pulse'
 import Reveal from './Reveal'
@@ -138,7 +138,7 @@ function renderTagline(tagline: string) {
       return <Mono key={`mono-${index}`}>{part.slice(1, -1)}</Mono>
     if (part === '{hyperbliss}')
       return (
-        <Brand className={neonTitle} key={`brand-${index}`}>
+        <Brand className={displayInk} key={`brand-${index}`}>
           hyperbliss
         </Brand>
       )

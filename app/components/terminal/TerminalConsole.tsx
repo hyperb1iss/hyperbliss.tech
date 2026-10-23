@@ -86,8 +86,9 @@ const handleStyles = css`
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--silk-circuit-cyan);
-  background: rgba(12, 10, 24, 0.92);
-  border: 1px solid rgba(0, 255, 240, 0.4);
+  background: rgba(5, 3, 8, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(128, 255, 234, 0.35);
   border-radius: var(--radius-full);
   cursor: pointer;
   white-space: nowrap;

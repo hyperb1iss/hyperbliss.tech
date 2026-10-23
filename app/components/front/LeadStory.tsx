@@ -3,7 +3,7 @@ import type { FeedItem } from '@/lib/feed'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
 import { KIND_VERB, longDate } from './format'
-import { neonTitle } from './neon'
+import { displayInk } from './neon'
 
 const Article = styled.article`
   display: flex;
@@ -77,7 +77,7 @@ export default function LeadStory({ item }: { item: FeedItem }) {
         <Badge kind={item.kind} />
         <time dateTime={item.date}>{longDate(item.date)}</time>
       </Meta>
-      <Title className={neonTitle}>
+      <Title className={displayInk}>
         {item.external ? (
           <a href={item.href} rel="noopener noreferrer">
             {item.title}

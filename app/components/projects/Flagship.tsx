@@ -10,7 +10,7 @@ import { shortName, tagline } from '@/lib/feed'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
-import { neonTitle } from '../front/neon'
+import { displayInk } from '../front/neon'
 import Reveal from '../front/Reveal'
 import { PrimaryAction, ProductShot, SecondaryAction } from './ProductParts'
 import ProjectIcon from './ProjectIcon'
@@ -104,7 +104,7 @@ export default function Flagship({ entry, now, order = 0, priority = false }: Fl
     <Reveal as="article" className={panelStyles} data-kind={hasShot ? 'shot' : 'text'} order={order}>
       <Text>
         <ProjectIcon size={28} slug={project.slug} />
-        <Name className={neonTitle}>
+        <Name className={displayInk}>
           <Link href={page}>{name}</Link>
         </Name>
         {sub && <Tagline>{sub}</Tagline>}

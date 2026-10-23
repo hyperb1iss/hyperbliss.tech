@@ -1,37 +1,36 @@
-import { IBM_Plex_Sans, Space_Mono, Syne } from 'next/font/google'
+import { Archivo, Geist, Geist_Mono } from 'next/font/google'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Display Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Syne - geometric with an editorial edge; headlines, nav, numerals
-export const syne = Syne({
+// Archivo - variable weight and width; headlines run expanded (font-stretch
+// 110 to 125%) and heavy, the voice of the Emission direction
+export const archivo = Archivo({
+  axes: ['wdth'],
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-archivo',
 })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Body Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// IBM Plex Sans - quiet, technical, reads well light
-export const plexSans = IBM_Plex_Sans({
+// Geist - neutral, precise, reads well light on black
+export const geist = Geist({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-plex-sans',
-  weight: ['300', '400', '500', '600'],
+  variable: '--font-geist',
 })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Mono Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Space Mono - the terminal, code, and version numbers share one mono face
-export const spaceMono = Space_Mono({
+// Geist Mono - the terminal, code, labels, and version numbers
+export const geistMono = Geist_Mono({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-space-mono',
-  weight: ['400', '700'],
+  variable: '--font-geist-mono',
 })

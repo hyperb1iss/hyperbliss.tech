@@ -3,7 +3,7 @@ import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import { generateOrganizationSchema, generateWebsiteSchema } from './lib/structuredData'
-import { plexSans, spaceMono, syne } from './styles/fonts'
+import { archivo, geist, geistMono } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
 import './styles/blog.css'
@@ -15,7 +15,7 @@ export const metadata: Metadata = siteMetadata
 export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0a0a14',
+  themeColor: '#050308',
   userScalable: true,
   width: 'device-width',
 }
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html
-      className={`${syne.variable} ${plexSans.variable} ${spaceMono.variable}`}
+      className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}
       data-scroll-behavior="smooth"
       lang="en"
     >

@@ -12,7 +12,7 @@ import { type ProjectEntry, shownStars } from '@/lib/projectLanes'
 import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import { ProductShot } from '../projects/ProductParts'
-import { neonTitle } from './neon'
+import { displayInk } from './neon'
 import Reveal from './Reveal'
 
 const Grid = styled.ol`
@@ -192,7 +192,7 @@ export default function ProductStrip({ entries, startOrder = 0 }: ProductStripPr
                   </ProductShot>
                 </ShotLink>
               )}
-              <Name className={neonTitle}>
+              <Name className={displayInk}>
                 <Link href={page}>{name}</Link>
               </Name>
               {sub && <Tagline>{sub}</Tagline>}
