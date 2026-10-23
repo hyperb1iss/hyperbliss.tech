@@ -1,5 +1,5 @@
 // The landing page under the header, one column: the intro sentence, a
-// computed pulse line, the newest long-form piece, the flagship trio, then the
+// computed pulse line, the products, the newest long-form piece, then the
 // merged feed. Server component: everything here is crawlable HTML.
 
 import Link from 'next/link'
@@ -8,10 +8,10 @@ import type { FeedItem } from '@/lib/feed'
 import type { ActivitySummary } from '@/lib/github'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
-import Building from './Building'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
 import { neonTitle } from './neon'
+import ProductStrip from './ProductStrip'
 import Pulse from './Pulse'
 import Reveal from './Reveal'
 
@@ -21,7 +21,6 @@ export interface FrontPageProps {
   featured: ProjectEntry[]
   activity: ActivitySummary | null
   front: FrontSection | null
-  projectCount: number
 }
 
 const Wrap = styled.div`
@@ -147,10 +146,11 @@ function renderTagline(tagline: string) {
   })
 }
 
-export default function FrontPage({ lead, items, featured, activity, front, projectCount }: FrontPageProps) {
+export default function FrontPage({ lead, items, featured, activity, front }: FrontPageProps) {
   const tagline = front?.tagline ?? '{hyperbliss} makes software that puts you in control of your own technology.'
-  const buildingStart = 1.6
-  const feedStart = buildingStart + featured.length * 0.3 + 0.8
+  const productsStart = 0.8
+  const leadStart = productsStart + featured.length * 0.3 + 0.6
+  const feedStart = leadStart + 1
   return (
     <Wrap>
       <Reveal order={0}>
@@ -159,24 +159,24 @@ export default function FrontPage({ lead, items, featured, activity, front, proj
       <Reveal order={0.3}>
         <Pulse activity={activity} />
       </Reveal>
+      {featured.length > 0 && (
+        <Section aria-labelledby="front-products">
+          <Reveal order={productsStart - 0.3}>
+            <Marker id="front-products">Products</Marker>
+          </Reveal>
+          <ProductStrip entries={featured} startOrder={productsStart} />
+        </Section>
+      )}
       <Section aria-labelledby="front-latest">
-        <Reveal order={0.5}>
+        <Reveal order={leadStart - 0.3}>
           <Marker id="front-latest">Latest</Marker>
         </Reveal>
         {lead && (
-          <Reveal order={1}>
+          <Reveal order={leadStart}>
             <LeadStory item={lead} />
           </Reveal>
         )}
       </Section>
-      {featured.length > 0 && (
-        <Section aria-labelledby="front-building">
-          <Reveal order={buildingStart - 0.3}>
-            <Marker id="front-building">Building</Marker>
-          </Reveal>
-          <Building entries={featured} projectCount={projectCount} startOrder={buildingStart} />
-        </Section>
-      )}
       <Section aria-labelledby="front-recently">
         <Reveal order={feedStart - 0.3}>
           <Marker id="front-recently">Recently</Marker>

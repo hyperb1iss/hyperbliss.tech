@@ -35,14 +35,7 @@ export default function TerminalHome({
 }: TerminalHomeProps) {
   return (
     <>
-      <FrontPage
-        activity={activity}
-        featured={featured}
-        front={front}
-        items={items}
-        lead={lead}
-        projectCount={projects.length}
-      />
+      <FrontPage activity={activity} featured={featured} front={front} items={items} lead={lead} />
 
       <noscript>
         <HomeFallbackContent

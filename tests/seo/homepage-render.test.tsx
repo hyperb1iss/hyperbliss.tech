@@ -126,15 +126,22 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 
-  it('renders the Building strip with the featured trio and live facts', () => {
-    expect(withoutNoscript).toMatch(/<h2[^>]*>Building<\/h2>/)
+  it('renders the Products strip with the featured trio, live facts, and next steps', () => {
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Products<\/h2>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/sibyl\/?"[^>]*>Sibyl<\/a><\/h3>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/chromacat\/?"[^>]*>ChromaCat<\/a><\/h3>/)
     expect(withoutNoscript).toContain('★ 412')
     expect(withoutNoscript).toMatch(
       /href="https:\/\/github\.com\/hyperb1iss\/sibyl\/releases\/tag\/v1\.3\.1"[^>]*>v1\.3\.1</,
     )
-    expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All 2 projects/)
+    expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All products and open source/)
+    expect(withoutNoscript).toMatch(/href="\/projects\/sibyl\/?"[^>]*>Learn more/)
+  })
+
+  it('puts the products above the lead story', () => {
+    expect(withoutNoscript.search(/<h2[^>]*>Products<\/h2>/)).toBeLessThan(
+      withoutNoscript.search(/<h2[^>]*>Latest<\/h2>/),
+    )
   })
 
   it('renders the computed pulse line and carries no hand-written now, photo, or rail', () => {
