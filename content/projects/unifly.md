@@ -5,6 +5,8 @@ description: 'A Rust CLI and live terminal dashboard for UniFi networks, from sw
 featured: 3
 date: '2026-02-13'
 github: 'https://github.com/hyperb1iss/unifly'
+screenshot: '/images/products/unifly.webp'
+screenshotAlt: 'The unifly terminal dashboard: WAN traffic history, gateway, connectivity and capacity panels, and top clients.'
 tags: ['Rust', 'CLI', 'TUI', 'Ratatui', 'Networking', 'UniFi', 'Agent Skills']
 ---
 
@@ -25,3 +27,19 @@ The Ratatui dashboard combines traffic history, device health, live events, and 
 Configuration work stays close to observation: inspect port state, review policies, then make a targeted change through the same toolkit. The result is a substantial network management surface that fits the way terminal users already work.
 
 [Explore the commands, dashboard tour, and authentication guide](https://github.com/hyperb1iss/unifly).
+
+## Install
+
+On Linux and macOS:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hyperb1iss/unifly/main/install.sh | sh
+```
+
+On Windows, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/hyperb1iss/unifly/main/install.ps1 | iex
+```
+
+Homebrew (`brew install hyperb1iss/tap/unifly`) and the AUR (`yay -S unifly-bin`) work too.

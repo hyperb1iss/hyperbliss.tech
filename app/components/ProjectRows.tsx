@@ -1,6 +1,7 @@
 // app/components/ProjectRows.tsx
-// A lane's projects as rows: sigil, name and tagline, description, a few tags,
-// and the live facts (version, stars, language, last push) on the right.
+// A product line's supporting projects as rows: sigil, name and tagline,
+// description, and the live facts (version, stars, language, last push) on
+// the right. The flagship above carries the screenshot and the pitch.
 
 import Link from 'next/link'
 import { shortName, tagline } from '@/lib/feed'
@@ -86,17 +87,6 @@ const Description = styled.p`
   text-wrap: pretty;
 `
 
-const Tags = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.4rem;
-  margin-top: 1rem;
-  font-family: var(--font-mono);
-  font-size: 1.1rem;
-  letter-spacing: 0.08em;
-  color: var(--silk-steel-400);
-`
-
 const Meta = styled.div`
   padding-top: 0.6rem;
   text-align: right;
@@ -129,7 +119,6 @@ export default function ProjectRows({
         const { project } = entry
         const name = shortName(project.title)
         const sub = tagline(project.title)
-        const tags = (project.tags ?? []).filter((t): t is string => t !== null).slice(0, 4)
         return (
           <Reveal as="li" className={rowStyles} key={project.slug} order={startOrder + index * 0.5}>
             <ProjectIcon slug={project.slug} />
@@ -145,13 +134,6 @@ export default function ProjectRows({
                 )}
               </Name>
               {project.description && <Description>{project.description}</Description>}
-              {tags.length > 0 && (
-                <Tags>
-                  {tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </Tags>
-              )}
             </div>
             <Meta>
               <ProjectMeta entry={entry} now={now} />

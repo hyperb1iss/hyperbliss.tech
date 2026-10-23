@@ -1,13 +1,15 @@
 // app/components/ProjectsPageContent.tsx
-// Projects: the flagship trio, a jump bar, then every project in its lane.
+// Products: a jump bar, then each product line with its flagship up front
+// (screenshot, promise, call to action) and the rest of the line as rows
+// under it. The last line collects the open source work outside the products.
 
-import { groupByLane, type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
+import { groupByLine, type ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../styled-system/jsx'
 import Reveal from './front/Reveal'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 import ProjectRows from './ProjectRows'
-import FeaturedProjects from './projects/FeaturedProjects'
+import Flagship from './projects/Flagship'
 import LaneNav from './projects/LaneNav'
 
 const LaneSection = styled.section`
@@ -75,34 +77,41 @@ interface ProjectsPageContentProps {
 }
 
 export default function ProjectsPageContent({ entries, now }: ProjectsPageContentProps) {
-  const featured = pickFeatured(entries, 3)
-  const groups = groupByLane(entries)
-  let order = 3
+  const lines = groupByLine(entries)
+  const firstFlagship = lines.find((line) => line.flagship)?.lane.id
+  let order = 2
 
   return (
     <PageLayout>
-      <PageTitle lede="Things I have built, broken, and shipped. Open source tools, creative experiments, and systems that do real work.">
-        Projects
+      <PageTitle lede="Three product lines, each led by a flagship, and the open source tools around them.">
+        Products
       </PageTitle>
-      <FeaturedProjects entries={featured} now={now} />
-      <Reveal order={3}>
-        <LaneNav groups={groups.map(({ lane, entries: laneEntries }) => ({ count: laneEntries.length, lane }))} />
+      <Reveal order={1}>
+        <LaneNav
+          groups={lines.map(({ lane, flagship, entries: rest }) => ({
+            count: rest.length + (flagship ? 1 : 0),
+            lane,
+          }))}
+        />
       </Reveal>
-      {groups.map(({ lane, entries: laneEntries }) => {
+      {lines.map(({ lane, flagship, entries: rest }) => {
         const start = order
-        order += 1 + laneEntries.length * 0.5
+        order += 1 + (flagship ? 1 : 0) + rest.length * 0.5
         return (
           <LaneSection aria-labelledby={`lane-${lane.id}`} id={lane.id} key={lane.id}>
             <Reveal order={start}>
               <LaneHeader>
                 <LaneTitle id={`lane-${lane.id}`}>
                   {lane.label}
-                  <span>{laneEntries.length}</span>
+                  <span>{rest.length + (flagship ? 1 : 0)}</span>
                 </LaneTitle>
                 <LaneBlurb>{lane.blurb}</LaneBlurb>
               </LaneHeader>
             </Reveal>
-            <ProjectRows entries={laneEntries} now={now} startOrder={start + 0.5} />
+            {flagship && (
+              <Flagship entry={flagship} now={now} order={start + 0.5} priority={lane.id === firstFlagship} />
+            )}
+            {rest.length > 0 && <ProjectRows entries={rest} now={now} startOrder={start + (flagship ? 1.5 : 0.5)} />}
           </LaneSection>
         )
       })}

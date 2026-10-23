@@ -204,6 +204,13 @@ export interface ProjectSummary {
   coverImage: string | null
   /** Pinned position in the flagship trio (1 is first); null when unpinned. */
   featured?: number | null
+  /** The product's own site, when it has one; the primary call to action. */
+  website?: string | null
+  /** A 16:10 product screenshot under /images, shown on flagship panels and the product page. */
+  screenshot?: string | null
+  screenshotAlt?: string | null
+  /** Whether the body carries an "## Install" section to link to. */
+  hasInstall?: boolean
   latestVersion?: string | null
   releaseDate?: string | null
   releaseUrl?: string | null
@@ -222,8 +229,13 @@ export interface ProjectDetail {
   status: string | null
   image: string | null
   coverImage: string | null
+  website: string | null
+  screenshot: string | null
+  screenshotAlt: string | null
   body: string | null
 }
+
+const INSTALL_HEADING = /^##\s+Install\b/m
 
 export async function getAllProjectSlugs(): Promise<string[]> {
   return getMarkdownSlugs('projects')
@@ -234,7 +246,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
   const projects: ProjectSummary[] = []
 
   for (const slug of slugs) {
-    const { data } = await readMarkdown(`projects/${slug}.md`)
+    const { data, content } = await readMarkdown(`projects/${slug}.md`)
     projects.push({
       category: (data.category as string) ?? null,
       coverImage: (data.coverImage as string) ?? null,
@@ -244,11 +256,15 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       emoji: (data.emoji as string) ?? null,
       featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
+      hasInstall: INSTALL_HEADING.test(content),
       image: (data.image as string) ?? null,
+      screenshot: (data.screenshot as string) ?? null,
+      screenshotAlt: (data.screenshotAlt as string) ?? null,
       slug,
       status: (data.status as string) ?? null,
       tags: (data.tags as string[]) ?? null,
       title: data.title as string,
+      website: (data.website as string) ?? null,
     })
   }
 
@@ -278,10 +294,13 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
     emoji: (data.emoji as string) ?? null,
     github: (data.github as string) ?? null,
     image: (data.image as string) ?? null,
+    screenshot: (data.screenshot as string) ?? null,
+    screenshotAlt: (data.screenshotAlt as string) ?? null,
     slug,
     status: (data.status as string) ?? null,
     tags: (data.tags as string[]) ?? null,
     title: data.title as string,
+    website: (data.website as string) ?? null,
   }
 }
 

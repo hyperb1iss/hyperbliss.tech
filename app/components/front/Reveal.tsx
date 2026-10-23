@@ -41,7 +41,7 @@ interface RevealProps {
   /** Position in the entrance sequence. Each step adds 70ms. */
   order?: number
   /** Render as this element so semantics survive the wrapper. */
-  as?: 'div' | 'section' | 'aside' | 'li'
+  as?: 'div' | 'section' | 'aside' | 'li' | 'article'
   className?: string
   /** Fade and lift (default) or fade only. Use fade-only on page-level wrappers. */
   lift?: boolean

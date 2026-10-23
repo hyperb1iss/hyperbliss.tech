@@ -26,4 +26,8 @@ export default async function Projects() {
   return <ProjectsPageContent entries={entries} now={Date.now()} />
 }
 
-export const metadata = generatePageMetadata('Projects', 'Explore open source projects by Stefanie Jane.', '/projects/')
+export const metadata = generatePageMetadata(
+  'Products',
+  'Hypercolor, Sibyl, unifly, and the open source tools around them, from Hyperbliss Technologies.',
+  '/projects/',
+)
