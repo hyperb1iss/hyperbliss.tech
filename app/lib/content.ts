@@ -236,6 +236,11 @@ export interface ProjectDetail {
   body: string | null
 }
 
+/** True when the body renders a heading with the `install` id, the anchor product calls to action link to. */
+export function hasInstallSection(markdown: string): boolean {
+  return extractHeadings(markdown).some((heading) => heading.id === 'install')
+}
+
 export async function getAllProjectSlugs(): Promise<string[]> {
   return getMarkdownSlugs('projects')
 }
@@ -255,7 +260,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       emoji: (data.emoji as string) ?? null,
       featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
-      hasInstall: extractHeadings(content).some((heading) => heading.id === 'install'),
+      hasInstall: hasInstallSection(content),
       image: (data.image as string) ?? null,
       screenshot: (data.screenshot as string) ?? null,
       screenshotAlt: (data.screenshotAlt as string) ?? null,
