@@ -50,10 +50,15 @@ const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   return (
     <div
       className={layoutContainerStyles}
-      style={{
-        paddingTop,
-        // Will be overridden by media query in style tag
-      }}
+      style={
+        {
+          // Shared with full-bleed sections (the home hero) that pull up under the header.
+          '--layout-pad': paddingTop,
+          '--layout-pad-mobile': paddingTopMobile,
+          paddingTop,
+          // Will be overridden by media query in style tag
+        } as React.CSSProperties
+      }
     >
       <style>{`
         @media (max-width: 768px) {

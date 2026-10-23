@@ -187,9 +187,11 @@ const shotStyles = css`
   @media (max-width: 760px) {
     transform: none;
     animation: none;
+    will-change: auto;
   }
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    will-change: auto;
   }
 `
 
@@ -235,7 +237,7 @@ export default function ProductChapter({
         alt={project.screenshotAlt ?? `${name} screenshot`}
         height={1000}
         priority={priority}
-        sizes="(max-width: 1024px) 100vw, 640px"
+        sizes="(max-width: 1080px) 100vw, 640px"
         src={project.screenshot}
         width={1600}
       />

@@ -34,8 +34,13 @@ const rowStyles = css`
     grid-template-columns: 13rem minmax(0, 1fr);
   }
 
+  /* Both selectors, so the stacked layout also wins over the
+     [data-kind='hidden'] variant's higher specificity. */
   @media (max-width: 640px) {
-    grid-template-columns: minmax(0, 1fr);
+    &,
+    &[data-kind='hidden'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
     row-gap: 0.6rem;
     & > [data-badge] {
       display: none;

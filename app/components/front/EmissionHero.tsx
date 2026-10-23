@@ -19,14 +19,15 @@ const heroStyles = css`
   display: flex;
   flex-direction: column;
   min-height: 90rem;
-  /* Pull up under the fixed header (GlobalLayout pads the page by its height). */
-  margin-top: -100px;
-  padding-top: 100px;
+  /* Pull up under the fixed header by exactly the layout's current offset,
+     which grows while the terminal is open (GlobalLayout sets the variables). */
+  margin-top: calc(-1 * var(--layout-pad, 100px));
+  padding-top: var(--layout-pad, 100px);
 
   @media (max-width: 768px) {
     min-height: 72rem;
-    margin-top: -80px;
-    padding-top: 80px;
+    margin-top: calc(-1 * var(--layout-pad-mobile, 80px));
+    padding-top: var(--layout-pad-mobile, 80px);
   }
 `
 
