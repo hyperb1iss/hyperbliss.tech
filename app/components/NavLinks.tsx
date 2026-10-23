@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
-import { isNavigationActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
+import { isNavItemActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
 
 export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
 
@@ -110,8 +110,9 @@ const NavLinks: React.FC = () => {
 
   return (
     <NavLinksContainer>
-      {NAV_ITEMS.map(({ href, label }) => {
-        const isActive = isNavigationActive(pathname, href)
+      {NAV_ITEMS.map((item) => {
+        const { href, label } = item
+        const isActive = isNavItemActive(pathname, item)
 
         return (
           <NavItem key={href}>

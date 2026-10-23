@@ -1,0 +1,31 @@
+{
+  "company": {
+    "contactEmail": "stef@hyperbliss.tech",
+    "contactIntro": "Write to us about partnerships, press, support, or an idea we haven't had yet.",
+    "founder": "Hyperbliss was founded by **Stefanie Jane**, who created [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) (now [LineageOS](https://lineageos.org/)) and co-founded the company behind it. Millions of people used it to take control of their phones. She has been building technology for over 25 years, and Hyperbliss carries the same idea forward.",
+    "lede": "Hyperbliss Technologies is an independent software company in Seattle. We make software that puts people in control of their own technology.",
+    "legalName": "Hyperbliss Technologies LLC",
+    "location": "Seattle, Washington",
+    "principles": [
+      {
+        "description": "The engines we ship are open source on GitHub. Read the code, file the issue, build it yourself.",
+        "title": "Open source at the core"
+      },
+      {
+        "description": "Hypercolor runs on your own hardware, Sibyl is self-hostable, and unifly talks straight to your own controller.",
+        "title": "Your machine, your data"
+      },
+      {
+        "description": "Releases ship with changelogs, and the thinking behind them ships as essays and lab experiments.",
+        "title": "Built in the open"
+      },
+      {
+        "description": "Fast, colorful tools you will actually enjoy using, designed in our own SilkCircuit language.",
+        "title": "Made to be lived in"
+      }
+    ]
+  },
+  "description": "Hyperbliss Technologies LLC is an independent software company in Seattle making open source software that puts people in control of their own technology.",
+  "slug": "company",
+  "title": "Company"
+}

@@ -317,12 +317,30 @@ export interface FrontSection {
   tagline: string | null
 }
 
+export interface Principle {
+  title: string
+  description: string
+}
+
+/** The Company page: who publishes the software, how it works, how to reach it. */
+export interface CompanySection {
+  lede: string | null
+  principles: Principle[] | null
+  /** Markdown paragraph about the founder; links to the founder page are added by the page. */
+  founder: string | null
+  contactIntro: string | null
+  contactEmail: string | null
+  legalName: string | null
+  location: string | null
+}
+
 export interface PageData {
   slug: string
   title: string
   description: string
   front: FrontSection | null
   about: AboutSection | null
+  company: CompanySection | null
 }
 
 /** Raw JSON shape — matches the files in content/pages/ */
@@ -346,6 +364,15 @@ interface RawPageJson {
   front?: {
     bio?: string
     tagline?: string
+  }
+  company?: {
+    lede?: string
+    principles?: Array<{ title?: string; description?: string }>
+    founder?: string
+    contactIntro?: string
+    contactEmail?: string
+    legalName?: string
+    location?: string
   }
 }
 
@@ -373,6 +400,19 @@ export async function getPage(slug: string): Promise<PageData> {
             : null,
           profileImage: raw.about.profileImage ?? null,
           profileImageAlt: raw.about.profileImageAlt ?? null,
+        }
+      : null,
+    company: raw.company
+      ? {
+          contactEmail: raw.company.contactEmail ?? null,
+          contactIntro: raw.company.contactIntro ?? null,
+          founder: raw.company.founder ?? null,
+          lede: raw.company.lede ?? null,
+          legalName: raw.company.legalName ?? null,
+          location: raw.company.location ?? null,
+          principles: raw.company.principles
+            ? raw.company.principles.map((p) => ({ description: p.description ?? '', title: p.title ?? '' }))
+            : null,
         }
       : null,
     description: raw.description,

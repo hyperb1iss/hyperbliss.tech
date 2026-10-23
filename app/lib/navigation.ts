@@ -2,23 +2,27 @@
 export interface NavItem {
   label: string
   href: string
+  /** Other sections that light this item up, like the founder page under Company. */
+  also?: readonly string[]
 }
 
 /**
  * Main navigation, in display order. Labels and routes are decoupled so the
- * index page, the nav, and the front page can all say "Writing" while the
- * essays keep living at /blog.
+ * nav can say "Products" and "Writing" while the pages keep living at
+ * /projects and /blog.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Products' },
   { href: '/blog', label: 'Writing' },
-  { href: '/projects', label: 'Projects' },
   { href: '/lab', label: 'Lab' },
-  { href: '/resume', label: 'Resume' },
+  { also: ['/about', '/resume'], href: '/company', label: 'Company' },
 ]
 
 export const isNavigationActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)
+
+export const isNavItemActive = (pathname: string, item: NavItem) =>
+  [item.href, ...(item.also ?? [])].some((href) => isNavigationActive(pathname, href))
 
 export const shouldHandleNavigation = (event: React.MouseEvent<HTMLAnchorElement>) =>
   !event.defaultPrevented &&

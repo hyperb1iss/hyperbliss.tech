@@ -21,7 +21,7 @@ export default async function About() {
 }
 
 export const metadata = generatePageMetadata(
-  'About Me',
-  'Learn about Stefanie Jane, software engineer, open source advocate, and creative technologist.',
+  'Stefanie Jane, Founder',
+  'Stefanie Jane founded Hyperbliss Technologies. Creator of CyanogenMod, open source engineer, and creative technologist.',
   '/about/',
 )
