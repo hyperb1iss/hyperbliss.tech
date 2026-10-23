@@ -205,6 +205,8 @@ export interface ProjectSummary {
   coverImage: string | null
   /** Pinned position in the flagship trio (1 is first); null when unpinned. */
   featured?: number | null
+  /** One sentence that sells the product, shown big on its chapter; falls back to the title's tagline. */
+  pitch?: string | null
   /** The product's own site, when it has one; the primary call to action. */
   website?: string | null
   /** A 16:10 product screenshot under /images, shown on flagship panels and the product page. */
@@ -262,6 +264,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       github: (data.github as string) ?? null,
       hasInstall: hasInstallSection(content),
       image: (data.image as string) ?? null,
+      pitch: (data.pitch as string) ?? null,
       screenshot: (data.screenshot as string) ?? null,
       screenshotAlt: (data.screenshotAlt as string) ?? null,
       slug,
@@ -333,9 +336,11 @@ export interface AboutSection {
   contactReasons: ContactReason[] | null
 }
 
-/** The front page's byline block: who is behind the label, in two lines. */
+/** The front page's opening: the hero headline, one line per entry, and the intro under it. */
 export interface FrontSection {
   bio: string | null
+  /** Hero headline lines; the last one is filled with light. */
+  headline: string[] | null
   /** The front page's opening sentence. `{hyperbliss}` and `{name}` are rendered as the brand mark and the About link. */
   tagline: string | null
 }
@@ -384,6 +389,7 @@ interface RawPageJson {
   }
   front?: {
     bio?: string
+    headline?: string[]
     tagline?: string
   }
   company?: {
@@ -438,6 +444,7 @@ export async function getPage(slug: string): Promise<PageData> {
     front: raw.front
       ? {
           bio: raw.front.bio ?? null,
+          headline: Array.isArray(raw.front.headline) ? raw.front.headline : null,
           tagline: raw.front.tagline ?? null,
         }
       : null,

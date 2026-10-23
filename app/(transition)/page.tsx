@@ -36,7 +36,7 @@ export default async function Home() {
 
     // The front page reads as news: launches, essays, and minor or major releases.
     const feed = buildFeed({ lab: labExperiments, posts, projects, releases }, { patches: false })
-    const { lead, items } = splitLead(feed, 10)
+    const { lead, items } = splitLead(feed, 6)
 
     const entries: ProjectEntry[] = projects.map((project) => {
       const release = releases.get(project.slug)

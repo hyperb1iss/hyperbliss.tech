@@ -43,7 +43,8 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  tagline: "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`.",
+  headline: ['Software', 'that puts you', 'in control.'],
+  tagline: 'Built by {name} with {hyperbliss}, all the way down to `/etc`.',
 }
 
 const activity: ActivitySummary = {
@@ -116,9 +117,16 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/href="\/projects\/chromacat\/?"/)
   })
 
-  it('opens with the intro sentence as the page h1 and a visible Latest marker', () => {
+  it('opens with the headline as the page h1, the intro under it, and a visible Latest marker', () => {
+    const h1 = withoutNoscript.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? ''
+    expect(
+      h1
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    ).toBe('Software that puts you in control.')
     expect(withoutNoscript).toMatch(
-      /<h1[^>]*>Hi! I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>! Welcome to my personal site/,
+      /Built by <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a> with <span[^>]*>hyperbliss<\/span>/,
     )
     expect(withoutNoscript).toMatch(/<span[^>]*>\/etc<\/span>\./)
     expect(withoutNoscript).not.toContain('{name}')
@@ -126,16 +134,13 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 
-  it('renders the Products strip with the featured trio, live facts, and next steps', () => {
+  it('renders the featured trio as product chapters with live facts and next steps', () => {
     expect(withoutNoscript).toMatch(/<h2[^>]*>Products<\/h2>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/sibyl\/?"[^>]*>Sibyl<\/a><\/h3>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/chromacat\/?"[^>]*>ChromaCat<\/a><\/h3>/)
-    expect(withoutNoscript).toContain('★ 412')
-    expect(withoutNoscript).toMatch(
-      /href="https:\/\/github\.com\/hyperb1iss\/sibyl\/releases\/tag\/v1\.3\.1"[^>]*>v1\.3\.1</,
-    )
+    expect(withoutNoscript).toContain('v1.3.1 · ★ 412')
     expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All products and open source/)
-    expect(withoutNoscript).toMatch(/href="\/projects\/sibyl\/?"[^>]*>Learn more/)
+    expect(withoutNoscript).toMatch(/href="\/projects\/sibyl\/?"[^>]*>Explore Sibyl/)
   })
 
   it('puts the products above the lead story', () => {
