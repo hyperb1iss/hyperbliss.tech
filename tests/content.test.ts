@@ -2,7 +2,8 @@
 // (so routes can 404) rather than throwing and 500ing.
 
 import { describe, expect, it } from 'vitest'
-import { getAllPostSlugs, getAllProjectSlugs, getPost, getProject } from '@/lib/content'
+import { getAllPostSlugs, getAllProjectSlugs, getAllProjects, getPost, getProject } from '@/lib/content'
+import { extractHeadings } from '@/lib/reading'
 
 describe('getPost', () => {
   it('returns null for a slug with no backing file', async () => {
@@ -35,5 +36,24 @@ describe('getProject', () => {
     const project = await getProject(slug)
     expect(project).not.toBeNull()
     expect(project?.slug).toBe(slug)
+  })
+})
+
+describe('getAllProjects', () => {
+  it('flags hasInstall exactly when the page will render an #install heading', async () => {
+    const projects = await getAllProjects()
+    for (const project of projects) {
+      const detail = await getProject(project.slug)
+      const rendered = extractHeadings(detail?.body ?? '').some((heading) => heading.id === 'install')
+      expect(project.hasInstall, project.slug).toBe(rendered)
+    }
+    const flagships = projects.filter((p) => typeof p.featured === 'number').map((p) => [p.slug, p.hasInstall])
+    expect(flagships).toEqual(
+      expect.arrayContaining([
+        ['hypercolor', true],
+        ['sibyl', true],
+        ['unifly', true],
+      ]),
+    )
   })
 })

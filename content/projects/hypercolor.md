@@ -41,6 +41,8 @@ On Linux, the release installer downloads the right build, verifies its checksum
 curl -fsSL https://raw.githubusercontent.com/hyperb1iss/hypercolor/main/scripts/install-release.sh | bash
 ```
 
+USB lighting also needs device permissions, which the installer leaves as a separate step: run `just udev-install` from a source checkout, or install the `.deb` or AUR package, which ship the udev rules themselves.
+
 On macOS (Apple silicon, macOS 15.2 or newer), install the app with Homebrew:
 
 ```bash

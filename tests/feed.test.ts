@@ -145,6 +145,9 @@ describe('isPatchVersion', () => {
     expect(isPatchVersion('0.11.0')).toBe(false)
     expect(isPatchVersion('v2.0.0-beta.1')).toBe(false)
     expect(isPatchVersion('2026.10')).toBe(false)
+    expect(isPatchVersion('1.2.3-rc.1')).toBe(true)
+    expect(isPatchVersion('1.2.3.4')).toBe(false)
+    expect(isPatchVersion('1.2.3foo')).toBe(false)
   })
 })
 

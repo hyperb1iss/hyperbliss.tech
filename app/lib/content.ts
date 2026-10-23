@@ -13,6 +13,7 @@ import {
   resolveMarkdownFile,
   resolveMarkdownFileOrNull,
 } from './contentCollections'
+import { extractHeadings } from './reading'
 
 export { readRawContentFile } from './contentCollections'
 
@@ -209,7 +210,7 @@ export interface ProjectSummary {
   /** A 16:10 product screenshot under /images, shown on flagship panels and the product page. */
   screenshot?: string | null
   screenshotAlt?: string | null
-  /** Whether the body carries an "## Install" section to link to. */
+  /** Whether the body has a heading with the `install` id the product page's call to action links to. */
   hasInstall?: boolean
   latestVersion?: string | null
   releaseDate?: string | null
@@ -235,8 +236,6 @@ export interface ProjectDetail {
   body: string | null
 }
 
-const INSTALL_HEADING = /^##\s+Install\b/m
-
 export async function getAllProjectSlugs(): Promise<string[]> {
   return getMarkdownSlugs('projects')
 }
@@ -256,7 +255,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       emoji: (data.emoji as string) ?? null,
       featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
-      hasInstall: INSTALL_HEADING.test(content),
+      hasInstall: extractHeadings(content).some((heading) => heading.id === 'install'),
       image: (data.image as string) ?? null,
       screenshot: (data.screenshot as string) ?? null,
       screenshotAlt: (data.screenshotAlt as string) ?? null,

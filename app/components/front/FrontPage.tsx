@@ -37,10 +37,16 @@ const Wrap = styled.div`
   }
 `
 
-const Intro = styled.p`
+// The page's h1: the company statement. Resets the global heading rule
+// (display face, uppercase, glow) so it reads as the sentence it is.
+const Intro = styled.h1`
+  font-family: var(--font-body);
   font-size: clamp(2rem, 1.7rem + 0.8vw, 2.7rem);
   font-weight: 300;
   line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: none;
   color: var(--silk-steel-50);
   margin: 0 0 4.4rem;
   max-width: 104rem;

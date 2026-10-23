@@ -102,9 +102,9 @@ const html = renderToStaticMarkup(
 const withoutNoscript = html.replace(/<noscript>[\s\S]*?<\/noscript>/g, '')
 
 describe('TerminalHome SSR markup carries real content', () => {
-  it('leads with the newest essay as an h1 linking to the post', () => {
+  it('leads with the newest essay as an h3 under Latest, linking to the post', () => {
     // next/link normalizes the trailing slash per next.config, so accept either.
-    expect(withoutNoscript).toMatch(/<h1[^>]*><a[^>]*href="\/blog\/how-i-ai\/?"[^>]*>How I AI<\/a><\/h1>/)
+    expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/blog\/how-i-ai\/?"[^>]*>How I AI<\/a><\/h3>/)
     expect(withoutNoscript).toContain('How I AI excerpt')
   })
 
@@ -116,9 +116,9 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/href="\/projects\/chromacat\/?"/)
   })
 
-  it('opens with the intro sentence and a visible Latest marker', () => {
+  it('opens with the intro sentence as the page h1 and a visible Latest marker', () => {
     expect(withoutNoscript).toMatch(
-      /Hi! I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>! Welcome to my personal site/,
+      /<h1[^>]*>Hi! I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>! Welcome to my personal site/,
     )
     expect(withoutNoscript).toMatch(/<span[^>]*>\/etc<\/span>\./)
     expect(withoutNoscript).not.toContain('{name}')
@@ -173,6 +173,7 @@ describe('TerminalHome SSR markup carries real content', () => {
 
   it('has one h1 and a feed-level h2 above the item h3s', () => {
     expect((withoutNoscript.match(/<h1\b/g) ?? []).length).toBe(1)
+    expect(withoutNoscript.search(/<h1\b/)).toBeLessThan(withoutNoscript.search(/<h2\b/))
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 })

@@ -21,7 +21,8 @@ const Meta = styled.div`
   color: var(--silk-steel-400);
 `
 
-const Title = styled.h1`
+// An h3 under the front page's Latest marker; the company intro owns the h1.
+const Title = styled.h3`
   font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(3.4rem, 2.6rem + 2vw, 5.4rem);

@@ -48,7 +48,7 @@ export interface FeedOptions {
 
 /** True for a semver patch bump like 1.4.10 or v0.7.2; minor, major, and non-semver versions are not. */
 export function isPatchVersion(version: string): boolean {
-  const match = /^v?(\d+)\.(\d+)\.(\d+)/.exec(version.trim())
+  const match = /^v?(\d+)\.(\d+)\.(\d+)(?:[-+][0-9A-Za-z.-]+)?$/.exec(version.trim())
   return match !== null && Number(match[3]) > 0
 }
 
