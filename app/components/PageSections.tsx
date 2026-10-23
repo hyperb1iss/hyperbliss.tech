@@ -34,16 +34,17 @@ export const Section = styled.section`
 `
 
 export const Heading = styled.h2`
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: 0.2em;
+  font-family: var(--font-mono);
+  font-stretch: 100%;
+  font-weight: 500;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-shadow: none;
-  color: var(--silk-quantum-purple);
-  margin: 0 0 1.6rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(162, 89, 255, 0.25);
+  color: #b9b0cc;
+  margin: 0 0 2rem;
+  padding-top: 2.4rem;
+  border-top: 1px solid rgba(244, 240, 255, 0.12);
 `
 
 export const Reasons = styled.dl`
@@ -58,17 +59,18 @@ export const Reasons = styled.dl`
 
   & dt {
     font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.7rem;
-    letter-spacing: -0.01em;
-    color: #e0aaff;
+    font-stretch: 112%;
+    font-weight: 800;
+    font-size: 1.9rem;
+    letter-spacing: -0.015em;
+    color: #f6f2ff;
     margin: 0 0 0.4rem;
   }
   & dd {
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     font-weight: 300;
-    line-height: 1.5;
-    color: var(--text-secondary);
+    line-height: 1.55;
+    color: #cfc8de;
     margin: 0;
   }
 `

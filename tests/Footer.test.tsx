@@ -8,7 +8,7 @@ import { COMPANY_LINKS } from '@/lib/socials'
 describe('Footer', () => {
   it('renders the brand name', () => {
     render(<Footer />)
-    expect(screen.getByText('hyperbliss')).toBeInTheDocument()
+    expect(screen.getByAltText('hyperbliss')).toBeInTheDocument()
   })
 
   it('renders the company accounts with correct accessibility labels', () => {

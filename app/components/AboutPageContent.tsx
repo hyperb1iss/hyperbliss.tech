@@ -59,21 +59,20 @@ const Products = styled.ol`
 
 const ProductName = styled.h3`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 2.2rem;
-  line-height: 1.1;
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: 2.8rem;
+  line-height: 1;
   letter-spacing: -0.02em;
-  text-transform: none;
-  text-shadow: none;
-  margin: 0;
+  margin: 0 0 0.4rem;
 
   & a {
-    color: var(--silk-circuit-cyan);
+    color: #f6f2ff;
     text-decoration: none;
     transition: color var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-steel-50);
+    color: var(--silk-circuit-cyan);
   }
 `
 
@@ -144,7 +143,8 @@ const Portrait = styled.div`
 
 const Name = styled.p`
   font-family: var(--font-display);
-  font-weight: 800;
+  font-stretch: 112%;
+  font-weight: 900;
   font-size: 2.4rem;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -198,12 +198,12 @@ const Facts = styled.dl`
   gap: 1.8rem;
 
   & dt {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.1rem;
-    letter-spacing: 0.2em;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--silk-quantum-purple);
+    color: #b9b0cc;
     margin: 0 0 0.4rem;
   }
   & dd {
