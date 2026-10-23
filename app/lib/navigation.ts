@@ -18,6 +18,28 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { also: ['/about', '/resume'], href: '/company', label: 'Company' },
 ]
 
+/** Footer columns. Products follow the flagship order set by `featured` in content/projects. */
+export const FOOTER_COLUMNS: ReadonlyArray<{ title: string; links: readonly NavItem[] }> = [
+  {
+    links: [
+      { href: '/projects/hypercolor/', label: 'Hypercolor' },
+      { href: '/projects/sibyl/', label: 'Sibyl' },
+      { href: '/projects/unifly/', label: 'unifly' },
+      { href: '/projects/', label: 'All products' },
+    ],
+    title: 'Products',
+  },
+  {
+    links: [
+      { href: '/company/', label: 'Company' },
+      { href: '/about/', label: 'Founder' },
+      { href: '/blog/', label: 'Writing' },
+      { href: '/lab/', label: 'Lab' },
+    ],
+    title: 'Company',
+  },
+]
+
 export const isNavigationActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)
 

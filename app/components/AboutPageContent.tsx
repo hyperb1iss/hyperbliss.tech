@@ -135,6 +135,12 @@ export default function AboutPageContent({ about }: AboutPageContentProps) {
             <a href="https://linkedin.com/in/hyperb1iss" rel="noopener noreferrer">
               LinkedIn →
             </a>
+            <a href="https://instagram.com/hyperb1iss" rel="noopener noreferrer">
+              Instagram →
+            </a>
+            <a href="https://open.spotify.com/user/12173574470" rel="noopener noreferrer">
+              Spotify →
+            </a>
             <a href="mailto:stef@hyperbliss.tech">Email →</a>
             <Link href="/resume/">Resume →</Link>
           </Links>

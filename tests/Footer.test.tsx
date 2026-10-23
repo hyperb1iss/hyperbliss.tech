@@ -1,8 +1,9 @@
 // tests/Footer.test.tsx
 
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import Footer from '@/components/Footer'
-import { SOCIAL_LINKS } from '@/lib/socials'
+import { FOOTER_COLUMNS } from '@/lib/navigation'
+import { COMPANY_LINKS } from '@/lib/socials'
 
 describe('Footer', () => {
   it('renders the brand name', () => {
@@ -10,10 +11,10 @@ describe('Footer', () => {
     expect(screen.getByText('hyperbliss')).toBeInTheDocument()
   })
 
-  it('renders all social links with correct accessibility labels', () => {
+  it('renders the company accounts with correct accessibility labels', () => {
     render(<Footer />)
 
-    SOCIAL_LINKS.forEach(({ label }) => {
+    COMPANY_LINKS.forEach(({ label }) => {
       const link = screen.getByLabelText(label)
       expect(link).toBeInTheDocument()
       expect(link).toHaveAttribute('target', '_blank')
@@ -29,11 +30,32 @@ describe('Footer', () => {
     expect(rssLink).toHaveAttribute('href', '/api/rss')
   })
 
-  it('renders the current year in copyright', () => {
+  it("leaves the founder's personal accounts to her page", () => {
     render(<Footer />)
 
-    const currentYear = new Date().getFullYear().toString()
-    expect(screen.getByText(new RegExp(currentYear))).toBeInTheDocument()
+    for (const label of ['Instagram', 'LinkedIn', 'Spotify']) {
+      expect(screen.queryByLabelText(label)).not.toBeInTheDocument()
+    }
+  })
+
+  it('renders the product and company columns', () => {
+    render(<Footer />)
+
+    for (const column of FOOTER_COLUMNS) {
+      const nav = screen.getByRole('navigation', { name: column.title })
+      for (const { href, label } of column.links) {
+        // Link normalizes the trailing slash per the router config, so compare the path.
+        const link = within(nav).getByRole('link', { name: label })
+        expect(link.getAttribute('href')?.replace(/\/$/, '')).toBe(href.replace(/\/$/, ''))
+      }
+    }
+  })
+
+  it('names the LLC in the copyright with the current year', () => {
+    render(<Footer />)
+
+    const currentYear = new Date().getFullYear()
+    expect(screen.getByText(`© ${currentYear} Hyperbliss Technologies LLC`)).toBeInTheDocument()
   })
 
   it('renders with correct semantic structure', () => {
