@@ -23,6 +23,10 @@ const heroStyles = css`
      which grows while the terminal is open (GlobalLayout sets the variables). */
   margin-top: calc(-1 * var(--layout-pad, 100px));
   padding-top: var(--layout-pad, 100px);
+  /* Same timing as GlobalLayout's padding, so the two cancel mid-toggle too. */
+  transition:
+    margin-top 0.3s ease,
+    padding-top 0.3s ease;
 
   @media (max-width: 768px) {
     min-height: 72rem;
