@@ -44,7 +44,8 @@ export const Heading = styled.h2`
   color: #b9b0cc;
   margin: 0 0 2rem;
   padding-top: 2.4rem;
-  border-top: 1px solid rgba(244, 240, 255, 0.12);
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
 `
 
 export const Reasons = styled.dl`
@@ -72,6 +73,34 @@ export const Reasons = styled.dl`
     line-height: 1.55;
     color: #cfc8de;
     margin: 0;
+  }
+
+  /* Each item carries one SilkCircuit accent, cycling magenta, cyan, pink,
+     yellow, as a short glowing bar over its title. */
+  & > div {
+    position: relative;
+    padding-top: 1.8rem;
+    --accent: #e135ff;
+  }
+  & > div:nth-child(4n + 2) {
+    --accent: #80ffea;
+  }
+  & > div:nth-child(4n + 3) {
+    --accent: #ff6ac1;
+  }
+  & > div:nth-child(4n + 4) {
+    --accent: #f1fa8c;
+  }
+  & > div::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3.2rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
   }
 `
 
