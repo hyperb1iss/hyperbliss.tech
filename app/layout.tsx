@@ -3,7 +3,7 @@ import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
 import { generateOrganizationSchema, generateWebsiteSchema } from './lib/structuredData'
-import { archivo, geist, geistMono } from './styles/fonts'
+import { archivo, geistMono, sora } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
 import './styles/blog.css'
@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html
-      className={`${archivo.variable} ${geist.variable} ${geistMono.variable}`}
+      className={`${archivo.variable} ${sora.variable} ${geistMono.variable}`}
       data-scroll-behavior="smooth"
       lang="en"
     >

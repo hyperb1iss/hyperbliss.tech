@@ -1,4 +1,4 @@
-import { Archivo, Geist, Geist_Mono } from 'next/font/google'
+import { Archivo, Geist_Mono, Sora } from 'next/font/google'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Display Font
@@ -17,11 +17,12 @@ export const archivo = Archivo({
 // Body Font
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-// Geist - neutral, precise, reads well light on black
-export const geist = Geist({
+// Sora - wide and geometric, with enough character to carry the regular text
+// beside the expanded headlines
+export const sora = Sora({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-geist',
+  variable: '--font-sora',
 })
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

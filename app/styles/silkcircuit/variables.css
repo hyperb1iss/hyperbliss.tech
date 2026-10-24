@@ -95,12 +95,12 @@
      ═══════════════════════════════════════════════════════════════ */
 
   /* Font Stacks
-     Archivo (display, run expanded) + Geist (body) + Geist Mono (code, data)
+     Archivo (display, run expanded) + Sora (body) + Geist Mono (code, data)
      Powered by `next/font` CSS variables (see `app/styles/fonts.ts`).
   */
   --font-display: var(--font-archivo, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
   --font-heading: var(--font-archivo, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
-  --font-body: var(--font-geist, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-sora, system-ui), "Helvetica Neue", system-ui, -apple-system, sans-serif;
   --font-mono:
     var(--font-geist-mono, ui-monospace), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
