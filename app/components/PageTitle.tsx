@@ -6,6 +6,7 @@
 import type { ReactNode } from 'react'
 import { css, cx } from '../../styled-system/css'
 import { displayInk } from './front/neon'
+import TitleLight, { type LightTint } from './TitleLight'
 
 const headerStyles = css`
   display: flex;
@@ -43,11 +44,14 @@ interface PageTitleProps {
   children: ReactNode
   /** One sentence under the title. Optional; most pages need none. */
   lede?: ReactNode
+  /** The color of the light behind the title. */
+  tint?: LightTint
 }
 
-export default function PageTitle({ children, lede }: PageTitleProps) {
+export default function PageTitle({ children, lede, tint = 'magenta' }: PageTitleProps) {
   return (
     <header className={headerStyles}>
+      <TitleLight tint={tint} />
       <h1 className={cx(titleStyles, displayInk)}>{children}</h1>
       {lede && <p className={ledeStyles}>{lede}</p>}
     </header>

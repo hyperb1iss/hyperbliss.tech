@@ -1,5 +1,5 @@
-// Each product line's light, as CSS custom properties: the pool behind a
-// chapter, its label ink, its primary action's fill and ink, and the glow
+// Each product line's light, as CSS custom properties: the hue of the band
+// behind a product page's title, the pool behind a chapter, its label ink, its primary action's fill and ink, and the glow
 // under its screenshot. Set on a chapter or a product page and read with
 // var(--pool-a) and friends.
 
@@ -9,6 +9,7 @@ import { type LaneId, laneOf } from '@/lib/projectLanes'
 /** Each product line's light: the pool behind the chapter, its label ink, and its action fill. */
 export const LINE_LIGHT: Record<LaneId, Record<string, string>> = {
   agents: {
+    '--band-hue': '22deg',
     '--cta-a': '#8f6bff',
     '--cta-b': '#e135ff',
     '--cta-ink': '#0d0618',
@@ -18,6 +19,7 @@ export const LINE_LIGHT: Record<LaneId, Record<string, string>> = {
     '--shot-glow': 'rgba(120, 90, 255, 0.4)',
   },
   lighting: {
+    '--band-hue': '0deg',
     '--cta-a': '#e135ff',
     '--cta-b': '#ff6ac1',
     '--cta-ink': '#12040f',
@@ -27,6 +29,7 @@ export const LINE_LIGHT: Record<LaneId, Record<string, string>> = {
     '--shot-glow': 'rgba(225, 53, 255, 0.35)',
   },
   terminal: {
+    '--band-hue': '-60deg',
     '--cta-a': '#80ffea',
     '--cta-b': '#7aa8ff',
     '--cta-ink': '#031512',
@@ -36,6 +39,7 @@ export const LINE_LIGHT: Record<LaneId, Record<string, string>> = {
     '--shot-glow': 'rgba(128, 255, 234, 0.28)',
   },
   web: {
+    '--band-hue': '12deg',
     '--cta-a': '#8f6bff',
     '--cta-b': '#80ffea',
     '--cta-ink': '#0d0618',

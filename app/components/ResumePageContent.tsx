@@ -440,7 +440,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
 
   return (
     <PageLayout>
-      <PageTitle>Resume</PageTitle>
+      <PageTitle tint="violet">Resume</PageTitle>
 
       <div className={resumeWrapperStyles}>
         <Reveal className={contactCardStyles} order={0}>

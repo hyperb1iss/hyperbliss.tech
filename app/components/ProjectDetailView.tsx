@@ -19,6 +19,7 @@ import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
 import { lineLight } from './projects/lineLight'
 import { PrimaryAction, ProductShot, SecondaryAction } from './projects/ProductParts'
 import ProjectIcon from './projects/ProjectIcon'
+import TitleLight from './TitleLight'
 
 interface ProjectDetailViewProps {
   slug: string
@@ -70,6 +71,7 @@ export default function ProjectDetailView({
 
   return (
     <article className="project-detail" style={lineLight(category)}>
+      <TitleLight />
       <Reveal as="div" className="project-detail__hero" order={0}>
         <div className="project-detail__meta">
           <ProjectIcon slug={slug} />

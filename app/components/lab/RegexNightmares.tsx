@@ -590,7 +590,9 @@ export default function RegexNightmares() {
   if (!mounted) {
     return (
       <PageLayout>
-        <PageTitle lede={lede}>Regex Nightmares</PageTitle>
+        <PageTitle lede={lede} tint="cyan">
+          Regex Nightmares
+        </PageTitle>
       </PageLayout>
     )
   }
@@ -599,7 +601,9 @@ export default function RegexNightmares() {
     <>
       <ProgressBar />
       <PageLayout>
-        <PageTitle lede={lede}>Regex Nightmares</PageTitle>
+        <PageTitle lede={lede} tint="cyan">
+          Regex Nightmares
+        </PageTitle>
         <blockquote className={quoteStyles}>
           "Some people, when confronted with a problem, think 'I know, I'll use regular expressions.' Now they have two
           problems."

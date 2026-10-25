@@ -3,7 +3,8 @@
 // her portrait, story, and links (the resume lives here, not in the nav), then
 // how to get in touch, beside a facts rail with the legal name, location, and
 // contact. This is where the full CyanogenMod story lives. Color comes from the
-// same sources as the front page: Hypercolor's light behind the title, each
+// same sources as the front page: Hypercolor's light behind the title (from
+// PageTitle), each
 // product line's light on its card, and a SilkCircuit accent per principle.
 
 import Image from 'next/image'
@@ -45,36 +46,15 @@ const Main = styled.div`
   max-width: 96rem;
 `
 
-// A band of Hypercolor's light behind the title, fading into the page. It
-// spans the viewport and pulls up under the header, like the front page hero.
-const Light = styled.div`
-  position: absolute;
-  left: 50%;
-  top: -14rem;
-  width: 100vw;
-  height: 66rem;
-  transform: translateX(-50%);
-  z-index: -1;
-  pointer-events: none;
-  background-image: url('/images/emission/cymatics.webp');
-  background-size: cover;
-  background-position: 50% 18%;
-  opacity: 0.55;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
-`
-
 const Products = styled.ol`
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Three across when the column allows, fewer as it narrows beside the rail,
+     so the expanded product names always fit their cards. */
+  grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
   gap: 2.8rem 2.4rem;
-
-  @media (max-width: 760px) {
-    grid-template-columns: minmax(0, 1fr);
-  }
 `
 
 // Each card wears its product line's light (lineLight.ts custom properties).
@@ -145,7 +125,7 @@ const ProductName = styled.h3`
   font-family: var(--font-display);
   font-stretch: 125%;
   font-weight: 900;
-  font-size: 2.8rem;
+  font-size: clamp(2.4rem, 1.8rem + 0.6vw, 2.8rem);
   line-height: 1;
   letter-spacing: -0.02em;
   margin: 0;
@@ -344,7 +324,6 @@ export default function AboutPageContent({ about, company, products }: AboutPage
   const name = intro?.name ?? 'Stefanie Jane'
   return (
     <PageLayout>
-      <Light aria-hidden="true" />
       <PageTitle lede={company?.lede}>About</PageTitle>
       <Grid>
         <Main>

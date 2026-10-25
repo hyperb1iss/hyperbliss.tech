@@ -84,7 +84,10 @@ export default function ProjectsPageContent({ entries, now }: ProjectsPageConten
 
   return (
     <PageLayout>
-      <PageTitle lede="Three product lines, each led by a flagship, and the open source tools around them.">
+      <PageTitle
+        lede="Three product lines, each led by a flagship, and the open source tools around them."
+        tint="violet"
+      >
         Products
       </PageTitle>
       <Reveal order={1}>

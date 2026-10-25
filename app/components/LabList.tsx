@@ -14,7 +14,9 @@ interface LabListProps {
 export default function LabList({ experiments }: LabListProps) {
   return (
     <PageLayout>
-      <PageTitle lede="Interactive experiments, deep dives, and weird beautiful things.">The Lab</PageTitle>
+      <PageTitle lede="Interactive experiments, deep dives, and weird beautiful things." tint="cyan">
+        The Lab
+      </PageTitle>
       <FeedList heading={null} items={labFeed(experiments)} narrow={true} showKind={false} titleLevel="h2" />
     </PageLayout>
   )
