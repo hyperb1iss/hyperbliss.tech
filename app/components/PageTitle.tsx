@@ -14,7 +14,8 @@ const headerStyles = css`
   gap: 1.2rem;
   padding-bottom: 2.8rem;
   margin-bottom: 3.2rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
 `
 
 const titleStyles = css`

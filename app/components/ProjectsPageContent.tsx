@@ -26,7 +26,8 @@ const LaneHeader = styled.div`
   gap: 2.4rem;
   padding-top: 2.8rem;
   margin-bottom: 0.4rem;
-  border-top: 1px solid rgba(244, 240, 255, 0.12);
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
 
   @media (max-width: 760px) {
     flex-direction: column;

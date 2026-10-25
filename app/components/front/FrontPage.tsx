@@ -65,7 +65,8 @@ const Head = styled.div`
   justify-content: space-between;
   gap: 1.2rem 2.4rem;
   padding-top: 2.8rem;
-  border-top: 1px solid rgba(244, 240, 255, 0.12);
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
   margin-bottom: 2.4rem;
 `
 
