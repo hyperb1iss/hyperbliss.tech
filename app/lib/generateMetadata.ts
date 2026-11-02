@@ -136,7 +136,6 @@ export async function generateBlogMetadata(
   const imageUrl = buildOgImageUrl({
     kind: 'blog',
     meta: formatCardDate(frontmatter.date),
-    path: `cat blog/${slug}.md`,
     subtitle: frontmatter.excerpt,
     title: frontmatter.title,
   })
@@ -198,7 +197,6 @@ export async function generateProjectMetadata(
   const author = frontmatter.author || defaultAuthor
   const imageUrl = buildOgImageUrl({
     kind: 'project',
-    path: `hyperbliss projects --show ${slug}`,
     subtitle: frontmatter.description,
     title: frontmatter.title,
   })
