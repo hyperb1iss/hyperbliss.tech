@@ -143,26 +143,6 @@ export default defineConfig({
           '0%, 100%': { backgroundPosition: '200% 0' },
           '50%': { backgroundPosition: '-200% 0' },
         },
-        silkNotFoundPageGlow: {
-          '0%, 100%': {
-            filter: 'drop-shadow(0 0 20px rgba(162, 89, 255, 0.6)) drop-shadow(0 0 40px rgba(0, 255, 240, 0.4))',
-            opacity: '0.9',
-          },
-          '50%': {
-            filter: 'drop-shadow(0 0 30px rgba(162, 89, 255, 0.8)) drop-shadow(0 0 60px rgba(0, 255, 240, 0.6))',
-            opacity: '1',
-          },
-        },
-        silkNotFoundPageSparkle: {
-          '0%, 100%': {
-            opacity: '0',
-            transform: 'scale(0)',
-          },
-          '50%': {
-            opacity: '1',
-            transform: 'scale(1)',
-          },
-        },
         silkRegexNightmaresGlitch: {
           '0%, 90%, 100%': {
             filter: 'none',
