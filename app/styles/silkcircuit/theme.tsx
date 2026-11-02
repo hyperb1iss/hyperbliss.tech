@@ -93,7 +93,7 @@ export function SilkCircuitProvider({
     // Update meta theme-color
     const metaThemeColor = document.querySelector('meta[name="theme-color"]')
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', effectiveMode === 'dark' ? '#0a0a14' : '#f8fafc')
+      metaThemeColor.setAttribute('content', effectiveMode === 'dark' ? '#050308' : '#f8fafc')
     }
   }, [effectiveMode, contrast])
 

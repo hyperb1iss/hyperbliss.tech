@@ -42,6 +42,17 @@ export interface FeedInput {
 export interface FeedOptions {
   /** Include project launches (first publish date). Defaults to true. */
   launches?: boolean
+  /** Include patch releases (x.y.z with z above 0). Defaults to true; the front page leaves them to the archive. */
+  patches?: boolean
+}
+
+/** True for a semver patch bump like 1.4.10 or v0.7.2; minor, major, and non-semver versions are not. */
+export function isPatchVersion(version: string): boolean {
+  const match =
+    /^v?(\d+)\.(\d+)\.(\d+)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/.exec(
+      version.trim(),
+    )
+  return match !== null && Number(match[3]) > 0
 }
 
 const LONG_FORM: readonly FeedKind[] = ['essay', 'lab']
@@ -92,7 +103,7 @@ export function toIsoDay(value: string | null | undefined): string | null {
 
 /** Build the merged feed, newest first. Items without a usable date are dropped. */
 export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem[] {
-  const { launches = true } = options
+  const { launches = true, patches = true } = options
   const items: FeedItem[] = []
 
   for (const post of input.posts) {
@@ -132,6 +143,7 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
   for (const [slug, release] of input.releases) {
     const project = projectsBySlug.get(slug)
     if (!project) continue
+    if (!patches && isPatchVersion(release.version)) continue
     const date = toIsoDay(release.publishedAt)
     if (!date) continue
     const name = shortName(project.title)

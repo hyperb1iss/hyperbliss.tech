@@ -1,14 +1,17 @@
 // app/components/ProjectsPageContent.tsx
-// Projects: the flagship trio, a jump bar, then every project in its lane.
+// Products: a jump bar, then each product line with its flagship as an
+// Emission chapter (screenshot, pitch, call to action) and the rest of the
+// line as rows under it. The last line collects the open source work outside
+// the products.
 
-import { groupByLane, type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
+import { groupByLine, type ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../styled-system/jsx'
 import Reveal from './front/Reveal'
 import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 import ProjectRows from './ProjectRows'
-import FeaturedProjects from './projects/FeaturedProjects'
 import LaneNav from './projects/LaneNav'
+import ProductChapter from './projects/ProductChapter'
 
 const LaneSection = styled.section`
   padding: 0;
@@ -21,9 +24,10 @@ const LaneHeader = styled.div`
   align-items: baseline;
   justify-content: space-between;
   gap: 2.4rem;
-  padding-bottom: 1.4rem;
+  padding-top: 2.8rem;
   margin-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(162, 89, 255, 0.28);
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
 
   @media (max-width: 760px) {
     flex-direction: column;
@@ -33,13 +37,12 @@ const LaneHeader = styled.div`
 
 const LaneTitle = styled.h2`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 2.6rem;
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: clamp(2.6rem, 2rem + 1vw, 3.4rem);
   line-height: 1;
   letter-spacing: -0.02em;
-  text-transform: none;
-  text-shadow: 0 0 18px rgba(162, 89, 255, 0.35);
-  color: var(--silk-lavender);
+  color: #f6f2ff;
   margin: 0;
   display: flex;
   align-items: baseline;
@@ -47,18 +50,18 @@ const LaneTitle = styled.h2`
 
   & span {
     font-family: var(--font-mono);
+    font-stretch: 100%;
     font-weight: 400;
-    font-size: 1.2rem;
-    letter-spacing: 0.1em;
-    color: var(--silk-quantum-purple);
-    text-shadow: none;
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+    color: #b9b0cc;
   }
 `
 
 const LaneBlurb = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 300;
-  color: var(--text-secondary);
+  color: #b9b0cc;
   margin: 0;
   max-width: 48rem;
   text-align: right;
@@ -75,34 +78,50 @@ interface ProjectsPageContentProps {
 }
 
 export default function ProjectsPageContent({ entries, now }: ProjectsPageContentProps) {
-  const featured = pickFeatured(entries, 3)
-  const groups = groupByLane(entries)
-  let order = 3
+  const lines = groupByLine(entries)
+  const firstFlagship = lines.find((line) => line.flagship)?.lane.id
+  let flagshipIndex = 0
+  let order = 2
 
   return (
     <PageLayout>
-      <PageTitle lede="Things I have built, broken, and shipped. Open source tools, creative experiments, and systems that do real work.">
-        Projects
+      <PageTitle
+        lede="Three product lines, each led by a flagship, and the open source tools around them."
+        tint="violet"
+      >
+        Products
       </PageTitle>
-      <FeaturedProjects entries={featured} now={now} />
-      <Reveal order={3}>
-        <LaneNav groups={groups.map(({ lane, entries: laneEntries }) => ({ count: laneEntries.length, lane }))} />
+      <Reveal order={1}>
+        <LaneNav
+          groups={lines.map(({ lane, flagship, entries: rest }) => ({
+            count: rest.length + (flagship ? 1 : 0),
+            lane,
+          }))}
+        />
       </Reveal>
-      {groups.map(({ lane, entries: laneEntries }) => {
+      {lines.map(({ lane, flagship, entries: rest }) => {
         const start = order
-        order += 1 + laneEntries.length * 0.5
+        order += 1 + (flagship ? 1 : 0) + rest.length * 0.5
         return (
           <LaneSection aria-labelledby={`lane-${lane.id}`} id={lane.id} key={lane.id}>
             <Reveal order={start}>
               <LaneHeader>
                 <LaneTitle id={`lane-${lane.id}`}>
                   {lane.label}
-                  <span>{laneEntries.length}</span>
+                  <span>{rest.length + (flagship ? 1 : 0)}</span>
                 </LaneTitle>
                 <LaneBlurb>{lane.blurb}</LaneBlurb>
               </LaneHeader>
             </Reveal>
-            <ProjectRows entries={laneEntries} now={now} startOrder={start + 0.5} />
+            {flagship && (
+              <ProductChapter
+                compact={true}
+                entry={flagship}
+                flip={flagshipIndex++ % 2 === 1}
+                priority={lane.id === firstFlagship}
+              />
+            )}
+            {rest.length > 0 && <ProjectRows entries={rest} now={now} startOrder={start + (flagship ? 1.5 : 0.5)} />}
           </LaneSection>
         )
       })}

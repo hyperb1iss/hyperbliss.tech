@@ -1,9 +1,10 @@
-// The mono fact row shared by featured cards and lane rows: version, stars,
-// language, last push. Only renders what it has.
+// The mono fact row shared by flagship panels and lane rows: version, stars,
+// language, last push. Only renders what it has, and only what helps: stars
+// under STAR_FLOOR and pushes older than RECENT_PUSH_DAYS stay off the row.
 
 import type { CSSProperties } from 'react'
 import type { ProjectEntry } from '@/lib/projectLanes'
-import { formatStars, languageColor, relativeTime } from '@/lib/projectLanes'
+import { languageColor, recentPush, shownStars } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
 
 const Row = styled.div`
@@ -49,7 +50,8 @@ const Stars = styled.span`
 
 export default function ProjectMeta({ entry, now }: { entry: ProjectEntry; now: number }) {
   const { version, releaseUrl, stats, project } = entry
-  const pushed = relativeTime(stats?.pushedAt, now)
+  const pushed = recentPush(stats?.pushedAt, now)
+  const stars = shownStars(stats?.stars)
   return (
     <Row>
       {version &&
@@ -60,7 +62,7 @@ export default function ProjectMeta({ entry, now }: { entry: ProjectEntry; now: 
         ) : (
           <span>v{version}</span>
         ))}
-      {stats && stats.stars > 0 && <Stars>★ {formatStars(stats.stars)}</Stars>}
+      {stars && <Stars>★ {stars}</Stars>}
       {stats?.language && (
         <Lang style={{ '--lang-color': languageColor(stats.language) } as CSSProperties}>{stats.language}</Lang>
       )}

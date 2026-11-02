@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { css } from '../../styled-system/css'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
-import { isNavigationActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
+import { isNavItemActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
@@ -127,7 +127,6 @@ const NAV_ICONS: Record<string, string> = {
   '/blog': '◈',
   '/lab': '◇',
   '/projects': '▣',
-  '/resume': '◉',
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -234,8 +233,9 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
       variants={panelVariants}
     >
       <ul className={navListStyles}>
-        {NAV_ITEMS.map(({ href, label }) => {
-          const isActive = isNavigationActive(pathname, href)
+        {NAV_ITEMS.map((item) => {
+          const { href, label } = item
+          const isActive = isNavItemActive(pathname, item)
 
           return (
             <motion.li key={href} style={{ width: '100%' }} variants={itemVariants}>

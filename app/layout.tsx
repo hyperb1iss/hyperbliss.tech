@@ -2,8 +2,8 @@
 import { Metadata, Viewport } from 'next'
 import StructuredData from './components/StructuredData'
 import siteMetadata from './lib/metadata'
-import { generatePersonSchema, generateWebsiteSchema } from './lib/structuredData'
-import { plexSans, spaceMono, syne } from './styles/fonts'
+import { generateOrganizationSchema, generateWebsiteSchema } from './lib/structuredData'
+import { archivo, geistMono, sora } from './styles/fonts'
 import '../styled-system/styles.css'
 import './styles/globals.css'
 import './styles/blog.css'
@@ -15,7 +15,7 @@ export const metadata: Metadata = siteMetadata
 export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
-  themeColor: '#0a0a14',
+  themeColor: '#050308',
   userScalable: true,
   width: 'device-width',
 }
@@ -25,11 +25,11 @@ export const viewport: Viewport = {
  * The main layout component that wraps the entire application.
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const structuredData = [generateWebsiteSchema(), generatePersonSchema()]
+  const structuredData = [generateWebsiteSchema(), generateOrganizationSchema()]
 
   return (
     <html
-      className={`${syne.variable} ${plexSans.variable} ${spaceMono.variable}`}
+      className={`${archivo.variable} ${sora.variable} ${geistMono.variable}`}
       data-scroll-behavior="smooth"
       lang="en"
     >

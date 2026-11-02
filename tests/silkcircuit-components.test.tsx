@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { createRef } from 'react'
-import { SilkButton, StarButtonWrapper } from '@/styles/silkcircuit/components'
+import { SilkButton } from '@/styles/silkcircuit/components'
 
 const sizes = [
   ['sm', 'padding_var(--space-2)_var(--space-4)', 'font-size_var(--text-sm)'],
@@ -14,20 +14,6 @@ describe('SilkCircuit button composition', () => {
     const classes = Array.from(screen.getByRole('button').classList)
     expect(classes.filter((name) => name.startsWith('padding_'))).toEqual([padding])
     expect(classes.filter((name) => name.startsWith('font-size_'))).toEqual([fontSize])
-  })
-
-  it.each(sizes)('resolves %s star CTA sizing without losing nested icon styles', (size, padding, fontSize) => {
-    render(
-      <StarButtonWrapper $size={size} data-testid="cta">
-        Explore
-      </StarButtonWrapper>,
-    )
-    const classes = Array.from(screen.getByTestId('cta').classList)
-    expect(classes.filter((name) => name.startsWith('padding_'))).toEqual([padding])
-    expect(classes.filter((name) => name.startsWith('font-size_'))).toEqual([fontSize])
-    expect(classes.some((name) => name.includes('star-icon') && name.includes('filter_'))).toBe(true)
-    expect(classes.some((name) => name.includes('star-icon') && name.includes('width_'))).toBe(true)
-    expect(classes.filter((name) => name.startsWith('gap_'))).toHaveLength(1)
   })
 
   it('preserves button behavior, refs and caller classes', () => {

@@ -13,6 +13,7 @@ import { longDate } from './front/format'
 import Reveal from './front/Reveal'
 import MarkdownRenderer from './MarkdownRenderer'
 import { BlogContent } from './MarkdownStyles'
+import TitleLight from './TitleLight'
 
 export interface PostNeighbor {
   slug: string
@@ -88,6 +89,7 @@ export default function BlogPost({
   const day = isoDay(date)
   return (
     <article className="blog-post">
+      <TitleLight tint="pink" />
       <div className="blog-post__layout">
         <div className="blog-post__body">
           <Reveal as="div" className="blog-post__header" order={0}>

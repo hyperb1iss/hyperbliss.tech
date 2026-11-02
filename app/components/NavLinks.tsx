@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
 import { useAnimatedNavigation } from '../hooks/useAnimatedNavigation'
-import { isNavigationActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
+import { isNavItemActive, NAV_ITEMS, shouldHandleNavigation } from '../lib/navigation'
 
 export const silkNavEase: Easing = [0.23, 1, 0.32, 1]
 
@@ -37,12 +37,11 @@ const navLinkBaseStyles = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  font-weight: 700;
+  font-family: var(--font-body);
+  letter-spacing: 0.01em;
+  font-weight: 500;
   padding: var(--space-2) var(--space-3);
-  font-size: clamp(1.25rem, 1.15rem + 0.25vw, 1.5rem);
+  font-size: clamp(1.45rem, 1.35rem + 0.2vw, 1.6rem);
   text-decoration: none;
   position: relative;
   outline: none;
@@ -50,7 +49,7 @@ const navLinkBaseStyles = css`
   -webkit-tap-highlight-color: transparent;
   border-radius: var(--radius-md);
   background: transparent;
-  color: var(--text-secondary);
+  color: rgba(244, 240, 255, 0.78);
   border: none;
 
   transition:
@@ -74,8 +73,7 @@ const navLinkBaseStyles = css`
   }
 
   &[aria-current], &:hover, &:focus-visible {
-    color: var(--silk-circuit-cyan);
-    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
+    color: #ffffff;
 
     &::after {
       transform: translateX(-50%) scaleX(1);
@@ -110,8 +108,9 @@ const NavLinks: React.FC = () => {
 
   return (
     <NavLinksContainer>
-      {NAV_ITEMS.map(({ href, label }) => {
-        const isActive = isNavigationActive(pathname, href)
+      {NAV_ITEMS.map((item) => {
+        const { href, label } = item
+        const isActive = isNavItemActive(pathname, item)
 
         return (
           <NavItem key={href}>

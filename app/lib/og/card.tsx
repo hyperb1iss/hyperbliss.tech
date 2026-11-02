@@ -1,4 +1,10 @@
 // app/lib/og/card.tsx
+// OG cards in the Emission language: the words on flat void, a field of
+// Hypercolor's real light on the right tinted per kind, the expanded Archivo
+// title, a Sora subtitle, and mono labels. Satori renders this, so every
+// element is flex and every style is inline. Keeping the type side flat and
+// the frames' blacks crushed holds the PNG near 250KB; a full-bleed light
+// wash weighed twice that.
 
 import type { ReactElement } from 'react'
 
@@ -7,238 +13,183 @@ export const OG_HEIGHT = 630
 
 export type OgKind = 'site' | 'blog' | 'project' | 'lab'
 
+/** The light frame each kind uses, matching the site's title bands. */
+export const KIND_TINT: Record<OgKind, 'magenta' | 'pink' | 'violet' | 'cyan'> = {
+  blog: 'pink',
+  lab: 'cyan',
+  project: 'violet',
+  site: 'magenta',
+}
+
 export interface OgCardProps {
   kind: OgKind
   title: string
   subtitle?: string
   meta?: string
-  path?: string
   logoSrc?: string
+  /** A data URI of the kind's tinted light frame. */
+  lightSrc?: string
 }
 
-const COSMIC_PURPLE = '#a259ff'
-const NEON_PINK = '#ff75d8'
-const DIGITAL_CYAN = '#00fff0'
-const TEXT_GRAY = '#c9c7d6'
+const VOID = '#050308'
+const INK = '#f6f2ff'
+const SOFT = '#d6cfe6'
+const MUTED = '#b9b0cc'
+
+const LABEL: Record<OgKind, string> = {
+  blog: 'ESSAY',
+  lab: 'LAB',
+  project: 'PRODUCT',
+  site: 'HYPERBLISS TECHNOLOGIES',
+}
+
+/** The label ink per kind: each tint's lightest readable tone. */
+const LABEL_INK: Record<OgKind, string> = {
+  blog: '#ffb3e6',
+  lab: '#80ffea',
+  project: '#c3b3ff',
+  site: '#ff9bdc',
+}
+
+const SITE_HEADLINE = ['SOFTWARE', 'THAT PUTS YOU', 'IN CONTROL.']
+const SITE_SUBTITLE = 'Open source tools for light, memory, and the terminal.'
 
 const clamp = (value: string, max: number) => (value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value)
 
+/** Archivo at 125% width runs wide, so the size steps down early. */
 function titleSize(title: string): number {
-  if (title.length <= 24) return 72
-  if (title.length <= 48) return 58
-  if (title.length <= 72) return 48
-  return 40
+  if (title.length <= 18) return 88
+  if (title.length <= 36) return 70
+  if (title.length <= 60) return 56
+  return 46
 }
 
-const KIND_LABELS: Record<OgKind, string> = { blog: 'BLOG', lab: 'LAB', project: 'PROJECT', site: 'SITE' }
-
-function promptLine({ kind, path }: OgCardProps): string {
-  if (path) return `$ ${path}`
-  if (kind === 'blog') return '$ cat blog/latest.md'
-  if (kind === 'project') return '$ hyperbliss projects --show'
-  if (kind === 'lab') return '$ hyperbliss lab --open'
-  return '$ hyperbliss --hello'
-}
-
-function TitleBar({ label }: { label: string }): ReactElement {
+export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCardProps): ReactElement {
+  const isSite = kind === 'site'
+  const shownTitle = clamp(title, 90)
   return (
-    <div
-      style={{
-        alignItems: 'center',
-        borderBottom: '1px solid rgba(162, 89, 255, 0.35)',
-        display: 'flex',
-        gap: 20,
-        padding: '22px 36px',
-      }}
-    >
-      <div style={{ display: 'flex', gap: 10 }}>
-        <div style={{ backgroundColor: NEON_PINK, borderRadius: 8, height: 16, width: 16 }} />
-        <div style={{ backgroundColor: '#f1fa8c', borderRadius: 8, height: 16, width: 16 }} />
-        <div style={{ backgroundColor: '#50fa7b', borderRadius: 8, height: 16, width: 16 }} />
-      </div>
-      <div style={{ color: TEXT_GRAY, display: 'flex', fontFamily: 'Space Mono', fontSize: 22 }}>{label}</div>
-    </div>
-  )
-}
-
-function Pill({ text, color }: { text: string; color: string }): ReactElement {
-  return (
-    <div
-      style={{
-        border: `1.5px solid ${color}`,
-        borderRadius: 999,
-        color,
-        display: 'flex',
-        fontFamily: 'IBM Plex Sans',
-        fontSize: 22,
-        fontWeight: 600,
-        padding: '6px 20px',
-      }}
-    >
-      {text}
-    </div>
-  )
-}
-
-function SiteBody({ logoSrc }: OgCardProps): ReactElement {
-  return (
-    <div
-      style={{
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        flexGrow: 1,
-        justifyContent: 'center',
-        paddingBottom: 48,
-      }}
-    >
-      {logoSrc ? <img alt="" height={96} src={logoSrc} width={312} /> : null}
+    <div style={{ backgroundColor: VOID, display: 'flex', height: '100%', position: 'relative', width: '100%' }}>
+      {lightSrc ? (
+        <img
+          alt=""
+          height={OG_HEIGHT}
+          src={lightSrc}
+          style={{ height: OG_HEIGHT, left: 0, objectFit: 'cover', position: 'absolute', top: 0, width: OG_WIDTH }}
+          width={OG_WIDTH}
+        />
+      ) : null}
       <div
         style={{
-          color: '#ffffff',
+          backgroundImage: `linear-gradient(90deg, ${VOID} 0%, ${VOID} 58%, rgba(5, 3, 8, 0.72) 74%, rgba(5, 3, 8, 0.15) 100%)`,
           display: 'flex',
-          fontFamily: 'Syne',
-          fontSize: 84,
-          fontWeight: 700,
-          letterSpacing: 6,
-          marginTop: 40,
-          textShadow: `0 0 32px ${NEON_PINK}, 0 0 90px rgba(255, 117, 216, 0.55)`,
+          height: OG_HEIGHT,
+          left: 0,
+          position: 'absolute',
+          top: 0,
+          width: OG_WIDTH,
         }}
-      >
-        STEFANIE JANE
-      </div>
+      />
       <div
         style={{
-          color: TEXT_GRAY,
+          backgroundImage: 'linear-gradient(180deg, rgba(5, 3, 8, 0) 58%, rgba(5, 3, 8, 0.86) 100%)',
           display: 'flex',
-          fontFamily: 'IBM Plex Sans',
-          fontSize: 32,
-          marginTop: 28,
-          textAlign: 'center',
+          height: OG_HEIGHT,
+          left: 0,
+          position: 'absolute',
+          top: 0,
+          width: OG_WIDTH,
         }}
-      >
-        I build software that gives people control over their technology.
-      </div>
+      />
       <div
         style={{
-          color: DIGITAL_CYAN,
-          display: 'flex',
-          fontFamily: 'Space Mono',
-          fontSize: 30,
-          letterSpacing: 8,
-          marginTop: 34,
-          textShadow: '0 0 24px rgba(0, 255, 240, 0.6)',
-        }}
-      >
-        @HYPERBLISS
-      </div>
-    </div>
-  )
-}
-
-function ContentBody(props: OgCardProps): ReactElement {
-  const { kind, title, subtitle, meta, logoSrc } = props
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        flexGrow: 1,
-        justifyContent: 'space-between',
-        padding: '40px 56px 44px',
-      }}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div
-          style={{
-            color: DIGITAL_CYAN,
-            display: 'flex',
-            fontFamily: 'Space Mono',
-            fontSize: 24,
-            textShadow: '0 0 18px rgba(0, 255, 240, 0.45)',
-          }}
-        >
-          {promptLine(props)}
-        </div>
-        <div
-          style={{
-            color: '#ffffff',
-            display: 'flex',
-            fontFamily: 'Syne',
-            fontSize: titleSize(title),
-            fontWeight: 700,
-            lineHeight: 1.15,
-            marginTop: 28,
-            textShadow: '0 0 28px rgba(162, 89, 255, 0.75), 0 0 70px rgba(255, 117, 216, 0.35)',
-            wordBreak: 'break-word',
-          }}
-        >
-          {clamp(title, 90)}
-        </div>
-        {subtitle ? (
-          <div
-            style={{
-              color: TEXT_GRAY,
-              display: 'flex',
-              fontFamily: 'IBM Plex Sans',
-              fontSize: 30,
-              lineHeight: 1.4,
-              marginTop: 26,
-            }}
-          >
-            {clamp(subtitle, 140)}
-          </div>
-        ) : null}
-      </div>
-      <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ alignItems: 'center', display: 'flex', gap: 16 }}>
-          <Pill color={NEON_PINK} text={KIND_LABELS[kind]} />
-          {meta ? <Pill color={COSMIC_PURPLE} text={clamp(meta, 40)} /> : null}
-        </div>
-        <div style={{ alignItems: 'center', display: 'flex', gap: 18 }}>
-          {logoSrc ? <img alt="" height={40} src={logoSrc} width={130} /> : null}
-          <div style={{ color: DIGITAL_CYAN, display: 'flex', fontFamily: 'Space Mono', fontSize: 24 }}>
-            hyperbliss.tech
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
- * Renders an OG card as a SilkCircuit terminal window — the same design
- * language as the site's terminal-first hero.
- */
-export function OgCard(props: OgCardProps): ReactElement {
-  const { kind } = props
-  return (
-    <div
-      style={{
-        backgroundColor: '#0a0a14',
-        backgroundImage:
-          'radial-gradient(circle at 12% 0%, rgba(162, 89, 255, 0.32) 0%, rgba(10, 10, 20, 0) 46%), ' +
-          'radial-gradient(circle at 88% 100%, rgba(0, 255, 240, 0.18) 0%, rgba(10, 10, 20, 0) 42%), ' +
-          'radial-gradient(circle at 78% 8%, rgba(255, 117, 216, 0.2) 0%, rgba(10, 10, 20, 0) 38%)',
-        display: 'flex',
-        height: '100%',
-        padding: 44,
-        width: '100%',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: 'rgba(13, 11, 26, 0.86)',
-          border: '1.5px solid rgba(162, 89, 255, 0.55)',
-          borderRadius: 22,
-          boxShadow: '0 0 60px rgba(162, 89, 255, 0.35), 0 0 120px rgba(0, 255, 240, 0.12)',
           display: 'flex',
           flexDirection: 'column',
-          flexGrow: 1,
+          height: OG_HEIGHT,
+          justifyContent: 'space-between',
+          left: 0,
+          padding: '56px 64px 52px',
+          position: 'absolute',
+          top: 0,
+          width: OG_WIDTH,
         }}
       >
-        <TitleBar label="guest@hyperbliss:~$" />
-        {kind === 'site' ? <SiteBody {...props} /> : <ContentBody {...props} />}
+        <div style={{ alignItems: 'center', display: 'flex', gap: 26 }}>
+          {logoSrc ? <img alt="" height={46} src={logoSrc} width={150} /> : null}
+          <div
+            style={{
+              color: LABEL_INK[kind],
+              display: 'flex',
+              fontFamily: 'Geist Mono',
+              fontSize: 20,
+              letterSpacing: 2,
+            }}
+          >
+            {LABEL[kind]}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1000 }}>
+          {isSite ? (
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {SITE_HEADLINE.map((line) => (
+                <div
+                  key={line}
+                  style={{
+                    color: INK,
+                    display: 'flex',
+                    fontFamily: 'Archivo Expanded',
+                    fontSize: 84,
+                    fontWeight: 900,
+                    letterSpacing: -1.5,
+                    lineHeight: 0.92,
+                  }}
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div
+              style={{
+                color: INK,
+                display: 'flex',
+                fontFamily: 'Archivo Expanded',
+                fontSize: titleSize(shownTitle),
+                fontWeight: 900,
+                letterSpacing: -1,
+                lineHeight: 1,
+                wordBreak: 'break-word',
+              }}
+            >
+              {shownTitle}
+            </div>
+          )}
+          {(isSite ? SITE_SUBTITLE : subtitle) ? (
+            <div
+              style={{
+                color: SOFT,
+                display: 'flex',
+                fontFamily: 'Sora',
+                fontSize: 28,
+                fontWeight: 400,
+                lineHeight: 1.4,
+                maxWidth: 900,
+                wordBreak: 'break-word',
+              }}
+            >
+              {isSite ? SITE_SUBTITLE : clamp(subtitle ?? '', 140)}
+            </div>
+          ) : null}
+        </div>
+
+        <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ color: MUTED, display: 'flex', fontFamily: 'Geist Mono', fontSize: 22 }}>hyperbliss.tech</div>
+          {meta ? (
+            <div style={{ color: LABEL_INK[kind], display: 'flex', fontFamily: 'Geist Mono', fontSize: 22 }}>
+              {clamp(meta, 40)}
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   )

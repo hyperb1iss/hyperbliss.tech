@@ -1,15 +1,11 @@
-// Shared neon text treatments for titles. One gradient, one glow, used by the
-// page titles and story headlines so the whole site glows the same way.
+// Shared title treatments. Emission headlines are clean ink on the void; the
+// light lives in the scene behind them, not in gradient-filled letters.
 
 import { css } from '../../../styled-system/css'
 
-/** Cyan → lavender → pink gradient fill with a soft purple bloom behind it. */
-export const neonTitle = css`
-  background: linear-gradient(110deg, var(--silk-circuit-cyan) 0%, #e0aaff 48%, var(--silk-plasma-pink) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 18px rgba(162, 89, 255, 0.35));
+/** Bright ink for display titles: no gradient fill, no glow. */
+export const displayInk = css`
+  color: #f6f2ff;
 `
 
 /** Kind → title color for feed rows. Color carries meaning, so the badge can stay quiet. */

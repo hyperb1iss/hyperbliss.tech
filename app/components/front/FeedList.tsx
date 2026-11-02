@@ -4,7 +4,7 @@ import type { FeedItem } from '@/lib/feed'
 import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 import Badge from './Badge'
-import { numeralDate } from './format'
+import { shortDate } from './format'
 import { KIND_COLOR } from './neon'
 import Reveal from './Reveal'
 
@@ -20,49 +20,40 @@ const List = styled.ol`
 // row styles ride along as a class on the Reveal wrapper instead.
 const rowStyles = css`
   display: grid;
-  grid-template-columns: 6.4rem 8.4rem minmax(0, 1fr);
-  column-gap: 2rem;
-  align-items: start;
-  padding: 1.8rem 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  grid-template-columns: 13rem 8.4rem minmax(0, 1fr);
+  column-gap: 2.8rem;
+  align-items: baseline;
+  padding: 2.6rem 0;
+  border-top: 1px solid rgba(244, 240, 255, 0.1);
 
-  &[data-kind='hidden'] {
-    grid-template-columns: 6.4rem minmax(0, 1fr);
+  &:last-child {
+    border-bottom: 1px solid rgba(244, 240, 255, 0.1);
   }
 
+  &[data-kind='hidden'] {
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+
+  /* Both selectors, so the stacked layout also wins over the
+     [data-kind='hidden'] variant's higher specificity. */
   @media (max-width: 640px) {
-    grid-template-columns: 5.6rem minmax(0, 1fr);
+    &,
+    &[data-kind='hidden'] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    row-gap: 0.6rem;
     & > [data-badge] {
       display: none;
     }
   }
 `
 
-const DateCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-`
-
-const Day = styled.span`
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 3.4rem;
-  line-height: 0.95;
-  letter-spacing: -0.03em;
-  color: #e0aaff;
-  transition: color var(--duration-normal) var(--ease-silk);
-
-  li:hover & {
-    color: var(--silk-circuit-cyan);
-  }
-`
-
-const Month = styled.span`
+const DateCol = styled.time`
   font-family: var(--font-mono);
-  font-size: 1.05rem;
-  letter-spacing: 0.1em;
-  color: var(--silk-steel-400);
+  font-size: 1.35rem;
+  letter-spacing: 0.02em;
+  color: #b9b0cc;
+  white-space: nowrap;
 `
 
 const ListHeading = styled.h2`
@@ -76,38 +67,34 @@ const ListHeading = styled.h2`
 `
 
 const BadgeSlot = styled.div`
-  padding-top: 0.6rem;
+  align-self: center;
 `
 
 const titleStyles = css`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 2.1rem;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  text-transform: none;
-  text-shadow: none;
-  margin: 0.3rem 0 0.6rem;
+  font-stretch: 112%;
+  font-weight: 800;
+  font-size: clamp(2.1rem, 1.7rem + 0.7vw, 2.6rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.6rem;
   text-wrap: pretty;
 
   & a {
-    color: var(--title-color, var(--silk-steel-50));
+    color: #f6f2ff;
     text-decoration: none;
-    transition:
-      color var(--duration-normal) var(--ease-silk),
-      text-shadow var(--duration-normal) var(--ease-silk);
+    transition: color var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-steel-50);
-    text-shadow: 0 0 18px var(--title-color, transparent);
+    color: var(--title-color, var(--silk-circuit-cyan));
   }
 `
 
 const Summary = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 300;
-  line-height: 1.5;
-  color: var(--text-secondary);
+  line-height: 1.55;
+  color: #cfc8de;
   margin: 0;
   text-wrap: pretty;
 `
@@ -140,7 +127,6 @@ export default function FeedList({
       {heading && <ListHeading>{heading}</ListHeading>}
       <List>
         {items.map((item, index) => {
-          const { day, month } = numeralDate(item.date)
           return (
             <Reveal
               as="li"
@@ -149,16 +135,7 @@ export default function FeedList({
               key={item.id}
               order={startOrder + index * 0.5}
             >
-              <DateCol>
-                <Day aria-hidden="true">{day}</Day>
-                <Month aria-hidden="true">{month}</Month>
-                <time
-                  dateTime={item.date}
-                  style={{ clip: 'rect(0 0 0 0)', height: 1, overflow: 'hidden', position: 'absolute', width: 1 }}
-                >
-                  {item.date}
-                </time>
-              </DateCol>
+              <DateCol dateTime={item.date}>{shortDate(item.date)}</DateCol>
               {showKind && (
                 <BadgeSlot data-badge="">
                   <Badge kind={item.kind} />

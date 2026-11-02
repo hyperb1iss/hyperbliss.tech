@@ -1,6 +1,7 @@
-// The landing page under the header, one column: the intro sentence, a
-// computed pulse line, the newest long-form piece, the flagship trio, then the
-// merged feed. Server component: everything here is crawlable HTML.
+// The landing page in the Emission direction: a full-bleed hero lit by real
+// Hypercolor light, then the flagship trio as product chapters, the newest
+// long-form piece as a spread, and the merged feed. Server component:
+// everything here is crawlable HTML.
 
 import Link from 'next/link'
 import type { FrontSection } from '@/lib/content'
@@ -8,10 +9,11 @@ import type { FeedItem } from '@/lib/feed'
 import type { ActivitySummary } from '@/lib/github'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
-import Building from './Building'
+import ProductChapter from '../projects/ProductChapter'
+import EmissionHero from './EmissionHero'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
-import { neonTitle } from './neon'
+import { displayInk } from './neon'
 import Pulse from './Pulse'
 import Reveal from './Reveal'
 
@@ -21,39 +23,22 @@ export interface FrontPageProps {
   featured: ProjectEntry[]
   activity: ActivitySummary | null
   front: FrontSection | null
-  projectCount: number
 }
+
+const DEFAULT_HEADLINE = ['Software', 'that puts you', 'in control.']
 
 const Wrap = styled.div`
   width: 100%;
-  max-width: 116rem;
+  max-width: 144rem;
   margin: 0 auto;
-  padding: 4.8rem 6.4rem 6.4rem;
+  box-sizing: border-box;
+  padding: 4rem 6.4rem 8rem;
   display: flex;
   flex-direction: column;
   min-width: 0;
 
-  @media (max-width: 1024px) {
-    padding: 3.2rem 2.4rem 4.8rem;
-  }
-`
-
-const Intro = styled.p`
-  font-size: clamp(2rem, 1.7rem + 0.8vw, 2.7rem);
-  font-weight: 300;
-  line-height: 1.4;
-  color: var(--silk-steel-50);
-  margin: 0 0 4.4rem;
-  max-width: 104rem;
-  text-wrap: pretty;
-
-  & a {
-    color: var(--silk-plasma-pink);
-    text-decoration: none;
-    transition: color var(--duration-normal) var(--ease-silk);
-  }
-  & a:hover {
-    color: var(--silk-steel-50);
+  @media (max-width: 768px) {
+    padding: 2.4rem 2rem 6.4rem;
   }
 `
 
@@ -61,18 +46,45 @@ const Section = styled.section`
   display: flex;
   flex-direction: column;
   padding: 0;
-  margin-bottom: 5.6rem;
+  margin-bottom: 10rem;
+  scroll-margin-top: 12rem;
 
   &:last-of-type {
     margin-bottom: 0;
   }
+
+  @media (max-width: 768px) {
+    margin-bottom: 7.2rem;
+  }
 `
 
-const Brand = styled.span`
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.1em;
-  letter-spacing: -0.03em;
+const Head = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.2rem 2.4rem;
+  padding-top: 2.8rem;
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
+  margin-bottom: 2.4rem;
+`
+
+const Marker = styled.h2`
+  margin: 0;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.4rem;
+  font-stretch: 100%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b9b0cc;
+`
+
+const Aside = styled.p`
+  margin: 0;
+  font-size: 1.6rem;
+  color: #b9b0cc;
 `
 
 // A span, not <code>: the global code rule paints a boxed pink chip.
@@ -83,41 +95,27 @@ const Mono = styled.span`
   letter-spacing: 0;
 `
 
-const Marker = styled.h2`
-  display: flex;
-  align-items: center;
-  gap: 1.6rem;
+const Brand = styled.span`
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-shadow: none;
-  color: var(--silk-quantum-purple);
-  margin: 0 0 2.4rem;
-
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(162, 89, 255, 0.45), transparent);
-  }
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 `
 
 const Foot = styled.div`
   display: flex;
   gap: 2.4rem;
-  padding-top: 1.8rem;
+  padding-top: 2.4rem;
   font-family: var(--font-mono);
-  font-size: 1.2rem;
-  letter-spacing: 0.06em;
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
 
   & a {
     color: var(--silk-circuit-cyan);
     text-decoration: none;
   }
   & a:hover {
-    color: var(--silk-steel-50);
+    color: #ffffff;
   }
 `
 
@@ -133,7 +131,7 @@ function renderTagline(tagline: string) {
       return <Mono key={`mono-${index}`}>{part.slice(1, -1)}</Mono>
     if (part === '{hyperbliss}')
       return (
-        <Brand className={neonTitle} key={`brand-${index}`}>
+        <Brand className={displayInk} key={`brand-${index}`}>
           hyperbliss
         </Brand>
       )
@@ -147,47 +145,54 @@ function renderTagline(tagline: string) {
   })
 }
 
-export default function FrontPage({ lead, items, featured, activity, front, projectCount }: FrontPageProps) {
-  const tagline = front?.tagline ?? "Hey, I'm {name}, and {hyperbliss} is where I make things."
-  const buildingStart = 1.6
-  const feedStart = buildingStart + featured.length * 0.3 + 0.8
+export default function FrontPage({ lead, items, featured, activity, front }: FrontPageProps) {
+  const headline = front?.headline?.length ? front.headline : DEFAULT_HEADLINE
+  const intro =
+    front?.tagline ?? 'Hyperbliss Technologies makes open source software for light, memory, and the terminal.'
+  const feedStart = 2
   return (
-    <Wrap>
-      <Reveal order={0}>
-        <Intro>{renderTagline(tagline)}</Intro>
-      </Reveal>
-      <Reveal order={0.3}>
-        <Pulse activity={activity} />
-      </Reveal>
-      <Section aria-labelledby="front-latest">
-        <Reveal order={0.5}>
-          <Marker id="front-latest">Latest</Marker>
-        </Reveal>
-        {lead && (
-          <Reveal order={1}>
-            <LeadStory item={lead} />
-          </Reveal>
+    <>
+      <EmissionHero
+        essayHref={lead?.href ?? null}
+        footnote={<Pulse activity={activity} />}
+        headline={headline}
+        intro={renderTagline(intro)}
+      />
+      <Wrap>
+        {featured.length > 0 && (
+          <Section aria-labelledby="front-products" id="products">
+            <Head>
+              <Marker id="front-products">Products</Marker>
+              <Aside>Three product lines. Open source at the core.</Aside>
+            </Head>
+            {featured.map((entry, index) => (
+              <ProductChapter entry={entry} flip={index % 2 === 1} key={entry.project.slug} priority={index === 0} />
+            ))}
+            <Foot>
+              <Link href="/projects/">All products and open source →</Link>
+            </Foot>
+          </Section>
         )}
-      </Section>
-      {featured.length > 0 && (
-        <Section aria-labelledby="front-building">
-          <Reveal order={buildingStart - 0.3}>
-            <Marker id="front-building">Building</Marker>
-          </Reveal>
-          <Building entries={featured} projectCount={projectCount} startOrder={buildingStart} />
-        </Section>
-      )}
-      <Section aria-labelledby="front-recently">
-        <Reveal order={feedStart - 0.3}>
-          <Marker id="front-recently">Recently</Marker>
-        </Reveal>
-        <FeedList heading={null} items={items} startOrder={feedStart} />
-        <Reveal order={feedStart + items.length * 0.5}>
+        {lead && (
+          <Section aria-labelledby="front-latest">
+            <Head>
+              <Marker id="front-latest">Latest</Marker>
+            </Head>
+            <Reveal order={0}>
+              <LeadStory item={lead} />
+            </Reveal>
+          </Section>
+        )}
+        <Section aria-labelledby="front-recently">
+          <Head>
+            <Marker id="front-recently">Recently</Marker>
+          </Head>
+          <FeedList heading={null} items={items} startOrder={feedStart} />
           <Foot>
             <Link href="/archive/">Everything, by year →</Link>
           </Foot>
-        </Reveal>
-      </Section>
-    </Wrap>
+        </Section>
+      </Wrap>
+    </>
   )
 }

@@ -42,12 +42,12 @@
   }
 
   /*
-   * The starfield lives on a fixed, viewport-sized layer with the readability
-   * gradient stacked on top of it (the first listed background paints in
-   * front). Keeping it here instead of on `body` makes `cover` fit the
-   * viewport rather than stretching a 1536x1024 image across the full scroll
-   * height of long pages, and `position: fixed` gives the pinned-background
-   * look without the scroll-repaint jank of `background-attachment: fixed`.
+   * Emission ambient light: a fixed, viewport-sized layer of three faint
+   * pools (purple top left, cyan right, violet below) on the near-black void.
+   * Gradients only, so nothing to download, and `position: fixed` keeps them
+   * pinned without the scroll-repaint cost of `background-attachment: fixed`.
+   * Pages that want real light (the home hero, product chapters) paint it
+   * themselves above this layer.
    */
   body::before {
     content: "";
@@ -55,24 +55,10 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image:
-      linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%),
-      url("/images/background2.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
-  @supports (background-image: image-set(url("/images/background2.avif") type("image/avif"))) {
-    body::before {
-      background-image:
-        linear-gradient(180deg, rgba(10, 10, 20, 0.3) 0%, rgba(10, 10, 20, 0.5) 50%, rgba(5, 5, 8, 0.7) 100%),
-        image-set(
-          url("/images/background2.avif") type("image/avif"),
-          url("/images/background2.webp") type("image/webp"),
-          url("/images/background2.png") type("image/png")
-        );
-    }
+    background:
+      radial-gradient(64rem 44rem at 10% -8%, rgba(225, 53, 255, 0.1), transparent 70%),
+      radial-gradient(58rem 40rem at 98% 16%, rgba(128, 255, 234, 0.055), transparent 70%),
+      radial-gradient(80rem 56rem at 50% 118%, rgba(120, 90, 255, 0.08), transparent 70%);
   }
 
   /* Typography styles with SilkCircuit - Futuristic */
@@ -87,9 +73,8 @@
     line-height: var(--leading-tight);
     color: var(--text-primary);
     margin-bottom: var(--space-4);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(162, 89, 255, 0.3);
+    font-stretch: 112%;
+    letter-spacing: -0.015em;
   }
 
   h1 {
@@ -459,5 +444,56 @@
     box-shadow:
       0 6px 24px rgba(0, 0, 0, 0.5),
       0 0 28px rgba(0, 255, 240, 0.45);
+  }
+}
+
+/* Emission motion. Referenced by the home hero and product chapters; kept here
+   because Panda emits an empty @keyframes from inside a css template. The
+   reduced-motion rule above collapses each to its final frame. */
+@keyframes emission-drift {
+  from {
+    transform: scale(1.14) translate3d(-2%, -1.5%, 0);
+  }
+  to {
+    transform: scale(1.03) translate3d(2%, 1.5%, 0);
+  }
+}
+
+@keyframes emission-pan {
+  from {
+    background-position:
+      0 0,
+      20% 4%;
+  }
+  to {
+    background-position:
+      0 0,
+      80% 12%;
+  }
+}
+
+@keyframes emission-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes emission-rise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes emission-float {
+  from {
+    transform: perspective(1800px) rotateY(var(--tilt, -11deg)) rotateX(4deg) translateY(0);
+  }
+  to {
+    transform: perspective(1800px) rotateY(calc(var(--tilt, -11deg) * 0.64)) rotateX(2deg) translateY(-14px);
   }
 }

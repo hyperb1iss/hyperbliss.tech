@@ -1,4 +1,5 @@
 .blog-post {
+  position: relative;
   width: 100%;
   max-width: 144rem;
   margin: 0 auto;
@@ -216,20 +217,17 @@
 
 .blog-post__title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(3.4rem, 2.6rem + 2vw, 5.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-stretch: 118%;
+  font-weight: 900;
+  font-size: clamp(3.6rem, 2.4rem + 3vw, 7.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   text-transform: none;
   text-shadow: none;
   text-align: left;
   margin: 0;
   text-wrap: balance;
-  background: linear-gradient(110deg, var(--silk-circuit-cyan) 0%, #e0aaff 48%, var(--silk-plasma-pink) 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 18px rgba(162, 89, 255, 0.35));
+  color: #f6f2ff;
 }
 
 .blog-post__tags {
@@ -1053,22 +1051,21 @@
   }
 }
 
-/* Editorial pass: body headings in the display face, sentence case, no glow.
-   Keeps the color accents, drops the uppercase tracking and underline bars. */
+/* Emission: body headings in expanded Archivo, sentence case, bright ink, no
+   fill, glow, or underline bars. */
 .markdown-prose__h1,
 .markdown-prose__h2,
 .markdown-prose__h3 {
   font-family: var(--font-display);
   text-transform: none;
-  letter-spacing: -0.02em;
   text-shadow: none;
-  font-weight: 700;
   background: none;
   -webkit-background-clip: initial;
   background-clip: initial;
   -webkit-text-fill-color: currentColor;
   animation: none;
   filter: none;
+  color: #f6f2ff;
 }
 
 .markdown-prose__h2::after,
@@ -1077,13 +1074,16 @@
 }
 
 .markdown-prose__h2 {
-  color: var(--silk-circuit-cyan);
-  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.015em;
 }
 
 .markdown-prose__h3 {
-  color: var(--silk-plasma-pink);
-  text-shadow: 0 0 14px rgba(255, 117, 216, 0.25);
+  font-stretch: 108%;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #ffd6f2;
 }
 
 /* Reading rhythm: air above headings, a quiet bullet, calmer emphasis glow. */

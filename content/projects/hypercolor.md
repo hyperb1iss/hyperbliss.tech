@@ -2,9 +2,13 @@
 category: 'lighting'
 title: 'Hypercolor: A Canvas for Your Lights'
 description: 'An open-source RGB engine that turns keyboards, LED strips, and room lighting into a shared canvas for shaders, music, and interaction.'
+pitch: 'One lighting engine for your PC, your smart lights, and your whole room.'
 featured: 1
 date: '2026-03-03'
 github: 'https://github.com/hyperb1iss/hypercolor'
+website: 'https://hypercolor.lighting'
+screenshot: '/images/products/hypercolor.webp'
+screenshotAlt: 'The Hypercolor dashboard: a Neon City scene in the live preview, favorite effects beside it, and render engine gauges below.'
 tags: ['Rust', 'RGB', 'Servo', 'wgpu', 'TypeScript', 'Linux', 'Windows', 'macOS']
 ---
 
@@ -29,3 +33,21 @@ The compositor design leaves room for different kinds of artwork. An embedded Se
 The web interface brings together the effect catalog, layout editor, and live preview. A terminal interface offers device status and a color preview of its own. The [Home Assistant integration](/projects/hypercolor-hass/) connects the engine to household scenes and automations.
 
 Hypercolor is in active development, with working effects and drivers alongside a larger hardware roadmap. The [project and installation guide](https://github.com/hyperb1iss/hypercolor) explain what runs today. The [effect-authoring guide](https://github.com/hyperb1iss/hypercolor/blob/main/docs/content/effects/creating-effects.md) is the place to start painting.
+
+## Install
+
+On Linux, the release installer downloads the right build, verifies its checksum, and sets up the background service:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hyperb1iss/hypercolor/main/scripts/install-release.sh | bash
+```
+
+USB lighting also needs device permissions, which the installer leaves as a separate step: run `just udev-install` from a source checkout, or install the `.deb` or AUR package, which ship the udev rules themselves.
+
+On macOS (Apple silicon, macOS 15.2 or newer), install the app with Homebrew:
+
+```bash
+brew install --cask hyperb1iss/tap/hypercolor-app
+```
+
+On Windows, grab the installer from the [releases page](https://github.com/hyperb1iss/hypercolor/releases). Arch, Debian, Ubuntu, and NixOS packages are on the [download page](https://hypercolor.lighting/download/).

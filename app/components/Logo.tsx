@@ -40,7 +40,7 @@ const LogoWrapper = styled.div`
 `
 
 const logoImageStyles = css`
-  height: 70px;
+  height: 52px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -49,7 +49,7 @@ const logoImageStyles = css`
   will-change: filter;
 
   @media (max-width: 768px) {
-    height: 60px;
+    height: 46px;
     max-width: calc(100% - 60px); /* Leave room for menu icon */
     /* Disable filter animation on mobile to reduce GPU load */
     animation: none;
@@ -57,7 +57,7 @@ const logoImageStyles = css`
   }
 
   @media (min-width: 1200px) {
-    height: 80px;
+    height: 56px;
   }
 `
 
@@ -67,12 +67,12 @@ const TechnologiesText = styled.span`
   font-weight: 700;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--silk-circuit-cyan);
+  color: var(--text-secondary);
   opacity: 0.85;
   position: relative;
   white-space: nowrap;
   align-self: flex-end;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   animation: silkLogoSlideIn 0.8s var(--ease-silk) 0.3s both;
   transition: opacity var(--duration-normal) var(--ease-silk);
 

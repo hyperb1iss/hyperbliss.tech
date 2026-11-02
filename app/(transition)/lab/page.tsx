@@ -8,7 +8,7 @@ const OG_DESCRIPTION = 'Interactive experiments, deep dives, and weird beautiful
 const OG_IMAGE = {
   alt: `The Lab: ${OG_DESCRIPTION}`,
   height: OG_IMAGE_HEIGHT,
-  url: buildOgImageUrl({ kind: 'lab', path: 'ls lab/', subtitle: OG_DESCRIPTION, title: 'The Lab' }),
+  url: buildOgImageUrl({ kind: 'lab', subtitle: OG_DESCRIPTION, title: 'The Lab' }),
   width: OG_IMAGE_WIDTH,
 }
 

@@ -29,7 +29,32 @@
     "profileImage": "/images/profile-image.jpg",
     "profileImageAlt": "Profile image of Stefanie Jane"
   },
-  "description": "Stefanie Jane: open source engineer building developer tools, design systems, and AI agents.",
+  "company": {
+    "contactEmail": "stef@hyperbliss.tech",
+    "contactIntro": "Write to us about partnerships, press, support, or an idea we haven't had yet.",
+    "lede": "Hyperbliss Technologies is an independent software company in Seattle. We make software that puts people in control of their own technology.",
+    "legalName": "Hyperbliss Technologies LLC",
+    "location": "Seattle, Washington",
+    "principles": [
+      {
+        "description": "The engines we ship are open source on GitHub. Read the code, file the issue, build it yourself.",
+        "title": "Open source at the core"
+      },
+      {
+        "description": "Hypercolor runs on your own hardware, Sibyl is self-hostable, and unifly talks straight to your own controller.",
+        "title": "Your machine, your data"
+      },
+      {
+        "description": "Releases ship with notes on GitHub, and the thinking behind the work ships here as essays and lab experiments.",
+        "title": "Built in the open"
+      },
+      {
+        "description": "Fast, colorful tools you will actually enjoy using, designed in our own SilkCircuit language.",
+        "title": "Made to be lived in"
+      }
+    ]
+  },
+  "description": "Hyperbliss Technologies LLC is an independent software company in Seattle making open source software that puts people in control of their own technology.",
   "slug": "about",
-  "title": "About Me | Hyperbliss"
+  "title": "About"
 }

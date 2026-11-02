@@ -53,6 +53,13 @@ describe('NavLinks', () => {
     expect(screen.getAllByRole('link').filter((link) => link.hasAttribute('aria-current'))).toHaveLength(1)
   })
 
+  it.each(['/about/', '/resume/'])('lights About for the about page and the resume on %s', (pathname) => {
+    mockUsePathname.mockReturnValue(pathname)
+    render(<NavLinks />)
+    expect(screen.getByText('About')).toHaveAttribute('aria-current', 'page')
+    expect(screen.getAllByRole('link').filter((link) => link.hasAttribute('aria-current'))).toHaveLength(1)
+  })
+
   it('preserves browser navigation for modified clicks', () => {
     render(<NavLinks />)
     fireEvent.click(screen.getByText('About'), { metaKey: true })

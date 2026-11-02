@@ -1,20 +1,25 @@
 // app/components/ProjectDetailView.tsx
-// A project page: name and tagline, tags, then the README-style body with a
-// sticky facts rail (version, stars, language, last push, links) and the
-// other projects in the same lane.
+// A product page: name and tagline with the call to action under them (the
+// product's own site, or this page's Install section), the screenshot when
+// there is one, then the README-style body with a sticky facts rail
+// (version, stars, language, last push, links) and the rest of the line.
 
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import type { ProjectSummary } from '@/lib/content'
 import { shortName, tagline } from '@/lib/feed'
 import type { RepoStats } from '@/lib/github'
-import { formatStars, LANES, laneOf, languageColor, relativeTime } from '@/lib/projectLanes'
+import { LANES, laneOf, languageColor, recentPush, relativeTime, shownStars } from '@/lib/projectLanes'
 import type { Heading } from '@/lib/reading'
 import Reveal from './front/Reveal'
 import ProjectMarkdownRenderer from './ProjectMarkdownRenderer'
+import { lineLight } from './projects/lineLight'
+import { PrimaryAction, ProductShot, SecondaryAction } from './projects/ProductParts'
 import ProjectIcon from './projects/ProjectIcon'
+import TitleLight from './TitleLight'
 
 interface ProjectDetailViewProps {
   slug: string
@@ -29,9 +34,14 @@ interface ProjectDetailViewProps {
   category?: string | null
   related?: ProjectSummary[]
   headings?: Heading[]
+  website?: string | null
+  screenshot?: string | null
+  screenshotAlt?: string | null
   /** Render-time clock for relative timestamps. */
   now?: number
 }
+
+const displayHost = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 
 export default function ProjectDetailView({
   slug,
@@ -46,16 +56,22 @@ export default function ProjectDetailView({
   category,
   related = [],
   headings = [],
+  website = null,
+  screenshot = null,
+  screenshotAlt = null,
   now = 0,
 }: ProjectDetailViewProps) {
   const name = shortName(title)
   const sub = tagline(title)
   const lane = LANES.find((l) => l.id === laneOf(category))
-  const pushed = now ? relativeTime(stats?.pushedAt, now) : null
+  const pushed = now ? recentPush(stats?.pushedAt, now) : null
   const released = now ? relativeTime(releaseDate, now) : null
+  const stars = shownStars(stats?.stars)
+  const hasInstall = headings.some((h) => h.id === 'install')
 
   return (
-    <article className="project-detail">
+    <article className="project-detail" style={lineLight(category)}>
+      <TitleLight />
       <Reveal as="div" className="project-detail__hero" order={0}>
         <div className="project-detail__meta">
           <ProjectIcon slug={slug} />
@@ -84,7 +100,44 @@ export default function ProjectDetailView({
             </>
           )}
         </h1>
+        {(website || hasInstall) && (
+          <div className="project-detail__cta">
+            {website ? (
+              <PrimaryAction href={website} rel="noopener noreferrer">
+                Get {name} ↗
+              </PrimaryAction>
+            ) : (
+              <PrimaryAction href="#install">Install {name} ↓</PrimaryAction>
+            )}
+            {website && hasInstall && (
+              <SecondaryAction>
+                <a href="#install">Install →</a>
+              </SecondaryAction>
+            )}
+            {github && (
+              <SecondaryAction>
+                <a href={github} rel="noopener noreferrer">
+                  GitHub →
+                </a>
+              </SecondaryAction>
+            )}
+          </div>
+        )}
       </Reveal>
+
+      {screenshot && (
+        <Reveal className="project-detail__shot" order={1}>
+          <ProductShot>
+            <Image
+              alt={screenshotAlt ?? `${name} screenshot`}
+              fill={true}
+              priority={true}
+              sizes="(max-width: 1024px) 100vw, 960px"
+              src={screenshot}
+            />
+          </ProductShot>
+        </Reveal>
+      )}
 
       <div className="project-detail__layout">
         <div>
@@ -119,16 +172,10 @@ export default function ProjectDetailView({
                   </dd>
                 </>
               )}
-              {stats && stats.stars > 0 && (
+              {stars && (
                 <>
                   <dt>Stars</dt>
-                  <dd>★ {formatStars(stats.stars)}</dd>
-                </>
-              )}
-              {stats && stats.forks > 0 && (
-                <>
-                  <dt>Forks</dt>
-                  <dd>{formatStars(stats.forks)}</dd>
+                  <dd>★ {stars}</dd>
                 </>
               )}
               {stats?.language && (
@@ -148,6 +195,16 @@ export default function ProjectDetailView({
                 <>
                   <dt>Pushed</dt>
                   <dd>{pushed}</dd>
+                </>
+              )}
+              {website && (
+                <>
+                  <dt>Website</dt>
+                  <dd>
+                    <a href={website} rel="noopener noreferrer">
+                      {displayHost(website)} ↗
+                    </a>
+                  </dd>
                 </>
               )}
               {github && (

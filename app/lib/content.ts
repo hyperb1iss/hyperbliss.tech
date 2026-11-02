@@ -13,6 +13,7 @@ import {
   resolveMarkdownFile,
   resolveMarkdownFileOrNull,
 } from './contentCollections'
+import { extractHeadings } from './reading'
 
 export { readRawContentFile } from './contentCollections'
 
@@ -204,6 +205,15 @@ export interface ProjectSummary {
   coverImage: string | null
   /** Pinned position in the flagship trio (1 is first); null when unpinned. */
   featured?: number | null
+  /** One sentence that sells the product, shown big on its chapter; falls back to the title's tagline. */
+  pitch?: string | null
+  /** The product's own site, when it has one; the primary call to action. */
+  website?: string | null
+  /** A 16:10 product screenshot under /images, shown on flagship panels and the product page. */
+  screenshot?: string | null
+  screenshotAlt?: string | null
+  /** Whether the body has a heading with the `install` id the product page's call to action links to. */
+  hasInstall?: boolean
   latestVersion?: string | null
   releaseDate?: string | null
   releaseUrl?: string | null
@@ -222,7 +232,15 @@ export interface ProjectDetail {
   status: string | null
   image: string | null
   coverImage: string | null
+  website: string | null
+  screenshot: string | null
+  screenshotAlt: string | null
   body: string | null
+}
+
+/** True when the body renders a heading with the `install` id, the anchor product calls to action link to. */
+export function hasInstallSection(markdown: string): boolean {
+  return extractHeadings(markdown).some((heading) => heading.id === 'install')
 }
 
 export async function getAllProjectSlugs(): Promise<string[]> {
@@ -234,7 +252,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
   const projects: ProjectSummary[] = []
 
   for (const slug of slugs) {
-    const { data } = await readMarkdown(`projects/${slug}.md`)
+    const { data, content } = await readMarkdown(`projects/${slug}.md`)
     projects.push({
       category: (data.category as string) ?? null,
       coverImage: (data.coverImage as string) ?? null,
@@ -244,11 +262,16 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       emoji: (data.emoji as string) ?? null,
       featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
+      hasInstall: hasInstallSection(content),
       image: (data.image as string) ?? null,
+      pitch: (data.pitch as string) ?? null,
+      screenshot: (data.screenshot as string) ?? null,
+      screenshotAlt: (data.screenshotAlt as string) ?? null,
       slug,
       status: (data.status as string) ?? null,
       tags: (data.tags as string[]) ?? null,
       title: data.title as string,
+      website: (data.website as string) ?? null,
     })
   }
 
@@ -278,10 +301,13 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
     emoji: (data.emoji as string) ?? null,
     github: (data.github as string) ?? null,
     image: (data.image as string) ?? null,
+    screenshot: (data.screenshot as string) ?? null,
+    screenshotAlt: (data.screenshotAlt as string) ?? null,
     slug,
     status: (data.status as string) ?? null,
     tags: (data.tags as string[]) ?? null,
     title: data.title as string,
+    website: (data.website as string) ?? null,
   }
 }
 
@@ -310,11 +336,28 @@ export interface AboutSection {
   contactReasons: ContactReason[] | null
 }
 
-/** The front page's byline block: who is behind the label, in two lines. */
+/** The front page's opening: the hero headline, one line per entry, and the intro under it. */
 export interface FrontSection {
   bio: string | null
+  /** Hero headline lines; the last one is filled with light. */
+  headline: string[] | null
   /** The front page's opening sentence. `{hyperbliss}` and `{name}` are rendered as the brand mark and the About link. */
   tagline: string | null
+}
+
+export interface Principle {
+  title: string
+  description: string
+}
+
+/** The company half of the About page: who publishes the software, how it works, how to reach it. */
+export interface CompanySection {
+  lede: string | null
+  principles: Principle[] | null
+  contactIntro: string | null
+  contactEmail: string | null
+  legalName: string | null
+  location: string | null
 }
 
 export interface PageData {
@@ -323,6 +366,7 @@ export interface PageData {
   description: string
   front: FrontSection | null
   about: AboutSection | null
+  company: CompanySection | null
 }
 
 /** Raw JSON shape — matches the files in content/pages/ */
@@ -345,7 +389,16 @@ interface RawPageJson {
   }
   front?: {
     bio?: string
+    headline?: string[]
     tagline?: string
+  }
+  company?: {
+    lede?: string
+    principles?: Array<{ title?: string; description?: string }>
+    contactIntro?: string
+    contactEmail?: string
+    legalName?: string
+    location?: string
   }
 }
 
@@ -375,10 +428,23 @@ export async function getPage(slug: string): Promise<PageData> {
           profileImageAlt: raw.about.profileImageAlt ?? null,
         }
       : null,
+    company: raw.company
+      ? {
+          contactEmail: raw.company.contactEmail ?? null,
+          contactIntro: raw.company.contactIntro ?? null,
+          lede: raw.company.lede ?? null,
+          legalName: raw.company.legalName ?? null,
+          location: raw.company.location ?? null,
+          principles: raw.company.principles
+            ? raw.company.principles.map((p) => ({ description: p.description ?? '', title: p.title ?? '' }))
+            : null,
+        }
+      : null,
     description: raw.description,
     front: raw.front
       ? {
           bio: raw.front.bio ?? null,
+          headline: Array.isArray(raw.front.headline) ? raw.front.headline : null,
           tagline: raw.front.tagline ?? null,
         }
       : null,

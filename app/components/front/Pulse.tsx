@@ -1,4 +1,4 @@
-// One computed line under the intro: pushes and repos over the last two
+// One computed line under the hero intro: pushes and repos over the last two
 // weeks, straight from the public events feed. Nothing here is typed by hand,
 // so it cannot go stale the way a hand-written "now" did; when GitHub is
 // unreachable or quiet it renders nothing at all.
@@ -10,11 +10,11 @@ const Line = styled.p`
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem 1.2rem;
-  margin: -2.4rem 0 4.4rem;
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   letter-spacing: 0.06em;
-  color: var(--silk-steel-400);
+  color: #b9b0cc;
 `
 
 const Repos = styled.span`

@@ -3,11 +3,16 @@ import type { ProjectSummary } from '@/lib/content'
 import {
   formatStars,
   groupByLane,
+  groupByLine,
   LANES,
   laneOf,
   type ProjectEntry,
   pickFeatured,
+  RECENT_PUSH_DAYS,
+  recentPush,
   relativeTime,
+  STAR_FLOOR,
+  shownStars,
   sortEntries,
 } from '@/lib/projectLanes'
 
@@ -79,8 +84,57 @@ describe('sortEntries', () => {
 describe('groupByLane', () => {
   it('returns non-empty lanes in canonical order', () => {
     const groups = groupByLane([entry('z', 'web'), entry('s', 'agents'), entry('u', 'lighting')])
-    expect(groups.map((g) => g.lane.id)).toEqual(['agents', 'lighting', 'web'])
-    expect(LANES.map((l) => l.id)).toEqual(['agents', 'terminal', 'lighting', 'web'])
+    expect(groups.map((g) => g.lane.id)).toEqual(['lighting', 'agents', 'web'])
+    expect(LANES.map((l) => l.id)).toEqual(['lighting', 'agents', 'terminal', 'web'])
+  })
+})
+
+describe('groupByLine', () => {
+  const pinned = (slug: string, category: string, featured: number) => {
+    const e = entry(slug, category)
+    e.project.featured = featured
+    return e
+  }
+
+  it('pulls the lowest pinned rank in each lane out as its flagship', () => {
+    const lines = groupByLine([
+      entry('ha', 'lighting'),
+      pinned('hypercolor', 'lighting', 1),
+      pinned('also-pinned', 'lighting', 4),
+      pinned('sibyl', 'agents', 2),
+      entry('dotfiles', 'web'),
+    ])
+    expect(lines.map((l) => [l.lane.id, l.flagship?.project.slug ?? null])).toEqual([
+      ['lighting', 'hypercolor'],
+      ['agents', 'sibyl'],
+      ['web', null],
+    ])
+    const lighting = lines[0]
+    expect(lighting.entries.map((e) => e.project.slug).sort()).toEqual(['also-pinned', 'ha'])
+  })
+
+  it('leaves a lane without pins as rows only', () => {
+    const [web] = groupByLine([entry('a', 'web'), entry('b', 'web')])
+    expect(web.flagship).toBeNull()
+    expect(web.entries).toHaveLength(2)
+  })
+})
+
+describe('shownStars and recentPush', () => {
+  it('shows stars only at or above the floor', () => {
+    expect(shownStars(STAR_FLOOR - 1)).toBeNull()
+    expect(shownStars(0)).toBeNull()
+    expect(shownStars(null)).toBeNull()
+    expect(shownStars(STAR_FLOOR)).toBe(String(STAR_FLOOR))
+    expect(shownStars(1500)).toBe('1.5k')
+  })
+
+  it('shows a push only inside the recent window', () => {
+    const now = Date.parse('2026-10-23T00:00:00Z')
+    const day = 86_400_000
+    expect(recentPush(new Date(now - 2 * day).toISOString(), now)).toBe('2d ago')
+    expect(recentPush(new Date(now - (RECENT_PUSH_DAYS + 1) * day).toISOString(), now)).toBeNull()
+    expect(recentPush(null, now)).toBeNull()
   })
 })
 
