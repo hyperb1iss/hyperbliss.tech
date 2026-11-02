@@ -19,6 +19,7 @@ const variants: Record<string, string> = {
     'kind=lab&title=Regex%20Nightmares&subtitle=21%20regular%20expressions%20dissected%20down%20to%20the%20molecular%20level.&meta=April%208%2C%202026',
   'og-project': 'kind=project&title=chromacat&subtitle=A%20turbocharged%20terminal%20colorizer%20written%20in%20Rust.',
   'og-site': 'kind=site',
+  'og-unbroken': `kind=blog&title=${'Supercalifragilistic'.repeat(4)}&subtitle=${'x'.repeat(140)}`,
 }
 
 describe('og card generation', () => {

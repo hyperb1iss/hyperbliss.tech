@@ -14,7 +14,7 @@ const SITE_DESCRIPTION =
 const SITE_NAME = COMPANY_NAME
 const OG_LOCALE = 'en_US'
 
-// Generated SilkCircuit terminal card — see app/api/og
+// The site's generated social card, rendered by app/api/og
 const DEFAULT_OG_IMAGE = {
   alt: SITE_DESCRIPTION,
   height: OG_IMAGE_HEIGHT,

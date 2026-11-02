@@ -1,8 +1,10 @@
 // app/lib/og/card.tsx
-// OG cards in the Emission language: a frame of Hypercolor's real light on
-// the right, tinted per kind, a dark scrim under the words, the expanded
-// Archivo title, a Sora subtitle, and mono labels. Satori renders this, so
-// every element is flex and every style is inline.
+// OG cards in the Emission language: the words on flat void, a field of
+// Hypercolor's real light on the right tinted per kind, the expanded Archivo
+// title, a Sora subtitle, and mono labels. Satori renders this, so every
+// element is flex and every style is inline. Keeping the type side flat and
+// the frames' blacks crushed holds the PNG near 250KB; a full-bleed light
+// wash weighed twice that.
 
 import type { ReactElement } from 'react'
 
@@ -78,8 +80,7 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
       ) : null}
       <div
         style={{
-          backgroundImage:
-            'linear-gradient(90deg, rgba(5, 3, 8, 0.94) 0%, rgba(5, 3, 8, 0.78) 46%, rgba(5, 3, 8, 0.18) 100%)',
+          backgroundImage: `linear-gradient(90deg, ${VOID} 0%, ${VOID} 58%, rgba(5, 3, 8, 0.72) 74%, rgba(5, 3, 8, 0.15) 100%)`,
           display: 'flex',
           height: OG_HEIGHT,
           left: 0,
@@ -157,6 +158,7 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
                 fontWeight: 900,
                 letterSpacing: -1,
                 lineHeight: 1,
+                wordBreak: 'break-word',
               }}
             >
               {shownTitle}
@@ -172,6 +174,7 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
                 fontWeight: 400,
                 lineHeight: 1.4,
                 maxWidth: 900,
+                wordBreak: 'break-word',
               }}
             >
               {isSite ? SITE_SUBTITLE : clamp(subtitle ?? '', 140)}
