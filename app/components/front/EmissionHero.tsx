@@ -1,7 +1,7 @@
 // The front page hero: a full-bleed field of real Hypercolor light (a frame
 // of its Cymatics effect) drifting under a slow conic bloom, pulled up under
 // the fixed header so the light runs to the top edge. The headline is set
-// huge and expanded, with its last line filled by the same light. Server
+// huge and expanded, with its last line in the brand's cyan and pink. Server
 // component; the motion is CSS keyframes from globals.css, and the global
 // reduced-motion rule collapses each to its final frame.
 
@@ -124,21 +124,14 @@ const riseStyles = css`
   animation: emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) backwards;
 `
 
-// The last line is filled with the same light as the field behind it. It
-// owns its whole animation (rise, then a slow pan on wide screens) instead of
-// sharing riseStyles, so no two atomic classes compete for the animation property.
+// The last line is the one crisp accent on the page: the brand's cyan running
+// into pink, bright against the magenta field behind it. It owns its whole
+// animation (rise, then a slow slide of the gradient on wide screens) instead
+// of sharing riseStyles, so no two atomic classes compete for the animation property.
 const fillStyles = css`
-  /* A faint white lift over the light keeps every letter legible where the
-     render runs dark; the light itself stays in its bright upper band. */
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.24)),
-    url('/images/emission/cymatics.webp');
-  background-size:
-    100% 100%,
-    120% auto;
-  background-position:
-    0 0,
-    50% 6%;
+  background-image: linear-gradient(95deg, #80ffea 0%, #a8e4ff 30%, #ffffff 50%, #ffb3e6 72%, #80ffea 100%);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -198,8 +191,13 @@ const Primary = styled(Link)`
       0 18px 50px rgba(225, 53, 255, 0.45);
   }
 
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    &:hover {
+    &:hover,
+    &:active {
       transform: none;
     }
   }

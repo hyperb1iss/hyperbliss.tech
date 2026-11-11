@@ -461,14 +461,10 @@
 
 @keyframes emission-pan {
   from {
-    background-position:
-      0 0,
-      20% 4%;
+    background-position: 0% 50%;
   }
   to {
-    background-position:
-      0 0,
-      80% 12%;
+    background-position: 100% 50%;
   }
 }
 

@@ -24,17 +24,25 @@ const bandStyles = css`
   left: 50%;
   top: -14rem;
   width: 100vw;
-  height: 62rem;
+  height: 56rem;
   transform: translateX(-50%);
   z-index: -1;
   pointer-events: none;
-  background-image: url('/images/emission/cymatics.webp');
-  background-size: cover;
-  background-position: 50% 18%;
-  filter: hue-rotate(var(--band-hue, 0deg)) saturate(1.1);
-  opacity: 0.55;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  /* The render's bright upper band, zoomed past its dark beam, under a scrim
+     that keeps the title side calm so the type stays crisp. */
+  background-image:
+    linear-gradient(90deg, rgba(5, 3, 8, 0.62) 0%, rgba(5, 3, 8, 0.28) 46%, transparent 78%),
+    url('/images/emission/cymatics.webp');
+  background-size:
+    100% 100%,
+    190% auto;
+  background-position:
+    0 0,
+    92% 0%;
+  filter: hue-rotate(var(--band-hue, 0deg)) saturate(1.25);
+  opacity: 0.9;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 38%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.72) 38%, transparent 100%);
 
   @media (max-width: 768px) {
     top: -10rem;
