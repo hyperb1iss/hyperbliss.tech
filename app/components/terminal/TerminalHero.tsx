@@ -20,6 +20,7 @@ import { registry } from './registry'
 import { decodeSession } from './share'
 import { createShellSession, type ShellSession } from './shell'
 import type { TerminalHandle } from './Terminal'
+import { applyTerminalTheme } from './theme'
 import { isWebMcpEnabled, registerAgentTools } from './webmcp'
 
 const HeroWrap = styled.section`
@@ -56,7 +57,7 @@ const Skeleton = styled.div`
   height: 100%;
   font-family: var(--font-mono);
   font-size: 1.4rem;
-  background: #08050f;
+  background: var(--term-bg);
   border: 1px solid rgba(244, 240, 255, 0.16);
   border-radius: 1.4rem;
   overflow: hidden;
@@ -64,7 +65,7 @@ const Skeleton = styled.div`
   & .body {
     flex: 1;
     padding: 5.6rem 2rem 2rem;
-    color: #8f86a3;
+    color: var(--term-faint);
   }
 `
 
@@ -129,7 +130,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
       manifest,
       navigate: onNavigate,
       onToolCall: (name) => trackTerminalCommand(`agent:${name}`),
-      setTheme: (name) => document.documentElement.setAttribute('data-terminal-theme', name),
+      setTheme: applyTerminalTheme,
     })
   }, [broadcast, manifest, onNavigate, shellSession.execShell])
 

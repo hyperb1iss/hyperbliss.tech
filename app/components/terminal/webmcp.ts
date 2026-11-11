@@ -8,10 +8,10 @@ import {
   type ManifestEntry,
   PUBLIC_CONTENT_KINDS,
 } from '@/lib/terminal/types'
-import { TERMINAL_THEMES, type TerminalTheme } from './commands/meta'
 import type { FsBodies } from './fsClient'
 import type { ExecShell } from './shell'
 import type { TerminalHandle } from './Terminal'
+import { TERMINAL_THEMES, type TerminalTheme } from './theme'
 
 const READ_BODY_LIMIT = 8000
 const MAX_QUERY_LENGTH = 120

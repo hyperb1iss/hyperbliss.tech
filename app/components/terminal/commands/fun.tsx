@@ -10,7 +10,7 @@ import { Accent, Block, Muted, Ok } from './ui'
 const Banner = styled.pre`
   margin: 0;
   font-family: var(--font-mono);
-  color: #80ffea;
+  color: var(--term-accent);
   line-height: 1.2;
 `
 

@@ -20,7 +20,7 @@ const Row = styled.div`
 const Chip = styled.button`
   font-family: var(--font-mono);
   font-size: 1.3rem;
-  color: #d6cfe6;
+  color: var(--term-soft);
   background: rgba(244, 240, 255, 0.05);
   border: 1px solid rgba(244, 240, 255, 0.16);
   border-radius: 0.8rem;
@@ -36,7 +36,7 @@ const Chip = styled.button`
   &:hover,
   &:focus-visible {
     color: #ffffff;
-    border-color: #80ffea;
+    border-color: var(--term-accent);
     background: rgba(128, 255, 234, 0.1);
     outline: none;
     transform: translateY(-1px);
@@ -47,7 +47,7 @@ const Chip = styled.button`
   }
 `
 
-const DEFAULT_CHIPS = ['help', 'projects', 'blog', 'lab', 'about', 'contact']
+const DEFAULT_CHIPS = ['help', 'projects', 'blog', 'lab', 'about', 'contact', 'led hello <3', 'theme matrix']
 
 export interface CommandChipsProps {
   commands?: string[]

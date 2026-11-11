@@ -451,21 +451,99 @@
   }
 }
 
-/* The console's LED sign: each lit cell cycles the brand colors, offset per
+/* Console themes. Every console surface reads these; the `theme` command
+   swaps them by setting data-terminal-theme on <html>. */
+:root {
+  --term-bg: #08050f;
+  --term-bg-2: #0c0815;
+  --term-ink: #f4f0ff;
+  --term-soft: #d6cfe6;
+  --term-dim: #b9b0cc;
+  --term-faint: #8f86a3;
+  --term-accent: #80ffea;
+  --term-accent-2: #ff9bdc;
+  --term-accent-3: #c3b3ff;
+  --led-1: #e135ff;
+  --led-2: #ff6ac1;
+  --led-3: #80ffea;
+  --led-4: #8f6bff;
+}
+
+[data-terminal-theme="matrix"] {
+  --term-bg: #020a05;
+  --term-bg-2: #04120a;
+  --term-ink: #d6ffe2;
+  --term-soft: #a4e6b8;
+  --term-dim: #6fbf86;
+  --term-faint: #4a8a5f;
+  --term-accent: #39ff88;
+  --term-accent-2: #c6ff5c;
+  --term-accent-3: #7dffb0;
+  --led-1: #39ff88;
+  --led-2: #c6ff5c;
+  --led-3: #0affc0;
+  --led-4: #1fbf5f;
+}
+
+[data-terminal-theme="amber"] {
+  --term-bg: #0c0702;
+  --term-bg-2: #140c04;
+  --term-ink: #ffedc9;
+  --term-soft: #f0cf96;
+  --term-dim: #c9a35f;
+  --term-faint: #94753f;
+  --term-accent: #ffb000;
+  --term-accent-2: #ff7a1a;
+  --term-accent-3: #ffd277;
+  --led-1: #ffb000;
+  --led-2: #ff7a1a;
+  --led-3: #ffe08a;
+  --led-4: #ff5a00;
+}
+
+[data-terminal-theme="ice"] {
+  --term-bg: #03070f;
+  --term-bg-2: #060d1a;
+  --term-ink: #eaf6ff;
+  --term-soft: #bcd9f0;
+  --term-dim: #8fb2d1;
+  --term-faint: #5f819f;
+  --term-accent: #6fe8ff;
+  --term-accent-2: #a9b8ff;
+  --term-accent-3: #d6f6ff;
+  --led-1: #6fe8ff;
+  --led-2: #ffffff;
+  --led-3: #7a9bff;
+  --led-4: #2fd0ff;
+}
+
+/* The LED wall: each lit cell cycles the theme's four colors, offset per
    column and row by a negative delay so the colors travel as one wave. */
 @keyframes led-wave {
   0%,
   100% {
-    background-color: #e135ff;
+    background-color: var(--led-1);
   }
   25% {
-    background-color: #ff6ac1;
+    background-color: var(--led-2);
   }
   50% {
-    background-color: #80ffea;
+    background-color: var(--led-3);
   }
   75% {
-    background-color: #8f6bff;
+    background-color: var(--led-4);
+  }
+}
+
+/* A cell switching on. */
+@keyframes led-on {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 

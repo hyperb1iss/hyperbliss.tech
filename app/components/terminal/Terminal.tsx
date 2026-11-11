@@ -13,6 +13,7 @@ import { History, loadHistory } from './history'
 import { registry as sharedRegistry } from './registry'
 import { OutputText } from './render'
 import StatusBoard from './StatusBoard'
+import { applyTerminalTheme } from './theme'
 import type { CommandRegistry, LogEntry, OutputStream } from './types'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -29,8 +30,8 @@ const Shell = styled.div`
   font-family: var(--font-mono);
   font-size: 1.4rem;
   line-height: 1.6;
-  color: #f4f0ff;
-  background: #08050f;
+  color: var(--term-ink);
+  background: var(--term-bg);
   border: 1px solid rgba(244, 240, 255, 0.16);
   border-radius: 1.4rem;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
@@ -44,7 +45,7 @@ const Shell = styled.div`
     position: absolute;
     inset: 0 0 auto;
     height: 3px;
-    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+    background: linear-gradient(90deg, var(--led-1), var(--led-2) 45%, var(--led-3));
   }
 
   &:focus-within {
@@ -71,7 +72,7 @@ const TitleText = styled.span`
   font-size: 1.2rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #b9b0cc;
+  color: var(--term-dim);
 `
 
 const Keys = styled.span`
@@ -79,7 +80,7 @@ const Keys = styled.span`
   align-items: center;
   gap: 0.8rem;
   font-size: 1.2rem;
-  color: #8f86a3;
+  color: var(--term-faint);
 
   & kbd {
     font-family: inherit;
@@ -87,7 +88,7 @@ const Keys = styled.span`
     padding: 0.1rem 0.6rem;
     border: 1px solid rgba(244, 240, 255, 0.2);
     border-radius: 0.4rem;
-    color: #d6cfe6;
+    color: var(--term-soft);
   }
   & kbd:not(:first-child) {
     margin-left: 0.8rem;
@@ -143,10 +144,10 @@ const Prompt = styled.span`
   white-space: pre;
   user-select: none;
 
-  & .u { color: #80ffea; }
-  & .h { color: #c3b3ff; }
-  & .p { color: #ff9bdc; }
-  & .s { color: #8f86a3; }
+  & .u { color: var(--term-accent); }
+  & .h { color: var(--term-accent-3); }
+  & .p { color: var(--term-accent-2); }
+  & .s { color: var(--term-faint); }
 `
 
 const InputCaret = styled.div`
@@ -163,7 +164,7 @@ const StyledInput = styled.input`
   font-family: var(--font-mono);
   font-size: inherit;
   color: #ffffff;
-  caret-color: #80ffea;
+  caret-color: var(--term-accent);
   padding: 0;
 
   &::placeholder {
@@ -193,7 +194,7 @@ const Hint = styled.span`
 
   & .blink {
     animation: silkTerminalCaretBlink 1.1s step-end infinite;
-    color: #80ffea;
+    color: var(--term-accent);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -363,9 +364,7 @@ export default function Terminal({
         registry,
         run,
         setCwd,
-        setTheme: (name) => {
-          if (typeof document !== 'undefined') document.documentElement.setAttribute('data-terminal-theme', name)
-        },
+        setTheme: applyTerminalTheme,
         signal: controller.signal,
       })
       try {

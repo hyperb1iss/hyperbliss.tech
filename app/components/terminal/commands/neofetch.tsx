@@ -1,16 +1,61 @@
-// neofetch: the site at a glance. The newest release, essay, and project,
-// each a link, over the content counts.
+// neofetch: the site at a glance, the way neofetch draws a machine. An LED
+// mark beside the newest release, essay, and project (each a link), the
+// content counts, and the theme's colors as a row of cells.
 
 import type { Broadcast } from '@/lib/terminal/types'
 import { styled } from '../../../../styled-system/jsx'
+import LedSign from '../LedSign'
 import { registry } from '../registry'
 import type { TerminalContext } from '../types'
-import { Block, Heading, TermLink } from './ui'
+import { Heading, TermLink } from './ui'
 
 const Stat = styled.div`
-  & .k { color: #ff9bdc; }
-  & .v { color: #f4f0ff; }
+  & .k { color: var(--term-accent-2); }
+  & .v { color: var(--term-ink); }
 `
+
+const Wrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.6rem 3.2rem;
+  padding: 0.8rem 0;
+`
+
+const Mark = styled.div`
+  width: 10rem;
+  flex-shrink: 0;
+`
+
+const Panel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+`
+
+const Swatches = styled.div`
+  display: flex;
+  gap: 3px;
+  margin-top: 1rem;
+
+  & span {
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 1px;
+  }
+`
+
+const SWATCHES = [
+  '--led-1',
+  '--led-2',
+  '--led-3',
+  '--led-4',
+  '--term-accent',
+  '--term-accent-2',
+  '--term-accent-3',
+  '--term-ink',
+]
 
 const KEY_WIDTH = 9
 
@@ -26,32 +71,42 @@ function Line({ k, children }: { k: string; children: React.ReactNode }) {
 function NeofetchView({ ctx }: { ctx: TerminalContext }) {
   const b: Broadcast = ctx.broadcast
   return (
-    <Block>
-      <Heading>hyperbliss.tech</Heading>
-      {b.latestShip && (
-        <Line k="release">
-          <TermLink href={b.latestShip.url} navigate={ctx.navigate}>
-            {b.latestShip.project} v{b.latestShip.version}
-          </TermLink>
-        </Line>
-      )}
-      {b.latestPost && (
-        <Line k="essay">
-          <TermLink href={b.latestPost.href} navigate={ctx.navigate}>
-            {b.latestPost.title}
-          </TermLink>
-          {b.latestPost.date ? ` · ${b.latestPost.date}` : ''}
-        </Line>
-      )}
-      {b.latestProject && (
-        <Line k="project">
-          <TermLink href={b.latestProject.href} navigate={ctx.navigate}>
-            {b.latestProject.title}
-          </TermLink>
-        </Line>
-      )}
-      <Line k="content">{`${b.projectCount} projects · ${b.postCount} posts · ${b.labCount} lab`}</Line>
-    </Block>
+    <Wrap>
+      <Mark>
+        <LedSign cell="0.9rem" label="Hyperbliss mark" text="HB" />
+      </Mark>
+      <Panel>
+        <Heading>guest@hyperbliss</Heading>
+        {b.latestShip && (
+          <Line k="release">
+            <TermLink href={b.latestShip.url} navigate={ctx.navigate}>
+              {b.latestShip.project} v{b.latestShip.version}
+            </TermLink>
+          </Line>
+        )}
+        {b.latestPost && (
+          <Line k="essay">
+            <TermLink href={b.latestPost.href} navigate={ctx.navigate}>
+              {b.latestPost.title}
+            </TermLink>
+            {b.latestPost.date ? ` · ${b.latestPost.date}` : ''}
+          </Line>
+        )}
+        {b.latestProject && (
+          <Line k="project">
+            <TermLink href={b.latestProject.href} navigate={ctx.navigate}>
+              {b.latestProject.title}
+            </TermLink>
+          </Line>
+        )}
+        <Line k="content">{`${b.projectCount} projects · ${b.postCount} posts · ${b.labCount} lab`}</Line>
+        <Swatches aria-hidden="true">
+          {SWATCHES.map((token) => (
+            <span key={token} style={{ background: `var(${token})` }} />
+          ))}
+        </Swatches>
+      </Panel>
+    </Wrap>
   )
 }
 

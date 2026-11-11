@@ -25,19 +25,19 @@ const OutputSpan = styled.span`
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: anywhere;
-  color: #f4f0ff;
+  color: var(--term-ink);
 
   &[data-stream='stderr'] {
     color: var(--silk-error);
   }
   &[data-stream='ok'] {
-    color: #b9b0cc;
+    color: var(--term-dim);
   }
   &[data-stream='system'] {
-    color: #80ffea;
+    color: var(--term-accent);
   }
   &[data-stream='input'] {
-    color: #d6cfe6;
+    color: var(--term-soft);
   }
 `
 

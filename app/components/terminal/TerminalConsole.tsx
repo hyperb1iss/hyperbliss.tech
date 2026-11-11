@@ -15,6 +15,7 @@ import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { css } from '../../../styled-system/css'
 import { useHeaderContext } from '../HeaderContext'
 import TerminalHero from './TerminalHero'
+import { restoreTerminalTheme } from './theme'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
@@ -84,8 +85,8 @@ const handleStyles = css`
   padding: 0.6rem 2rem;
   font-family: var(--font-mono);
   font-size: 1.3rem;
-  color: #b9b0cc;
-  background: #0a0612;
+  color: var(--term-dim);
+  background: var(--term-bg-2);
   border: 1px solid rgba(244, 240, 255, 0.22);
   border-radius: var(--radius-full);
   cursor: pointer;
@@ -102,7 +103,7 @@ const handleStyles = css`
   }
 
   & .prompt {
-    color: #f4f0ff;
+    color: var(--term-ink);
   }
 
   /* A blinking block after the prompt says "type here" while the console is
@@ -111,7 +112,7 @@ const handleStyles = css`
     width: 0.8rem;
     height: 1.5rem;
     margin-left: -0.2rem;
-    background: #80ffea;
+    background: var(--term-accent);
     animation: silkTerminalCaretBlink 1.1s step-end infinite;
   }
   &[data-open='true'] .caret {
@@ -121,13 +122,13 @@ const handleStyles = css`
   & svg {
     width: 14px;
     height: 14px;
-    color: #80ffea;
+    color: var(--term-accent);
   }
 
   &:hover,
   &:focus-visible {
     color: #ffffff;
-    border-color: #80ffea;
+    border-color: var(--term-accent);
     outline: none;
   }
 `
@@ -147,6 +148,8 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   // (isExpanded is global; a stranded `true` would leave the nav expanded).
   useEffect(() => {
     setMounted(true)
+    // The saved console theme also colors the handle, so it applies up front.
+    restoreTerminalTheme()
     return () => {
       setConsoleOpen(false)
       setIsExpanded(false)

@@ -1,8 +1,10 @@
 // Meta / UI commands: help, clear, theme, history. Self-registers on import.
 
 import { styled } from '../../../../styled-system/jsx'
+import LedSign, { ledText } from '../LedSign'
 import { registry } from '../registry'
 import { OutputText, text } from '../render'
+import { isTerminalTheme, TERMINAL_THEMES } from '../theme'
 import type { CommandGroup, TerminalContext } from '../types'
 import { Accent, Block, Heading, Muted, Pink } from './ui'
 
@@ -22,15 +24,12 @@ const CmdGrid = styled.div`
   margin-bottom: var(--space-2);
 
   & .name {
-    color: #80ffea;
+    color: var(--term-accent);
   }
   & .sum {
-    color: #d6cfe6;
+    color: var(--term-soft);
   }
 `
-
-export const TERMINAL_THEMES = ['silk', 'matrix', 'amber'] as const
-export type TerminalTheme = (typeof TERMINAL_THEMES)[number]
 
 function HelpAll({ ctx }: { ctx: TerminalContext }) {
   const groups = new Map<CommandGroup, { name: string; summary: string }[]>()
@@ -113,21 +112,31 @@ registry.register({
 })
 
 registry.register({
-  group: 'meta',
-  // Sets an attribute no stylesheet reads yet, so it stays out of help.
-  hidden: true,
+  group: 'fun',
   name: 'theme',
   run: (args, ctx) => {
     const name = args[0]
     if (!name) return text(`themes: ${TERMINAL_THEMES.join(', ')} · usage: theme <name>`)
-    if (!TERMINAL_THEMES.includes(name as TerminalTheme)) {
+    if (!isTerminalTheme(name)) {
       return text(`theme: unknown theme '${name}' (try: ${TERMINAL_THEMES.join(', ')})`, 'stderr')
     }
     ctx.setTheme(name)
-    return text(`theme → ${name}`, 'ok')
+    return <LedSign cell="0.9rem" text={name} />
   },
-  summary: 'switch the terminal color theme',
-  usage: 'theme <silk|matrix|amber>',
+  summary: 'recolor the console: silk, matrix, amber, ice',
+  usage: 'theme <silk|matrix|amber|ice>',
+})
+
+registry.register({
+  aliases: ['sign'],
+  group: 'fun',
+  name: 'led',
+  run: (args) => {
+    const message = ledText(args.join(' ')) || 'HELLO'
+    return <LedSign text={message} />
+  },
+  summary: 'write on the LED wall (try: led hello world <3)',
+  usage: 'led <text>',
 })
 
 registry.register({

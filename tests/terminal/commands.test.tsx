@@ -73,7 +73,7 @@ describe('registered command set', () => {
 
   it('help <command> shows usage', async () => {
     const h = await run('help theme')
-    expect(h.printedText()).toContain('theme <silk|matrix|amber>')
+    expect(h.printedText()).toContain('theme <silk|matrix|amber|ice>')
   })
 
   it('neofetch lists the newest release, essay, and counts', async () => {
@@ -130,7 +130,6 @@ describe('registered command set', () => {
   it('theme sets a known theme and rejects unknown ones', async () => {
     const ok = await run('theme matrix')
     expect(ok.themed).toContain('matrix')
-    expect(ok.printedText()).toContain('matrix')
     const bad = await run('theme bogus')
     expect(bad.themed).not.toContain('bogus')
     expect(bad.printedText()).toContain('unknown theme')

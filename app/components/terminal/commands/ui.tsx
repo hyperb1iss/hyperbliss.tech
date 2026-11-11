@@ -15,26 +15,26 @@ export const Block = styled.div`
 `
 
 export const Heading = styled.div`
-  color: #ff9bdc;
+  color: var(--term-accent-2);
   font-weight: var(--font-bold);
   letter-spacing: var(--tracking-wide);
   margin-bottom: var(--space-1);
 `
 
 export const Muted = styled.span`
-  color: #b9b0cc;
+  color: var(--term-dim);
 `
 
 export const Accent = styled.span`
-  color: #80ffea;
+  color: var(--term-accent);
 `
 
 export const Pink = styled.span`
-  color: #ff9bdc;
+  color: var(--term-accent-2);
 `
 
 export const Ok = styled.span`
-  color: #b9b0cc;
+  color: var(--term-dim);
 `
 
 export const ListRow = styled.div`
@@ -47,7 +47,7 @@ export const ListRow = styled.div`
 
 export const Tag = styled.span`
   font-size: 0.85em;
-  color: #b9b0cc;
+  color: var(--term-dim);
   border: 1px solid rgba(244, 240, 255, 0.16);
   border-radius: 0.5rem;
   padding: 0 var(--space-2);
@@ -60,7 +60,7 @@ export const TagRow = styled.span`
 `
 
 const Anchor = styled.a`
-  color: #80ffea;
+  color: var(--term-accent);
   text-decoration: none;
   border-bottom: 1px solid rgba(128, 255, 234, 0.3);
   transition:

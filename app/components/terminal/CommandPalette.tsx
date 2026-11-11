@@ -40,7 +40,7 @@ const Panel = styled.div`
   flex-direction: column;
   font-family: var(--font-mono);
   font-size: 1.4rem;
-  background: #0c0815;
+  background: var(--term-bg-2);
   border: 1px solid rgba(244, 240, 255, 0.2);
   border-radius: 1.4rem;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
@@ -52,7 +52,7 @@ const Panel = styled.div`
     position: absolute;
     inset: 0 0 auto;
     height: 3px;
-    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+    background: linear-gradient(90deg, var(--led-1), var(--led-2) 45%, var(--led-3));
   }
 `
 
@@ -66,10 +66,10 @@ const Field = styled.input`
   color: #ffffff;
   font-family: var(--font-mono);
   font-size: 1.6rem;
-  caret-color: #80ffea;
+  caret-color: var(--term-accent);
 
   &::placeholder {
-    color: #8f86a3;
+    color: var(--term-faint);
   }
 `
 
@@ -92,23 +92,23 @@ const Item = styled.li`
     background: rgba(128, 255, 234, 0.1);
   }
   & .name {
-    color: #80ffea;
+    color: var(--term-accent);
   }
   & .sum {
-    color: #d6cfe6;
+    color: var(--term-soft);
     font-family: var(--font-body);
     font-weight: 300;
   }
   & .grp {
     margin-left: auto;
-    color: #8f86a3;
+    color: var(--term-faint);
     font-size: 1.2rem;
   }
 `
 
 const Empty = styled.div`
   padding: 1.6rem 2rem;
-  color: #8f86a3;
+  color: var(--term-faint);
 `
 
 export interface CommandPaletteProps {
