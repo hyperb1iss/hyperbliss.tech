@@ -41,6 +41,9 @@ export interface Manifest {
   entries: ManifestEntry[]
   /** ISO timestamp, stamped by the caller (scripts can't call Date.now). */
   generatedAt: string
+  /** Fingerprint of every file body. The client sends it with body requests,
+   *  so a content change is a new URL and never a stale cached response. */
+  version?: string
 }
 
 /** A curated "currently shipping" release for the broadcast (§5.10). */
@@ -82,4 +85,14 @@ export function byteLengthUtf8(text: string): number {
     bytes += code <= 0x7f ? 1 : code <= 0x7ff ? 2 : code <= 0xffff ? 3 : 4
   }
   return bytes
+}
+
+/** FNV-1a over a string, as 8 hex digits. Small and dependency-free; this is a cache key, not security. */
+export function fingerprint(text: string): string {
+  let hash = 0x811c9dc5
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i)
+    hash = Math.imul(hash, 0x01000193)
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0')
 }

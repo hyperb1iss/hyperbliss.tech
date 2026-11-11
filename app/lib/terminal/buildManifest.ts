@@ -24,6 +24,8 @@ export interface BuildManifestInput {
   releases?: Record<string, string>
   /** ISO timestamp from the caller (scripts can't call Date.now). */
   generatedAt: string
+  /** Fingerprint of the file bodies, when the caller has read them. */
+  version?: string
 }
 
 const trimTags = (tags: (string | null)[] | null): string[] =>
@@ -39,7 +41,7 @@ const sizeFor = (path: string, fallbackText: string, sizes?: ManifestSizes): num
  * hrefs carry a trailing slash to match the site's `trailingSlash: true`.
  */
 export function buildManifest(input: BuildManifestInput): Manifest {
-  const { posts, projects, lab, about, company, resume, sizes, releases, generatedAt } = input
+  const { posts, projects, lab, about, company, resume, sizes, releases, generatedAt, version } = input
   const entries: ManifestEntry[] = []
 
   // about.md: synthesized from the About page, company first
@@ -129,7 +131,7 @@ export function buildManifest(input: BuildManifestInput): Manifest {
     })
   }
 
-  return { entries, generatedAt }
+  return version ? { entries, generatedAt, version } : { entries, generatedAt }
 }
 
 /** Index a manifest by virtual path for O(1) lookups. */

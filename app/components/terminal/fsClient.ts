@@ -1,14 +1,27 @@
 // Client fetcher for lazy virtual-FS bodies. Requests are batched, deduped,
-// and cached by virtual path; on failure the affected paths can retry.
+// and cached by virtual path; on failure the affected paths can retry. Every
+// request carries the manifest's content version, so when the files change
+// the URL changes and neither this cache nor the browser's serves old bodies.
 
 export type FsBodies = Record<string, string>
 
 const bodyCache: FsBodies = {}
 const inFlight = new Map<string, Promise<void>>()
 let allCache: Promise<FsBodies> | null = null
+let fsVersion = ''
+
+/** Pin requests to a content version; a new version drops everything cached. */
+export function setFsVersion(version: string | undefined): void {
+  const next = version ?? ''
+  if (next === fsVersion) return
+  resetFsCache()
+  fsVersion = next
+}
+
+const versioned = (url: string) => (fsVersion ? `${url}${url.includes('?') ? '&' : '?'}v=${fsVersion}` : url)
 
 async function fetchBatch(paths: readonly string[], signal?: AbortSignal): Promise<void> {
-  const url = `/api/fs?paths=${encodeURIComponent(JSON.stringify(paths))}`
+  const url = versioned(`/api/fs/?paths=${encodeURIComponent(JSON.stringify(paths))}`)
   const bodies = await fetch(url, { signal }).then((res) => {
     if (!res.ok) throw new Error(`/api/fs responded ${res.status}`)
     return res.json() as Promise<FsBodies>
@@ -30,7 +43,7 @@ function registerBatch(paths: readonly string[], signal?: AbortSignal): Promise<
 
 export async function fetchFsBodies(paths?: readonly string[], signal?: AbortSignal): Promise<FsBodies> {
   if (!paths) {
-    allCache ??= fetch('/api/fs', { signal })
+    allCache ??= fetch(versioned('/api/fs/'), { signal })
       .then((res) => {
         if (!res.ok) throw new Error(`/api/fs responded ${res.status}`)
         return res.json() as Promise<FsBodies>

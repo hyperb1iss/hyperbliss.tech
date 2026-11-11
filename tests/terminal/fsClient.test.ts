@@ -2,7 +2,7 @@
 // reset on failure so a later shell command can retry.
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { fetchFsBodies, resetFsCache } from '@/components/terminal/fsClient'
+import { fetchFsBodies, resetFsCache, setFsVersion } from '@/components/terminal/fsClient'
 
 const okResponse = (body: Record<string, string>) => ({
   json: async () => body,
@@ -16,6 +16,7 @@ const requestedPaths = (url: unknown): string[] => {
 }
 
 afterEach(() => {
+  setFsVersion(undefined)
   resetFsCache()
   vi.restoreAllMocks()
 })
@@ -28,6 +29,22 @@ describe('fetchFsBodies', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1)
     expect(a['/a.md']).toBe('A')
     expect(b['/a.md']).toBe('A')
+  })
+
+  it('sends the content version, and a new version refetches instead of serving the cache', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValueOnce(okResponse({ '/a.md': 'old' }))
+      .mockResolvedValueOnce(okResponse({ '/a.md': 'new' }))
+    vi.stubGlobal('fetch', fetchSpy)
+
+    setFsVersion('aaaa1111')
+    expect((await fetchFsBodies(['/a.md']))['/a.md']).toBe('old')
+    expect(String(fetchSpy.mock.calls[0][0])).toContain('v=aaaa1111')
+
+    setFsVersion('bbbb2222')
+    expect((await fetchFsBodies(['/a.md']))['/a.md']).toBe('new')
+    expect(String(fetchSpy.mock.calls[1][0])).toContain('v=bbbb2222')
   })
 
   it('caches across sequential calls', async () => {

@@ -10,7 +10,7 @@ import { buildBroadcast } from './buildBroadcast'
 import { buildManifest } from './buildManifest'
 import { getVirtualFsBodies } from './fsBodies'
 import { pickLatestShip, type ReleaseLike, versionsMap } from './releases'
-import { type Broadcast, byteLengthUtf8, type Manifest } from './types'
+import { type Broadcast, byteLengthUtf8, fingerprint, type Manifest } from './types'
 
 export interface TerminalData {
   manifest: Manifest
@@ -38,10 +38,14 @@ export async function getTerminalData(): Promise<TerminalData> {
 
   // Real byte sizes for every file the shell serves, so `ls -l`, `df`, and
   // `dmesg` report what `cat` will actually print instead of an estimate.
+  // The same read fingerprints the tree, which versions the body requests.
   let sizes: Record<string, number> | undefined
+  let version: string | undefined
   try {
     const bodies = await getVirtualFsBodies()
-    sizes = Object.fromEntries(Object.entries(bodies).map(([path, body]) => [path, byteLengthUtf8(body)]))
+    const paths = Object.keys(bodies).sort()
+    sizes = Object.fromEntries(paths.map((path) => [path, byteLengthUtf8(bodies[path])]))
+    version = fingerprint(paths.map((path) => `${path}\n${bodies[path]}`).join('\n'))
   } catch {
     // Fall back to the manifest's summary-based estimates.
   }
@@ -56,6 +60,7 @@ export async function getTerminalData(): Promise<TerminalData> {
     releases: versionsMap(releases),
     resume,
     sizes,
+    version,
   })
   const broadcast = buildBroadcast({
     generatedAt,

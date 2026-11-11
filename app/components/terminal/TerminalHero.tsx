@@ -15,7 +15,7 @@ import { type BootPhase, readBootInputs, resolveBootPhase } from './bootState'
 import CommandChips from './CommandChips'
 import CommandPalette from './CommandPalette'
 import './commands'
-import { fetchFsBodies } from './fsClient'
+import { fetchFsBodies, setFsVersion } from './fsClient'
 import { registry } from './registry'
 import { decodeSession } from './share'
 import { createShellSession, type ShellSession } from './shell'
@@ -98,6 +98,10 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   useEffect(() => {
     setBoot({ phase: resolveBootPhase(readBootInputs()), replay: decodeSession(window.location.hash) })
   }, [])
+
+  // File bodies are fetched under the manifest's content version, so a deploy
+  // (or an edit in dev) is a fresh URL and never a cached old file.
+  setFsVersion(manifest.version)
 
   // One shell session for human input and agent tools, preserving cwd/exports.
   const shellRef = useRef<ShellSession | null>(null)
