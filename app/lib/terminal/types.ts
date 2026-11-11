@@ -2,7 +2,7 @@
 // Pure data only — no React, importable by both server builders and the
 // client terminal runtime.
 
-export type ContentKind = 'about' | 'now' | 'resume' | 'project' | 'post' | 'lab' | 'secret'
+export type ContentKind = 'about' | 'resume' | 'project' | 'post' | 'lab' | 'secret'
 
 /**
  * Content kinds safe to expose publicly — both to the terminal's shell virtual
@@ -10,7 +10,7 @@ export type ContentKind = 'about' | 'now' | 'resume' | 'project' | 'post' | 'lab
  * private kind can't leak through `cat`/`grep` or read_content; both surfaces
  * must gate on this single set so their allow-lists can never drift apart.
  */
-export const PUBLIC_CONTENT_KINDS: readonly ContentKind[] = ['about', 'now', 'resume', 'project', 'post', 'lab']
+export const PUBLIC_CONTENT_KINDS: readonly ContentKind[] = ['about', 'resume', 'project', 'post', 'lab']
 
 /**
  * One node in the virtual filesystem. The manifest is the authoritative file
@@ -63,13 +63,9 @@ export interface BroadcastLink {
  * commands. Computed server-side at build/ISR time.
  */
 export interface Broadcast {
-  focus: string
-  /** The full now.md prose — small, drives the rich `now` command. */
-  nowBody: string | null
-  location: string | null
-  nowUpdated: string | null
   latestPost: BroadcastLink | null
-  latestProject: BroadcastLink | null
+  /** The curated flagship products, in their pinned order. */
+  flagships: BroadcastLink[]
   latestShip: BroadcastShip | null
   projectCount: number
   postCount: number

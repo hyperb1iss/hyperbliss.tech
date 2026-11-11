@@ -6,7 +6,6 @@ import { MARKDOWN_COLLECTIONS, type MarkdownDirectory } from '../contentCollecti
 import type { ContentKind } from './types'
 
 export const VFS_ABOUT = '/about.md'
-export const VFS_NOW = '/now.md'
 export const VFS_RESUME = '/resume.md'
 
 const KIND_TO_DIRECTORY: Partial<Record<ContentKind, MarkdownDirectory>> = {
@@ -18,7 +17,6 @@ const KIND_TO_DIRECTORY: Partial<Record<ContentKind, MarkdownDirectory>> = {
 /** Virtual absolute path for a content item. */
 export function virtualPath(kind: ContentKind, slug: string): string {
   if (kind === 'about') return VFS_ABOUT
-  if (kind === 'now') return VFS_NOW
   if (kind === 'resume') return VFS_RESUME
   const directory = KIND_TO_DIRECTORY[kind]
   return directory ? `${MARKDOWN_COLLECTIONS[directory].virtualDir}/${slug}.md` : `/${slug}.md`

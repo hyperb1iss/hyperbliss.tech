@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { AboutSection, LabSummary, NowData, PostSummary, ProjectSummary, ResumeData } from '@/lib/content'
+import type { AboutSection, LabSummary, PostSummary, ProjectSummary, ResumeData } from '@/lib/content'
 import { buildBroadcast } from '@/lib/terminal/buildBroadcast'
 import { buildManifest, manifestByPath } from '@/lib/terminal/buildManifest'
 import { byteLengthUtf8 } from '@/lib/terminal/types'
@@ -46,15 +46,6 @@ const lab = (over: Partial<LabSummary> = {}): LabSummary => ({
   ...over,
 })
 
-const now: NowData = {
-  body: 'Doing stuff.',
-  emoji: '🌊',
-  focus: 'Building a terminal hero',
-  location: 'Seattle, WA',
-  title: 'Now',
-  updated: '2026-05-31',
-}
-
 const about: AboutSection = {
   bio: 'Long bio prose here.',
   contactIntro: null,
@@ -71,7 +62,6 @@ describe('buildManifest', () => {
     about,
     generatedAt: '2026-05-31T00:00:00.000Z',
     lab: [lab()],
-    now,
     posts: [post()],
     projects: [project()],
     resume,
@@ -80,12 +70,11 @@ describe('buildManifest', () => {
   it('includes the singleton content files plus one entry per content item', () => {
     const paths = manifest.entries.map((e) => e.path)
     expect(paths).toContain('/about.md')
-    expect(paths).toContain('/now.md')
     expect(paths).toContain('/resume.md')
     expect(paths).toContain('/projects/proj.md')
     expect(paths).toContain('/blog/post.md')
     expect(paths).toContain('/lab/lab.md')
-    expect(manifest.entries).toHaveLength(6)
+    expect(manifest.entries).toHaveLength(5)
   })
 
   it('never ships bodies', () => {
@@ -101,7 +90,8 @@ describe('buildManifest', () => {
     expect(byPath.get('/projects/proj.md')?.href).toBe('/projects/proj/')
     expect(byPath.get('/blog/post.md')?.href).toBe('/blog/post/')
     expect(byPath.get('/lab/lab.md')?.href).toBe('/lab/lab/')
-    expect(byPath.get('/now.md')?.href).toBeNull()
+    expect(byPath.get('/about.md')?.href).toBe('/about/')
+    expect(byPath.get('/about.md')?.title).toBe('Hyperbliss Technologies')
   })
 
   it('strips null tags', () => {
@@ -114,7 +104,6 @@ describe('buildManifest', () => {
       about,
       generatedAt: 'x',
       lab: [],
-      now,
       posts: [],
       projects: [project()],
       resume,
@@ -130,7 +119,6 @@ describe('buildManifest', () => {
       about,
       generatedAt: 'x',
       lab: [],
-      now,
       posts: [],
       projects: [project()],
       releases: { proj: '1.2.3' },
@@ -141,34 +129,35 @@ describe('buildManifest', () => {
 })
 
 describe('buildBroadcast', () => {
-  it('summarizes counts and picks the newest post/project', () => {
+  it('summarizes counts, picks the newest post, and lists the pinned flagships in order', () => {
     const broadcast = buildBroadcast({
       generatedAt: '2026-05-31T00:00:00.000Z',
       lab: [lab()],
-      now,
       posts: [post({ date: '2026-01-01', slug: 'old' }), post({ date: '2026-05-27', slug: 'new' })],
-      projects: [project({ date: '2025-01-01', slug: 'p1' }), project({ date: '2025-09-01', slug: 'p2' })],
+      projects: [
+        project({ featured: 2, slug: 'p1', title: 'Second: With a Tagline' }),
+        project({ slug: 'p2' }),
+        project({ featured: 1, slug: 'p3', title: 'First' }),
+      ],
     })
     expect(broadcast.postCount).toBe(2)
-    expect(broadcast.projectCount).toBe(2)
+    expect(broadcast.projectCount).toBe(3)
     expect(broadcast.labCount).toBe(1)
-    expect(broadcast.focus).toBe('Building a terminal hero')
     expect(broadcast.latestPost?.href).toBe('/blog/new/')
-    expect(broadcast.latestProject?.href).toBe('/projects/p2/')
+    expect(broadcast.flagships.map((f) => f.title)).toEqual(['First', 'Second'])
+    expect(broadcast.flagships[0].href).toBe('/projects/p3/')
     expect(broadcast.latestShip).toBeNull()
   })
 
-  it('survives an empty corpus and missing focus', () => {
+  it('survives an empty corpus', () => {
     const broadcast = buildBroadcast({
       generatedAt: 'x',
       lab: [],
-      now: { body: null, emoji: null, focus: null, location: null, title: 'Now', updated: null },
       posts: [],
       projects: [],
     })
     expect(broadcast.latestPost).toBeNull()
-    expect(broadcast.latestProject).toBeNull()
-    expect(broadcast.focus.length).toBeGreaterThan(0)
+    expect(broadcast.flagships).toEqual([])
   })
 })
 

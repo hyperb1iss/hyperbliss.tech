@@ -28,7 +28,6 @@ export const entry = (over: Partial<ManifestEntry> = {}): ManifestEntry => ({
 export const testManifest: Manifest = {
   entries: [
     entry({ href: '/about/', kind: 'about', path: '/about.md', tags: ['about'], title: 'About' }),
-    entry({ href: null, kind: 'now', path: '/now.md', tags: ['now'], title: 'Now' }),
     entry({ href: '/projects/sibyl/', kind: 'project', path: '/projects/sibyl.md', tags: ['Rust'], title: 'Sibyl' }),
     entry({
       href: '/projects/chromacat/',
@@ -44,15 +43,11 @@ export const testManifest: Manifest = {
 }
 
 export const testBroadcast: Broadcast = {
-  focus: 'Building a terminal hero',
+  flagships: [{ date: '2025-09-01', href: '/projects/sibyl/', title: 'Sibyl' }],
   generatedAt: '2026-05-31T00:00:00.000Z',
   labCount: 1,
   latestPost: { date: '2026-05-27', href: '/blog/how-i-ai/', title: 'How I AI' },
-  latestProject: { date: '2025-09-01', href: '/projects/sibyl/', title: 'Sibyl' },
   latestShip: { project: 'git-iris', publishedAt: '2026-05-20', slug: 'git-iris', url: 'https://x', version: '1.0.0' },
-  location: 'Seattle, WA',
-  nowBody: 'Building the terminal hero.',
-  nowUpdated: '2026-05-31',
   postCount: 6,
   projectCount: 24,
 }

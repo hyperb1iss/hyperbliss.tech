@@ -3,11 +3,10 @@
 // the caller (only a curated few — §5.10) and passed in; an empty/missing ship
 // is a supported state (the broadcast still renders).
 
-import type { LabSummary, NowData, PostSummary, ProjectSummary } from '../content'
+import type { LabSummary, PostSummary, ProjectSummary } from '../content'
 import type { Broadcast, BroadcastShip } from './types'
 
 export interface BuildBroadcastInput {
-  now: NowData
   posts: PostSummary[]
   projects: ProjectSummary[]
   lab: LabSummary[]
@@ -28,25 +27,23 @@ const newest = <T extends { date: string | null }>(items: T[]): T | null => {
 }
 
 export function buildBroadcast(input: BuildBroadcastInput): Broadcast {
-  const { now, posts, projects, lab, latestShip = null, generatedAt } = input
+  const { posts, projects, lab, latestShip = null, generatedAt } = input
 
   const latestPost = newest(posts)
-  const latestProject = newest(projects)
+  // The pinned flagships (frontmatter `featured: N`), named without taglines.
+  const flagships = projects
+    .filter((p) => typeof p.featured === 'number')
+    .sort((a, b) => (a.featured as number) - (b.featured as number))
+    .map((p) => ({ date: p.date, href: `/projects/${p.slug}/`, title: p.title.split(':')[0].trim() }))
 
   return {
-    focus: now.focus ?? 'Building things, open source all the way down.',
+    flagships,
     generatedAt,
     labCount: lab.length,
     latestPost: latestPost
       ? { date: latestPost.date, href: `/blog/${latestPost.slug}/`, title: latestPost.title }
       : null,
-    latestProject: latestProject
-      ? { date: latestProject.date, href: `/projects/${latestProject.slug}/`, title: latestProject.title }
-      : null,
     latestShip,
-    location: now.location,
-    nowBody: now.body,
-    nowUpdated: now.updated,
     postCount: posts.length,
     projectCount: projects.length,
   }

@@ -87,7 +87,7 @@ const siteMetadata: Metadata = {
   },
   other: {
     'source-code': 'https://github.com/hyperb1iss/hyperbliss.tech',
-    'view-source': 'SilkCircuit terminal homepage; try /api/fs?path=/now.md for the content-backed shell.',
+    'view-source': 'SilkCircuit terminal homepage; try /api/fs?path=/about.md for the content-backed shell.',
   },
   publisher: COMPANY_LEGAL_NAME,
   robots: {

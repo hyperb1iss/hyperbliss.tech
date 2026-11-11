@@ -129,9 +129,8 @@ describe('WebMCP bridge', () => {
       'read_content',
       'search_content',
       'set_theme',
-      'whats_now',
     ])
-    expect(tools).toHaveLength(7)
+    expect(tools).toHaveLength(6)
     for (const registeredTool of tools) {
       expect(registeredTool.description.length).toBeGreaterThan(0)
       expect(registeredTool.inputSchema).toMatchObject({ additionalProperties: false, type: 'object' })
@@ -158,9 +157,6 @@ describe('WebMCP bridge', () => {
     installModelContext(modelContext)
     const onToolCall = vi.fn()
     registerAgentTools(deps({ onToolCall }))
-
-    const whatsNow = await modelContext.executeTool(await toolByName(modelContext, 'whats_now'))
-    expect(whatsNow).toMatchObject({ body: testBroadcast.nowBody, focus: testBroadcast.focus })
 
     const list = (await modelContext.executeTool(
       await toolByName(modelContext, 'list_content'),

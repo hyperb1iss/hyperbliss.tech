@@ -3,8 +3,8 @@
 // (content.ts) and supplies real byte sizes; this maps slugs to virtual paths
 // and assembles entries. Bodies are never included (§5.5).
 
-import type { AboutSection, LabSummary, NowData, PostSummary, ProjectSummary, ResumeData } from '../content'
-import { deepHref, VFS_ABOUT, VFS_NOW, VFS_RESUME, virtualPath } from './paths'
+import type { AboutSection, CompanySection, LabSummary, PostSummary, ProjectSummary, ResumeData } from '../content'
+import { deepHref, VFS_ABOUT, VFS_RESUME, virtualPath } from './paths'
 import { byteLengthUtf8, type Manifest, type ManifestEntry } from './types'
 
 /** Virtual-path → real byte size of the body the lazy-FS will serve. */
@@ -14,8 +14,9 @@ export interface BuildManifestInput {
   posts: PostSummary[]
   projects: ProjectSummary[]
   lab: LabSummary[]
-  now: NowData
   about: AboutSection | null
+  /** The company half of the About page; it leads about.md when present. */
+  company?: CompanySection | null
   resume: ResumeData
   /** Real byte sizes keyed by virtual path; entries fall back to an estimate. */
   sizes?: ManifestSizes
@@ -33,16 +34,16 @@ const sizeFor = (path: string, fallbackText: string, sizes?: ManifestSizes): num
 
 /**
  * Build the authoritative virtual filesystem manifest. Path scheme:
- *   /about.md /now.md /resume.md
+ *   /about.md /resume.md
  *   /projects/<slug>.md  /blog/<slug>.md  /lab/<slug>.md
  * hrefs carry a trailing slash to match the site's `trailingSlash: true`.
  */
 export function buildManifest(input: BuildManifestInput): Manifest {
-  const { posts, projects, lab, now, about, resume, sizes, releases, generatedAt } = input
+  const { posts, projects, lab, about, company, resume, sizes, releases, generatedAt } = input
   const entries: ManifestEntry[] = []
 
-  // about.md — synthesized from the about page bio
-  const aboutSummary = about?.intro?.introText ?? about?.bio?.slice(0, 160) ?? 'About Stefanie Jane.'
+  // about.md: synthesized from the About page, company first
+  const aboutSummary = company?.lede ?? 'An independent software company in Seattle.'
   entries.push({
     bytes: sizeFor(VFS_ABOUT, `${aboutSummary}\n${about?.bio ?? ''}`, sizes),
     date: null,
@@ -54,24 +55,8 @@ export function buildManifest(input: BuildManifestInput): Manifest {
     path: VFS_ABOUT,
     status: null,
     summary: aboutSummary,
-    tags: ['about', 'bio'],
-    title: about?.intro?.name ?? 'About Stefanie Jane',
-  })
-
-  // now.md
-  entries.push({
-    bytes: sizeFor(VFS_NOW, `${now.focus ?? ''}\n${now.body ?? ''}`, sizes),
-    date: now.updated,
-    emoji: now.emoji,
-    github: null,
-    href: deepHref('now', ''),
-    kind: 'now',
-    latestVersion: null,
-    path: VFS_NOW,
-    status: null,
-    summary: now.focus ?? 'What I am working on right now.',
-    tags: ['now', 'current'],
-    title: now.title,
+    tags: ['about', 'company'],
+    title: 'Hyperbliss Technologies',
   })
 
   // resume.md

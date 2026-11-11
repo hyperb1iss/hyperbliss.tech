@@ -157,7 +157,7 @@ describe('registered command set', () => {
 
     installModelContext(
       new FakeModelContext([
-        { description: 'Tool', inputSchema: { type: 'object' }, name: 'whats_now' },
+        { description: 'Tool', inputSchema: { type: 'object' }, name: 'search_content' },
         { description: 'Tool', inputSchema: { type: 'object' }, name: 'get_site_status' },
       ]),
     )

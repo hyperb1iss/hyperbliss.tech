@@ -1,5 +1,5 @@
 // neofetch: the site at a glance, the way neofetch draws a machine. An LED
-// mark beside the newest release, essay, and project (each a link), the
+// mark beside the newest release and essay, the flagship products, the
 // content counts, and the theme's colors as a row of cells.
 
 import type { Broadcast } from '@/lib/terminal/types'
@@ -92,11 +92,16 @@ function NeofetchView({ ctx }: { ctx: TerminalContext }) {
             {b.latestPost.date ? ` · ${b.latestPost.date}` : ''}
           </Line>
         )}
-        {b.latestProject && (
-          <Line k="project">
-            <TermLink href={b.latestProject.href} navigate={ctx.navigate}>
-              {b.latestProject.title}
-            </TermLink>
+        {b.flagships.length > 0 && (
+          <Line k="products">
+            {b.flagships.map((f, i) => (
+              <span key={f.href}>
+                {i > 0 && ' · '}
+                <TermLink href={f.href} navigate={ctx.navigate}>
+                  {f.title}
+                </TermLink>
+              </span>
+            ))}
           </Line>
         )}
         <Line k="content">{`${b.projectCount} projects · ${b.postCount} posts · ${b.labCount} lab`}</Line>
@@ -115,5 +120,5 @@ registry.register({
   group: 'content',
   name: 'neofetch',
   run: (_args, ctx) => <NeofetchView ctx={ctx} />,
-  summary: 'the newest release, essay, and project',
+  summary: 'the site at a glance',
 })

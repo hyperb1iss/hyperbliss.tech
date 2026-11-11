@@ -27,15 +27,11 @@ describe('degraded states', () => {
 
   it('neofetch survives an empty corpus / missing now', async () => {
     const empty: Broadcast = {
-      focus: 'Building things.',
+      flagships: [],
       generatedAt: 'x',
       labCount: 0,
       latestPost: null,
-      latestProject: null,
       latestShip: null,
-      location: null,
-      nowBody: null,
-      nowUpdated: null,
       postCount: 0,
       projectCount: 0,
     }

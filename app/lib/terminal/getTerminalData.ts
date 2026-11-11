@@ -4,21 +4,12 @@
 // releases in memory and in the fetch cache), so this is cheap to call from a
 // layout and a page in the same render.
 
-import { getAllLab, getAllPosts, getAllProjects, getNow, getPage, getResume, type NowData } from '../content'
+import { getAllLab, getAllPosts, getAllProjects, getPage, getResume } from '../content'
 import { getReleasesForProjects } from '../github'
 import { buildBroadcast } from './buildBroadcast'
 import { buildManifest } from './buildManifest'
 import { pickLatestShip, type ReleaseLike, versionsMap } from './releases'
 import type { Broadcast, Manifest } from './types'
-
-export const DEFAULT_NOW: NowData = {
-  body: null,
-  emoji: null,
-  focus: 'Building things, open source all the way down.',
-  location: null,
-  title: 'Now',
-  updated: null,
-}
 
 export interface TerminalData {
   manifest: Manifest
@@ -27,11 +18,10 @@ export interface TerminalData {
 
 export async function getTerminalData(): Promise<TerminalData> {
   const generatedAt = new Date().toISOString()
-  const [posts, projects, lab, now, aboutPage, resume] = await Promise.all([
+  const [posts, projects, lab, aboutPage, resume] = await Promise.all([
     getAllPosts(),
     getAllProjects(),
     getAllLab(),
-    getNow().catch(() => DEFAULT_NOW),
     getPage('about').catch(() => null),
     getResume().catch(() => ({ body: null, description: null, title: 'Resume' })),
   ])
@@ -47,9 +37,9 @@ export async function getTerminalData(): Promise<TerminalData> {
 
   const manifest = buildManifest({
     about: aboutPage?.about ?? null,
+    company: aboutPage?.company ?? null,
     generatedAt,
     lab,
-    now,
     posts,
     projects,
     releases: versionsMap(releases),
@@ -59,7 +49,6 @@ export async function getTerminalData(): Promise<TerminalData> {
     generatedAt,
     lab,
     latestShip: pickLatestShip(releases, projects),
-    now,
     posts,
     projects,
   })
