@@ -547,6 +547,13 @@
   }
 }
 
+/* A marquee wall sliding out through the left edge of its frame. */
+@keyframes led-scroll {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
 /* Section labels: three LED cells (the element and its two box-shadows)
    passing the brand colors along, one step at a time. */
 @keyframes led-chase {

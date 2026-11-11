@@ -124,6 +124,31 @@ const wallStyles = css`
   }
 `
 
+// A marquee: one long wall sliding right to left through its frame. The
+// track is padded by the frame's width so the text enters from the right edge
+// and leaves fully on the left (led-scroll in globals.css).
+const frameStyles = css`
+  overflow: hidden;
+  padding: 0.6rem 0;
+`
+
+const trackStyles = css`
+  display: flex;
+  width: max-content;
+  padding-left: 100%;
+  animation: led-scroll var(--scroll-time, 12s) linear infinite;
+
+  & > div {
+    width: calc(var(--cols) * var(--cell, 1.1rem));
+    max-width: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    padding-left: 0;
+    animation: none;
+  }
+`
+
 const cellStyles = css`
   aspect-ratio: 1;
   border-radius: 1px;
@@ -154,12 +179,15 @@ interface LedSignProps {
   cell?: string
   /** Characters per line before the text wraps. */
   lineChars?: number
+  /** One line sliding through its frame instead of wrapping. */
+  scroll?: boolean
 }
 
-export default function LedSign({ text, label, cell, lineChars }: LedSignProps) {
-  const lines = ledLines(ledText(text), lineChars)
-  return (
-    <div aria-label={label ?? text} className={stackStyles} role="img">
+export default function LedSign({ text, label, cell, lineChars, scroll = false }: LedSignProps) {
+  const clean = ledText(text)
+  const lines = scroll ? [clean].filter(Boolean) : ledLines(clean, lineChars)
+  const walls = (
+    <>
       {lines.map((line, lineIndex) => {
         const { cells, cols } = cellsFor(line)
         return (
@@ -185,6 +213,22 @@ export default function LedSign({ text, label, cell, lineChars }: LedSignProps) 
           </div>
         )
       })}
+    </>
+  )
+  if (scroll) {
+    // About eight cells a second, however long the text is.
+    const seconds = Math.max(6, Math.round((clean.length * 6 + 40) / 8))
+    return (
+      <div aria-label={label ?? text} className={frameStyles} role="img">
+        <div className={trackStyles} style={{ '--scroll-time': `${seconds}s` } as CSSProperties}>
+          {walls}
+        </div>
+      </div>
+    )
+  }
+  return (
+    <div aria-label={label ?? text} className={stackStyles} role="img">
+      {walls}
     </div>
   )
 }

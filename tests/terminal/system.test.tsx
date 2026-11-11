@@ -28,6 +28,37 @@ describe('system commands', () => {
     }
   })
 
+  it('dmesg prints the page boot log with the real file count', async () => {
+    const out = await run('dmesg')
+    expect(out).toContain('hyperbliss console booting')
+    expect(out).toMatch(/vfs: mounted \d+ files/)
+    expect(out).toContain('console: you ran dmesg')
+  })
+
+  it('df sizes the content tree by directory', async () => {
+    const out = await run('df')
+    expect(out).toContain('Mounted on')
+    expect(out).toContain('/projects')
+    expect(out).toContain('/blog')
+  })
+
+  it('free, uname, and cal answer natively', async () => {
+    expect(await run('free')).not.toContain('command not found')
+    expect(await run('uname')).toContain('Hyperbliss console')
+    expect(await run('cal')).toContain('Su Mo Tu We Th Fr Sa')
+  })
+
+  it('exit presses Escape, which is what closes the console', async () => {
+    let pressed = ''
+    const onKey = (e: KeyboardEvent) => {
+      pressed = e.key
+    }
+    window.addEventListener('keydown', onKey)
+    await run('exit')
+    window.removeEventListener('keydown', onKey)
+    expect(pressed).toBe('Escape')
+  })
+
   it('whoami and date resolve natively', async () => {
     expect(await run('whoami')).toContain('guest')
     expect(await run('date')).not.toContain('command not found')

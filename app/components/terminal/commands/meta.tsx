@@ -140,6 +140,15 @@ registry.register({
 })
 
 registry.register({
+  aliases: ['scroll'],
+  group: 'fun',
+  name: 'marquee',
+  run: (args) => <LedSign scroll={true} text={ledText(args.join(' ')) || 'HYPERBLISS'} />,
+  summary: 'scroll a message across the LED wall',
+  usage: 'marquee <text>',
+})
+
+registry.register({
   group: 'meta',
   name: 'agent',
   run: async () => {

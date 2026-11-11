@@ -8,8 +8,9 @@ import { getAllLab, getAllPosts, getAllProjects, getPage, getResume } from '../c
 import { getReleasesForProjects } from '../github'
 import { buildBroadcast } from './buildBroadcast'
 import { buildManifest } from './buildManifest'
+import { getVirtualFsBodies } from './fsBodies'
 import { pickLatestShip, type ReleaseLike, versionsMap } from './releases'
-import type { Broadcast, Manifest } from './types'
+import { type Broadcast, byteLengthUtf8, type Manifest } from './types'
 
 export interface TerminalData {
   manifest: Manifest
@@ -35,6 +36,16 @@ export async function getTerminalData(): Promise<TerminalData> {
     // Rate-limited or offline — the console still works over local content.
   }
 
+  // Real byte sizes for every file the shell serves, so `ls -l`, `df`, and
+  // `dmesg` report what `cat` will actually print instead of an estimate.
+  let sizes: Record<string, number> | undefined
+  try {
+    const bodies = await getVirtualFsBodies()
+    sizes = Object.fromEntries(Object.entries(bodies).map(([path, body]) => [path, byteLengthUtf8(body)]))
+  } catch {
+    // Fall back to the manifest's summary-based estimates.
+  }
+
   const manifest = buildManifest({
     about: aboutPage?.about ?? null,
     company: aboutPage?.company ?? null,
@@ -44,6 +55,7 @@ export async function getTerminalData(): Promise<TerminalData> {
     projects,
     releases: versionsMap(releases),
     resume,
+    sizes,
   })
   const broadcast = buildBroadcast({
     generatedAt,
