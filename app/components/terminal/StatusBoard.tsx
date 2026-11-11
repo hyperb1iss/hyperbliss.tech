@@ -1,54 +1,79 @@
-'use client'
+// The console's landing display: the name on an LED wall. Every lit cell
+// rides one color wave (the led-wave keyframes in globals.css, offset per
+// column and row), and any cell flashes white under the pointer and fades
+// back, so the sign can be painted on. Light is what the company makes, so
+// the welcome is a toy made of it instead of a paragraph about it.
 
-// The console's landing display: the company's name set in the display face,
-// a ticking clock, an activity feed that cycles recent ships and essays, the
-// push sparkline, and rotating hints. Rendered once as a boot-finale log entry;
-// it owns its own timers so it keeps moving without re-running the boot.
-// Decorative motion is gated behind prefers-reduced-motion; the clock
-// (information, not decoration) keeps ticking either way.
-
-import { useEffect, useState } from 'react'
-import type { ActivityKind, ActivitySummary } from '@/lib/github'
-import { sparkline } from '@/lib/sparkline'
-import type { Broadcast } from '@/lib/terminal/types'
+import type { CSSProperties } from 'react'
+import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
-import { getModelContext, isWebMcpEnabled } from './webmcp'
 
-const SPARK_LEN = 16
+// A 5x7 dot-matrix face, only the letters the sign needs.
+const GLYPHS: Record<string, string[]> = {
+  B: ['11110', '10001', '10001', '11110', '10001', '10001', '11110'],
+  E: ['11111', '10000', '10000', '11110', '10000', '10000', '11111'],
+  H: ['10001', '10001', '10001', '11111', '10001', '10001', '10001'],
+  I: ['11111', '00100', '00100', '00100', '00100', '00100', '11111'],
+  L: ['10000', '10000', '10000', '10000', '10000', '10000', '11111'],
+  P: ['11110', '10001', '10001', '11110', '10000', '10000', '10000'],
+  R: ['11110', '10001', '10001', '11110', '10100', '10010', '10001'],
+  S: ['01111', '10000', '10000', '01110', '00001', '00001', '11110'],
+  Y: ['10001', '10001', '01010', '00100', '00100', '00100', '00100'],
+}
 
-const KIND_ICON: Record<ActivityKind, string> = { create: '+', pr: '⇡', push: '↑', release: '⌁' }
+const WORD = 'HYPERBLISS'
+const ROWS = 7
 
-const TIPS = [
-  'type `help` to explore',
-  '`projects` · `blog` · `now`',
-  '`matrix` follows the white rabbit',
-  '⌘K / Ctrl-K opens the palette',
-  'or just start typing — it is a real shell',
-]
+// One row of the wall: each letter's row, with a dark column between letters.
+const rowBits = (row: number) =>
+  [...WORD]
+    .map((ch) => GLYPHS[ch][row])
+    .join('0')
+    .split('')
+
+const CELLS = Array.from({ length: ROWS }, (_, row) =>
+  rowBits(row).map((bit, col) => ({ col, id: `${row}-${col}`, lit: bit === '1', row })),
+).flat()
+
+const COLS = CELLS.length / ROWS
 
 const Wrap = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
-  padding: 0.8rem 0 1.2rem;
+  gap: 2rem;
+  padding: 1.2rem 0 1.6rem;
 `
 
-const Head = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.6rem;
-  flex-wrap: wrap;
+const wallStyles = css`
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: 2px;
+  width: 100%;
+  max-width: 76rem;
+
+  @media (max-width: 640px) {
+    gap: 1px;
+  }
 `
 
-const Host = styled.span`
-  font-family: var(--font-display);
-  font-stretch: 125%;
-  font-weight: 900;
-  font-size: clamp(2.4rem, 1.8rem + 1.6vw, 3.6rem);
-  line-height: 1;
-  letter-spacing: -0.02em;
-  color: #f6f2ff;
+const cellStyles = css`
+  aspect-ratio: 1;
+  border-radius: 1px;
+  background: rgba(244, 240, 255, 0.06);
+  /* The white flash is an inset shadow, so it can sit over the animated
+     background: instant under the pointer, a slow fade once it leaves. */
+  box-shadow: inset 0 0 0 0 #ffffff;
+  transition: box-shadow 1.4s ease-out;
+
+  &[data-lit='true'] {
+    background: #e135ff;
+    animation: led-wave 5s linear infinite;
+  }
+
+  &:hover {
+    box-shadow: inset 0 0 0 2rem #ffffff;
+    transition-duration: 0s;
+  }
 `
 
 const Sub = styled.p`
@@ -60,235 +85,20 @@ const Sub = styled.p`
   color: #d6cfe6;
 `
 
-const Rows = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  padding: 1.2rem 0;
-  border-top: 1px solid rgba(244, 240, 255, 0.1);
-  border-bottom: 1px solid rgba(244, 240, 255, 0.1);
-`
-
-const Line = styled.div`
-  display: flex;
-  gap: 1.6rem;
-  align-items: baseline;
-  flex-wrap: wrap;
-`
-
-const Label = styled.span`
-  color: #ff9bdc;
-  min-width: 8rem;
-  flex-shrink: 0;
-`
-
-const Clock = styled.span`
-  color: #b9b0cc;
-  font-variant-numeric: tabular-nums;
-`
-
-const FeedText = styled.span`
-  color: #f4f0ff;
-`
-
-const Spark = styled.span`
-  color: #80ffea;
-  letter-spacing: 1px;
-  font-variant-numeric: tabular-nums;
-`
-
-const Live = styled.span`
-  color: #80ffea;
-
-  &::before {
-    content: '●';
-    margin-right: 0.4em;
-    animation: silkStatusPulse 1.6s ease-in-out infinite;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    &::before { animation: none; }
-  }
-`
-
-const Tip = styled.span`
-  color: #8f86a3;
-`
-
-const pad2 = (n: number) => n.toString().padStart(2, '0')
-const clockStr = (d: Date) => `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`
-interface FeedItem {
-  icon: string
-  text: string
-}
-
-function buildFeed(b: Broadcast, activity: ActivitySummary | null): FeedItem[] {
-  const feed: FeedItem[] = []
-  if (activity) {
-    for (const ev of activity.events.slice(0, 5)) {
-      feed.push({ icon: KIND_ICON[ev.kind], text: `${ev.title} · ${ev.repo}` })
-    }
-  }
-  if (b.latestShip) {
-    feed.push({
-      icon: '↑',
-      text: `shipped ${b.latestShip.project}${b.latestShip.version ? ` v${b.latestShip.version}` : ''}`,
-    })
-  }
-  if (b.latestPost) feed.push({ icon: '✎', text: `published ${b.latestPost.title}` })
-  feed.push({
-    icon: '◆',
-    text:
-      activity && activity.totalPushes > 0
-        ? `${activity.totalPushes} pushes · ${activity.repos.length} repos · ${b.postCount} posts`
-        : `${b.projectCount} repos · ${b.postCount} posts · ${b.labCount} experiments`,
-  })
-  feed.push({ icon: '⌁', text: 'open source all the way down' })
-  return feed
-}
-
-const seedSpark = () => Array.from({ length: SPARK_LEN }, (_, i) => 0.35 + 0.25 * Math.sin(i / 2))
-const stepSpark = (prev: number) => Math.max(0.06, Math.min(1, prev + (Math.random() - 0.5) * 0.55))
-
-/** Fetch the cached activity summary once; null until a non-empty result lands. */
-function useGithubActivity(): ActivitySummary | null {
-  const [data, setData] = useState<ActivitySummary | null>(null)
-  useEffect(() => {
-    let cancelled = false
-    fetch('/api/activity')
-      .then((r) => (r.ok ? (r.json() as Promise<ActivitySummary>) : null))
-      .then((d) => {
-        if (!cancelled && d?.ok && d.events.length > 0) setData(d)
-      })
-      .catch(() => {})
-    return () => {
-      cancelled = true
-    }
-  }, [])
-  return data
-}
-
-function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false)
-  useEffect(() => {
-    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)')
-    if (!mq) return
-    const sync = () => setReduced(mq.matches)
-    sync()
-    mq.addEventListener?.('change', sync)
-    return () => mq.removeEventListener?.('change', sync)
-  }, [])
-  return reduced
-}
-
-type WebMcpStatus = { state: 'disabled' | 'unsupported' | 'ready'; count: number | null }
-
-function useWebMcpStatus(): WebMcpStatus {
-  const [status, setStatus] = useState<WebMcpStatus>({ count: null, state: 'disabled' })
-
-  useEffect(() => {
-    if (!isWebMcpEnabled()) {
-      setStatus({ count: null, state: 'disabled' })
-      return
-    }
-
-    const modelContext = getModelContext()
-    if (!modelContext) {
-      setStatus({ count: null, state: 'unsupported' })
-      return
-    }
-
-    const getTools = modelContext.getTools?.bind(modelContext)
-    if (!getTools) {
-      setStatus({ count: null, state: 'unsupported' })
-      return
-    }
-
-    let cancelled = false
-    const sync = async () => {
-      try {
-        const tools = await getTools()
-        if (!cancelled) setStatus({ count: tools?.length ?? null, state: 'ready' })
-      } catch {
-        if (!cancelled) setStatus({ count: null, state: 'unsupported' })
-      }
-    }
-
-    void sync()
-    modelContext.addEventListener('toolchange', sync)
-    return () => {
-      cancelled = true
-      modelContext.removeEventListener('toolchange', sync)
-    }
-  }, [])
-
-  return status
-}
-
-export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
-  const reduced = usePrefersReducedMotion()
-  const webmcp = useWebMcpStatus()
-  const activity = useGithubActivity()
-  const feed = buildFeed(broadcast, activity)
-  const [now, setNow] = useState(() => new Date())
-  const [feedIdx, setFeedIdx] = useState(0)
-  const [tipIdx, setTipIdx] = useState(0)
-  const [spark, setSpark] = useState<number[]>(seedSpark)
-
-  // Clock + uptime always tick — they're information, not decoration.
-  useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  // Feed / tips / sparkline are ambient flourish — pause them for reduced motion.
-  // Real commit cadence is static data, so only the placeholder spark animates.
-  useEffect(() => {
-    if (reduced) return
-    const feedId = setInterval(() => setFeedIdx((i) => (i + 1) % feed.length), 3600)
-    const tipId = setInterval(() => setTipIdx((i) => (i + 1) % TIPS.length), 4800)
-    const sparkId = activity
-      ? null
-      : setInterval(() => setSpark((prev) => [...prev.slice(1), stepSpark(prev[prev.length - 1])]), 460)
-    return () => {
-      clearInterval(feedId)
-      clearInterval(tipId)
-      if (sparkId) clearInterval(sparkId)
-    }
-  }, [reduced, feed.length, activity])
-
-  const item = feed[feedIdx % feed.length] ?? feed[0]
-  const sparkVals = activity ? activity.pushesPerDay : spark
-
+export default function StatusBoard() {
   return (
-    <Wrap aria-label="hyperbliss status console">
-      <Head>
-        <Host>Hyperbliss Technologies</Host>
-        <Clock>{clockStr(now)}</Clock>
-      </Head>
+    <Wrap>
+      <div aria-label="Hyperbliss" className={wallStyles} role="img" style={{ '--cols': COLS } as CSSProperties}>
+        {CELLS.map((cell) => (
+          <span
+            className={cellStyles}
+            data-lit={cell.lit}
+            key={cell.id}
+            style={cell.lit ? { animationDelay: `${-(cell.col * 0.085 + cell.row * 0.06).toFixed(3)}s` } : undefined}
+          />
+        ))}
+      </div>
       <Sub>Open source tools for light, memory, and the terminal.</Sub>
-
-      <Rows>
-        <Line>
-          <Label>{item.icon} latest</Label>
-          <FeedText>{item.text}</FeedText>
-        </Line>
-        <Line>
-          <Label>{activity ? 'pushes' : 'pulse'}</Label>
-          <Spark>{sparkline(sparkVals)}</Spark>
-          <Live>live</Live>
-        </Line>
-        {/* Agent tooling is plumbing: it only earns a row when it is actually on. */}
-        {webmcp.state === 'ready' && (
-          <Line>
-            <Label>agents</Label>
-            <Spark>WebMCP</Spark>
-            <Live>ready{webmcp.count === null ? '' : ` · ${webmcp.count} tools`}</Live>
-          </Line>
-        )}
-      </Rows>
-
-      <Tip>{TIPS[tipIdx % TIPS.length]}</Tip>
     </Wrap>
   )
 }

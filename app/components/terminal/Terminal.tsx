@@ -422,14 +422,6 @@ export default function Terminal({
   useEffect(() => {
     if (!bootPhase || bootPhase === 'pending') return
     let cancelled = false
-    let skip = bootPhase === 'skip-to-end'
-    const onSkip = () => {
-      skip = true
-    }
-    if (bootPhase === 'full-boot') {
-      window.addEventListener('keydown', onSkip, { once: true })
-      window.addEventListener('pointerdown', onSkip, { once: true })
-    }
     markVisited()
     const finale = async () => {
       if (replayCommands && replayCommands.length > 0) {
@@ -439,24 +431,13 @@ export default function Terminal({
         }
         return
       }
-      // The living status console is the landing display — a breathing
-      // replacement for a one-shot neofetch dump (the command still exists).
-      pushEntry(<StatusBoard broadcast={broadcast} />)
+      pushEntry(<StatusBoard />)
     }
-    void runBootSequence({
-      broadcast,
-      finale,
-      isCancelled: () => cancelled,
-      phase: bootPhase,
-      print: pushEntry,
-      shouldSkip: () => skip,
-    })
+    void runBootSequence({ finale, isCancelled: () => cancelled, phase: bootPhase })
     return () => {
       cancelled = true
-      window.removeEventListener('keydown', onSkip)
-      window.removeEventListener('pointerdown', onSkip)
     }
-  }, [bootPhase, broadcast, pushEntry, run, replayCommands])
+  }, [bootPhase, pushEntry, run, replayCommands])
 
   const submit = useCallback(
     (e: React.FormEvent) => {

@@ -22,10 +22,10 @@ const CmdGrid = styled.div`
   margin-bottom: var(--space-2);
 
   & .name {
-    color: var(--silk-circuit-cyan);
+    color: #80ffea;
   }
   & .sum {
-    color: var(--text-secondary);
+    color: #d6cfe6;
   }
 `
 
@@ -42,7 +42,7 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
 
   return (
     <Block>
-      <Heading>hyperbliss terminal — type a command, or tap a chip below</Heading>
+      <Heading>hyperbliss console · type a command, or pick one below</Heading>
       {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
         <div key={g}>
           <Muted>{GROUP_LABELS[g]}</Muted>
@@ -114,6 +114,8 @@ registry.register({
 
 registry.register({
   group: 'meta',
+  // Sets an attribute no stylesheet reads yet, so it stays out of help.
+  hidden: true,
   name: 'theme',
   run: (args, ctx) => {
     const name = args[0]
@@ -151,7 +153,7 @@ registry.register({
   group: 'meta',
   name: 'history',
   run: (_args, ctx) => {
-    if (ctx.history.length === 0) return text('no history yet — start typing')
+    if (ctx.history.length === 0) return text('no history yet, start typing')
     return (
       <Block>
         {ctx.history.map((line, i) => (

@@ -4,7 +4,7 @@
 
 import type { ContentKind, Manifest, ManifestEntry } from '@/lib/terminal/types'
 import { registry } from '../registry'
-import { OutputText, text } from '../render'
+import { text } from '../render'
 import type { TerminalContext } from '../types'
 import { Accent, Block, Heading, ListRow, Muted, Ok, Pink, Tag, TagRow, TermLink } from './ui'
 
@@ -82,7 +82,7 @@ function BlogView({ ctx }: { ctx: TerminalContext }) {
 
 function LabView({ ctx }: { ctx: TerminalContext }) {
   const experiments = byKind(ctx.manifest, 'lab')
-  if (experiments.length === 0) return text('lab: nothing here yet — check back soon')
+  if (experiments.length === 0) return text('lab: nothing here yet, check back soon')
   return (
     <Block>
       <Heading>lab · {experiments.length} experiments</Heading>
@@ -115,56 +115,6 @@ function LabView({ ctx }: { ctx: TerminalContext }) {
   )
 }
 
-/** Light prose rendering: headings and bullets, everything as safe text. */
-function Prose({ body }: { body: string }) {
-  const lines = body.split('\n')
-  return (
-    <>
-      {lines.map((line, i) => {
-        const key = `${i}-${line.slice(0, 8)}`
-        if (line.startsWith('## ')) {
-          return (
-            <div key={key}>
-              <Accent>{line.slice(3)}</Accent>
-            </div>
-          )
-        }
-        if (line.startsWith('- ')) {
-          return (
-            <div key={key}>
-              <Muted> • </Muted>
-              <OutputText>{line.slice(2)}</OutputText>
-            </div>
-          )
-        }
-        return (
-          <div key={key}>
-            <OutputText>{line}</OutputText>
-          </div>
-        )
-      })}
-    </>
-  )
-}
-
-function NowView({ ctx }: { ctx: TerminalContext }) {
-  const { broadcast } = ctx
-  return (
-    <Block>
-      <Heading>now</Heading>
-      <div>
-        <Accent>{broadcast.focus}</Accent>
-      </div>
-      {broadcast.nowBody && <Prose body={broadcast.nowBody} />}
-      {broadcast.nowUpdated && (
-        <div>
-          <Muted>updated {broadcast.nowUpdated}</Muted>
-        </div>
-      )}
-    </Block>
-  )
-}
-
 registry.register({
   aliases: ['repos'],
   group: 'content',
@@ -178,7 +128,7 @@ registry.register({
   group: 'content',
   name: 'blog',
   run: (_args, ctx) => <BlogView ctx={ctx} />,
-  summary: 'essays from the workshop',
+  summary: 'the essays',
 })
 
 registry.register({
@@ -186,11 +136,4 @@ registry.register({
   name: 'lab',
   run: (_args, ctx) => <LabView ctx={ctx} />,
   summary: 'interactive experiments',
-})
-
-registry.register({
-  group: 'content',
-  name: 'now',
-  run: (_args, ctx) => <NowView ctx={ctx} />,
-  summary: 'what we are working on right now',
 })

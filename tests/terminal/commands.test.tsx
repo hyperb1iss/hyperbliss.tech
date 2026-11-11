@@ -54,7 +54,6 @@ describe('registered command set', () => {
       'projects',
       'blog',
       'lab',
-      'now',
       'about',
       'contact',
       'resume',
@@ -77,11 +76,10 @@ describe('registered command set', () => {
     expect(h.printedText()).toContain('theme <silk|matrix|amber>')
   })
 
-  it('neofetch paints the broadcast panel', async () => {
+  it('neofetch lists the newest release, essay, and counts', async () => {
     const h = await run('neofetch')
     const out = h.printedText()
     expect(out).toContain('hyperbliss')
-    expect(out).toContain('Building a terminal hero') // focus
     expect(out).toContain('24 projects · 6 posts · 1 lab')
     expect(out).toContain('How I AI') // latest post
   })
@@ -102,13 +100,6 @@ describe('registered command set', () => {
   it('lab lists experiments', async () => {
     const h = await run('lab')
     expect(h.printedText()).toContain('Regex Nightmares')
-  })
-
-  it('now shows focus and prose', async () => {
-    const h = await run('now')
-    const out = h.printedText()
-    expect(out).toContain('Building a terminal hero')
-    expect(out).toContain('Building the terminal hero.') // nowBody
   })
 
   it('about links to the full story', async () => {
@@ -189,6 +180,6 @@ describe('registered command set', () => {
 
   it('sudo denies politely', async () => {
     const h = await run('sudo rm -rf /')
-    expect(h.printedText()).toContain('nice try')
+    expect(h.printedText()).toContain('you are a guest')
   })
 })

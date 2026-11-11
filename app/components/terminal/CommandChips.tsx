@@ -47,7 +47,7 @@ const Chip = styled.button`
   }
 `
 
-const DEFAULT_CHIPS = ['help', 'neofetch', 'projects', 'blog', 'now', 'contact', 'ssh hyperbliss.tech']
+const DEFAULT_CHIPS = ['help', 'projects', 'blog', 'lab', 'about', 'contact']
 
 export interface CommandChipsProps {
   commands?: string[]

@@ -28,76 +28,87 @@ const Backdrop = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 12vh;
-  background: rgba(5, 5, 8, 0.6);
-  backdrop-filter: blur(4px);
+  padding-top: 24vh;
+  background: rgba(5, 3, 8, 0.7);
 `
 
 const Panel = styled.div`
-  width: min(560px, 92vw);
-  max-height: 60vh;
+  position: relative;
+  width: min(600px, 92vw);
+  max-height: 56vh;
   display: flex;
   flex-direction: column;
   font-family: var(--font-mono);
-  background: rgba(15, 15, 26, 0.96);
-  border: 1px solid var(--silk-circuit-cyan);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 0 50px rgba(0, 255, 240, 0.2);
+  font-size: 1.4rem;
+  background: #0c0815;
+  border: 1px solid rgba(244, 240, 255, 0.2);
+  border-radius: 1.4rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
   overflow: hidden;
+
+  /* One crisp line of the brand gradient across the top edge. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+  }
 `
 
 const Field = styled.input`
   width: 100%;
-  padding: var(--space-4);
+  padding: 1.8rem 2rem 1.5rem;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(244, 240, 255, 0.1);
   outline: none;
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--font-mono);
-  font-size: var(--text-lg);
-  caret-color: var(--silk-circuit-cyan);
+  font-size: 1.6rem;
+  caret-color: #80ffea;
 
   &::placeholder {
-    color: var(--text-muted);
+    color: #8f86a3;
   }
 `
 
 const List = styled.ul`
   list-style: none;
   margin: 0;
-  padding: var(--space-2);
+  padding: 0.8rem;
   overflow-y: auto;
 `
 
 const Item = styled.li`
   display: flex;
   align-items: baseline;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
+  gap: 1.4rem;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.8rem;
   cursor: pointer;
 
   &[aria-selected='true'] {
-    background: rgba(0, 255, 240, 0.12);
+    background: rgba(128, 255, 234, 0.1);
   }
   & .name {
-    color: var(--silk-circuit-cyan);
+    color: #80ffea;
   }
   & .sum {
-    color: var(--text-secondary);
-    font-size: var(--text-sm);
+    color: #d6cfe6;
+    font-family: var(--font-body);
+    font-weight: 300;
   }
   & .grp {
     margin-left: auto;
-    color: var(--text-muted);
-    font-size: var(--text-xs);
+    color: #8f86a3;
+    font-size: 1.2rem;
   }
 `
 
 const Empty = styled.div`
-  padding: var(--space-4);
-  color: var(--text-muted);
+  padding: 1.6rem 2rem;
+  color: #8f86a3;
 `
 
 export interface CommandPaletteProps {

@@ -1,57 +1,18 @@
-// Boot sequence (T3.1/T3.2). Full visit prints two staggered opening lines;
-// repeat or reduced-motion visits print a compact banner. Both end by calling
-// the finale (the living status console). The full boot is skippable.
-
-import type { ReactNode } from 'react'
-import type { Broadcast } from '@/lib/terminal/types'
-import { text } from './render'
-import type { OutputStream } from './types'
-
-const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
-
-const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`
-
-function postLines(b: Broadcast): Array<{ text: string; stream: OutputStream }> {
-  return [
-    { stream: 'system', text: 'hyperbliss console' },
-    {
-      stream: 'ok',
-      text: `indexed ${count(b.projectCount, 'project')} · ${count(b.postCount, 'essay')} · ${count(b.labCount, 'lab experiment')}`,
-    },
-  ]
-}
+// Boot (T3.1/T3.2). The console opens straight onto its welcome: the finale
+// prints it, or replays a shared session. No preamble lines, so a first visit
+// and a repeat visit look the same; the phase only matters to the caller.
 
 export interface BootSequenceOptions {
   phase: 'full-boot' | 'skip-to-end'
-  broadcast: Broadcast
-  print: (node: ReactNode, stream?: OutputStream) => void
-  /** What runs after the POST lines — auto-neofetch, or a shared-session replay. */
+  /** What runs once the console is up: the welcome, or a shared-session replay. */
   finale: () => Promise<void>
   isCancelled: () => boolean
-  shouldSkip: () => boolean
-  /** Per-line stagger; overridable for tests. */
-  stepMs?: number
 }
 
 export async function runBootSequence(opts: BootSequenceOptions): Promise<void> {
-  const { phase, broadcast, print, finale, isCancelled, shouldSkip, stepMs = 120 } = opts
-
   // Yield once before the first paint so React strict-mode's double effect-
-  // invoke (dev) cancels the first run before it prints anything — no
-  // duplicated first line.
+  // invoke (dev) cancels the first run before it prints anything.
   await Promise.resolve()
-  if (isCancelled()) return
-
-  if (phase === 'skip-to-end') {
-    print(text('hyperbliss console · type `help`, or pick a command below', 'system'), 'system')
-    if (!isCancelled()) await finale()
-    return
-  }
-
-  for (const line of postLines(broadcast)) {
-    if (isCancelled()) return
-    print(text(line.text, line.stream), line.stream)
-    if (!shouldSkip()) await delay(stepMs)
-  }
-  if (!isCancelled()) await finale()
+  if (opts.isCancelled()) return
+  await opts.finale()
 }

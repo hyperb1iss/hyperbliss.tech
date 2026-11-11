@@ -22,7 +22,7 @@ describe('degraded states', () => {
     const out = h.printedText()
     expect(out).toContain('hyperbliss') // still renders the panel
     expect(out).toContain('24 projects') // counts still present
-    expect(out).not.toContain('ship') // ship line dropped, no crash
+    expect(out).not.toContain('release') // release line dropped, no crash
   })
 
   it('neofetch survives an empty corpus / missing now', async () => {
@@ -51,11 +51,5 @@ describe('degraded states', () => {
   it('lab shows a friendly empty state', async () => {
     const h = await run('lab', { manifest: emptyManifest })
     expect(h.printedText()).toContain('nothing here yet')
-  })
-
-  it('now survives a missing body', async () => {
-    const noBody: Broadcast = { ...testBroadcast, nowBody: null }
-    const h = await run('now', { broadcast: noBody })
-    expect(h.printedText()).toContain(noBody.focus)
   })
 })

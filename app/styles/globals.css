@@ -451,6 +451,24 @@
   }
 }
 
+/* The console's LED sign: each lit cell cycles the brand colors, offset per
+   column and row by a negative delay so the colors travel as one wave. */
+@keyframes led-wave {
+  0%,
+  100% {
+    background-color: #e135ff;
+  }
+  25% {
+    background-color: #ff6ac1;
+  }
+  50% {
+    background-color: #80ffea;
+  }
+  75% {
+    background-color: #8f6bff;
+  }
+}
+
 @keyframes emission-spin {
   to {
     transform: rotate(360deg);

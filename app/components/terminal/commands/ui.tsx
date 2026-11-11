@@ -1,5 +1,5 @@
 // Shared building blocks for rich command output. All styling uses SilkCircuit
-// tokens + Space Mono so command cards read as part of the terminal. Links are
+// colors + the site mono so command cards read as part of the terminal. Links are
 // real <a> elements (crawlable, middle-click works) that fall through to SPA
 // navigation on a plain left-click.
 
@@ -15,27 +15,26 @@ export const Block = styled.div`
 `
 
 export const Heading = styled.div`
-  color: var(--silk-quantum-purple);
+  color: #ff9bdc;
   font-weight: var(--font-bold);
   letter-spacing: var(--tracking-wide);
-  text-shadow: 0 0 12px rgba(162, 89, 255, 0.5);
   margin-bottom: var(--space-1);
 `
 
 export const Muted = styled.span`
-  color: var(--text-muted);
+  color: #b9b0cc;
 `
 
 export const Accent = styled.span`
-  color: var(--silk-circuit-cyan);
+  color: #80ffea;
 `
 
 export const Pink = styled.span`
-  color: var(--silk-plasma-pink);
+  color: #ff9bdc;
 `
 
 export const Ok = styled.span`
-  color: var(--silk-success);
+  color: #b9b0cc;
 `
 
 export const ListRow = styled.div`
@@ -48,9 +47,9 @@ export const ListRow = styled.div`
 
 export const Tag = styled.span`
   font-size: 0.85em;
-  color: var(--text-secondary);
-  border: 1px solid rgba(162, 89, 255, 0.3);
-  border-radius: var(--radius-full);
+  color: #b9b0cc;
+  border: 1px solid rgba(244, 240, 255, 0.16);
+  border-radius: 0.5rem;
   padding: 0 var(--space-2);
 `
 
@@ -61,16 +60,17 @@ export const TagRow = styled.span`
 `
 
 const Anchor = styled.a`
-  color: var(--silk-circuit-cyan);
+  color: #80ffea;
   text-decoration: none;
-  border-bottom: 1px dotted rgba(0, 255, 240, 0.4);
-  transition: all var(--duration-fast) var(--ease-silk);
+  border-bottom: 1px solid rgba(128, 255, 234, 0.3);
+  transition:
+    color var(--duration-fast) var(--ease-silk),
+    border-color var(--duration-fast) var(--ease-silk);
 
   &:hover,
   &:focus-visible {
-    color: var(--silk-plasma-pink);
-    border-bottom-color: var(--silk-plasma-pink);
-    text-shadow: 0 0 10px rgba(255, 117, 216, 0.5);
+    color: #ffffff;
+    border-bottom-color: #ffffff;
     outline: none;
   }
 `
