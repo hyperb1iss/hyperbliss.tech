@@ -237,9 +237,15 @@ const SectionTitle = styled.h2`
   font-weight: 900;
   letter-spacing: -0.02em;
   text-transform: none;
-  color: #f6f2ff;
   text-shadow: none;
   margin: 0;
+  /* The page's title ink (violet through white to cyan), so a section title
+     never reads as the same ink as the entries under it. */
+  width: fit-content;
+  background-image: linear-gradient(95deg, #b9a2ff 0%, #ffffff 48%, #80ffea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `
 
 const TimelineItem = styled.div`
@@ -329,10 +335,8 @@ const JobTitle = styled.h4`
 const TimelineMeta = styled.div`
   font-family: var(--font-mono);
   font-size: 1.3rem;
-  color: var(--silk-circuit-cyan);
-  opacity: 0.8;
+  color: #80ffea;
   margin-bottom: var(--space-3);
-  text-shadow: 0 0 6px rgba(0, 255, 240, 0.3);
 `
 
 const TimelineContent = styled.div`
