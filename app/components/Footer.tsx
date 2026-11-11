@@ -27,8 +27,13 @@ const FooterContainer = styled.footer`
     rgba(10, 10, 20, 0.95) 20%,
     rgba(10, 10, 20, 0.98) 100%
   );
-  padding: var(--space-10) var(--space-6) var(--space-6);
+  padding: var(--space-10) 6.4rem var(--space-6);
   overflow: hidden;
+
+  @media (max-width: 1024px) {
+    padding-left: 2.4rem;
+    padding-right: 2.4rem;
+  }
 
   &::before {
     content: '';
@@ -42,7 +47,8 @@ const FooterContainer = styled.footer`
 `
 
 const FooterInner = styled.div`
-  max-width: 1200px;
+  /* The page column: PageLayout's 144rem less its side padding. */
+  max-width: 131.2rem;
   margin: 0 auto;
 `
 

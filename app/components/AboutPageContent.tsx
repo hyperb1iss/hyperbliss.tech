@@ -271,6 +271,15 @@ const Lede = styled.p`
   }
 `
 
+// On wide screens the rail follows the reader down the page instead of
+// leaving an empty column under itself.
+const railStyles = css`
+  @media (min-width: 1025px) {
+    position: sticky;
+    top: 14rem;
+  }
+`
+
 // The rail sits beside the sections, so its first label lines up with theirs.
 const Facts = styled.dl`
   margin: 0;
@@ -280,12 +289,18 @@ const Facts = styled.dl`
   position: relative;
   padding: 2.8rem 2.6rem;
   border-radius: 1.6rem;
-  background:
-    radial-gradient(120% 60% at 100% 0%, rgba(128, 255, 234, 0.12), transparent 60%),
-    radial-gradient(120% 70% at 0% 100%, rgba(225, 53, 255, 0.14), transparent 60%),
-    rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  background: #0c0815;
+  border: 1px solid rgba(244, 240, 255, 0.14);
+
+  /* One crisp line of the brand gradient across the top edge. */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+  }
 
   & dt {
     font-family: var(--font-mono);
@@ -444,7 +459,7 @@ export default function AboutPageContent({ about, company, products }: AboutPage
           )}
         </Main>
 
-        <Reveal as="aside" order={1}>
+        <Reveal as="aside" className={railStyles} order={1}>
           <Facts>
             {company?.legalName && (
               <div>

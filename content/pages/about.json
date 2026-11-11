@@ -1,7 +1,7 @@
 {
   "about": {
     "bio": "I work across the full stack, from embedded systems and Linux kernel to cloud infrastructure and AI agents. I write mostly Rust, TypeScript, and Python.\n\nYou might know me as the creator of [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) (now [LineageOS](https://lineageos.org/)), the largest open-source Android distribution. Millions of people used it to take control of their devices. I co-founded the company behind it.\n\nThese days I build open-source developer tools, terminal interfaces, design systems, and AI agent infrastructure. I care about software that respects its users and code that's genuinely fun to work with.\n\nWhen I'm not writing code, I'm roller skating, spinning fire (levitation wand), producing electronic music, or tinkering with smart home hardware. Everything's on [GitHub](https://github.com/hyperb1iss).",
-    "contactIntro": "Reach me via email or any of the links below.",
+    "contactIntro": "Email is the fastest way to reach me. A few things I always like hearing about:",
     "contactReasons": [
       {
         "description": "Embedded, mobile, AI, full stack. Let's talk about what you're building.",
