@@ -25,6 +25,11 @@ const rowStyles = css`
   align-items: baseline;
   padding: 2.6rem 0;
   border-top: 1px solid rgba(244, 240, 255, 0.1);
+  transition: background var(--duration-normal) var(--ease-silk);
+
+  &:hover {
+    background: linear-gradient(90deg, rgba(143, 107, 255, 0.09), transparent 62%);
+  }
 
   &:last-child {
     border-bottom: 1px solid rgba(244, 240, 255, 0.1);

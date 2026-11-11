@@ -10,19 +10,23 @@ const Tag = styled.span`
   text-transform: uppercase;
   line-height: 1;
   padding: 0.5rem 0.8rem 0.4rem;
-  border: 1px solid rgba(162, 89, 255, 0.34);
+  border: 1px solid rgba(255, 106, 193, 0.5);
   border-radius: 2px;
-  color: var(--silk-quantum-purple);
+  color: #ff9bdc;
   white-space: nowrap;
 
+  /* Each kind in the color its row title lights up in on hover (neon.ts). */
   &[data-kind='lab'] {
-    color: var(--silk-circuit-cyan);
-    border-color: rgba(0, 255, 240, 0.35);
+    color: #e0aaff;
+    border-color: rgba(224, 170, 255, 0.5);
   }
-  &[data-kind='release'],
+  &[data-kind='release'] {
+    color: #80ffea;
+    border-color: rgba(128, 255, 234, 0.42);
+  }
   &[data-kind='launch'] {
-    color: var(--text-secondary);
-    border-color: rgba(148, 163, 184, 0.3);
+    color: #c3b3ff;
+    border-color: rgba(195, 179, 255, 0.5);
   }
 `
 

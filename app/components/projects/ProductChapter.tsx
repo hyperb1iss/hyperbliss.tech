@@ -15,7 +15,7 @@ import { lineLight } from './lineLight'
 const chapterStyles = css`
   position: relative;
   isolation: isolate;
-  padding: 11rem 0 13rem;
+  padding: 8rem 0 9.6rem;
 
   &[data-compact='true'] {
     padding: 4.8rem 0 7.2rem;
@@ -142,8 +142,13 @@ const Primary = styled.a`
       0 18px 50px var(--shot-glow);
   }
 
+  &:active {
+    transform: translateY(0) scale(0.97);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    &:hover {
+    &:hover,
+    &:active {
       transform: none;
     }
   }
