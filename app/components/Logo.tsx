@@ -49,8 +49,11 @@ const logoImageStyles = css`
   will-change: filter;
 
   @media (max-width: 768px) {
-    height: 46px;
-    max-width: calc(100% - 60px); /* Leave room for menu icon */
+    /* A fixed height with no percentage cap: a max-width in percent resolves
+       against this shrink-wrapped flex chain and squeezed the mark to ~90px. */
+    height: 36px;
+    max-width: none;
+    flex-shrink: 0;
     /* Disable filter animation on mobile to reduce GPU load */
     animation: none;
     filter: drop-shadow(0 0 6px rgba(162, 89, 255, 0.3));

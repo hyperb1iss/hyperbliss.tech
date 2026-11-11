@@ -17,41 +17,28 @@ const silkEase = [0.23, 1, 0.32, 1] as const
 
 const navPanelStyles = css`
   position: fixed;
-  top: 76px;
+  top: 84px;
   right: var(--space-3);
-  width: min(260px, calc(100% - var(--space-6)));
+  width: 20rem;
   max-width: calc(100vw - var(--space-6));
   z-index: 9999 !important;
   isolation: isolate;
+  overflow: hidden;
 
   /* Solid background - no backdrop-filter to avoid rendering bugs */
-  background: rgb(12, 12, 20);
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(0, 255, 240, 0.15);
+  background: #0a0612;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(244, 240, 255, 0.16);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
 
-  /* Gradient top accent */
+  /* One crisp line of the brand gradient across the top edge. */
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: var(--space-4);
-    right: var(--space-4);
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--silk-quantum-purple) 30%,
-      var(--silk-circuit-cyan) 70%,
-      transparent
-    );
-    opacity: 0.6;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
   }
-
-  /* Soft shadow */
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 0 60px rgba(0, 0, 0, 0.4);
 
   @media (min-width: 769px) {
     display: none !important;
@@ -60,36 +47,35 @@ const navPanelStyles = css`
 
 const navListStyles = css`
   list-style: none;
-  padding: var(--space-3);
-  padding-bottom: var(--space-4);
+  padding: 1.1rem 0.8rem 0.8rem;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0.2rem;
 `
 
 const navLinkStyles = css`
   display: flex;
   align-items: center;
-  gap: var(--space-3);
   width: 100%;
-  padding: var(--space-3) var(--space-4);
+  min-height: 44px;
+  padding: 0 1.4rem;
   font-family: var(--font-body);
-  font-size: 1.8rem;
-  font-weight: var(--font-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 1.6rem;
+  font-weight: 500;
   text-decoration: none;
-  border-radius: var(--radius-md);
+  border-radius: 0.8rem;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
   background: transparent;
-  color: var(--text-secondary);
+  color: #d6cfe6;
 
   &:hover {
-    color: var(--text-primary);
-    background: rgba(30, 30, 45, 1);
+    color: #ffffff;
+    background: rgba(244, 240, 255, 0.06);
   }
 
   &:active {
@@ -97,37 +83,16 @@ const navLinkStyles = css`
   }
 
   &:focus-visible {
-    outline: 2px solid var(--silk-quantum-purple);
-    outline-offset: 2px;
+    outline: 2px solid #80ffea;
+    outline-offset: -2px;
   }
 
   &[aria-current='page'] {
-    color: var(--silk-circuit-cyan);
-    background: rgba(0, 255, 240, 0.08);
-    text-shadow: 0 0 20px rgba(0, 255, 240, 0.5);
+    color: #ffffff;
+    background: rgba(128, 255, 234, 0.1);
+    box-shadow: inset 2px 0 0 #80ffea;
   }
 `
-
-const navIconStyles = css`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-size: 1rem;
-  transition: opacity 0.2s ease;
-`
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Nav Icons
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-const NAV_ICONS: Record<string, string> = {
-  '/about': '◆',
-  '/blog': '◈',
-  '/lab': '◇',
-  '/projects': '▣',
-}
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Component
@@ -229,7 +194,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
         }
       }}
       ref={panelRef}
-      style={{ background: 'rgb(12, 12, 20)' }}
       variants={panelVariants}
     >
       <ul className={navListStyles}>
@@ -245,9 +209,6 @@ const MobileNavLinks: React.FC<MobileNavLinksProps> = ({ open, setMenuOpen }) =>
                 href={href}
                 onClick={(e) => handleNavigation(href, e)}
               >
-                <span className={navIconStyles} style={{ opacity: isActive ? 1 : 0.5 }}>
-                  {NAV_ICONS[href]}
-                </span>
                 {label}
               </motion.a>
             </motion.li>
