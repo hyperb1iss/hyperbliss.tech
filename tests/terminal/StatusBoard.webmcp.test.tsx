@@ -41,7 +41,7 @@ afterEach(() => {
 })
 
 describe('StatusBoard WebMCP status', () => {
-  it('reports disabled when the site flag is off even if the browser API exists', () => {
+  it('shows no agent row when the site flag is off even if the browser API exists', () => {
     vi.stubEnv('NEXT_PUBLIC_TERMINAL_HERO', 'true')
     vi.stubEnv('NEXT_PUBLIC_WEBMCP', 'false')
     installModelContext(
@@ -50,7 +50,7 @@ describe('StatusBoard WebMCP status', () => {
 
     render(<StatusBoard broadcast={testBroadcast} />)
 
-    expect(screen.getByText('WebMCP disabled')).toBeInTheDocument()
+    expect(screen.queryByText(/WebMCP/)).not.toBeInTheDocument()
   })
 
   it('reports ready with the registered tool count when enabled and supported', async () => {
@@ -68,17 +68,17 @@ describe('StatusBoard WebMCP status', () => {
     await waitFor(() => expect(screen.getByText('ready · 2 tools')).toBeInTheDocument())
   })
 
-  it('reports unsupported when getTools is absent or fails', async () => {
+  it('shows no agent row when getTools is absent or fails', async () => {
     vi.stubEnv('NEXT_PUBLIC_TERMINAL_HERO', 'true')
     vi.stubEnv('NEXT_PUBLIC_WEBMCP', 'true')
     installModelContext(new PartialModelContext())
 
     const rendered = render(<StatusBoard broadcast={testBroadcast} />)
-    await waitFor(() => expect(screen.getByText('WebMCP unsupported')).toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByText(/WebMCP/)).not.toBeInTheDocument())
 
     rendered.unmount()
     installModelContext(new ThrowingModelContext())
     render(<StatusBoard broadcast={testBroadcast} />)
-    await waitFor(() => expect(screen.getByText('WebMCP unsupported')).toBeInTheDocument())
+    await waitFor(() => expect(screen.queryByText(/WebMCP/)).not.toBeInTheDocument())
   })
 })

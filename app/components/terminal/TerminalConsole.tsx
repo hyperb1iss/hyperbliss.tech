@@ -34,8 +34,7 @@ const backdropStyles = css`
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: radial-gradient(circle at 50% 0%, rgba(10, 6, 24, 0.55), rgba(4, 6, 14, 0.78));
-  backdrop-filter: blur(2px);
+  background: rgba(5, 3, 8, 0.82);
 `
 
 const panelStyles = css`
@@ -82,43 +81,53 @@ const handleStyles = css`
   justify-content: center;
   gap: var(--space-2);
   min-height: 44px;
-  padding: var(--space-1-5) var(--space-5);
+  padding: 0.6rem 2rem;
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--silk-circuit-cyan);
-  background: rgba(5, 3, 8, 0.72);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(128, 255, 234, 0.35);
+  font-size: 1.3rem;
+  color: #b9b0cc;
+  background: #0a0612;
+  border: 1px solid rgba(244, 240, 255, 0.22);
   border-radius: var(--radius-full);
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 255, 240, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
   -webkit-tap-highlight-color: transparent;
-  transition: top var(--duration-normal) var(--ease-silk);
-  /* Gentle pulse while closed so the pull-down reads as interactive. A CSS
-     keyframe (declared in globals.css) rather than a Framer loop: it costs no
-     JS per frame and the global reduced-motion rule stops it. */
-  animation: handle-pulse 2.4s ease-in-out infinite;
+  transition:
+    top var(--duration-normal) var(--ease-silk),
+    border-color var(--duration-normal) var(--ease-silk),
+    color var(--duration-normal) var(--ease-silk);
 
   &[data-open='true'] {
     top: calc(var(--nav-expanded) - 18px);
-    animation: none;
   }
 
   & .prompt {
-    color: var(--text-secondary);
+    color: #f4f0ff;
+  }
+
+  /* A blinking block after the prompt says "type here" while the console is
+     closed; the global reduced-motion rule holds it still. */
+  & .caret {
+    width: 0.8rem;
+    height: 1.5rem;
+    margin-left: -0.2rem;
+    background: #80ffea;
+    animation: silkTerminalCaretBlink 1.1s step-end infinite;
+  }
+  &[data-open='true'] .caret {
+    display: none;
   }
 
   & svg {
     width: 14px;
     height: 14px;
+    color: #80ffea;
   }
 
   &:hover,
   &:focus-visible {
-    color: var(--text-primary);
-    border-color: var(--silk-circuit-cyan);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55), 0 0 26px rgba(0, 255, 240, 0.35);
+    color: #ffffff;
+    border-color: #80ffea;
     outline: none;
   }
 `
@@ -245,6 +254,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
         <span className="prompt">guest@hyperbliss:~$</span>
+        <span aria-hidden="true" className="caret" />
       </button>
     </div>,
     document.body,

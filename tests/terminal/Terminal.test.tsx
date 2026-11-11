@@ -119,8 +119,8 @@ describe('Terminal', () => {
     )
     // The finale paints the status console; StrictMode's double effect-invoke
     // must not duplicate it.
-    await waitFor(() => expect(screen.getAllByText(/creative technologist/i).length).toBeGreaterThan(0))
-    expect(screen.getAllByText(/creative technologist/i)).toHaveLength(1)
+    await waitFor(() => expect(screen.getAllByText(/Hyperbliss Technologies/).length).toBeGreaterThan(0))
+    expect(screen.getAllByText(/Hyperbliss Technologies/)).toHaveLength(1)
   })
 
   it('replays shared-session commands instead of neofetch', async () => {

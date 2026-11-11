@@ -43,20 +43,19 @@ describe('resolveBootPhase', () => {
 describe('runBootSequence', () => {
   const base = { broadcast: testBroadcast, isCancelled: () => false, shouldSkip: () => true }
 
-  it('full boot prints POST lines with real counts, then runs the finale', async () => {
+  it('full boot prints the opening lines with real counts, then runs the finale', async () => {
     const c = collector()
     await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'full-boot', print: c.print })
     const out = c.out()
-    expect(out).toContain('POST')
-    expect(out).toContain('[OK]')
-    expect(out).toContain(`projects (${testBroadcast.projectCount})`)
+    expect(out).toContain('hyperbliss console')
+    expect(out).toContain(`indexed ${testBroadcast.projectCount} projects`)
     expect(c.ran).toEqual(['neofetch'])
   })
 
   it('skip-to-end prints a compact banner then the finale', async () => {
     const c = collector()
     await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'skip-to-end', print: c.print })
-    expect(c.out()).toContain('hyperbliss terminal')
+    expect(c.out()).toContain('hyperbliss console')
     expect(c.ran).toEqual(['neofetch'])
   })
 

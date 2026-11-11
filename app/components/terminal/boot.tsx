@@ -1,4 +1,4 @@
-// Boot sequence (T3.1/T3.2). Full visit plays a staggered BIOS/POST sequence;
+// Boot sequence (T3.1/T3.2). Full visit prints two staggered opening lines;
 // repeat or reduced-motion visits print a compact banner. Both end by calling
 // the finale (the living status console). The full boot is skippable.
 
@@ -9,17 +9,15 @@ import type { OutputStream } from './types'
 
 const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`
+
 function postLines(b: Broadcast): Array<{ text: string; stream: OutputStream }> {
   return [
-    { stream: 'system', text: 'HYPERBLISS TERMINAL — POST' },
-    { stream: 'ok', text: '[OK] mounting /content' },
+    { stream: 'system', text: 'hyperbliss console' },
     {
       stream: 'ok',
-      text: `[OK] indexing projects (${b.projectCount}) · posts (${b.postCount}) · lab (${b.labCount})`,
+      text: `indexed ${count(b.projectCount, 'project')} · ${count(b.postCount, 'essay')} · ${count(b.labCount, 'lab experiment')}`,
     },
-    { stream: 'ok', text: '[OK] loading broadcast' },
-    { stream: 'ok', text: '[OK] rendering neon' },
-    { stream: 'system', text: 'ready ✦' },
   ]
 }
 
@@ -45,7 +43,7 @@ export async function runBootSequence(opts: BootSequenceOptions): Promise<void> 
   if (isCancelled()) return
 
   if (phase === 'skip-to-end') {
-    print(text('hyperbliss terminal ✦  —  type `help`, or tap a command below', 'system'), 'system')
+    print(text('hyperbliss console · type `help`, or pick a command below', 'system'), 'system')
     if (!isCancelled()) await finale()
     return
   }

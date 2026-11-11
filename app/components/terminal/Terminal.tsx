@@ -13,7 +13,6 @@ import { History, loadHistory } from './history'
 import { registry as sharedRegistry } from './registry'
 import { OutputText } from './render'
 import StatusBoard from './StatusBoard'
-import { safeLocalGet, safeLocalSet } from './storage'
 import type { CommandRegistry, LogEntry, OutputStream } from './types'
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -28,104 +27,75 @@ const Shell = styled.div`
   height: 100%;
   min-height: 0;
   font-family: var(--font-mono);
-  font-size: clamp(0.95rem, 0.8rem + 0.4vw, 1.05rem);
-  line-height: var(--leading-relaxed);
-  color: var(--text-primary);
-  background: rgba(10, 10, 20, 0.72);
-  border: 1px solid rgba(162, 89, 255, 0.35);
-  border-radius: var(--radius-xl);
-  box-shadow:
-    0 0 40px rgba(162, 89, 255, 0.18),
-    inset 0 0 60px rgba(10, 10, 20, 0.6);
-  backdrop-filter: blur(var(--blur-md));
+  font-size: 1.4rem;
+  line-height: 1.6;
+  color: #f4f0ff;
+  background: #08050f;
+  border: 1px solid rgba(244, 240, 255, 0.16);
+  border-radius: 1.4rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   overflow: hidden;
   cursor: text;
+  transition: border-color var(--duration-normal) var(--ease-silk);
 
-  &:focus-within {
-    border-color: var(--silk-circuit-cyan);
-    box-shadow:
-      0 0 50px rgba(0, 255, 240, 0.22),
-      inset 0 0 60px rgba(10, 10, 20, 0.6);
-  }
-
-  /* CRT layer — subtle per-color bloom + faint static scanlines. No flicker,
-     no curvature. Disabled by the effects toggle and by reduced motion. */
-  &[data-crt='on'] {
-    text-shadow: 0 0 2px currentColor;
-  }
-  &[data-crt='on']::after {
+  /* One crisp line of the brand gradient across the top edge. */
+  &::before {
     content: '';
     position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 3;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0, 0, 0, 0.14) 0px,
-      rgba(0, 0, 0, 0.14) 1px,
-      transparent 1px,
-      transparent 3px
-    );
-    opacity: 0.5;
-    mix-blend-mode: multiply;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
   }
-`
 
-const TitleSpacer = styled.span`
-  flex: 1;
-`
-
-const CrtToggle = styled.button`
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-wide);
-  color: var(--text-muted);
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-base);
-  padding: 1px var(--space-2);
-  cursor: pointer;
-  user-select: none;
-  transition: all var(--duration-fast) var(--ease-silk);
-
-  &[data-on='true'] {
-    color: var(--silk-circuit-cyan);
-    border-color: rgba(0, 255, 240, 0.4);
+  &:focus-within {
+    border-color: rgba(128, 255, 234, 0.4);
   }
-  &:hover,
-  &:focus-visible {
-    color: var(--text-primary);
-    outline: none;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
   }
 `
 
 const TitleBar = styled.div`
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-bottom: 1px solid rgba(162, 89, 255, 0.2);
-  background: rgba(15, 15, 26, 0.6);
+  justify-content: space-between;
+  gap: 1.6rem;
+  padding: 1.5rem 2rem 1.1rem;
+  border-bottom: 1px solid rgba(244, 240, 255, 0.08);
   user-select: none;
   flex-shrink: 0;
 `
 
-const Dot = styled.span`
-  width: 11px;
-  height: 11px;
-  border-radius: var(--radius-full);
-  display: inline-block;
-
-  &[data-dot='r'] { background: #ff5f57; }
-  &[data-dot='y'] { background: #febc2e; }
-  &[data-dot='g'] { background: #28c840; }
+const TitleText = styled.span`
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #b9b0cc;
 `
 
-const TitleText = styled.span`
-  margin-left: var(--space-3);
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  letter-spacing: var(--tracking-wide);
+const Keys = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.2rem;
+  color: #8f86a3;
+
+  & kbd {
+    font-family: inherit;
+    font-size: 1.1rem;
+    padding: 0.1rem 0.6rem;
+    border: 1px solid rgba(244, 240, 255, 0.2);
+    border-radius: 0.4rem;
+    color: #d6cfe6;
+  }
+  & kbd:not(:first-child) {
+    margin-left: 0.8rem;
+  }
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 `
 
 const OutputLog = styled.div`
@@ -133,16 +103,16 @@ const OutputLog = styled.div`
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: var(--space-4);
+  padding: 1.6rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(162, 89, 255, 0.4) transparent;
+  scrollbar-color: rgba(244, 240, 255, 0.22) transparent;
 
   &::-webkit-scrollbar { width: 8px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(162, 89, 255, 0.4);
+    background: rgba(244, 240, 255, 0.22);
     border-radius: var(--radius-full);
   }
 `
@@ -157,8 +127,14 @@ const InputForm = styled.form`
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  padding: 0 var(--space-4) var(--space-4);
+  padding: 1.2rem 2rem 1.6rem;
+  border-top: 1px solid rgba(244, 240, 255, 0.08);
   flex-shrink: 0;
+`
+
+const Footer = styled.div`
+  flex-shrink: 0;
+  border-top: 1px solid rgba(244, 240, 255, 0.08);
 `
 
 const Prompt = styled.span`
@@ -167,10 +143,10 @@ const Prompt = styled.span`
   white-space: pre;
   user-select: none;
 
-  & .u { color: var(--silk-circuit-cyan); }
-  & .h { color: var(--silk-quantum-purple); }
-  & .p { color: var(--silk-plasma-pink); }
-  & .s { color: var(--text-muted); }
+  & .u { color: #80ffea; }
+  & .h { color: #c3b3ff; }
+  & .p { color: #ff9bdc; }
+  & .s { color: #8f86a3; }
 `
 
 const InputCaret = styled.div`
@@ -186,8 +162,8 @@ const StyledInput = styled.input`
   outline: none;
   font-family: var(--font-mono);
   font-size: inherit;
-  color: var(--silk-circuit-cyan);
-  caret-color: var(--silk-circuit-cyan);
+  color: #ffffff;
+  caret-color: #80ffea;
   padding: 0;
 
   &::placeholder {
@@ -217,7 +193,7 @@ const Hint = styled.span`
 
   & .blink {
     animation: silkTerminalCaretBlink 1.1s step-end infinite;
-    color: var(--silk-circuit-cyan);
+    color: #80ffea;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -273,6 +249,8 @@ export interface TerminalProps {
   replayCommands?: string[]
   /** Imperative handle (chips / boot sequence drive the terminal through this). */
   handleRef?: { current: TerminalHandle | null }
+  /** Rendered inside the frame under the prompt (the quick command keys). */
+  footer?: React.ReactNode
 }
 
 function isAbortError(error: unknown): boolean {
@@ -291,12 +269,12 @@ export default function Terminal({
   bootPhase,
   replayCommands,
   handleRef,
+  footer,
 }: TerminalProps) {
   const [log, setLog] = useState<LogEntry[]>(initialLog)
   const [input, setInput] = useState('')
   const [focused, setFocused] = useState(false)
   const [cwd, setCwd] = useState('/')
-  const [crt, setCrt] = useState(true)
 
   const inputRef = useRef<HTMLInputElement>(null)
   const logRef = useRef<HTMLDivElement>(null)
@@ -423,17 +401,6 @@ export default function Terminal({
     if (autoFocusInput) inputRef.current?.focus()
   }, [autoFocusInput])
 
-  // CRT effects default on, but off under reduced motion or a saved preference.
-  useEffect(() => {
-    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-    setCrt(!reduced && safeLocalGet('hb:term:fx') !== 'off')
-  }, [])
-
-  const toggleCrt = useCallback(() => {
-    setCrt((on) => !on)
-    safeLocalSet('hb:term:fx', crt ? 'off' : 'on') // next = !crt
-  }, [crt])
-
   useEffect(() => {
     if (handleRef) {
       handleRef.current = {
@@ -549,16 +516,12 @@ export default function Terminal({
   }, [])
 
   return (
-    <Shell data-crt={crt ? 'on' : 'off'} onMouseUp={focusInput}>
+    <Shell onMouseUp={focusInput}>
       <TitleBar>
-        <Dot data-dot="r" />
-        <Dot data-dot="y" />
-        <Dot data-dot="g" />
-        <TitleText>guest@hyperbliss — terminal</TitleText>
-        <TitleSpacer />
-        <CrtToggle aria-label="Toggle CRT effects" aria-pressed={crt} data-on={crt} onClick={toggleCrt} type="button">
-          CRT
-        </CrtToggle>
+        <TitleText>Hyperbliss console</TitleText>
+        <Keys aria-hidden="true">
+          <kbd>⌘K</kbd> commands <kbd>esc</kbd> close
+        </Keys>
       </TitleBar>
 
       <OutputLog aria-label="Terminal output" aria-live="polite" ref={logRef} role="log" tabIndex={0}>
@@ -594,6 +557,7 @@ export default function Terminal({
           )}
         </InputCaret>
       </InputForm>
+      {footer && <Footer>{footer}</Footer>}
     </Shell>
   )
 }

@@ -170,7 +170,7 @@ registry.register({
   group: 'content',
   name: 'projects',
   run: (_args, ctx) => <ProjectsView ctx={ctx} />,
-  summary: 'open-source projects I maintain',
+  summary: 'the products and open source we make',
 })
 
 registry.register({
@@ -178,7 +178,7 @@ registry.register({
   group: 'content',
   name: 'blog',
   run: (_args, ctx) => <BlogView ctx={ctx} />,
-  summary: 'things I have written',
+  summary: 'essays from the workshop',
 })
 
 registry.register({
@@ -192,5 +192,5 @@ registry.register({
   group: 'content',
   name: 'now',
   run: (_args, ctx) => <NowView ctx={ctx} />,
-  summary: 'what I am working on right now',
+  summary: 'what we are working on right now',
 })

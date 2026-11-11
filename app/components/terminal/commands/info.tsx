@@ -38,7 +38,7 @@ registry.register({
       </Block>
     )
   },
-  summary: 'who I am',
+  summary: 'who we are',
 })
 
 registry.register({
@@ -68,7 +68,7 @@ registry.register({
       </div>
     </Block>
   ),
-  summary: 'ways to reach me',
+  summary: 'ways to reach us',
 })
 
 registry.register({
@@ -91,5 +91,5 @@ registry.register({
       </Block>
     )
   },
-  summary: 'professional summary',
+  summary: "the founder's resume",
 })

@@ -1,31 +1,22 @@
 'use client'
 
-// The living status console — the terminal's landing display. A neofetch-style
-// sigil and identity, but alive: a ticking clock + uptime, an activity feed that
-// cycles recent ships/posts, an ambient sparkline, the current focus, and
-// rotating hints. Rendered once as a boot-finale log entry; it owns its own
-// timers so it keeps breathing without re-running the boot. Decorative motion is
-// gated behind prefers-reduced-motion; the clock (information, not decoration)
-// keeps ticking either way.
+// The console's landing display: the company's name set in the display face,
+// a ticking clock, an activity feed that cycles recent ships and essays, the
+// push sparkline, and rotating hints. Rendered once as a boot-finale log entry;
+// it owns its own timers so it keeps moving without re-running the boot.
+// Decorative motion is gated behind prefers-reduced-motion; the clock
+// (information, not decoration) keeps ticking either way.
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ActivityKind, ActivitySummary } from '@/lib/github'
 import { sparkline } from '@/lib/sparkline'
 import type { Broadcast } from '@/lib/terminal/types'
 import { styled } from '../../../styled-system/jsx'
 import { getModelContext, isWebMcpEnabled } from './webmcp'
 
-// A little axolotl, pure ASCII so every glyph is exactly one cell in Space Mono
-// (box-drawing and bullet glyphs are ambiguous-width and drift). Frilly gills
-// fan up beside a domed head crown, dot eyes below, a rounded jaw. All three
-// lines center on the same column so the face stays plumb at any size.
-const SIGIL_ART = ['\\\\\\ .-----. ///', '    ( o o )', '     \\___/']
-const SIGIL_COLORS = ['#80ffea', '#ff75d8', '#ff6ac1']
-const SIGIL = SIGIL_ART.map((art, i) => ({ art, color: SIGIL_COLORS[i % SIGIL_COLORS.length], id: `sigil-${i}` }))
-
 const SPARK_LEN = 16
 
-const KIND_ICON: Record<ActivityKind, string> = { create: '✦', pr: '⇡', push: '↑', release: '⌁' }
+const KIND_ICON: Record<ActivityKind, string> = { create: '+', pr: '⇡', push: '↑', release: '⌁' }
 
 const TIPS = [
   'type `help` to explore',
@@ -38,80 +29,76 @@ const TIPS = [
 const Wrap = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-1) 0 var(--space-2);
+  gap: 1.4rem;
+  padding: 0.8rem 0 1.2rem;
 `
 
-const Top = styled.div`
+const Head = styled.div`
   display: flex;
-  gap: var(--space-6);
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.6rem;
   flex-wrap: wrap;
-  align-items: flex-start;
 `
 
-const Sigil = styled.pre`
+const Host = styled.span`
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 900;
+  font-size: clamp(2.4rem, 1.8rem + 1.6vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #f6f2ff;
+`
+
+const Sub = styled.p`
   margin: 0;
-  line-height: 1.05;
-  font-family: var(--font-mono);
-  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #d6cfe6;
 `
 
-const Body = styled.div`
+const Rows = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 14rem;
+  gap: 0.4rem;
+  padding: 1.2rem 0;
+  border-top: 1px solid rgba(244, 240, 255, 0.1);
+  border-bottom: 1px solid rgba(244, 240, 255, 0.1);
 `
 
 const Line = styled.div`
   display: flex;
-  gap: var(--space-3);
+  gap: 1.6rem;
   align-items: baseline;
   flex-wrap: wrap;
 `
 
 const Label = styled.span`
-  color: var(--silk-circuit-cyan);
-  min-width: 4.5rem;
+  color: #ff9bdc;
+  min-width: 8rem;
   flex-shrink: 0;
 `
 
-const Host = styled.span`
-  color: var(--silk-plasma-pink);
-`
-
-const Spacer = styled.span`
-  flex: 1;
-  min-width: var(--space-4);
-`
-
 const Clock = styled.span`
-  color: var(--silk-plasma-pink);
+  color: #b9b0cc;
   font-variant-numeric: tabular-nums;
-`
-
-const Mono = styled.span`
-  font-variant-numeric: tabular-nums;
-`
-
-const Rule = styled.div`
-  border-top: 1px solid color-mix(in oklab, var(--silk-quantum-purple) 28%, transparent);
-  margin: 2px 0;
 `
 
 const FeedText = styled.span`
-  color: var(--text-secondary);
+  color: #f4f0ff;
 `
 
 const Spark = styled.span`
-  color: var(--silk-success, #50fa7b);
+  color: #80ffea;
   letter-spacing: 1px;
   font-variant-numeric: tabular-nums;
 `
 
 const Live = styled.span`
-  color: var(--silk-success, #50fa7b);
+  color: #80ffea;
 
   &::before {
     content: '●';
@@ -124,21 +111,12 @@ const Live = styled.span`
   }
 `
 
-const Now = styled.span`
-  color: var(--silk-circuit-cyan);
-`
-
 const Tip = styled.span`
-  color: var(--text-muted);
+  color: #8f86a3;
 `
 
 const pad2 = (n: number) => n.toString().padStart(2, '0')
 const clockStr = (d: Date) => `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`
-const uptimeStr = (ms: number) => {
-  const s = Math.max(0, Math.floor(ms / 1000))
-  return `${pad2(Math.floor(s / 3600))}:${pad2(Math.floor((s % 3600) / 60))}:${pad2(s % 60)}`
-}
-
 interface FeedItem {
   icon: string
   text: string
@@ -157,7 +135,7 @@ function buildFeed(b: Broadcast, activity: ActivitySummary | null): FeedItem[] {
       text: `shipped ${b.latestShip.project}${b.latestShip.version ? ` v${b.latestShip.version}` : ''}`,
     })
   }
-  if (b.latestPost) feed.push({ icon: '✎', text: `posted ${b.latestPost.title}` })
+  if (b.latestPost) feed.push({ icon: '✎', text: `published ${b.latestPost.title}` })
   feed.push({
     icon: '◆',
     text:
@@ -251,9 +229,6 @@ export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
   const reduced = usePrefersReducedMotion()
   const webmcp = useWebMcpStatus()
   const activity = useGithubActivity()
-  const mountRef = useRef(0)
-  if (mountRef.current === 0) mountRef.current = Date.now()
-
   const feed = buildFeed(broadcast, activity)
   const [now, setNow] = useState(() => new Date())
   const [feedIdx, setFeedIdx] = useState(0)
@@ -287,60 +262,33 @@ export default function StatusBoard({ broadcast }: { broadcast: Broadcast }) {
 
   return (
     <Wrap aria-label="hyperbliss status console">
-      <Top>
-        <Sigil aria-hidden="true">
-          {SIGIL.map((row) => (
-            <div key={row.id} style={{ color: row.color }}>
-              {row.art}
-            </div>
-          ))}
-        </Sigil>
+      <Head>
+        <Host>Hyperbliss Technologies</Host>
+        <Clock>{clockStr(now)}</Clock>
+      </Head>
+      <Sub>Open source tools for light, memory, and the terminal.</Sub>
 
-        <Body>
+      <Rows>
+        <Line>
+          <Label>{item.icon} latest</Label>
+          <FeedText>{item.text}</FeedText>
+        </Line>
+        <Line>
+          <Label>{activity ? 'pushes' : 'pulse'}</Label>
+          <Spark>{sparkline(sparkVals)}</Spark>
+          <Live>live</Live>
+        </Line>
+        {/* Agent tooling is plumbing: it only earns a row when it is actually on. */}
+        {webmcp.state === 'ready' && (
           <Line>
-            <Host>stefanie jane · creative technologist</Host>
-            <Spacer />
-            <Clock>{clockStr(now)}</Clock>
+            <Label>agents</Label>
+            <Spark>WebMCP</Spark>
+            <Live>ready{webmcp.count === null ? '' : ` · ${webmcp.count} tools`}</Live>
           </Line>
-          <Line>
-            <Label>uptime</Label>
-            <Mono>{uptimeStr(now.getTime() - mountRef.current)}</Mono>
-          </Line>
+        )}
+      </Rows>
 
-          <Rule />
-
-          <Line>
-            <Label>{item.icon} feed</Label>
-            <FeedText>{item.text}</FeedText>
-          </Line>
-          <Line>
-            <Label>{activity ? 'pushes' : 'net'}</Label>
-            <Spark>{sparkline(sparkVals)}</Spark>
-            <Live>live</Live>
-          </Line>
-          <Line>
-            <Label>agent</Label>
-            {webmcp.state === 'ready' ? (
-              <>
-                <Spark>WebMCP</Spark>
-                <Live>ready{webmcp.count === null ? '' : ` · ${webmcp.count} tools`}</Live>
-              </>
-            ) : (
-              <Tip>{webmcp.state === 'disabled' ? 'WebMCP disabled' : 'WebMCP unsupported'}</Tip>
-            )}
-          </Line>
-          <Line>
-            <Label>now</Label>
-            <Now>{broadcast.focus || 'building, open source all the way down'}</Now>
-          </Line>
-
-          <Rule />
-
-          <Line>
-            <Tip>{TIPS[tipIdx % TIPS.length]}</Tip>
-          </Line>
-        </Body>
-      </Top>
+      <Tip>{TIPS[tipIdx % TIPS.length]}</Tip>
     </Wrap>
   )
 }
