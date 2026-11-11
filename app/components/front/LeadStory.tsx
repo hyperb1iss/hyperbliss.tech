@@ -38,8 +38,12 @@ const Title = styled.h3`
   font-size: clamp(3.6rem, 2.4rem + 3vw, 7.2rem);
   line-height: 0.98;
   letter-spacing: -0.02em;
-  color: #f6f2ff;
   text-wrap: balance;
+  width: fit-content;
+  background-image: linear-gradient(95deg, #ff8ad8 0%, #ffffff 48%, #b9a2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 
   & a {
     color: inherit;

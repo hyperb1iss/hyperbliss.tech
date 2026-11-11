@@ -61,6 +61,15 @@
   color: #f6f2ff;
 }
 
+/* The name itself wears its line's colors; the tagline under it stays ink. */
+.project-detail__name {
+  width: fit-content;
+  background-image: linear-gradient(95deg, #ffffff 0%, #ffffff 22%, var(--cta-b, #ff8ad8) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 .project-detail__tagline {
   font-family: var(--font-body);
   font-stretch: 100%;
@@ -155,7 +164,11 @@
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.015em;
-  color: #f6f2ff;
+  width: fit-content;
+  background: linear-gradient(95deg, var(--label, #ff9bdc) 0%, var(--cta-b, #b9a2ff) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   text-align: left;
@@ -179,7 +192,7 @@
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  color: #f6f2ff;
+  color: var(--label, #80ffea);
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   text-align: left;

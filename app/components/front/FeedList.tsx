@@ -85,8 +85,9 @@ const titleStyles = css`
   margin: 0 0 0.6rem;
   text-wrap: pretty;
 
+  /* A pale tint of the row's kind color at rest, the full color on hover. */
   & a {
-    color: #f6f2ff;
+    color: color-mix(in oklab, var(--title-color, var(--silk-circuit-cyan)) 34%, #ffffff);
     text-decoration: none;
     transition: color var(--duration-normal) var(--ease-silk);
   }

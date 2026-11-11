@@ -84,7 +84,12 @@ const Name = styled.h3`
   font-size: clamp(4.4rem, 1.6rem + 4.8vw, 8.6rem);
   line-height: 0.92;
   letter-spacing: -0.02em;
-  color: #f6f2ff;
+  width: fit-content;
+  /* White running into the line's own color. */
+  background-image: linear-gradient(95deg, #ffffff 0%, #ffffff 22%, var(--cta-b) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 
   & a {
     color: inherit;

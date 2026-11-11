@@ -78,7 +78,23 @@ const Marker = styled.h2`
   font-stretch: 100%;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #b9b0cc;
+  display: flex;
+  align-items: center;
+  gap: 3.2rem;
+  color: #ff9bdc;
+
+  /* Three LED cells chasing the brand colors (led-chase in globals.css). */
+  &::before {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    flex-shrink: 0;
+    background: #e135ff;
+    box-shadow:
+      1rem 0 0 #ff6ac1,
+      2rem 0 0 #80ffea;
+    animation: led-chase 1.8s steps(1) infinite;
+  }
 `
 
 const Aside = styled.p`

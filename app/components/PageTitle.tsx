@@ -3,7 +3,7 @@
 // in the display face, left-aligned, with an optional one-line lede. Opts out of
 // the global heading rule so it matches the front page.
 
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { css, cx } from '../../styled-system/css'
 import { displayInk } from './front/neon'
 import TitleLight, { type LightTint } from './TitleLight'
@@ -41,6 +41,14 @@ const ledeStyles = css`
   text-wrap: pretty;
 `
 
+/** Each tint's title ink: the two colors on either side of white. */
+const TINT_INK: Record<LightTint, [string, string]> = {
+  cyan: ['#80ffea', '#b9a2ff'],
+  magenta: ['#80ffea', '#ff8ad8'],
+  pink: ['#ff8ad8', '#b9a2ff'],
+  violet: ['#b9a2ff', '#80ffea'],
+}
+
 interface PageTitleProps {
   children: ReactNode
   /** One sentence under the title. Optional; most pages need none. */
@@ -50,10 +58,14 @@ interface PageTitleProps {
 }
 
 export default function PageTitle({ children, lede, tint = 'magenta' }: PageTitleProps) {
+  const [a, b] = TINT_INK[tint]
+  const ink = { '--ink-a': a, '--ink-b': b } as CSSProperties
   return (
     <header className={headerStyles}>
       <TitleLight tint={tint} />
-      <h1 className={cx(titleStyles, displayInk)}>{children}</h1>
+      <h1 className={cx(titleStyles, displayInk)} style={ink}>
+        {children}
+      </h1>
       {lede && <p className={ledeStyles}>{lede}</p>}
     </header>
   )

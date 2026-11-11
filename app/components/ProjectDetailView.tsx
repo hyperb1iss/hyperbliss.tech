@@ -90,7 +90,7 @@ export default function ProjectDetailView({
             ))}
         </div>
         <h1 className="project-detail__title">
-          {name}
+          <span className="project-detail__name">{name}</span>
           {/* The space keeps the accessible name from reading as "SibylMemory";
               the flex gap draws the visual separation. */}
           {sub && (

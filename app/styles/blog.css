@@ -227,7 +227,11 @@
   text-align: left;
   margin: 0;
   text-wrap: balance;
-  color: #f6f2ff;
+  width: fit-content;
+  background-image: linear-gradient(95deg, #ff8ad8 0%, #ffffff 48%, #b9a2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .blog-post__tags {
@@ -1051,8 +1055,9 @@
   }
 }
 
-/* Emission: body headings in expanded Archivo, sentence case, bright ink, no
-   fill, glow, or underline bars. */
+/* Emission: body headings in expanded Archivo, sentence case, no glow or
+   underline bars. Color separates them from the text: h2 runs pink into
+   violet, h3 is cyan. */
 .markdown-prose__h1,
 .markdown-prose__h2,
 .markdown-prose__h3 {
@@ -1077,13 +1082,18 @@
   font-stretch: 112%;
   font-weight: 800;
   letter-spacing: -0.015em;
+  width: fit-content;
+  background: linear-gradient(95deg, #ff8ad8 0%, #d9a8ff 55%, #b9a2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .markdown-prose__h3 {
   font-stretch: 108%;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: #ffd6f2;
+  color: #80ffea;
 }
 
 /* Reading rhythm: air above headings, a quiet bullet, calmer emphasis glow. */
@@ -1114,4 +1124,34 @@
   height: 0.5rem;
   background: var(--silk-lavender);
   box-shadow: none;
+}
+
+/* Reading progress: the brand gradient fills across the top edge as the essay
+   scrolls. Pure CSS (a scroll timeline); browsers without one never show it. */
+.reading-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      height: 3px;
+      z-index: 1200;
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+      animation: reading-progress linear both;
+      animation-timeline: scroll(root);
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes reading-progress {
+  to {
+    transform: scaleX(1);
+  }
 }

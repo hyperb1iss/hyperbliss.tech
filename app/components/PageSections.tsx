@@ -41,8 +41,24 @@ export const Heading = styled.h2`
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-shadow: none;
-  color: #b9b0cc;
   margin: 0 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 3.2rem;
+  color: #ff9bdc;
+
+  /* Three LED cells chasing the brand colors (led-chase in globals.css). */
+  &::before {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    flex-shrink: 0;
+    background: #e135ff;
+    box-shadow:
+      1rem 0 0 #ff6ac1,
+      2rem 0 0 #80ffea;
+    animation: led-chase 1.8s steps(1) infinite;
+  }
   padding-top: 2.4rem;
   border-top: 1px solid transparent;
   border-image: linear-gradient(90deg, rgba(225, 53, 255, 0.7), rgba(128, 255, 234, 0.4) 45%, transparent) 1;
