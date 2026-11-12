@@ -97,12 +97,6 @@ const Marker = styled.h2`
   }
 `
 
-const Aside = styled.p`
-  margin: 0;
-  font-size: 1.6rem;
-  color: #b9b0cc;
-`
-
 // A span, not <code>: the global code rule paints a boxed pink chip.
 const Mono = styled.span`
   font-family: var(--font-mono);
@@ -179,7 +173,6 @@ export default function FrontPage({ lead, items, featured, activity, front }: Fr
           <Section aria-labelledby="front-products" id="products">
             <Head>
               <Marker id="front-products">Products</Marker>
-              <Aside>Three product lines. Open source at the core.</Aside>
             </Head>
             {featured.map((entry, index) => (
               <ProductChapter entry={entry} flip={index % 2 === 1} key={entry.project.slug} priority={index === 0} />
