@@ -647,7 +647,8 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
 
                 {awards.length > 0 && (
                   <div>
-                    <SubLabel>Awards</SubLabel>
+                    {/* Only a label when there are two groups to tell apart. */}
+                    {speaking.length > 0 && <SubLabel>Awards</SubLabel>}
                     <ul>
                       {awards.map((item, idx) => (
                         <li key={idx}>

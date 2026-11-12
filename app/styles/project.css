@@ -164,11 +164,7 @@
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.015em;
-  width: fit-content;
-  background: linear-gradient(95deg, var(--label, #ff9bdc) 0%, var(--cta-b, #b9a2ff) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--label, #ff9bdc);
   margin-top: 2rem;
   margin-bottom: 0.75rem;
   text-align: left;
@@ -662,8 +658,9 @@
   }
 }
 
-/* Emission: body headings stay sentence case with no fill, glow, or shimmer;
-   the rules above set their face, size, and ink. */
+/* Emission: body headings stay sentence case with no glow or shimmer; the
+   rules above set their face and size. This block clears the old fills, so
+   the h2's line-colored ink is set after it, below. */
 .project-markdown__h1,
 .project-markdown__h2,
 .project-markdown__h3 {
@@ -675,6 +672,17 @@
   -webkit-text-fill-color: currentColor;
   animation: none;
   filter: none;
+}
+
+/* Section headings run from the line's label color into its accent. This
+   must follow the reset above: with the fill cleared but the text still
+   transparent, the heading would vanish. */
+.project-markdown__h2 {
+  width: fit-content;
+  background: linear-gradient(95deg, var(--label, #ff9bdc) 0%, var(--cta-b, #b9a2ff) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Project page layout: body column with a sticky facts rail on wide screens. */

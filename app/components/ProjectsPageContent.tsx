@@ -4,6 +4,7 @@
 // line as rows under it. The last line collects the open source work outside
 // the products.
 
+import type { CSSProperties } from 'react'
 import { groupByLine, type ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../styled-system/jsx'
 import Reveal from './front/Reveal'
@@ -11,6 +12,7 @@ import PageLayout from './PageLayout'
 import PageTitle from './PageTitle'
 import ProjectRows from './ProjectRows'
 import LaneNav from './projects/LaneNav'
+import { LINE_LIGHT } from './projects/lineLight'
 import ProductChapter from './projects/ProductChapter'
 
 const LaneSection = styled.section`
@@ -42,13 +44,20 @@ const LaneTitle = styled.h2`
   font-size: clamp(2.6rem, 2rem + 1vw, 3.4rem);
   line-height: 1;
   letter-spacing: -0.02em;
-  color: #f6f2ff;
   margin: 0;
   display: flex;
   align-items: baseline;
   gap: 1.2rem;
 
-  & span {
+  /* The line's name in its own colors (lineLight.ts, set on the section). */
+  & span[data-name] {
+    background-image: linear-gradient(95deg, var(--label, #f6f2ff) 0%, var(--cta-b, #f6f2ff) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  & span[data-count] {
     font-family: var(--font-mono);
     font-stretch: 100%;
     font-weight: 400;
@@ -103,12 +112,17 @@ export default function ProjectsPageContent({ entries, now }: ProjectsPageConten
         const start = order
         order += 1 + (flagship ? 1 : 0) + rest.length * 0.5
         return (
-          <LaneSection aria-labelledby={`lane-${lane.id}`} id={lane.id} key={lane.id}>
+          <LaneSection
+            aria-labelledby={`lane-${lane.id}`}
+            id={lane.id}
+            key={lane.id}
+            style={LINE_LIGHT[lane.id] as CSSProperties}
+          >
             <Reveal order={start}>
               <LaneHeader>
                 <LaneTitle id={`lane-${lane.id}`}>
-                  {lane.label}
-                  <span>{rest.length + (flagship ? 1 : 0)}</span>
+                  <span data-name="">{lane.label}</span>
+                  <span data-count="">{rest.length + (flagship ? 1 : 0)}</span>
                 </LaneTitle>
                 <LaneBlurb>{lane.blurb}</LaneBlurb>
               </LaneHeader>

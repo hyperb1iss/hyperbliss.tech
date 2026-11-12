@@ -33,9 +33,12 @@ const bandStyles = css`
   background-image:
     linear-gradient(90deg, rgba(5, 3, 8, 0.62) 0%, rgba(5, 3, 8, 0.28) 46%, transparent 78%),
     url('/images/emission/cymatics.webp');
+  background-repeat: no-repeat;
+  /* At least 118rem wide, so the frame is always taller than the band: on a
+     phone, 190% of the viewport left it shorter and it tiled into a hard edge. */
   background-size:
     100% 100%,
-    190% auto;
+    max(190%, 118rem) auto;
   background-position:
     0 0,
     92% 0%;

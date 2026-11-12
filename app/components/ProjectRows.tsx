@@ -30,7 +30,7 @@ const rowStyles = css`
   transition: background var(--duration-normal) var(--ease-silk);
 
   &:hover {
-    background: linear-gradient(90deg, rgba(225, 53, 255, 0.07), transparent 60%);
+    background: linear-gradient(90deg, var(--pool-b, rgba(225, 53, 255, 0.07)), transparent 60%);
   }
 
   @media (max-width: 760px) {
@@ -61,7 +61,7 @@ const Name = styled.h3`
     transition: color var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-circuit-cyan);
+    color: var(--label, var(--silk-circuit-cyan));
   }
 `
 
