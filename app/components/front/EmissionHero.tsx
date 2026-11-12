@@ -6,7 +6,7 @@
 // reduced-motion rule collapses each to its final frame.
 
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { css } from '../../../styled-system/css'
 import { styled } from '../../../styled-system/jsx'
 
@@ -126,8 +126,10 @@ const riseStyles = css`
 
 // The last line is the one crisp accent on the page: the brand's cyan running
 // into pink, bright against the magenta field behind it. It owns its whole
-// animation (rise, then a slow slide of the gradient on wide screens) instead
-// of sharing riseStyles, so no two atomic classes compete for the animation property.
+// animation instead of sharing riseStyles, so no two atomic classes compete
+// for the animation property: it rises, flicks on like a sign catching, then
+// (on wide screens) its gradient slides slowly. Its start comes from
+// --rise-delay, since one inline animation-delay would retime all three.
 const fillStyles = css`
   background-image: linear-gradient(95deg, #80ffea 0%, #a8e4ff 30%, #ffffff 50%, #ffb3e6 72%, #80ffea 100%);
   background-size: 220% 100%;
@@ -135,12 +137,15 @@ const fillStyles = css`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) backwards;
+  animation:
+    emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) var(--rise-delay, 0ms) backwards,
+    emission-flick 1.1s steps(1, end) calc(var(--rise-delay, 0ms) + 1s) 1;
 
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
     animation:
-      emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) backwards,
-      emission-pan 18s ease-in-out 1s infinite alternate;
+      emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) var(--rise-delay, 0ms) backwards,
+      emission-flick 1.1s steps(1, end) calc(var(--rise-delay, 0ms) + 1s) 1,
+      emission-pan 18s ease-in-out 2.4s infinite alternate;
   }
 `
 
@@ -237,7 +242,11 @@ export default function EmissionHero({ headline, intro, essayHref, footnote }: E
             <span
               className={index === headline.length - 1 ? fillStyles : riseStyles}
               key={line}
-              style={{ animationDelay: `${120 + index * 120}ms` }}
+              style={
+                index === headline.length - 1
+                  ? ({ '--rise-delay': `${120 + index * 120}ms` } as CSSProperties)
+                  : { animationDelay: `${120 + index * 120}ms` }
+              }
             >
               {line}{' '}
             </span>

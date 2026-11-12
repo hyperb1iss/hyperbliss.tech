@@ -25,7 +25,7 @@ export interface FrontPageProps {
   front: FrontSection | null
 }
 
-const DEFAULT_HEADLINE = ['Software', 'that puts you', 'in control.']
+const DEFAULT_HEADLINE = ['Software', 'with the', 'lights on.']
 
 const Wrap = styled.div`
   width: 100%;

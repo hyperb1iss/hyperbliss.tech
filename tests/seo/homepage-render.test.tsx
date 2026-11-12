@@ -43,7 +43,7 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  headline: ['Software', 'that puts you', 'in control.'],
+  headline: ['Software', 'with the', 'lights on.'],
   tagline: 'Built by {name} with {hyperbliss}, all the way down to `/etc`.',
 }
 
@@ -124,7 +124,7 @@ describe('TerminalHome SSR markup carries real content', () => {
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
         .trim(),
-    ).toBe('Software that puts you in control.')
+    ).toBe('Software with the lights on.')
     expect(withoutNoscript).toMatch(
       /Built by <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a> with <span[^>]*>hyperbliss<\/span>/,
     )

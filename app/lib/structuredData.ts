@@ -59,7 +59,7 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     description:
-      'Hyperbliss Technologies makes open source software that puts you in control: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.',
+      'Hyperbliss Technologies makes open source tools for light, memory, and the terminal: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.',
     name: 'Hyperbliss Technologies',
     potentialAction: {
       '@type': 'SearchAction',

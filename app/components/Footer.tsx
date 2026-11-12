@@ -201,7 +201,7 @@ const Footer: React.FC = () => {
         <Top>
           <BrandSection>
             <Image alt="hyperbliss" className={brandLogoStyles} height={70} src="/images/logo.png" width={350} />
-            <BrandLine>Software that puts you in control of your own technology. Made in Seattle.</BrandLine>
+            <BrandLine>Software with the lights on. Open source, made in Seattle.</BrandLine>
           </BrandSection>
 
           {FOOTER_COLUMNS.map((column) => (

@@ -577,6 +577,33 @@
   }
 }
 
+/* The hero's last line catching like a sign switching on: held steps of
+   opacity, played once after the line has risen. */
+@keyframes emission-flick {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 0.2;
+  }
+  18% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.35;
+  }
+  36% {
+    opacity: 1;
+  }
+  58% {
+    opacity: 0.6;
+  }
+  64%,
+  100% {
+    opacity: 1;
+  }
+}
+
 @keyframes emission-spin {
   to {
     transform: rotate(360deg);

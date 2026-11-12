@@ -10,7 +10,7 @@ const COMPANY_LEGAL_NAME = 'Hyperbliss Technologies LLC'
 const BASE_URL = 'https://hyperbliss.tech'
 const SITE_TITLE = COMPANY_NAME
 const SITE_DESCRIPTION =
-  'Hyperbliss Technologies makes open source software that puts you in control: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.'
+  'Hyperbliss Technologies makes open source tools for light, memory, and the terminal: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.'
 const SITE_NAME = COMPANY_NAME
 const OG_LOCALE = 'en_US'
 

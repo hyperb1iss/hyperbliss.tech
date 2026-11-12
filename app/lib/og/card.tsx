@@ -51,7 +51,7 @@ const LABEL_INK: Record<OgKind, string> = {
   site: '#ff9bdc',
 }
 
-const SITE_HEADLINE = ['SOFTWARE', 'THAT PUTS YOU', 'IN CONTROL.']
+const SITE_HEADLINE = ['SOFTWARE', 'WITH THE', 'LIGHTS ON.']
 const SITE_SUBTITLE = 'Open source tools for light, memory, and the terminal.'
 
 const clamp = (value: string, max: number) => (value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value)
