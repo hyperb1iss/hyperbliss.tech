@@ -11,7 +11,6 @@ import { PageLoadProvider } from '@/components/PageLoadOrchestrator'
 import TerminalHome from '@/components/TerminalHome'
 import type { FrontSection, LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
 import { buildFeed, type FeedRelease, splitLead } from '@/lib/feed'
-import type { ActivitySummary } from '@/lib/github'
 import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 
 const project = (slug: string, title: string, date: string): ProjectSummary => ({
@@ -48,16 +47,6 @@ const front: FrontSection = {
   tagline: 'Built by {name} with {hyperbliss}, all the way down to `/etc`.',
 }
 
-const activity: ActivitySummary = {
-  events: [],
-  generatedAt: '2026-09-14T00:00:00Z',
-  ok: true,
-  pushesPerDay: [],
-  repos: ['sibyl', 'chromacat'],
-  totalPushes: 7,
-  windowDays: 14,
-}
-
 const projects = [project('sibyl', 'Sibyl', '2025-01-26'), project('chromacat', 'ChromaCat', '2024-11-02')]
 const posts = [post('how-i-ai', 'How I AI', '2026-05-27'), post('regex-deep-dive', 'Regex Deep Dive', '2026-04-03')]
 const lab: LabSummary[] = []
@@ -90,7 +79,6 @@ const featured = pickFeatured(entries, 3)
 const html = renderToStaticMarkup(
   <PageLoadProvider>
     <TerminalHome
-      activity={activity}
       featured={featured}
       front={front}
       items={items}
@@ -150,10 +138,8 @@ describe('TerminalHome SSR markup carries real content', () => {
     )
   })
 
-  it('renders the computed pulse line and carries no hand-written now, photo, or rail', () => {
-    expect(withoutNoscript).toContain('last 14 days')
-    expect(withoutNoscript).toContain('7 pushes')
-    expect(withoutNoscript).toContain('sibyl, chromacat')
+  it('carries no activity line, hand-written now, photo, or rail', () => {
+    expect(withoutNoscript).not.toContain('pushes')
     expect(withoutNoscript).not.toContain('profile-image')
     expect(withoutNoscript).not.toContain('Creative technologist')
     expect(withoutNoscript).not.toContain('<aside')

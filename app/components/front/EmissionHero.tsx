@@ -233,11 +233,9 @@ interface EmissionHeroProps {
   intro: ReactNode
   /** Link for the secondary action: the newest essay, when there is one. */
   essayHref: string | null
-  /** A computed line under the intro (the Pulse), or nothing. */
-  footnote?: ReactNode
 }
 
-export default function EmissionHero({ headline, accent, intro, essayHref, footnote }: EmissionHeroProps) {
+export default function EmissionHero({ headline, accent, intro, essayHref }: EmissionHeroProps) {
   const accentLine = accent !== undefined && accent >= 0 && accent < headline.length ? accent : headline.length - 1
   return (
     <section aria-labelledby="hero-title" className={heroStyles}>
@@ -261,10 +259,7 @@ export default function EmissionHero({ headline, accent, intro, essayHref, footn
           ))}
         </h1>
         <Row className={riseStyles} style={{ animationDelay: '560ms' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.6rem' }}>
-            <Intro>{intro}</Intro>
-            {footnote}
-          </div>
+          <Intro>{intro}</Intro>
           <Ctas>
             <Primary href="#products">See the products</Primary>
             {essayHref && <Secondary href={essayHref}>Read the latest essay</Secondary>}

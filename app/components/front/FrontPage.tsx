@@ -6,7 +6,6 @@
 import Link from 'next/link'
 import type { FrontSection } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
-import type { ActivitySummary } from '@/lib/github'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
 import ProductChapter from '../projects/ProductChapter'
@@ -14,14 +13,12 @@ import EmissionHero from './EmissionHero'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
 import { displayInk } from './neon'
-import Pulse from './Pulse'
 import Reveal from './Reveal'
 
 export interface FrontPageProps {
   lead: FeedItem | null
   items: FeedItem[]
   featured: ProjectEntry[]
-  activity: ActivitySummary | null
   front: FrontSection | null
 }
 
@@ -155,7 +152,7 @@ function renderTagline(tagline: string) {
   })
 }
 
-export default function FrontPage({ lead, items, featured, activity, front }: FrontPageProps) {
+export default function FrontPage({ lead, items, featured, front }: FrontPageProps) {
   const headline = front?.headline?.length ? front.headline : DEFAULT_HEADLINE
   const intro =
     front?.tagline ?? 'Hyperbliss Technologies makes open source software for light, memory, and the terminal.'
@@ -165,7 +162,6 @@ export default function FrontPage({ lead, items, featured, activity, front }: Fr
       <EmissionHero
         accent={front?.headlineAccent ?? undefined}
         essayHref={lead?.href ?? null}
-        footnote={<Pulse activity={activity} />}
         headline={headline}
         intro={renderTagline(intro)}
       />

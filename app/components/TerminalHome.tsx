@@ -5,7 +5,6 @@
 
 import type { FrontSection, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
-import type { ActivitySummary } from '@/lib/github'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import FrontPage from './front/FrontPage'
 import HomeFallbackContent from './HomeFallback'
@@ -16,26 +15,16 @@ interface TerminalHomeProps {
   lead: FeedItem | null
   items: FeedItem[]
   featured: ProjectEntry[]
-  activity: ActivitySummary | null
   front: FrontSection | null
   siteConfig?: SiteConfig | null
 }
 
 const DEFAULT_SUMMARY = 'An independent software company in Seattle. Open source at the core.'
 
-export default function TerminalHome({
-  posts,
-  projects,
-  lead,
-  items,
-  featured,
-  activity,
-  front,
-  siteConfig,
-}: TerminalHomeProps) {
+export default function TerminalHome({ posts, projects, lead, items, featured, front, siteConfig }: TerminalHomeProps) {
   return (
     <>
-      <FrontPage activity={activity} featured={featured} front={front} items={items} lead={lead} />
+      <FrontPage featured={featured} front={front} items={items} lead={lead} />
 
       <noscript>
         <HomeFallbackContent
