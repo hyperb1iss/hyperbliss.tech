@@ -51,7 +51,9 @@ const LABEL_INK: Record<OgKind, string> = {
   site: '#ff9bdc',
 }
 
-const SITE_HEADLINE = ['SOFTWARE', 'WITH THE', 'LIGHTS ON.']
+/** The site card's headline; the first line is set in the accent cyan. */
+const SITE_HEADLINE = ['BRIGHTER', 'BY DESIGN.']
+const SITE_ACCENT = '#80ffea'
 const SITE_SUBTITLE = 'Open source tools for light, memory, and the terminal.'
 
 const clamp = (value: string, max: number) => (value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value)
@@ -131,14 +133,14 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1000 }}>
           {isSite ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {SITE_HEADLINE.map((line) => (
+              {SITE_HEADLINE.map((line, index) => (
                 <div
                   key={line}
                   style={{
-                    color: INK,
+                    color: index === 0 ? SITE_ACCENT : INK,
                     display: 'flex',
                     fontFamily: 'Archivo Expanded',
-                    fontSize: 84,
+                    fontSize: 104,
                     fontWeight: 900,
                     letterSpacing: -1.5,
                     lineHeight: 0.92,

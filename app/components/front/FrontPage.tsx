@@ -25,7 +25,7 @@ export interface FrontPageProps {
   front: FrontSection | null
 }
 
-const DEFAULT_HEADLINE = ['Software', 'with the', 'lights on.']
+const DEFAULT_HEADLINE = ['Brighter', 'by design.']
 
 const Wrap = styled.div`
   width: 100%;
@@ -163,6 +163,7 @@ export default function FrontPage({ lead, items, featured, activity, front }: Fr
   return (
     <>
       <EmissionHero
+        accent={front?.headlineAccent ?? undefined}
         essayHref={lead?.href ?? null}
         footnote={<Pulse activity={activity} />}
         headline={headline}

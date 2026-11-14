@@ -1,7 +1,7 @@
 // The front page hero: a full-bleed field of real Hypercolor light (a frame
 // of its Cymatics effect) drifting under a slow conic bloom, pulled up under
 // the fixed header so the light runs to the top edge. The headline is set
-// huge and expanded, with its last line in the brand's cyan and pink. Server
+// huge and expanded, with one line in the brand's cyan and pink. Server
 // component; the motion is CSS keyframes from globals.css, and the global
 // reduced-motion rule collapses each to its final frame.
 
@@ -118,13 +118,18 @@ const headlineStyles = css`
   color: #f6f2ff;
   display: flex;
   flex-direction: column;
+
+  /* A short headline has room to run larger. */
+  &[data-short='true'] {
+    font-size: clamp(3.8rem, 9.6vw, 15.6rem);
+  }
 `
 
 const riseStyles = css`
   animation: emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) backwards;
 `
 
-// The last line is the one crisp accent on the page: the brand's cyan running
+// One line is the crisp accent on the page: the brand's cyan running
 // into pink, bright against the magenta field behind it. It owns its whole
 // animation instead of sharing riseStyles, so no two atomic classes compete
 // for the animation property: it rises, flicks on like a sign catching, then
@@ -223,6 +228,8 @@ const Secondary = styled(Link)`
 
 interface EmissionHeroProps {
   headline: string[]
+  /** The line set in the accent colors, counted from 0. Defaults to the last. */
+  accent?: number
   intro: ReactNode
   /** Link for the secondary action: the newest essay, when there is one. */
   essayHref: string | null
@@ -230,20 +237,21 @@ interface EmissionHeroProps {
   footnote?: ReactNode
 }
 
-export default function EmissionHero({ headline, intro, essayHref, footnote }: EmissionHeroProps) {
+export default function EmissionHero({ headline, accent, intro, essayHref, footnote }: EmissionHeroProps) {
+  const accentLine = accent !== undefined && accent >= 0 && accent < headline.length ? accent : headline.length - 1
   return (
     <section aria-labelledby="hero-title" className={heroStyles}>
       <div aria-hidden="true" className={lightStyles} />
       <div aria-hidden="true" className={bloomStyles} />
       <Fade aria-hidden="true" />
       <Content>
-        <h1 className={headlineStyles} id="hero-title">
+        <h1 className={headlineStyles} data-short={headline.length <= 2} id="hero-title">
           {headline.map((line, index) => (
             <span
-              className={index === headline.length - 1 ? fillStyles : riseStyles}
+              className={index === accentLine ? fillStyles : riseStyles}
               key={line}
               style={
-                index === headline.length - 1
+                index === accentLine
                   ? ({ '--rise-delay': `${120 + index * 120}ms` } as CSSProperties)
                   : { animationDelay: `${120 + index * 120}ms` }
               }

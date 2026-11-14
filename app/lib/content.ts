@@ -339,8 +339,10 @@ export interface AboutSection {
 /** The front page's opening: the hero headline, one line per entry, and the intro under it. */
 export interface FrontSection {
   bio: string | null
-  /** Hero headline lines; the last one is filled with light. */
+  /** Hero headline lines; one of them is set in the accent colors. */
   headline: string[] | null
+  /** Which headline line takes the accent, counted from 0. Defaults to the last. */
+  headlineAccent: number | null
   /** The front page's opening sentence. `{hyperbliss}` and `{name}` are rendered as the brand mark and the About link. */
   tagline: string | null
 }
@@ -390,6 +392,7 @@ interface RawPageJson {
   front?: {
     bio?: string
     headline?: string[]
+    headlineAccent?: number
     tagline?: string
   }
   company?: {
@@ -445,6 +448,7 @@ export async function getPage(slug: string): Promise<PageData> {
       ? {
           bio: raw.front.bio ?? null,
           headline: Array.isArray(raw.front.headline) ? raw.front.headline : null,
+          headlineAccent: typeof raw.front.headlineAccent === 'number' ? raw.front.headlineAccent : null,
           tagline: raw.front.tagline ?? null,
         }
       : null,
