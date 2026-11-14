@@ -5,13 +5,13 @@ description: 'Resume of Stefanie Jane: founder of Hyperbliss Technologies, creat
 
 # Stefanie Jane
 
-**Engineering Leader | Software Sorceress | Maker | Founder**
+**Agentic Infrastructure Architectress | Software Sorceress | Maker | Founder**
 
 📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
 
 ## 🌠 Summary
 
-I've been building software for over 25 years, from Linux kernels and phone firmware to cloud platforms and AI agents. I created CyanogenMod, the open-source Android distribution that millions of people ran on their phones (it lives on as LineageOS), and co-founded Cyanogen Inc. as its CTO. Since then I've helped launch Oculus Go, brought phones and a smartwatch to market at Mason, and now lead platform engineering at Gradial.
+I've been building software for over 25 years, from Linux kernels and phone firmware to cloud platforms and AI agents. I created CyanogenMod, the open-source Android distribution that millions of people ran on their phones (it lives on as LineageOS), and co-founded Cyanogen Inc. as its CTO. Since then I've helped launch Oculus Go, brought phones and a smartwatch to market at Mason, and now build the infrastructure AI agents run on at Gradial.
 
 I also run Hyperbliss Technologies, an independent company making open source tools for light, memory, and the terminal. I lead teams and I still write the code, mostly in Rust, TypeScript, and Python.
 
@@ -41,10 +41,13 @@ Mentoring | Product Strategy | Project Management | Software Development Lifecyc
 
 _(May 2025 - Present)_
 
-- Lead platform engineering and infrastructure
-- Built the authentication and permissions foundation the applications run on
-- Own developer experience, from workflows to tooling
-- Extend the platform's AI agent capabilities
+- Built the foundational infrastructure the company's AI agents run on
+- Designed and built the agent sandbox platform
+- Scaled that infrastructure as agent workloads grew
+- Built CI/CD and the developer experience, including remote devboxes for the
+  engineering team
+- Built the authentication and permissions systems the applications run on
+- Led performance work across the stack
 - **Technologies:** [TypeScript](https://www.typescriptlang.org/),
   [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
 
