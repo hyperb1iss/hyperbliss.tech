@@ -51,8 +51,8 @@ const LABEL_INK: Record<OgKind, string> = {
   site: '#ff9bdc',
 }
 
-/** The site card's headline; the first line is set in the accent cyan. */
-const SITE_HEADLINE = ['BRIGHTER', 'BY DESIGN.']
+/** The site card's headline; the last line is set in the accent cyan. */
+const SITE_HEADLINE = ['MADE TO', 'GLOW.']
 const SITE_ACCENT = '#80ffea'
 const SITE_SUBTITLE = 'Open source tools for light, memory, and the terminal.'
 
@@ -133,22 +133,30 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 1000 }}>
           {isSite ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {SITE_HEADLINE.map((line, index) => (
-                <div
-                  key={line}
-                  style={{
-                    color: index === 0 ? SITE_ACCENT : INK,
-                    display: 'flex',
-                    fontFamily: 'Archivo Expanded',
-                    fontSize: 104,
-                    fontWeight: 900,
-                    letterSpacing: -1.5,
-                    lineHeight: 0.92,
-                  }}
-                >
-                  {line}
-                </div>
-              ))}
+              {SITE_HEADLINE.map((line, index) => {
+                const lit = index === SITE_HEADLINE.length - 1
+                // The full stop is its own box, pulled in by hand: the face's own
+                // kerning tucks it under the arm of the W.
+                const stop = line.endsWith('.')
+                return (
+                  <div
+                    key={line}
+                    style={{
+                      color: lit ? SITE_ACCENT : INK,
+                      display: 'flex',
+                      fontFamily: 'Archivo Expanded',
+                      fontSize: 120,
+                      fontWeight: 900,
+                      letterSpacing: -1.5,
+                      lineHeight: 0.92,
+                      ...(lit ? { textShadow: '0 0 30px rgba(60, 240, 255, 0.75)' } : {}),
+                    }}
+                  >
+                    {stop ? line.slice(0, -1) : line}
+                    {stop ? <span style={{ marginLeft: -16 }}>.</span> : null}
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div

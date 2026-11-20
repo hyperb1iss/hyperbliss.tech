@@ -22,7 +22,7 @@ export interface FrontPageProps {
   front: FrontSection | null
 }
 
-const DEFAULT_HEADLINE = ['Brighter', 'by design.']
+const DEFAULT_HEADLINE = ['Made to', 'glow.']
 
 const Wrap = styled.div`
   width: 100%;

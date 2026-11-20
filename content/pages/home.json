@@ -2,8 +2,8 @@
   "description": "Hyperbliss Technologies makes open source tools for light, memory, and the terminal: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.",
   "front": {
     "bio": "An independent software company in Seattle, founded by Stefanie Jane. Open source at the core.",
-    "headline": ["Brighter", "by design."],
-    "headlineAccent": 0,
+    "headline": ["Made to", "glow."],
+    "headlineAccent": 1,
     "tagline": "Hyperbliss Technologies is an independent software company in Seattle. We make open source tools for light, memory, and the terminal."
   },
   "slug": "home",

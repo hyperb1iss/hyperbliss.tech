@@ -111,7 +111,9 @@ const headlineStyles = css`
   font-family: var(--font-display);
   font-stretch: 125%;
   font-weight: 900;
-  font-size: clamp(3.4rem, 8.4vw, 13.6rem);
+  /* Sized so the longest line fills the row: this face sets about 0.9em
+     per character, and the row is about 86vw wide on a phone. */
+  font-size: clamp(3.4rem, calc(86vw / (var(--fit, 10) * 0.9)), var(--cap, 13.6rem));
   line-height: 0.9;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -119,10 +121,15 @@ const headlineStyles = css`
   display: flex;
   flex-direction: column;
 
-  /* A short headline has room to run larger. */
+  /* Two lines leave room for taller type than three. */
   &[data-short='true'] {
-    font-size: clamp(3.8rem, 9.6vw, 15.6rem);
+    --cap: 18rem;
   }
+`
+
+/* The face kerns a full stop under the arm of a W or Y; give it air. */
+const stopStyles = css`
+  margin-left: 0.045em;
 `
 
 const riseStyles = css`
@@ -136,21 +143,49 @@ const riseStyles = css`
 // (on wide screens) its gradient slides slowly. Its start comes from
 // --rise-delay, since one inline animation-delay would retime all three.
 const fillStyles = css`
+  /* Positioned so it paints above the glow copy behind it. */
+  position: relative;
   background-image: linear-gradient(95deg, #80ffea 0%, #a8e4ff 30%, #ffffff 50%, #ffb3e6 72%, #80ffea 100%);
   background-size: 220% 100%;
   background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation:
-    emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) var(--rise-delay, 0ms) backwards,
-    emission-flick 1.1s steps(1, end) calc(var(--rise-delay, 0ms) + 1s) 1;
 
   @media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+    animation: emission-pan 18s ease-in-out 2.4s infinite alternate;
+  }
+`
+
+/* The lit line: the crisp fill above, and behind it a blurred copy of the
+   word that warms up after the rise and then breathes. The copy is blurred
+   once and only its opacity animates, so the glow stays on the compositor. */
+const glowStyles = css`
+  position: relative;
+  animation: emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) var(--rise-delay, 0ms) backwards;
+
+  &::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    white-space: nowrap;
+    pointer-events: none;
+    background-image: linear-gradient(95deg, #2dfff0 0%, #5ce1ff 55%, #a9c7ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* A tight halo from the blur, and a wide bloom from its shadow. */
+    filter: blur(0.07em) saturate(1.6) drop-shadow(0 0 0.3em rgba(60, 240, 255, 0.9));
+    will-change: opacity;
     animation:
-      emission-rise 1s cubic-bezier(0.2, 0.75, 0.2, 1) var(--rise-delay, 0ms) backwards,
-      emission-flick 1.1s steps(1, end) calc(var(--rise-delay, 0ms) + 1s) 1,
-      emission-pan 18s ease-in-out 2.4s infinite alternate;
+      emission-glow-on 1.8s ease-out calc(var(--rise-delay, 0ms) + 0.7s) backwards,
+      emission-breathe 4.5s ease-in-out calc(var(--rise-delay, 0ms) + 2.5s) infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &::before {
+      animation: none;
+    }
   }
 `
 
@@ -235,18 +270,37 @@ interface EmissionHeroProps {
   essayHref: string | null
 }
 
+/** Sets a closing full stop, question or exclamation mark off from the word. */
+function splitStop(line: string): ReactNode {
+  const stop = line.match(/[.!?]$/)?.[0]
+  if (!stop) return line
+  return (
+    <>
+      {line.slice(0, -1)}
+      <span className={stopStyles}>{stop}</span>
+    </>
+  )
+}
+
 export default function EmissionHero({ headline, accent, intro, essayHref }: EmissionHeroProps) {
   const accentLine = accent !== undefined && accent >= 0 && accent < headline.length ? accent : headline.length - 1
+  const longest = Math.max(...headline.map((line) => line.length))
   return (
     <section aria-labelledby="hero-title" className={heroStyles}>
       <div aria-hidden="true" className={lightStyles} />
       <div aria-hidden="true" className={bloomStyles} />
       <Fade aria-hidden="true" />
       <Content>
-        <h1 className={headlineStyles} data-short={headline.length <= 2} id="hero-title">
+        <h1
+          className={headlineStyles}
+          data-short={headline.length <= 2}
+          id="hero-title"
+          style={{ '--fit': longest } as CSSProperties}
+        >
           {headline.map((line, index) => (
             <span
-              className={index === accentLine ? fillStyles : riseStyles}
+              className={index === accentLine ? glowStyles : riseStyles}
+              data-text={index === accentLine ? line : undefined}
               key={line}
               style={
                 index === accentLine
@@ -254,7 +308,7 @@ export default function EmissionHero({ headline, accent, intro, essayHref }: Emi
                   : { animationDelay: `${120 + index * 120}ms` }
               }
             >
-              {line}{' '}
+              {index === accentLine ? <span className={fillStyles}>{splitStop(line)}</span> : splitStop(line)}{' '}
             </span>
           ))}
         </h1>
