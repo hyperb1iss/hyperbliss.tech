@@ -18,7 +18,6 @@ const NATIVE_ROWS = [
   'projects',
   'blog',
   'lab',
-  'now',
   'about',
   'contact',
   'resume',

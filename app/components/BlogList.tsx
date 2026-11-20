@@ -14,7 +14,10 @@ interface BlogListProps {
 export default function BlogList({ posts }: BlogListProps) {
   return (
     <PageLayout>
-      <PageTitle lede="Field notes on developer tools, terminal interfaces, creative coding, and building with AI.">
+      <PageTitle
+        lede="Field notes on developer tools, terminal interfaces, creative coding, and building with AI."
+        tint="pink"
+      >
         Writing
       </PageTitle>
       <FeedList heading={null} items={essayFeed(posts)} narrow={true} showKind={false} titleLevel="h2" />

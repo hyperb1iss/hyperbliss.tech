@@ -54,7 +54,6 @@ describe('registered command set', () => {
       'projects',
       'blog',
       'lab',
-      'now',
       'about',
       'contact',
       'resume',
@@ -74,14 +73,13 @@ describe('registered command set', () => {
 
   it('help <command> shows usage', async () => {
     const h = await run('help theme')
-    expect(h.printedText()).toContain('theme <silk|matrix|amber>')
+    expect(h.printedText()).toContain('theme <silk|matrix|amber|ice>')
   })
 
-  it('neofetch paints the broadcast panel', async () => {
+  it('neofetch lists the newest release, essay, and counts', async () => {
     const h = await run('neofetch')
     const out = h.printedText()
     expect(out).toContain('hyperbliss')
-    expect(out).toContain('Building a terminal hero') // focus
     expect(out).toContain('24 projects · 6 posts · 1 lab')
     expect(out).toContain('How I AI') // latest post
   })
@@ -102,13 +100,6 @@ describe('registered command set', () => {
   it('lab lists experiments', async () => {
     const h = await run('lab')
     expect(h.printedText()).toContain('Regex Nightmares')
-  })
-
-  it('now shows focus and prose', async () => {
-    const h = await run('now')
-    const out = h.printedText()
-    expect(out).toContain('Building a terminal hero')
-    expect(out).toContain('Building the terminal hero.') // nowBody
   })
 
   it('about links to the full story', async () => {
@@ -139,7 +130,6 @@ describe('registered command set', () => {
   it('theme sets a known theme and rejects unknown ones', async () => {
     const ok = await run('theme matrix')
     expect(ok.themed).toContain('matrix')
-    expect(ok.printedText()).toContain('matrix')
     const bad = await run('theme bogus')
     expect(bad.themed).not.toContain('bogus')
     expect(bad.printedText()).toContain('unknown theme')
@@ -167,7 +157,7 @@ describe('registered command set', () => {
 
     installModelContext(
       new FakeModelContext([
-        { description: 'Tool', inputSchema: { type: 'object' }, name: 'whats_now' },
+        { description: 'Tool', inputSchema: { type: 'object' }, name: 'search_content' },
         { description: 'Tool', inputSchema: { type: 'object' }, name: 'get_site_status' },
       ]),
     )
@@ -189,6 +179,6 @@ describe('registered command set', () => {
 
   it('sudo denies politely', async () => {
     const h = await run('sudo rm -rf /')
-    expect(h.printedText()).toContain('nice try')
+    expect(h.printedText()).toContain('you are a guest')
   })
 })

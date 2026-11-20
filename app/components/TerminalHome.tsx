@@ -5,7 +5,6 @@
 
 import type { FrontSection, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
-import type { ActivitySummary } from '@/lib/github'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import FrontPage from './front/FrontPage'
 import HomeFallbackContent from './HomeFallback'
@@ -16,39 +15,21 @@ interface TerminalHomeProps {
   lead: FeedItem | null
   items: FeedItem[]
   featured: ProjectEntry[]
-  activity: ActivitySummary | null
   front: FrontSection | null
   siteConfig?: SiteConfig | null
 }
 
-const DEFAULT_TAGLINE =
-  'I build software that gives people control over their technology. Open source all the way down.'
+const DEFAULT_SUMMARY = 'An independent software company in Seattle. Open source at the core.'
 
-export default function TerminalHome({
-  posts,
-  projects,
-  lead,
-  items,
-  featured,
-  activity,
-  front,
-  siteConfig,
-}: TerminalHomeProps) {
+export default function TerminalHome({ posts, projects, lead, items, featured, front, siteConfig }: TerminalHomeProps) {
   return (
     <>
-      <FrontPage
-        activity={activity}
-        featured={featured}
-        front={front}
-        items={items}
-        lead={lead}
-        projectCount={projects.length}
-      />
+      <FrontPage featured={featured} front={front} items={items} lead={lead} />
 
       <noscript>
         <HomeFallbackContent
-          aboutSummary={front?.bio ?? DEFAULT_TAGLINE}
-          aboutTitle="Stefanie Jane"
+          aboutSummary={front?.bio ?? DEFAULT_SUMMARY}
+          aboutTitle="Hyperbliss Technologies"
           posts={posts.map((p) => ({ slug: p.slug, title: p.displayTitle }))}
           projects={projects.map((p) => ({ description: p.description, slug: p.slug, title: p.displayTitle }))}
           siteDescription={siteConfig?.seo?.siteDescription}

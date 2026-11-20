@@ -28,15 +28,9 @@ describe('Header', () => {
 
   it('renders navigation links', () => {
     render(<Header />)
-    const aboutLinks = screen.getAllByText(/about/i)
-    const blogLinks = screen.getAllByText(/writing/i)
-    const projectsLinks = screen.getAllByText(/projects/i)
-    const resumeLinks = screen.getAllByText(/resume/i)
-
-    expect(aboutLinks.length).toBeGreaterThan(0)
-    expect(blogLinks.length).toBeGreaterThan(0)
-    expect(projectsLinks.length).toBeGreaterThan(0)
-    expect(resumeLinks.length).toBeGreaterThan(0)
+    for (const label of [/products/i, /writing/i, /lab/i, /about/i]) {
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0)
+    }
   })
 
   it('renders mobile menu icon on small screens', () => {

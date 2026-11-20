@@ -52,3 +52,11 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'Spotify',
   },
 ]
+
+/**
+ * The accounts that speak for Hyperbliss, shown in the footer. The others
+ * (Instagram, LinkedIn, Spotify) are the founder's own and live on her page.
+ */
+export const COMPANY_LINKS: SocialLink[] = SOCIAL_LINKS.filter(({ label }) =>
+  ['Bluesky', 'Mastodon', 'GitHub', 'Sponsor'].includes(label),
+)

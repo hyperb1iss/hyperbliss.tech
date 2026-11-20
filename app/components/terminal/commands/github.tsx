@@ -55,7 +55,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
   if (state === 'error') {
     return (
       <Block>
-        <Pink>gh: github unreachable — rate-limited or offline, try again shortly</Pink>
+        <Pink>gh: github unreachable (rate-limited or offline), try again shortly</Pink>
       </Block>
     )
   }
@@ -64,7 +64,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
     return (
       <Block>
         <Heading>gh · live activity</Heading>
-        <Muted>quiet right now — nothing public in the last while</Muted>
+        <Muted>quiet right now: nothing public in the last few days</Muted>
       </Block>
     )
   }
@@ -122,5 +122,5 @@ registry.register({
   group: 'content',
   name: 'gh',
   run: (_args, ctx) => <ActivityView ctx={ctx} />,
-  summary: 'live github activity — recent pushes, PRs, releases',
+  summary: 'live github activity: recent pushes, PRs, releases',
 })

@@ -2,15 +2,18 @@
 category: 'agents'
 title: 'Sibyl: Memory That Follows Your Work'
 description: 'Self-hosted memory for coding agents, connecting project decisions, debugging lessons, tasks, and source material across tools and sessions.'
+pitch: 'Memory that follows your work.'
 featured: 2
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/sibyl'
+screenshot: '/images/products/sibyl.webp'
+screenshotAlt: 'The Sibyl web workspace showing a knowledge graph of decisions and tasks connected to one project.'
 tags: ['Python', 'TypeScript', 'AI Agents', 'Knowledge Graph', 'SurrealDB', 'FastAPI', 'Next.js', 'MCP']
 ---
 
 A difficult debugging session leaves more behind than a patch. There is the failed approach, the constraint nobody had written down, and the reason the final fix works. Sibyl gives that knowledge a place to live, so another session or another coding agent can pick it up.
 
-Sibyl is my self-hosted memory system for work that moves between tools. Claude Code, Codex, and other agents can read from and contribute to the same project knowledge through a CLI or MCP. Decisions and debugging lessons remain connected to tasks and source material, with a web interface for the humans keeping track of the work.
+Sibyl is a self-hosted memory system for work that moves between tools. Claude Code, Codex, and other agents can read from and contribute to the same project knowledge through a CLI or MCP. Decisions and debugging lessons remain connected to tasks and source material, with a web interface for the humans keeping track of the work.
 
 ## Keep the reasoning close
 
@@ -25,3 +28,17 @@ The same system can ingest documentation and agent transcripts. Its synthesis to
 Sibyl uses SurrealDB for graph, content, and authentication storage, with a Python API and a Next.js interface. The web workspace brings together memory search, a navigable graph, and task tracking. Project and organizational scopes determine where knowledge belongs and who can access it.
 
 Agent guidance ships with the CLI and matches the installed version. Changing coding tools does not require rebuilding the memory workflow around a new integration. The [Sibyl repository](https://github.com/hyperb1iss/sibyl) includes installation paths for a local daemon, containers, and larger self-hosted deployments.
+
+## Install
+
+To run Sibyl on your own machine, the installer puts `sibyl` on your PATH, starts the local stack, and opens setup:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hyperb1iss/sibyl/main/install.sh | sh
+```
+
+Homebrew works too: `brew install hyperb1iss/tap/sibyl && sibyl up`. To connect another machine to a Sibyl server you already run, install the CLI and point it at the server. Setup signs you in through the browser and installs the Sibyl skill for Claude Code, Codex, and other agents.
+
+```bash
+uv tool install --upgrade sibyl-dev && sibyl setup https://sibyl.example.com
+```

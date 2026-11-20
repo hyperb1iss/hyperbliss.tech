@@ -15,7 +15,6 @@ const NATIVE_COMMANDS = new Set([
   'lab',
   'matrix',
   'neofetch',
-  'now',
   'projects',
   'resume',
   'share',

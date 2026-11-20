@@ -1,8 +1,10 @@
 // Meta / UI commands: help, clear, theme, history. Self-registers on import.
 
 import { styled } from '../../../../styled-system/jsx'
+import LedSign, { ledText } from '../LedSign'
 import { registry } from '../registry'
 import { OutputText, text } from '../render'
+import { isTerminalTheme, TERMINAL_THEMES } from '../theme'
 import type { CommandGroup, TerminalContext } from '../types'
 import { Accent, Block, Heading, Muted, Pink } from './ui'
 
@@ -22,15 +24,12 @@ const CmdGrid = styled.div`
   margin-bottom: var(--space-2);
 
   & .name {
-    color: var(--silk-circuit-cyan);
+    color: var(--term-accent);
   }
   & .sum {
-    color: var(--text-secondary);
+    color: var(--term-soft);
   }
 `
-
-export const TERMINAL_THEMES = ['silk', 'matrix', 'amber'] as const
-export type TerminalTheme = (typeof TERMINAL_THEMES)[number]
 
 function HelpAll({ ctx }: { ctx: TerminalContext }) {
   const groups = new Map<CommandGroup, { name: string; summary: string }[]>()
@@ -42,7 +41,7 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
 
   return (
     <Block>
-      <Heading>hyperbliss terminal — type a command, or tap a chip below</Heading>
+      <Heading>hyperbliss console · type a command, or pick one below</Heading>
       {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
         <div key={g}>
           <Muted>{GROUP_LABELS[g]}</Muted>
@@ -113,19 +112,40 @@ registry.register({
 })
 
 registry.register({
-  group: 'meta',
+  group: 'fun',
   name: 'theme',
   run: (args, ctx) => {
     const name = args[0]
     if (!name) return text(`themes: ${TERMINAL_THEMES.join(', ')} · usage: theme <name>`)
-    if (!TERMINAL_THEMES.includes(name as TerminalTheme)) {
+    if (!isTerminalTheme(name)) {
       return text(`theme: unknown theme '${name}' (try: ${TERMINAL_THEMES.join(', ')})`, 'stderr')
     }
     ctx.setTheme(name)
-    return text(`theme → ${name}`, 'ok')
+    return <LedSign cell="0.9rem" text={name} />
   },
-  summary: 'switch the terminal color theme',
-  usage: 'theme <silk|matrix|amber>',
+  summary: 'recolor the console: silk, matrix, amber, ice',
+  usage: 'theme <silk|matrix|amber|ice>',
+})
+
+registry.register({
+  aliases: ['sign'],
+  group: 'fun',
+  name: 'led',
+  run: (args) => {
+    const message = ledText(args.join(' ')) || 'HELLO'
+    return <LedSign text={message} />
+  },
+  summary: 'write on the LED wall (try: led hello world <3)',
+  usage: 'led <text>',
+})
+
+registry.register({
+  aliases: ['scroll'],
+  group: 'fun',
+  name: 'marquee',
+  run: (args) => <LedSign scroll={true} text={ledText(args.join(' ')) || 'HYPERBLISS'} />,
+  summary: 'scroll a message across the LED wall',
+  usage: 'marquee <text>',
 })
 
 registry.register({
@@ -151,7 +171,7 @@ registry.register({
   group: 'meta',
   name: 'history',
   run: (_args, ctx) => {
-    if (ctx.history.length === 0) return text('no history yet — start typing')
+    if (ctx.history.length === 0) return text('no history yet, start typing')
     return (
       <Block>
         {ctx.history.map((line, i) => (

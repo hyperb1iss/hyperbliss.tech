@@ -4,7 +4,6 @@ import { isValidElement, type ReactNode } from 'react'
 import { describe, expect, it } from 'vitest'
 import { runBootSequence } from '@/components/terminal/boot'
 import { resolveBootPhase } from '@/components/terminal/bootState'
-import { testBroadcast } from './_harness'
 
 function nodeText(node: ReactNode): string {
   if (node == null || typeof node === 'boolean') return ''
@@ -41,35 +40,18 @@ describe('resolveBootPhase', () => {
 })
 
 describe('runBootSequence', () => {
-  const base = { broadcast: testBroadcast, isCancelled: () => false, shouldSkip: () => true }
-
-  it('full boot prints POST lines with real counts, then runs the finale', async () => {
-    const c = collector()
-    await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'full-boot', print: c.print })
-    const out = c.out()
-    expect(out).toContain('POST')
-    expect(out).toContain('[OK]')
-    expect(out).toContain(`projects (${testBroadcast.projectCount})`)
-    expect(c.ran).toEqual(['neofetch'])
+  it('runs the finale and prints no preamble, on a first or a repeat visit', async () => {
+    for (const phase of ['full-boot', 'skip-to-end'] as const) {
+      const c = collector()
+      await runBootSequence({ finale: () => c.run('welcome'), isCancelled: () => false, phase })
+      expect(c.lines).toEqual([])
+      expect(c.ran).toEqual(['welcome'])
+    }
   })
 
-  it('skip-to-end prints a compact banner then the finale', async () => {
+  it('stops immediately when cancelled (no finale)', async () => {
     const c = collector()
-    await runBootSequence({ ...base, finale: () => c.run('neofetch'), phase: 'skip-to-end', print: c.print })
-    expect(c.out()).toContain('hyperbliss terminal')
-    expect(c.ran).toEqual(['neofetch'])
-  })
-
-  it('stops immediately when cancelled (no output, no finale)', async () => {
-    const c = collector()
-    await runBootSequence({
-      ...base,
-      finale: () => c.run('neofetch'),
-      isCancelled: () => true,
-      phase: 'full-boot',
-      print: c.print,
-    })
-    expect(c.lines).toEqual([])
+    await runBootSequence({ finale: () => c.run('welcome'), isCancelled: () => true, phase: 'full-boot' })
     expect(c.ran).toEqual([])
   })
 })

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
-import { buildFeed, type FeedRelease, groupByYear, shortName, splitLead, toIsoDay } from '@/lib/feed'
+import { buildFeed, type FeedRelease, groupByYear, isPatchVersion, shortName, splitLead, toIsoDay } from '@/lib/feed'
 import { summarizeRelease } from '@/lib/github'
 
 const post = (slug: string, date: string | null, title = slug): PostSummary => ({
@@ -127,6 +127,30 @@ describe('buildFeed', () => {
     const noLaunches = buildFeed(input, { launches: false })
     expect(noLaunches.some((item) => item.kind === 'launch')).toBe(false)
     expect(noLaunches).toHaveLength(5)
+  })
+
+  it('can leave patch releases to the archive', () => {
+    const minor = new Map(releases)
+    minor.set('opaline', { ...(releases.get('opaline') as FeedRelease), version: '0.5.0' })
+    const feed = buildFeed({ ...input, releases: minor }, { patches: false })
+    expect(feed.filter((item) => item.kind === 'release').map((item) => item.version)).toEqual(['0.5.0'])
+    expect(buildFeed(input).filter((item) => item.kind === 'release')).toHaveLength(2)
+  })
+})
+
+describe('isPatchVersion', () => {
+  it('flags semver patch bumps only', () => {
+    expect(isPatchVersion('1.4.10')).toBe(true)
+    expect(isPatchVersion('v0.7.2')).toBe(true)
+    expect(isPatchVersion('0.11.0')).toBe(false)
+    expect(isPatchVersion('v2.0.0-beta.1')).toBe(false)
+    expect(isPatchVersion('2026.10')).toBe(false)
+    expect(isPatchVersion('1.2.3-rc.1')).toBe(true)
+    expect(isPatchVersion('1.2.3.4')).toBe(false)
+    expect(isPatchVersion('1.2.3foo')).toBe(false)
+    expect(isPatchVersion('1.2.3-rc.1+build.7')).toBe(true)
+    expect(isPatchVersion('2.0.0+build.7')).toBe(false)
+    expect(isPatchVersion('1.2.3-..')).toBe(false)
   })
 })
 

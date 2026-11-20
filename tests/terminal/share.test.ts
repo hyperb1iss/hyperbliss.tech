@@ -6,7 +6,7 @@ import { buildShareUrl, decodeSession, encodeSession } from '@/components/termin
 describe('encodeSession', () => {
   it('joins commands with semicolons and URL-encodes them', () => {
     expect(encodeSession(['neofetch', 'projects'])).toBe('neofetch;projects')
-    expect(encodeSession(['cat now.md'])).toBe('cat%20now.md')
+    expect(encodeSession(['cat about.md'])).toBe('cat%20about.md')
   })
   it('drops blank and meta commands (clear, share)', () => {
     expect(encodeSession(['neofetch', 'clear', '  ', 'share', 'blog'])).toBe('neofetch;blog')
@@ -16,7 +16,7 @@ describe('encodeSession', () => {
 describe('decodeSession', () => {
   it('parses a hash into commands', () => {
     expect(decodeSession('#neofetch;projects')).toEqual(['neofetch', 'projects'])
-    expect(decodeSession('cat%20now.md')).toEqual(['cat now.md'])
+    expect(decodeSession('cat%20about.md')).toEqual(['cat about.md'])
   })
   it('returns empty for an empty hash and tolerates bad encoding', () => {
     expect(decodeSession('')).toEqual([])
@@ -32,7 +32,7 @@ describe('buildShareUrl + roundtrip', () => {
     expect(buildShareUrl('https://hyperbliss.tech', ['clear'])).toBe('https://hyperbliss.tech/')
   })
   it('round-trips through encode/decode', () => {
-    const cmds = ['neofetch', 'ls projects | grep rust', 'cat /now.md']
+    const cmds = ['neofetch', 'ls projects | grep rust', 'cat /about.md']
     expect(decodeSession(`#${encodeSession(cmds)}`)).toEqual(cmds)
   })
 })

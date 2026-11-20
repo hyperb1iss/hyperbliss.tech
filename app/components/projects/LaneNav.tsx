@@ -11,14 +11,14 @@ const Bar = styled.nav`
   margin-bottom: 3.2rem;
   border-top: 1px solid rgba(148, 163, 184, 0.12);
   border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: 0.18em;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 1.3rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 
   & a {
-    color: var(--text-secondary);
+    color: #d6cfe6;
     text-decoration: none;
     display: inline-flex;
     align-items: baseline;
@@ -26,14 +26,14 @@ const Bar = styled.nav`
     transition: color var(--duration-normal) var(--ease-silk);
   }
   & a:hover {
-    color: var(--silk-circuit-cyan);
+    color: #ffffff;
   }
   & a span {
     font-family: var(--font-mono);
     font-weight: 400;
     font-size: 1.1rem;
     letter-spacing: 0.04em;
-    color: var(--silk-quantum-purple);
+    color: #b9b0cc;
   }
 `
 

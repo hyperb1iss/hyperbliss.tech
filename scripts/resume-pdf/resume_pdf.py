@@ -568,7 +568,11 @@ async def create_styled_resume_async(input_path, output_path=None):
 
     # Convert HTML to PDF using Playwright
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        try:
+            browser = await p.chromium.launch()
+        except Exception:
+            # No bundled Chromium installed: use the system's Chrome instead.
+            browser = await p.chromium.launch(channel="chrome")
         page = await browser.new_page()
 
         # Write HTML to a temp file for proper file:// URL loading

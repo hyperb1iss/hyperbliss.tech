@@ -14,7 +14,6 @@ const OG_IMAGE = {
   url: buildOgImageUrl({
     kind: 'lab',
     meta: 'April 8, 2026',
-    path: 'open lab/regex-nightmares',
     subtitle: DESCRIPTION,
     title: TITLE,
   }),

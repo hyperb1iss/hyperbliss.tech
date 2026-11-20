@@ -72,7 +72,7 @@ export const colors = {
 
   // Foundation Colors
   void: {
-    black: '#0a0a14', // Deep space black
+    black: '#050308', // Deep space black
     darker: '#0f0f1a', // Darker void
     darkest: '#050508', // Absolute void
   },

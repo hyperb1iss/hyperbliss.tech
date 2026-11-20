@@ -2,8 +2,8 @@
 
 // The hero: the interactive terminal as the entire first viewport. The Terminal
 // is loaded client-only (ssr:false) over a deterministic skeleton so there's no
-// hydration flash and no server/client markup mismatch. Command chips below are
-// the primary mobile navigation and drive the terminal through its handle.
+// hydration flash and no server/client markup mismatch. The command keys in its
+// footer are the primary mobile navigation and drive it through its handle.
 
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
@@ -15,11 +15,12 @@ import { type BootPhase, readBootInputs, resolveBootPhase } from './bootState'
 import CommandChips from './CommandChips'
 import CommandPalette from './CommandPalette'
 import './commands'
-import { fetchFsBodies } from './fsClient'
+import { fetchFsBodies, setFsVersion } from './fsClient'
 import { registry } from './registry'
 import { decodeSession } from './share'
 import { createShellSession, type ShellSession } from './shell'
 import type { TerminalHandle } from './Terminal'
+import { applyTerminalTheme } from './theme'
 import { isWebMcpEnabled, registerAgentTools } from './webmcp'
 
 const HeroWrap = styled.section`
@@ -55,41 +56,23 @@ const Skeleton = styled.div`
   width: 100%;
   height: 100%;
   font-family: var(--font-mono);
-  background: rgba(10, 10, 20, 0.72);
-  border: 1px solid rgba(162, 89, 255, 0.35);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 0 40px rgba(162, 89, 255, 0.18);
-  backdrop-filter: blur(var(--blur-md));
+  font-size: 1.4rem;
+  background: var(--term-bg);
+  border: 1px solid rgba(244, 240, 255, 0.16);
+  border-radius: 1.4rem;
   overflow: hidden;
 
-  & .bar {
-    display: flex;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    border-bottom: 1px solid rgba(162, 89, 255, 0.2);
-  }
-  & .bar span {
-    width: 11px;
-    height: 11px;
-    border-radius: var(--radius-full);
-    background: rgba(162, 89, 255, 0.4);
-  }
   & .body {
     flex: 1;
-    padding: var(--space-4);
-    color: var(--text-muted);
+    padding: 5.6rem 2rem 2rem;
+    color: var(--term-faint);
   }
 `
 
 function TerminalSkeleton() {
   return (
     <Skeleton aria-hidden="true">
-      <div className="bar">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="body">guest@hyperbliss:/$ booting…</div>
+      <div className="body">guest@hyperbliss:/$ starting…</div>
     </Skeleton>
   )
 }
@@ -115,6 +98,10 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   useEffect(() => {
     setBoot({ phase: resolveBootPhase(readBootInputs()), replay: decodeSession(window.location.hash) })
   }, [])
+
+  // File bodies are fetched under the manifest's content version, so a deploy
+  // (or an edit in dev) is a fresh URL and never a cached old file.
+  setFsVersion(manifest.version)
 
   // One shell session for human input and agent tools, preserving cwd/exports.
   const shellRef = useRef<ShellSession | null>(null)
@@ -147,7 +134,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
       manifest,
       navigate: onNavigate,
       onToolCall: (name) => trackTerminalCommand(`agent:${name}`),
-      setTheme: (name) => document.documentElement.setAttribute('data-terminal-theme', name),
+      setTheme: applyTerminalTheme,
     })
   }, [broadcast, manifest, onNavigate, shellSession.execShell])
 
@@ -170,6 +157,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
           autoFocusInput={autoFocus}
           bootPhase={boot.phase}
           broadcast={broadcast}
+          footer={<CommandChips onCategory={trackTerminalCommand} onRun={runChip} />}
           handleRef={handleRef}
           manifest={manifest}
           onCommandCategory={trackTerminalCommand}
@@ -178,7 +166,6 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
           shellRunner={shellSession.runShell}
         />
       </Frame>
-      <CommandChips onCategory={trackTerminalCommand} onRun={runChip} />
       <CommandPalette
         onClose={() => setPaletteOpen(false)}
         onRun={(command) => {

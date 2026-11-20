@@ -1,5 +1,5 @@
 // Shareable session URLs (T4.2). A session is encoded as a `;`-separated list
-// of commands in the URL hash, e.g. /#neofetch;projects;cat%20now.md — on load
+// of commands in the URL hash, e.g. /#neofetch;projects;cat%20about.md — on load
 // the terminal replays them. Pure + tiny so it's trivially testable.
 
 /** Commands we never replay/encode (they reset or are themselves meta). */

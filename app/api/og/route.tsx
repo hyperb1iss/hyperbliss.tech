@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { ImageResponse } from 'next/og'
 import type { NextRequest } from 'next/server'
-import { OG_HEIGHT, OG_WIDTH, OgCard, type OgKind } from '@/lib/og/card'
+import { KIND_TINT, OG_HEIGHT, OG_WIDTH, OgCard, type OgKind } from '@/lib/og/card'
 import { loadOgFonts } from '@/lib/og/fonts'
 
 const KINDS: readonly OgKind[] = ['site', 'blog', 'project', 'lab']
@@ -18,6 +18,25 @@ async function loadLogo(): Promise<string> {
   return logoCache
 }
 
+// One literal path per frame, so the file tracer bundles each JPEG.
+const LIGHT_FILES = {
+  cyan: join(process.cwd(), 'app', 'lib', 'og', 'light', 'light-cyan.jpg'),
+  magenta: join(process.cwd(), 'app', 'lib', 'og', 'light', 'light-magenta.jpg'),
+  pink: join(process.cwd(), 'app', 'lib', 'og', 'light', 'light-pink.jpg'),
+  violet: join(process.cwd(), 'app', 'lib', 'og', 'light', 'light-violet.jpg'),
+} as const
+
+const lightCache = new Map<OgKind, string>()
+
+async function loadLight(kind: OgKind): Promise<string> {
+  const hit = lightCache.get(kind)
+  if (hit) return hit
+  const data = await readFile(LIGHT_FILES[KIND_TINT[kind]])
+  const src = `data:image/jpeg;base64,${data.toString('base64')}`
+  lightCache.set(kind, src)
+  return src
+}
+
 function param(request: NextRequest, name: string, max: number): string | undefined {
   const value = request.nextUrl.searchParams.get(name)?.trim()
   return value ? value.slice(0, max) : undefined
@@ -26,14 +45,14 @@ function param(request: NextRequest, name: string, max: number): string | undefi
 export async function GET(request: NextRequest): Promise<ImageResponse> {
   const rawKind = param(request, 'kind', 16)
   const kind: OgKind = KINDS.includes(rawKind as OgKind) ? (rawKind as OgKind) : 'site'
-  const [fonts, logoSrc] = await Promise.all([loadOgFonts(), loadLogo()])
+  const [fonts, logoSrc, lightSrc] = await Promise.all([loadOgFonts(), loadLogo(), loadLight(kind)])
 
   return new ImageResponse(
     <OgCard
       kind={kind}
+      lightSrc={lightSrc}
       logoSrc={logoSrc}
       meta={param(request, 'meta', 48)}
-      path={param(request, 'path', 64)}
       subtitle={param(request, 'subtitle', 200)}
       title={param(request, 'title', 120) ?? 'Hyperbliss'}
     />,
@@ -44,7 +63,7 @@ export async function GET(request: NextRequest): Promise<ImageResponse> {
         // is safe: a title change produces a new URL.
         'Cache-Control': 'public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800',
         // Netlify's function cache ignores query strings unless told to vary
-        // on them — without this, the first card rendered serves for EVERY
+        // on them; without this, the first card rendered serves for EVERY
         // query string (verified live: identical bytes across kinds).
         'Netlify-Vary': 'query',
       },
