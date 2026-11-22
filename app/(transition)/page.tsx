@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 import TerminalHome from '@/components/TerminalHome'
 import { buildFeed, splitLead } from '@/lib/feed'
-import { getRecentActivity, getReleasesForProjects, getRepoStatsForProjects, type RepoStats } from '@/lib/github'
+import { getReleasesForProjects, getRepoStatsForProjects, type RepoStats } from '@/lib/github'
 import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 import type { ReleaseLike } from '@/lib/terminal/releases'
-import { getAllLab, getAllPosts, getAllProjects, getPage, getSiteConfig } from '../lib/content'
+import { getAllLab, getAllPosts, getAllProjects, getPage } from '../lib/content'
 
 // Ceiling for the route's ISR window. The events feed underneath fetches with
 // a 5 minute revalidate and the shortest fetch window wins, so the page
@@ -14,28 +14,29 @@ export const revalidate = 3600
 
 export default async function Home() {
   try {
-    const [pageData, siteConfig, posts, projects, labExperiments] = await Promise.all([
+    const [pageData, posts, projects, labExperiments] = await Promise.all([
       getPage('home'),
-      getSiteConfig().catch(() => null),
       getAllPosts(),
       getAllProjects(),
       getAllLab(),
     ])
 
-    // Latest release and repo stats for every project with a repo, plus the
-    // public events feed. Each lookup is cached in memory and by the fetch
-    // cache for an hour, so this is one GitHub call per repo per hour at most;
+    // Latest release and repo stats for every project with a repo. Each
+    // lookup is cached in memory and by the fetch cache for an hour, so this
+    // is one GitHub call per repo per hour at most;
     // when GitHub is rate-limited or offline the page renders from local
     // content and the strip falls back to release recency, then launch date.
     const repos = projects.filter((p) => p.github).map((p) => ({ github: p.github, slug: p.slug }))
-    const [releases, stats, activity] = await Promise.all([
+    const [releases, stats] = await Promise.all([
       getReleasesForProjects(repos).catch(() => new Map<string, ReleaseLike>()),
       getRepoStatsForProjects(repos).catch(() => new Map<string, RepoStats>()),
-      getRecentActivity().catch(() => null),
     ])
 
-    const feed = buildFeed({ lab: labExperiments, posts, projects, releases })
-    const { lead, items } = splitLead(feed, 10)
+    // The front page reads as news: launches, essays, and minor or major releases.
+    const launched = new Map<string, string>()
+    for (const [slug, { createdAt }] of stats) if (createdAt) launched.set(slug, createdAt)
+    const feed = buildFeed({ lab: labExperiments, launched, posts, projects, releases }, { patches: false })
+    const { lead, items } = splitLead(feed, 6)
 
     const entries: ProjectEntry[] = projects.map((project) => {
       const release = releases.get(project.slug)
@@ -51,14 +52,12 @@ export default async function Home() {
 
     return (
       <TerminalHome
-        activity={activity}
         featured={featured}
         front={pageData.front}
         items={items}
         lead={lead}
         posts={posts}
         projects={projects}
-        siteConfig={siteConfig}
       />
     )
   } catch {

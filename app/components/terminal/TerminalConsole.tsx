@@ -15,6 +15,7 @@ import type { Broadcast, Manifest } from '@/lib/terminal/types'
 import { css } from '../../../styled-system/css'
 import { useHeaderContext } from '../HeaderContext'
 import TerminalHero from './TerminalHero'
+import { restoreTerminalTheme } from './theme'
 
 const silkEase = [0.23, 1, 0.32, 1] as const
 
@@ -34,8 +35,7 @@ const backdropStyles = css`
   position: fixed;
   inset: 0;
   z-index: 80;
-  background: radial-gradient(circle at 50% 0%, rgba(10, 6, 24, 0.55), rgba(4, 6, 14, 0.78));
-  backdrop-filter: blur(2px);
+  background: rgba(5, 3, 8, 0.82);
 `
 
 const panelStyles = css`
@@ -57,8 +57,8 @@ const panelStyles = css`
 `
 
 // Caps the console to the space under the nav and scrolls internally, so on
-// short phones (body scroll locked while open) the command chips below the
-// terminal stay reachable instead of falling off-screen.
+// short phones (page scroll locked while open) the command keys in its footer
+// stay reachable instead of falling off-screen.
 const scrollStyles = css`
   width: 100%;
   max-width: 960px;
@@ -82,42 +82,53 @@ const handleStyles = css`
   justify-content: center;
   gap: var(--space-2);
   min-height: 44px;
-  padding: var(--space-1-5) var(--space-5);
+  padding: 0.6rem 2rem;
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--silk-circuit-cyan);
-  background: rgba(12, 10, 24, 0.92);
-  border: 1px solid rgba(0, 255, 240, 0.4);
+  font-size: 1.3rem;
+  color: var(--term-dim);
+  background: var(--term-bg-2);
+  border: 1px solid rgba(244, 240, 255, 0.22);
   border-radius: var(--radius-full);
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(0, 255, 240, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
   -webkit-tap-highlight-color: transparent;
-  transition: top var(--duration-normal) var(--ease-silk);
-  /* Gentle pulse while closed so the pull-down reads as interactive. A CSS
-     keyframe (declared in globals.css) rather than a Framer loop: it costs no
-     JS per frame and the global reduced-motion rule stops it. */
-  animation: handle-pulse 2.4s ease-in-out infinite;
+  transition:
+    top var(--duration-normal) var(--ease-silk),
+    border-color var(--duration-normal) var(--ease-silk),
+    color var(--duration-normal) var(--ease-silk);
 
   &[data-open='true'] {
     top: calc(var(--nav-expanded) - 18px);
-    animation: none;
   }
 
   & .prompt {
-    color: var(--text-secondary);
+    color: var(--term-ink);
+  }
+
+  /* A blinking block after the prompt says "type here" while the console is
+     closed; the global reduced-motion rule holds it still. */
+  & .caret {
+    width: 0.8rem;
+    height: 1.5rem;
+    margin-left: -0.2rem;
+    background: var(--term-accent);
+    animation: silkTerminalCaretBlink 1.1s step-end infinite;
+  }
+  &[data-open='true'] .caret {
+    display: none;
   }
 
   & svg {
     width: 14px;
     height: 14px;
+    color: var(--term-accent);
   }
 
   &:hover,
   &:focus-visible {
-    color: var(--text-primary);
-    border-color: var(--silk-circuit-cyan);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55), 0 0 26px rgba(0, 255, 240, 0.35);
+    color: #ffffff;
+    border-color: var(--term-accent);
     outline: none;
   }
 `
@@ -137,6 +148,8 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   // (isExpanded is global; a stranded `true` would leave the nav expanded).
   useEffect(() => {
     setMounted(true)
+    // The saved console theme also colors the handle, so it applies up front.
+    restoreTerminalTheme()
     return () => {
       setConsoleOpen(false)
       setIsExpanded(false)
@@ -167,7 +180,9 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   }, [isConsoleOpen, setConsoleOpen, setIsExpanded])
 
   // Open is always deliberate, so treat it as a focused overlay: Escape closes
-  // and body scroll locks on every breakpoint while the console is down.
+  // and the page behind stops scrolling on every breakpoint while the console
+  // is down. The lock goes on the root element, which is what scrolls; body
+  // only clips.
   useEffect(() => {
     if (!isConsoleOpen) return
     const onKey = (e: KeyboardEvent) => {
@@ -178,12 +193,13 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
     }
     window.addEventListener('keydown', onKey)
 
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const root = document.documentElement
+    const prevOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
 
     return () => {
       window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prevOverflow
+      root.style.overflow = prevOverflow
     }
   }, [isConsoleOpen, close])
 
@@ -244,6 +260,7 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
           <polyline points="6 9 12 15 18 9" />
         </motion.svg>
         <span className="prompt">guest@hyperbliss:~$</span>
+        <span aria-hidden="true" className="caret" />
       </button>
     </div>,
     document.body,

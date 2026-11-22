@@ -11,7 +11,6 @@ import { PageLoadProvider } from '@/components/PageLoadOrchestrator'
 import TerminalHome from '@/components/TerminalHome'
 import type { FrontSection, LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
 import { buildFeed, type FeedRelease, splitLead } from '@/lib/feed'
-import type { ActivitySummary } from '@/lib/github'
 import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 
 const project = (slug: string, title: string, date: string): ProjectSummary => ({
@@ -43,17 +42,9 @@ const post = (slug: string, title: string, date: string): PostSummary => ({
 
 const front: FrontSection = {
   bio: 'I build software that gives people control over their technology.',
-  tagline: "Hi! I'm {name}! Welcome to my personal site, where you can find all my projects, writings, and `/etc`.",
-}
-
-const activity: ActivitySummary = {
-  events: [],
-  generatedAt: '2026-09-14T00:00:00Z',
-  ok: true,
-  pushesPerDay: [],
-  repos: ['sibyl', 'chromacat'],
-  totalPushes: 7,
-  windowDays: 14,
+  headline: ['Made to', 'glow.'],
+  headlineAccent: 1,
+  tagline: 'Built by {name} with {hyperbliss}, all the way down to `/etc`.',
 }
 
 const projects = [project('sibyl', 'Sibyl', '2025-01-26'), project('chromacat', 'ChromaCat', '2024-11-02')]
@@ -71,7 +62,8 @@ const releases = new Map<string, FeedRelease>([
   ],
 ])
 
-const { lead, items } = splitLead(buildFeed({ lab, posts, projects, releases }), 10)
+const launched = new Map(projects.map((p) => [p.slug, `${p.date}T00:00:00Z`]))
+const { lead, items } = splitLead(buildFeed({ lab, launched, posts, projects, releases }), 10)
 const entries: ProjectEntry[] = projects.map((project) => {
   const release = releases.get(project.slug)
   return {
@@ -79,7 +71,9 @@ const entries: ProjectEntry[] = projects.map((project) => {
     releaseDate: release?.publishedAt ?? null,
     releaseUrl: release?.url ?? null,
     stats:
-      project.slug === 'sibyl' ? { archived: false, forks: 3, language: 'Rust', pushedAt: null, stars: 412 } : null,
+      project.slug === 'sibyl'
+        ? { archived: false, createdAt: null, forks: 3, language: 'Rust', pushedAt: null, stars: 412 }
+        : null,
     version: release?.version ?? null,
   }
 })
@@ -87,24 +81,15 @@ const featured = pickFeatured(entries, 3)
 
 const html = renderToStaticMarkup(
   <PageLoadProvider>
-    <TerminalHome
-      activity={activity}
-      featured={featured}
-      front={front}
-      items={items}
-      lead={lead}
-      posts={posts}
-      projects={projects}
-      siteConfig={null}
-    />
+    <TerminalHome featured={featured} front={front} items={items} lead={lead} posts={posts} projects={projects} />
   </PageLoadProvider>,
 )
 const withoutNoscript = html.replace(/<noscript>[\s\S]*?<\/noscript>/g, '')
 
 describe('TerminalHome SSR markup carries real content', () => {
-  it('leads with the newest essay as an h1 linking to the post', () => {
+  it('leads with the newest essay as an h3 under Latest, linking to the post', () => {
     // next/link normalizes the trailing slash per next.config, so accept either.
-    expect(withoutNoscript).toMatch(/<h1[^>]*><a[^>]*href="\/blog\/how-i-ai\/?"[^>]*>How I AI<\/a><\/h1>/)
+    expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/blog\/how-i-ai\/?"[^>]*>How I AI<\/a><\/h3>/)
     expect(withoutNoscript).toContain('How I AI excerpt')
   })
 
@@ -116,9 +101,16 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/href="\/projects\/chromacat\/?"/)
   })
 
-  it('opens with the intro sentence and a visible Latest marker', () => {
+  it('opens with the headline as the page h1, the intro under it, and a visible Latest marker', () => {
+    const h1 = withoutNoscript.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)?.[1] ?? ''
+    expect(
+      h1
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    ).toBe('Made to glow.')
     expect(withoutNoscript).toMatch(
-      /Hi! I(&#x27;|')m <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a>! Welcome to my personal site/,
+      /Built by <a[^>]*href="\/about\/?"[^>]*>Stefanie Jane<\/a> with <span[^>]*>hyperbliss<\/span>/,
     )
     expect(withoutNoscript).toMatch(/<span[^>]*>\/etc<\/span>\./)
     expect(withoutNoscript).not.toContain('{name}')
@@ -126,21 +118,23 @@ describe('TerminalHome SSR markup carries real content', () => {
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 
-  it('renders the Building strip with the featured trio and live facts', () => {
-    expect(withoutNoscript).toMatch(/<h2[^>]*>Building<\/h2>/)
+  it('renders the featured trio as product chapters with live facts and next steps', () => {
+    expect(withoutNoscript).toMatch(/<h2[^>]*>Products<\/h2>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/sibyl\/?"[^>]*>Sibyl<\/a><\/h3>/)
     expect(withoutNoscript).toMatch(/<h3[^>]*><a[^>]*href="\/projects\/chromacat\/?"[^>]*>ChromaCat<\/a><\/h3>/)
-    expect(withoutNoscript).toContain('★ 412')
-    expect(withoutNoscript).toMatch(
-      /href="https:\/\/github\.com\/hyperb1iss\/sibyl\/releases\/tag\/v1\.3\.1"[^>]*>v1\.3\.1</,
-    )
-    expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All 2 projects/)
+    expect(withoutNoscript).toContain('v1.3.1 · ★ 412')
+    expect(withoutNoscript).toMatch(/href="\/projects\/?"[^>]*>All products and open source/)
+    expect(withoutNoscript).toMatch(/href="\/projects\/sibyl\/?"[^>]*>Explore Sibyl/)
   })
 
-  it('renders the computed pulse line and carries no hand-written now, photo, or rail', () => {
-    expect(withoutNoscript).toContain('last 14 days')
-    expect(withoutNoscript).toContain('7 pushes')
-    expect(withoutNoscript).toContain('sibyl, chromacat')
+  it('puts the products above the lead story', () => {
+    expect(withoutNoscript.search(/<h2[^>]*>Products<\/h2>/)).toBeLessThan(
+      withoutNoscript.search(/<h2[^>]*>Latest<\/h2>/),
+    )
+  })
+
+  it('carries no activity line, hand-written now, photo, or rail', () => {
+    expect(withoutNoscript).not.toContain('pushes')
     expect(withoutNoscript).not.toContain('profile-image')
     expect(withoutNoscript).not.toContain('Creative technologist')
     expect(withoutNoscript).not.toContain('<aside')
@@ -166,6 +160,7 @@ describe('TerminalHome SSR markup carries real content', () => {
 
   it('has one h1 and a feed-level h2 above the item h3s', () => {
     expect((withoutNoscript.match(/<h1\b/g) ?? []).length).toBe(1)
+    expect(withoutNoscript.search(/<h1\b/)).toBeLessThan(withoutNoscript.search(/<h2\b/))
     expect(withoutNoscript).toMatch(/<h2[^>]*>Latest<\/h2>/)
   })
 })

@@ -2,23 +2,53 @@
 export interface NavItem {
   label: string
   href: string
+  /** Other sections that light this item up, like the resume under About. */
+  also?: readonly string[]
 }
 
 /**
  * Main navigation, in display order. Labels and routes are decoupled so the
- * index page, the nav, and the front page can all say "Writing" while the
- * essays keep living at /blog.
+ * nav can say "Products" and "Writing" while the pages keep living at
+ * /projects and /blog.
  */
 export const NAV_ITEMS: readonly NavItem[] = [
-  { href: '/about', label: 'About' },
+  { href: '/projects', label: 'Products' },
   { href: '/blog', label: 'Writing' },
-  { href: '/projects', label: 'Projects' },
   { href: '/lab', label: 'Lab' },
-  { href: '/resume', label: 'Resume' },
+  { also: ['/resume'], href: '/about', label: 'About' },
+]
+
+/**
+ * Footer columns. Products are typed here, in the flagship order set by
+ * `featured` in content/projects; tests/navigation.test.ts fails when the two
+ * drift, so a new flagship or a renamed slug cannot leave this list behind.
+ */
+export const FOOTER_COLUMNS: ReadonlyArray<{ title: string; links: readonly NavItem[] }> = [
+  {
+    links: [
+      { href: '/projects/hypercolor/', label: 'Hypercolor' },
+      { href: '/projects/sibyl/', label: 'Sibyl' },
+      { href: '/projects/unifly/', label: 'unifly' },
+      { href: '/projects/', label: 'All products' },
+    ],
+    title: 'Products',
+  },
+  {
+    links: [
+      { href: '/about/', label: 'About' },
+      { href: '/about/#founder', label: 'Founder' },
+      { href: '/blog/', label: 'Writing' },
+      { href: '/lab/', label: 'Lab' },
+    ],
+    title: 'Company',
+  },
 ]
 
 export const isNavigationActive = (pathname: string, href: string) =>
   pathname === href || pathname.startsWith(`${href}/`)
+
+export const isNavItemActive = (pathname: string, item: NavItem) =>
+  [item.href, ...(item.also ?? [])].some((href) => isNavigationActive(pathname, href))
 
 export const shouldHandleNavigation = (event: React.MouseEvent<HTMLAnchorElement>) =>
   !event.defaultPrevented &&

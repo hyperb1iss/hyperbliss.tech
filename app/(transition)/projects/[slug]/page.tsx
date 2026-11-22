@@ -64,11 +64,14 @@ export default async function ProjectPage({ params }: PageProps) {
       related={related}
       releaseDate={release?.publishedAt ?? null}
       releaseUrl={release?.url ?? null}
+      screenshot={project.screenshot}
+      screenshotAlt={project.screenshotAlt}
       slug={slug}
       stats={stats}
       tags={(project.tags ?? []).filter((t): t is string => t !== null)}
       title={project.title}
       version={release?.version ?? null}
+      website={project.website}
     />
   )
 }

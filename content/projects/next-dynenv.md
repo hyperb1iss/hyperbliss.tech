@@ -1,7 +1,7 @@
 ---
 category: 'web'
 title: 'next-dynenv: Configuration at Deployment Time'
-description: 'My maintained fork of next-runtime-env, providing runtime public configuration and typed environment helpers for server-rendered Next.js applications.'
+description: 'A maintained fork of next-runtime-env, providing runtime public configuration and typed environment helpers for server-rendered Next.js applications.'
 date: '2025-01-26'
 github: 'https://github.com/hyperb1iss/next-dynenv'
 tags: ['TypeScript', 'Next.js', 'React', 'Environment', 'DevOps', 'npm']

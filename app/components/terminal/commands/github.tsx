@@ -1,6 +1,6 @@
-// Live GitHub activity command (`gh` / `activity` / `stats`). Self-registers on
+// Live GitHub activity command (`gh` / `github` / `activity` / `stats`). Self-registers on
 // import. Fetches the cached /api/activity summary on mount and renders recent
-// pushes, PRs, releases, a commits/day sparkline, and the repos being touched.
+// pushes, PRs, releases, a pushes-per-day sparkline, and the repos being touched.
 // The relative times are a snapshot from when the command ran (like a real CLI).
 
 import { useEffect, useState } from 'react'
@@ -31,7 +31,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/activity')
+    fetch('/api/activity/')
       .then((r) => (r.ok ? (r.json() as Promise<ActivitySummary>) : Promise.reject(new Error('http'))))
       .then((data) => {
         if (!cancelled) setState(data.ok ? data : 'error')
@@ -55,7 +55,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
   if (state === 'error') {
     return (
       <Block>
-        <Pink>gh: github unreachable — rate-limited or offline, try again shortly</Pink>
+        <Pink>gh: github unreachable (rate-limited or offline), try again shortly</Pink>
       </Block>
     )
   }
@@ -64,7 +64,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
     return (
       <Block>
         <Heading>gh · live activity</Heading>
-        <Muted>quiet right now — nothing public in the last while</Muted>
+        <Muted>quiet right now: nothing public in the last {state.windowDays} days</Muted>
       </Block>
     )
   }
@@ -118,9 +118,9 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
 }
 
 registry.register({
-  aliases: ['activity', 'stats'],
+  aliases: ['github', 'activity', 'stats'],
   group: 'content',
   name: 'gh',
   run: (_args, ctx) => <ActivityView ctx={ctx} />,
-  summary: 'live github activity — recent pushes, PRs, releases',
+  summary: 'live GitHub activity',
 })

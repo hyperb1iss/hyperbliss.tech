@@ -1,8 +1,10 @@
 // Meta / UI commands: help, clear, theme, history. Self-registers on import.
 
 import { styled } from '../../../../styled-system/jsx'
+import LedSign, { ledText } from '../LedSign'
 import { registry } from '../registry'
 import { OutputText, text } from '../render'
+import { isTerminalTheme, TERMINAL_THEMES } from '../theme'
 import type { CommandGroup, TerminalContext } from '../types'
 import { Accent, Block, Heading, Muted, Pink } from './ui'
 
@@ -14,6 +16,18 @@ const GROUP_LABELS: Record<CommandGroup, string> = {
 }
 const GROUP_ORDER: CommandGroup[] = ['meta', 'content', 'fun', 'shell']
 
+/* Two columns once there is room, so the whole list fits without scrolling. */
+const Groups = styled.div`
+  @media (min-width: 900px) {
+    columns: 2;
+    column-gap: var(--space-8);
+  }
+
+  & > div {
+    break-inside: avoid;
+  }
+`
+
 const CmdGrid = styled.div`
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -22,15 +36,12 @@ const CmdGrid = styled.div`
   margin-bottom: var(--space-2);
 
   & .name {
-    color: var(--silk-circuit-cyan);
+    color: var(--term-accent);
   }
   & .sum {
-    color: var(--text-secondary);
+    color: var(--term-soft);
   }
 `
-
-export const TERMINAL_THEMES = ['silk', 'matrix', 'amber'] as const
-export type TerminalTheme = (typeof TERMINAL_THEMES)[number]
 
 function HelpAll({ ctx }: { ctx: TerminalContext }) {
   const groups = new Map<CommandGroup, { name: string; summary: string }[]>()
@@ -42,20 +53,22 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
 
   return (
     <Block>
-      <Heading>hyperbliss terminal — type a command, or tap a chip below</Heading>
-      {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
-        <div key={g}>
-          <Muted>{GROUP_LABELS[g]}</Muted>
-          <CmdGrid>
-            {groups.get(g)?.map((c) => (
-              <div key={c.name} style={{ display: 'contents' }}>
-                <span className="name">{c.name}</span>
-                <span className="sum">{c.summary}</span>
-              </div>
-            ))}
-          </CmdGrid>
-        </div>
-      ))}
+      <Heading>hyperbliss console · type a command, or pick one below</Heading>
+      <Groups>
+        {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
+          <div key={g}>
+            <Muted>{GROUP_LABELS[g]}</Muted>
+            <CmdGrid>
+              {groups.get(g)?.map((c) => (
+                <div key={c.name} style={{ display: 'contents' }}>
+                  <span className="name">{c.name}</span>
+                  <span className="sum">{c.summary}</span>
+                </div>
+              ))}
+            </CmdGrid>
+          </div>
+        ))}
+      </Groups>
       <div>
         <Muted>tips</Muted>
         <div>
@@ -63,8 +76,8 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
           <Pink>!cmd</Pink> forces shell · <Pink>:cmd</Pink> forces native
         </div>
         <div>
-          real shell commands work too: <Accent>ls</Accent> <Accent>cat</Accent> <Accent>grep</Accent>{' '}
-          <Accent>find</Accent> <Accent>echo</Accent> over the content tree · <Accent>share</Accent> a session
+          <Accent>ls</Accent> <Accent>cat</Accent> <Accent>grep</Accent> <Accent>find</Accent> and pipes work on every
+          file here · type a product&apos;s name for its card · <Accent>share</Accent> a session
         </div>
       </div>
     </Block>
@@ -113,23 +126,46 @@ registry.register({
 })
 
 registry.register({
-  group: 'meta',
+  group: 'fun',
   name: 'theme',
   run: (args, ctx) => {
     const name = args[0]
     if (!name) return text(`themes: ${TERMINAL_THEMES.join(', ')} · usage: theme <name>`)
-    if (!TERMINAL_THEMES.includes(name as TerminalTheme)) {
+    if (!isTerminalTheme(name)) {
       return text(`theme: unknown theme '${name}' (try: ${TERMINAL_THEMES.join(', ')})`, 'stderr')
     }
     ctx.setTheme(name)
-    return text(`theme → ${name}`, 'ok')
+    return <LedSign cell="0.9rem" text={name} />
   },
-  summary: 'switch the terminal color theme',
-  usage: 'theme <silk|matrix|amber>',
+  summary: `recolor: ${TERMINAL_THEMES.join(', ')}`,
+  usage: `theme <${TERMINAL_THEMES.join('|')}>`,
+})
+
+registry.register({
+  aliases: ['sign'],
+  group: 'fun',
+  name: 'led',
+  run: (args) => {
+    const message = ledText(args.join(' ')) || 'HELLO'
+    return <LedSign text={message} />
+  },
+  summary: 'write on the LED wall',
+  usage: 'led hello world <3',
+})
+
+registry.register({
+  aliases: ['scroll'],
+  group: 'fun',
+  name: 'marquee',
+  run: (args) => <LedSign scroll={true} text={ledText(args.join(' ')) || 'HYPERBLISS'} />,
+  summary: 'scroll a message across the LED wall',
+  usage: 'marquee <text>',
 })
 
 registry.register({
   group: 'meta',
+  // For people wiring a browser agent to the site; not something to browse to.
+  hidden: true,
   name: 'agent',
   run: async () => {
     const { getRegisteredAgentToolNames, isWebMcpEnabled } = await import('../webmcp')
@@ -151,7 +187,7 @@ registry.register({
   group: 'meta',
   name: 'history',
   run: (_args, ctx) => {
-    if (ctx.history.length === 0) return text('no history yet — start typing')
+    if (ctx.history.length === 0) return text('no history yet, start typing')
     return (
       <Block>
         {ctx.history.map((line, i) => (

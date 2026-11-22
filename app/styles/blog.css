@@ -1,4 +1,5 @@
 .blog-post {
+  position: relative;
   width: 100%;
   max-width: 144rem;
   margin: 0 auto;
@@ -216,20 +217,21 @@
 
 .blog-post__title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(3.4rem, 2.6rem + 2vw, 5.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-stretch: 118%;
+  font-weight: 900;
+  font-size: clamp(3.6rem, 2.4rem + 3vw, 7.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.02em;
   text-transform: none;
   text-shadow: none;
   text-align: left;
   margin: 0;
   text-wrap: balance;
-  background: linear-gradient(110deg, var(--silk-circuit-cyan) 0%, #e0aaff 48%, var(--silk-plasma-pink) 100%);
-  background-clip: text;
+  width: fit-content;
+  background-image: linear-gradient(95deg, #ff8ad8 0%, #ffffff 48%, #b9a2ff 100%);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 18px rgba(162, 89, 255, 0.35));
+  background-clip: text;
+  color: transparent;
 }
 
 .blog-post__tags {
@@ -383,6 +385,8 @@
 }
 
 .markdown-prose__link {
+  /* A bare URL in a footnote wraps instead of running off a phone. */
+  overflow-wrap: anywhere;
   color: #d946ef;
   text-decoration: none;
   position: relative;
@@ -607,6 +611,7 @@
 }
 
 .markdown-prose__inline-code {
+  overflow-wrap: anywhere;
   font-size: clamp(1.4rem, 1vw, 1.8rem);
   background: linear-gradient(135deg, rgba(217, 70, 239, 0.2), rgba(255, 117, 216, 0.1), rgba(30, 25, 45, 0.8));
   color: #ff75d8;
@@ -1053,22 +1058,22 @@
   }
 }
 
-/* Editorial pass: body headings in the display face, sentence case, no glow.
-   Keeps the color accents, drops the uppercase tracking and underline bars. */
+/* Emission: body headings in expanded Archivo, sentence case, no glow or
+   underline bars. Color separates them from the text: h2 runs pink into
+   violet, h3 is cyan. */
 .markdown-prose__h1,
 .markdown-prose__h2,
 .markdown-prose__h3 {
   font-family: var(--font-display);
   text-transform: none;
-  letter-spacing: -0.02em;
   text-shadow: none;
-  font-weight: 700;
   background: none;
   -webkit-background-clip: initial;
   background-clip: initial;
   -webkit-text-fill-color: currentColor;
   animation: none;
   filter: none;
+  color: #f6f2ff;
 }
 
 .markdown-prose__h2::after,
@@ -1077,13 +1082,21 @@
 }
 
 .markdown-prose__h2 {
-  color: var(--silk-circuit-cyan);
-  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
+  font-stretch: 112%;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  width: fit-content;
+  background: linear-gradient(95deg, #ff8ad8 0%, #d9a8ff 55%, #b9a2ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .markdown-prose__h3 {
-  color: var(--silk-plasma-pink);
-  text-shadow: 0 0 14px rgba(255, 117, 216, 0.25);
+  font-stretch: 108%;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #80ffea;
 }
 
 /* Reading rhythm: air above headings, a quiet bullet, calmer emphasis glow. */
@@ -1114,4 +1127,34 @@
   height: 0.5rem;
   background: var(--silk-lavender);
   box-shadow: none;
+}
+
+/* Reading progress: the brand gradient fills across the top edge as the essay
+   scrolls. Pure CSS (a scroll timeline); browsers without one never show it. */
+.reading-progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reading-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      height: 3px;
+      z-index: 1200;
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      background: linear-gradient(90deg, #e135ff, #ff6ac1 45%, #80ffea);
+      animation: reading-progress linear both;
+      animation-timeline: scroll(root);
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes reading-progress {
+  to {
+    transform: scaleX(1);
+  }
 }

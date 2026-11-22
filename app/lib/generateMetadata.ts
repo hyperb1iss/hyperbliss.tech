@@ -2,13 +2,12 @@
 
 import type { Metadata, ResolvingMetadata } from 'next'
 import type { Metadata as MetadataInterface } from 'next/dist/lib/metadata/types/metadata-interface'
-import siteMetadata from './metadata'
+import { BASE_URL, FOUNDER_NAME } from './company'
+import siteMetadata, { SITE_NAME } from './metadata'
 import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Configuration values
-const BASE_URL = 'https://hyperbliss.tech'
-const DEFAULT_AUTHOR = 'Stefanie Jane'
-const SITE_NAME = 'Hyperbliss'
+const DEFAULT_AUTHOR = FOUNDER_NAME
 const DEFAULT_LOCALE = 'en_US'
 const TWITTER_HANDLE = '@hyperb1iss'
 
@@ -136,7 +135,6 @@ export async function generateBlogMetadata(
   const imageUrl = buildOgImageUrl({
     kind: 'blog',
     meta: formatCardDate(frontmatter.date),
-    path: `cat blog/${slug}.md`,
     subtitle: frontmatter.excerpt,
     title: frontmatter.title,
   })
@@ -198,7 +196,6 @@ export async function generateProjectMetadata(
   const author = frontmatter.author || defaultAuthor
   const imageUrl = buildOgImageUrl({
     kind: 'project',
-    path: `hyperbliss projects --show ${slug}`,
     subtitle: frontmatter.description,
     title: frontmatter.title,
   })

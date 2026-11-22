@@ -1,8 +1,38 @@
-import type { BlogPosting, BreadcrumbList, Person, SoftwareApplication, WebSite, WithContext } from 'schema-dts'
+import type { BlogPosting, BreadcrumbList, Organization, Person, WebSite, WithContext } from 'schema-dts'
+import { BASE_URL, COMPANY_LEGAL_NAME, COMPANY_NAME, FOUNDER_NAME, SITE_DESCRIPTION } from './company'
 import { TECH_TAGS } from './constants'
 import { buildOgImageUrl } from './ogImage'
+import { COMPANY_LINKS, SOCIAL_LINKS } from './socials'
 
-const BASE_URL = 'https://hyperbliss.tech'
+/** Profile URLs for sameAs: the accounts themselves, not the sponsor page. */
+const profiles = (links: readonly { href: string; label: string }[]) =>
+  links.filter(({ label }) => label !== 'Sponsor').map(({ href }) => href)
+
+const ORGANIZATION_ID = `${BASE_URL}/#organization`
+
+export function generateOrganizationSchema(): WithContext<Organization> {
+  return {
+    '@context': 'https://schema.org',
+    '@id': ORGANIZATION_ID,
+    '@type': 'Organization',
+    description:
+      'Independent software company making open source tools that put people in control of their own technology.',
+    founder: {
+      '@type': 'Person',
+      name: FOUNDER_NAME,
+      url: `${BASE_URL}/about/`,
+    },
+    legalName: COMPANY_LEGAL_NAME,
+    location: {
+      '@type': 'Place',
+      name: 'Seattle, Washington',
+    },
+    logo: `${BASE_URL}/images/logo.png`,
+    name: COMPANY_NAME,
+    sameAs: profiles(COMPANY_LINKS),
+    url: BASE_URL,
+  }
+}
 
 export function generatePersonSchema(): WithContext<Person> {
   return {
@@ -12,11 +42,12 @@ export function generatePersonSchema(): WithContext<Person> {
     description:
       'Creative technologist building open source developer tools, terminal interfaces, and infrastructure for AI agents.',
     image: `${BASE_URL}/images/profile-image.jpg`,
-    jobTitle: 'Creative Technologist',
+    jobTitle: 'Founder',
     knowsAbout: Array.from(TECH_TAGS),
-    name: 'Stefanie Jane',
-    sameAs: ['https://github.com/hyperb1iss', 'https://twitter.com/hyperb1iss', 'https://linkedin.com/in/stefaniejane'],
-    url: BASE_URL,
+    name: FOUNDER_NAME,
+    sameAs: profiles(SOCIAL_LINKS),
+    url: `${BASE_URL}/about/`,
+    worksFor: { '@id': ORGANIZATION_ID },
   }
 }
 
@@ -24,22 +55,9 @@ export function generateWebsiteSchema(): WithContext<WebSite> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    author: {
-      '@type': 'Person',
-      name: 'Stefanie Jane',
-      url: BASE_URL,
-    },
-    description:
-      "Stefanie Jane's personal site: open source developer tools, terminal interfaces, and infrastructure for AI agents, plus essays and lab experiments.",
-    name: 'Hyperbliss',
-    potentialAction: {
-      '@type': 'SearchAction',
-      query: 'required name=search_term_string',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/search?q={search_term_string}`,
-      },
-    },
+    description: SITE_DESCRIPTION,
+    name: COMPANY_NAME,
+    publisher: { '@id': ORGANIZATION_ID },
     url: BASE_URL,
   }
 }
@@ -61,7 +79,6 @@ export function generateArticleSchema(
       name: author,
       url: BASE_URL,
     },
-    dateModified: datePublished,
     datePublished,
     description,
     headline: title,
@@ -72,27 +89,6 @@ export function generateArticleSchema(
       '@type': 'WebPage',
     },
     url,
-  }
-}
-
-export function generateProjectSchema(
-  title: string,
-  description: string,
-  github: string,
-  tags?: string[],
-): WithContext<SoftwareApplication> {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    applicationCategory: 'DeveloperApplication',
-    author: {
-      '@type': 'Person',
-      name: 'Stefanie Jane',
-    },
-    description,
-    keywords: tags,
-    name: title,
-    url: github,
   }
 }
 

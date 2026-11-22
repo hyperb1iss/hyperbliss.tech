@@ -1,7 +1,7 @@
 // Helpers for folding GitHub releases into the broadcast. The caller fetches
-// releases for only a curated few "currently shipping" repos (§5.10); these
-// pure helpers pick the newest as the headline ship and map versions onto
-// project entries. An empty map yields a null ship — a supported state.
+// the latest release of every project with a repo; these pure helpers pick
+// the newest as the headline ship and map versions onto project entries. An
+// empty map yields a null ship, which is a supported state.
 
 import type { ProjectSummary } from '../content'
 import type { BroadcastShip } from './types'
@@ -21,7 +21,8 @@ export function versionsMap(releases: Map<string, ReleaseLike>): Record<string, 
 
 /** Newest release across the curated set, or null if there are none. */
 export function pickLatestShip(releases: Map<string, ReleaseLike>, projects: ProjectSummary[]): BroadcastShip | null {
-  const titleBySlug = new Map(projects.map((p) => [p.slug, p.title]))
+  // The product's name without its tagline: "unifly", not "unifly: UniFi from the Terminal".
+  const titleBySlug = new Map(projects.map((p) => [p.slug, p.title.split(':')[0].trim()]))
   let best: BroadcastShip | null = null
   for (const [slug, release] of releases) {
     const candidate: BroadcastShip = {

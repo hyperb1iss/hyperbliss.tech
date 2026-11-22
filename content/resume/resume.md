@@ -1,25 +1,25 @@
 ---
 title: Resume
-description: Professional resume of Stefanie Jane, full-stack developer and designer.
+description: 'Resume of Stefanie Jane: founder of Hyperbliss Technologies, creator of CyanogenMod, and principal engineer.'
 ---
 
 # Stefanie Jane
 
-**Engineering Leader | Software Sorceress | Maker | Founder**
+**Agentic Infrastructure Architectress | Software Sorceress | Maker | Founder**
 
 📧 [stef@hyperbliss.tech](mailto:stef@hyperbliss.tech) | 💼 [LinkedIn](https://www.linkedin.com/in/hyperb1iss) | 🐙 [GitHub](https://github.com/hyperb1iss) | 🌐 [Web](https://hyperbliss.tech) | 🔗 [Links](https://linktr.ee/hyperb1iss)
 
 ## 🌠 Summary
 
-As a creative technologist, I bring over two decades of transformative experience across the entire software stack. From pioneering open-source mobile innovation to leading enterprise AI initiatives, I've consistently pushed technological boundaries while building and mentoring high-performing teams. My expertise spans Android OS, embedded systems, cloud infrastructure, frontend development, and cutting-edge AI/ML applications. I thrive at the intersection of visionary leadership and hands-on technical execution, where art meets engineering.
+I've been building software for over 25 years, from Linux kernels and phone firmware to cloud platforms and AI agents. I created CyanogenMod, the open-source Android distribution that millions of people ran on their phones (it lives on as LineageOS), and co-founded Cyanogen Inc. as its CTO. Since then I've helped launch Oculus Go, brought phones and a smartwatch to market at Mason, and now build the infrastructure AI agents run on at Gradial.
 
-Let's build something amazing together!
+I also run Hyperbliss Technologies, an independent company making open source tools for light, memory, and the terminal. I lead teams and I still write the code, mostly in Rust, TypeScript, and Python.
 
 ## 💻 Top Skills
 
 ### Programming Languages
 
-[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://golang.org/) | [Java](https://www.java.com/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | [Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) | [Perl](https://www.perl.org/) | [Python](https://www.python.org/) | [Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) | [TypeScript](https://www.typescriptlang.org/)
+[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://go.dev/) | [Java](https://www.java.com/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | [Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) | [Perl](https://www.perl.org/) | [Python](https://www.python.org/) | [Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) | [TypeScript](https://www.typescriptlang.org/)
 
 ### Technical Expertise
 
@@ -35,18 +35,21 @@ Mentoring | Product Strategy | Project Management | Software Development Lifecyc
 
 ## 🏢 Experience
 
-### [Gradial](https://www.gradial.ai/)
+### [Gradial](https://www.gradial.com/)
 
 #### Principal Software Engineer
 
 _(May 2025 - Present)_
 
-- Leading platform engineering and infrastructure development
-- Built foundational authentication and permissions systems for applications
-- Owning developer experience, creating efficient workflows and tooling
-- Enhancing and extending AI agent capabilities 🤖
+- Built the foundational infrastructure the company's AI agents run on
+- Designed and built the agent sandbox platform
+- Scaled that infrastructure as agent workloads grew
+- Built CI/CD and the developer experience, including remote devboxes for the
+  engineering team
+- Built the authentication and permissions systems the applications run on
+- Led performance work across the stack
 - **Technologies:** [TypeScript](https://www.typescriptlang.org/),
-  [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
+  [Next.js](https://nextjs.org/), [React](https://react.dev/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
 
 ### [Mason](https://www.bymason.com/)
 
@@ -54,19 +57,19 @@ _(May 2025 - Present)_
 
 _(May 2024 - May 2025)_
 
-- Led multiple new AI product initiatives 🚀
+- Led multiple new AI product initiatives
 - **Technologies:** Java, C++, Kotlin, Go, Python,
-  [Node.js](https://nodejs.org/), [React](https://reactjs.org/), [Django](https://www.djangoproject.com/), [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
+  [Node.js](https://nodejs.org/), [React](https://react.dev/), [Django](https://www.djangoproject.com/), [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
 
 #### Director of Software Engineering
 
 _(March 2021 - May 2024)_
 
-- Led software teams through significant growth phase
-- Key technical contributor and engineering leader
-- Managed cloud services and device software teams
-- Built processes for supporting customers and developers
-- Created tutorial videos and webinars for developer experience
+- Led the software teams through a period of significant growth
+- Managed the cloud services and device software teams while staying a hands-on
+  technical contributor
+- Built the processes for supporting customers and developers
+- Created tutorial videos and webinars for developers
 
 #### Principal Software Engineer
 
@@ -75,9 +78,9 @@ _(May 2019 - March 2021)_
 - Led bringup of new hardware platforms
 - Developed firmware and Android OS for mobile devices using
   [Qualcomm Snapdragon](https://www.qualcomm.com/snapdragon) hardware
-- Launched several phones and a smartwatch 📱
+- Launched several phones and a smartwatch
 - Enhanced capabilities of device management platform
-- Designed and implemented X-Ray remote device management system, streamlining
+- Designed and built X-Ray, a remote device management system that streamlined
   troubleshooting and diagnostics for enterprise MDM
 - Mentored new team members and provided technical direction
 
@@ -91,14 +94,14 @@ _(April 2015 - Present)_
 - Advise on product development and technical architecture
 - Contribute to company growth strategy and industry positioning
 
-### [Oculus VR](https://www.oculus.com/)
+### [Oculus VR](https://en.wikipedia.org/wiki/Reality_Labs)
 
 #### Systems Software Engineer
 
 _(April 2017 - March 2019)_
 
-- Contributed significantly to the launch of
-  [Oculus Go](https://www.oculus.com/go/), the first self-contained VR headset
+- Helped launch [Oculus Go](https://en.wikipedia.org/wiki/Oculus_Go), the first
+  self-contained VR headset
 - Focused on OS software, audio systems, power optimization, and soft realtime
   scheduling
 - Integrated multi-architecture, multi-toolchain build system with Sandcastle CI
@@ -113,8 +116,8 @@ _(April 2017 - March 2019)_
 
 _(March 2013 - November 2016)_
 
-- Co-founded Cyanogen Inc, building on the popular
-  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod) open-source project, which had thousands of contributors and millions of users worldwide 🌟
+- Co-founded Cyanogen Inc. on top of
+  [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), the open-source project with thousands of contributors and millions of users worldwide
 - Deeply involved in fundraising, securing venture capital, and strategic hiring
 - Launched multiple mobile phones featuring CyanogenOS with OEM partners
 - Delivered keynote presentations at international technology conferences
@@ -127,13 +130,13 @@ _(March 2013 - November 2016)_
 
 _(August 2011 - March 2013)_
 
-- Led R&D team pioneering new features for Samsung's mobile portfolio
+- Led an R&D team building new features for Samsung's mobile portfolio
 - Served as lead engineer for flagship US carrier releases including Galaxy
   S2/S3 and Note series
 - Established strategic collaboration between Samsung and open-source
   communities
-- Optimized device performance and carrier certification processes, accelerating
-  time-to-market
+- Improved device performance and carrier certification, shortening time to
+  market
 - **Technologies:** C, C++, Java, Python
 
 ### [Penthera Technologies](https://www.penthera.com/)
@@ -194,28 +197,32 @@ _(April 1998 - April 2005)_
 - **Technologies:** Java, C, Python, Perl, [Postfix](https://www.postfix.org/),
   [qmail](https://cr.yp.to/qmail.html), Oracle, [Solaris](https://www.oracle.com/solaris/technologies/)
 
-## 💻 Notable Open Source Projects
+## 💻 Open Source
 
 - **[CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod)/[LineageOS](https://lineageos.org/)**:
-  Created the world's largest custom Android ROM, empowering millions to customize and extend the life of their devices
-- **[DroidMind](https://github.com/hyperb1iss/droidmind)**: A bridge between AI
-  assistants and Android devices that implements the [Model Context Protocol (MCP)](https://github.com/anthropics/anthropic-cookbook/tree/main/mcp), enabling control through natural language
-- **[git-iris](https://github.com/hyperb1iss/git-iris)**: AI-accelerated git
-  workflow tool that enhances efficiency in version control management
-- **[Home Assistant](https://www.home-assistant.io/) Enhancements**: Various
-  contributions to the Home Assistant ecosystem, including themes and integrations
-- **[uchroma](https://github.com/hyperb1iss/uchroma)**: Advanced driver for
-  Razer Chroma hardware in Linux systems
+  Created the largest open-source Android distribution. Millions of people used it to take control of their phones and keep them running long after the manufacturer stopped updating them
+- **[Hypercolor](https://hypercolor.lighting)**: An open-source RGB lighting
+  engine in Rust that turns keyboards, LED strips, and room lighting into one canvas for shaders, music, and interaction
+- **[Sibyl](https://github.com/hyperb1iss/sibyl)**: Self-hosted memory for
+  coding agents, a knowledge graph of project decisions, debugging lessons, and tasks that follows the work across tools and sessions
+- **[unifly](https://github.com/hyperb1iss/unifly)**: A Rust CLI and live
+  terminal dashboard for UniFi networks, from switch ports and firewall policies to Wi-Fi diagnostics
+- **[DroidMind](https://github.com/hyperb1iss/droidmind)**: A
+  [Model Context Protocol](https://modelcontextprotocol.io) server that connects AI assistants to Android devices, with app control, screenshots, logs, and UI interaction
+- **[git-iris](https://github.com/hyperb1iss/git-iris)**: A Rust Git companion
+  that reads the code and its history to draft commits, reviews, pull requests, and release notes
+- **[uchroma](https://github.com/hyperb1iss/uchroma)**: A Linux driver and
+  animation system for Razer Chroma hardware, with layered effects and a D-Bus API
+- **[Home Assistant](https://www.home-assistant.io/) integrations**:
+  [Hypercolor](https://github.com/hyperb1iss/hypercolor-hass) and [SignalRGB](https://github.com/hyperb1iss/signalrgb-homeassistant) integrations that bring PC and room lighting into Home Assistant scenes and automations
 
-_Explore all my open source projects on [GitHub](https://github.com/hyperb1iss)_
+_Everything else is on [GitHub](https://github.com/hyperb1iss)_
 
 ## 🏆 Recognition & Achievements
 
 - Created [CyanogenMod](https://en.wikipedia.org/wiki/CyanogenMod), now
-  [LineageOS](https://lineageos.org/), revolutionizing Android customization for millions of users
-- Established a foundation for device longevity through community-supported
-  software
-- Led one of the most successful open-source projects in the mobile ecosystem
+  [LineageOS](https://lineageos.org/), one of the most successful open-source projects in mobile
+- Gave millions of devices a longer life through community-supported software
 - Featured presenter at Big Android BBQ for multiple years
 - Keynote speaker at Droidcon and March of the Droids
 - Industry panelist on mobile technology, open source, and software development

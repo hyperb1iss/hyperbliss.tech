@@ -126,16 +126,17 @@ const downloadButtonStyles = css`
 // ═══════════════════════════════════════════════════════════════════════════
 
 const ContactTitle = styled.h2`
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--silk-quantum-purple);
+  font-family: var(--font-mono);
+  font-stretch: 100%;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #b9b0cc;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
   text-shadow: none;
   margin-bottom: var(--space-5);
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(162, 89, 255, 0.25);
+  border-bottom: 1px solid rgba(244, 240, 255, 0.12);
   position: relative;
   z-index: 1;
 `
@@ -175,11 +176,11 @@ const SkillLabel = styled.h3`
   font-family: var(--font-mono);
   font-size: 1.3rem;
   font-weight: var(--font-semibold);
-  color: var(--silk-circuit-cyan);
+  color: #d6cfe6;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   margin-bottom: var(--space-3);
-  text-shadow: 0 0 8px rgba(0, 255, 240, 0.4);
+  text-shadow: none;
 `
 
 const SkillTags = styled.div`
@@ -231,13 +232,20 @@ const SectionIcon = styled.div`
 
 const SectionTitle = styled.h2`
   font-family: var(--font-display);
-  font-size: 2.6rem;
-  font-weight: 700;
+  font-stretch: 118%;
+  font-size: 3rem;
+  font-weight: 900;
   letter-spacing: -0.02em;
   text-transform: none;
-  color: var(--silk-circuit-cyan);
-  text-shadow: 0 0 16px rgba(0, 255, 240, 0.25);
+  text-shadow: none;
   margin: 0;
+  /* The page's title ink (violet through white to cyan), so a section title
+     never reads as the same ink as the entries under it. */
+  width: fit-content;
+  background-image: linear-gradient(95deg, #b9a2ff 0%, #ffffff 48%, #80ffea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `
 
 const TimelineItem = styled.div`
@@ -280,12 +288,13 @@ const TimelineItem = styled.div`
 
 const SubLabel = styled.h3`
   font-family: var(--font-mono);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-stretch: 100%;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-shadow: none;
-  color: var(--silk-quantum-purple);
+  color: #b9b0cc;
   margin: 0 0 var(--space-3);
 `
 
@@ -295,12 +304,13 @@ const TimelineHeader = styled.div`
 
 const CompanyName = styled.h3`
   font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-stretch: 112%;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
   text-transform: none;
   text-shadow: none;
-  color: #e0aaff;
+  color: #f6f2ff;
   margin-bottom: var(--space-1);
 
   a {
@@ -325,10 +335,8 @@ const JobTitle = styled.h4`
 const TimelineMeta = styled.div`
   font-family: var(--font-mono);
   font-size: 1.3rem;
-  color: var(--silk-circuit-cyan);
-  opacity: 0.8;
+  color: #80ffea;
   margin-bottom: var(--space-3);
-  text-shadow: 0 0 6px rgba(0, 255, 240, 0.3);
 `
 
 const TimelineContent = styled.div`
@@ -436,7 +444,7 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
 
   return (
     <PageLayout>
-      <PageTitle>Resume</PageTitle>
+      <PageTitle tint="violet">Resume</PageTitle>
 
       <div className={resumeWrapperStyles}>
         <Reveal className={contactCardStyles} order={0}>
@@ -639,7 +647,8 @@ const ResumePageContent: React.FC<{ content: string }> = ({ content }) => {
 
                 {awards.length > 0 && (
                   <div>
-                    <SubLabel>Awards</SubLabel>
+                    {/* Only a label when there are two groups to tell apart. */}
+                    {speaking.length > 0 && <SubLabel>Awards</SubLabel>}
                     <ul>
                       {awards.map((item, idx) => (
                         <li key={idx}>

@@ -4,21 +4,13 @@
 // releases in memory and in the fetch cache), so this is cheap to call from a
 // layout and a page in the same render.
 
-import { getAllLab, getAllPosts, getAllProjects, getNow, getPage, getResume, type NowData } from '../content'
+import { getAllLab, getAllPosts, getAllProjects, getPage, getResume } from '../content'
 import { getReleasesForProjects } from '../github'
 import { buildBroadcast } from './buildBroadcast'
 import { buildManifest } from './buildManifest'
+import { getVirtualFsBodies } from './fsBodies'
 import { pickLatestShip, type ReleaseLike, versionsMap } from './releases'
-import type { Broadcast, Manifest } from './types'
-
-export const DEFAULT_NOW: NowData = {
-  body: null,
-  emoji: null,
-  focus: 'Building things, open source all the way down.',
-  location: null,
-  title: 'Now',
-  updated: null,
-}
+import { type Broadcast, byteLengthUtf8, fingerprint, type Manifest } from './types'
 
 export interface TerminalData {
   manifest: Manifest
@@ -27,11 +19,10 @@ export interface TerminalData {
 
 export async function getTerminalData(): Promise<TerminalData> {
   const generatedAt = new Date().toISOString()
-  const [posts, projects, lab, now, aboutPage, resume] = await Promise.all([
+  const [posts, projects, lab, aboutPage, resume] = await Promise.all([
     getAllPosts(),
     getAllProjects(),
     getAllLab(),
-    getNow().catch(() => DEFAULT_NOW),
     getPage('about').catch(() => null),
     getResume().catch(() => ({ body: null, description: null, title: 'Resume' })),
   ])
@@ -45,21 +36,49 @@ export async function getTerminalData(): Promise<TerminalData> {
     // Rate-limited or offline — the console still works over local content.
   }
 
+  // Real byte sizes for every file the shell serves, so `ls -l`, `df`, and
+  // `dmesg` report what `cat` will actually print instead of an estimate.
+  // The same read fingerprints the tree, which versions the body requests.
+  let sizes: Record<string, number> | undefined
+  let version: string | undefined
+  try {
+    const bodies = await getVirtualFsBodies()
+    const paths = Object.keys(bodies).sort()
+    sizes = Object.fromEntries(paths.map((path) => [path, byteLengthUtf8(bodies[path])]))
+    version = fingerprint(paths.map((path) => `${path}\n${bodies[path]}`).join('\n'))
+  } catch {
+    // Fall back to the manifest's summary-based estimates.
+  }
+
+  // The console lists the flagships first, then whatever shipped most
+  // recently, so `projects` and `ps` lead with what is alive instead of with
+  // whichever file carries the newest hand-typed date.
+  const shippedAt = (slug: string) => Date.parse(releases.get(slug)?.publishedAt ?? '') || 0
+  const pinned = (featured: number | null | undefined) =>
+    typeof featured === 'number' ? featured : Number.POSITIVE_INFINITY
+  const ordered = [...projects].sort(
+    (a, b) =>
+      pinned(a.featured) - pinned(b.featured) ||
+      shippedAt(b.slug) - shippedAt(a.slug) ||
+      a.title.localeCompare(b.title),
+  )
+
   const manifest = buildManifest({
     about: aboutPage?.about ?? null,
+    company: aboutPage?.company ?? null,
     generatedAt,
     lab,
-    now,
     posts,
-    projects,
+    projects: ordered,
     releases: versionsMap(releases),
     resume,
+    sizes,
+    version,
   })
   const broadcast = buildBroadcast({
     generatedAt,
     lab,
     latestShip: pickLatestShip(releases, projects),
-    now,
     posts,
     projects,
   })

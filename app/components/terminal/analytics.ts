@@ -4,26 +4,7 @@
 // collapse to a generic bucket so nothing user-authored ever escapes.
 
 import { parseLine } from './parser'
-
-const NATIVE_COMMANDS = new Set([
-  'about',
-  'blog',
-  'clear',
-  'contact',
-  'help',
-  'history',
-  'lab',
-  'matrix',
-  'neofetch',
-  'now',
-  'projects',
-  'resume',
-  'share',
-  'social',
-  'ssh',
-  'sudo',
-  'theme',
-])
+import type { CommandRegistry } from './types'
 
 const SHELL_COMMANDS = new Set([
   'awk',
@@ -45,11 +26,14 @@ const SHELL_COMMANDS = new Set([
 ])
 
 /** A safe analytics bucket for a typed line. Never includes raw arguments. */
-export function categoryOf(raw: string): string {
+export function categoryOf(raw: string, registry: CommandRegistry): string {
   const { name, force, empty } = parseLine(raw)
   if (empty || !name) return 'cmd:empty'
   if (force === 'shell') return SHELL_COMMANDS.has(name) ? `shell:${name}` : 'shell:other'
-  if (NATIVE_COMMANDS.has(name)) return `cmd:${name}`
+  // Whatever is registered, under its own name, so an alias and a command
+  // added later are counted without a second list to keep in step.
+  const native = registry.get(name)
+  if (native) return `cmd:${native.name}`
   if (SHELL_COMMANDS.has(name)) return `shell:${name}`
   return 'cmd:other'
 }

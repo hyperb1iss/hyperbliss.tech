@@ -1,5 +1,7 @@
-// Lanes, featuring, and small presentational helpers for the Projects page.
-// Pure functions so the page can be a server component and the logic testable.
+// Product lines, featuring, and small presentational helpers for the Products
+// page. Each lane is a product line led by its pinned flagship, except the
+// last, which collects the rest of the open source work. Pure functions so the
+// page can be a server component and the logic testable.
 
 import type { ProjectSummary } from './content'
 import type { RepoStats } from './github'
@@ -13,15 +15,33 @@ export interface Lane {
 }
 
 export const LANES: readonly Lane[] = [
-  { blurb: 'Memory, orchestration, and tools for agents that actually ship work.', id: 'agents', label: 'Agents & AI' },
-  { blurb: 'CLIs and TUIs that are fast, colorful, and pleasant to live in.', id: 'terminal', label: 'Terminal & CLI' },
-  { blurb: 'RGB, LEDs, and the daemons that keep them alive on Linux.', id: 'lighting', label: 'Lighting & hardware' },
   {
-    blurb: 'This site, the editor, the shell, and the glue between them.',
+    blurb: 'Hypercolor and the drivers, integrations, and studios around it.',
+    id: 'lighting',
+    label: 'Lighting',
+  },
+  {
+    blurb: 'Sibyl and the tools that help coding agents remember, plan, and ship.',
+    id: 'agents',
+    label: 'Agent infrastructure',
+  },
+  {
+    blurb: 'unifly and the CLIs, TUIs, and themes that make the terminal worth living in.',
+    id: 'terminal',
+    label: 'Terminal tools',
+  },
+  {
+    blurb: 'Color themes, presentation tooling, and the code that runs our own machines and this site.',
     id: 'web',
-    label: 'Web, editors & environment',
+    label: 'More open source',
   },
 ]
+
+/** Below this, a star count reads as a weakness rather than proof, so it stays off the page. */
+export const STAR_FLOOR = 100
+
+/** How recent a push has to be before "pushed 3d ago" says something worth saying. */
+export const RECENT_PUSH_DAYS = 30
 
 export interface ProjectEntry {
   project: ProjectSummary
@@ -74,6 +94,37 @@ export function groupByLane(entries: ProjectEntry[]): Array<{ lane: Lane; entrie
     entries: sortEntries(entries.filter((e) => laneOf(e.project.category) === lane.id)),
     lane,
   })).filter((group) => group.entries.length > 0)
+}
+
+export interface ProductLine {
+  lane: Lane
+  /** The line's pinned flagship, the lowest `featured` rank in the lane; null when none is pinned. */
+  flagship: ProjectEntry | null
+  /** Everything else in the line, sorted. */
+  entries: ProjectEntry[]
+}
+
+/** Non-empty product lines in canonical order, each with its flagship pulled out front. */
+export function groupByLine(entries: ProjectEntry[]): ProductLine[] {
+  return groupByLane(entries).map(({ lane, entries: laneEntries }) => {
+    const pinned = laneEntries
+      .filter((e) => typeof e.project.featured === 'number')
+      .sort((a, b) => (a.project.featured ?? 0) - (b.project.featured ?? 0))
+    const flagship = pinned[0] ?? null
+    return { entries: laneEntries.filter((e) => e !== flagship), flagship, lane }
+  })
+}
+
+/** The star count worth showing, formatted, or null when it sits under the floor. */
+export function shownStars(stars: number | null | undefined): string | null {
+  return stars && stars >= STAR_FLOOR ? formatStars(stars) : null
+}
+
+/** "3d ago" for a push inside the recent window; null for older or missing pushes. */
+export function recentPush(iso: string | null | undefined, now = Date.now()): string | null {
+  const t = time(iso)
+  if (!t || now - t > RECENT_PUSH_DAYS * 86_400_000) return null
+  return relativeTime(iso, now)
 }
 
 /**

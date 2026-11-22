@@ -39,6 +39,10 @@ const sanitizeSchema = {
     code: [...(defaultSchema.attributes?.code || []), 'className'],
     span: [...(defaultSchema.attributes?.span || []), 'className'],
   },
+  // Footnote ids and their links are already prefixed when the markdown is
+  // converted. Prefixing the ids a second time here left every footnote link
+  // pointing at an id that does not exist.
+  clobberPrefix: '',
   tagNames: [...(defaultSchema.tagNames || []), 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr'],
 }
 

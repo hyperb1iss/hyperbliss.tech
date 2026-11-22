@@ -29,13 +29,10 @@ export function longDate(iso: string): string {
   return `${MONTHS[month - 1]} ${day}, ${year}`
 }
 
-/** { day: "20", month: "jul 26" } for the feed's numeral column. */
-export function numeralDate(iso: string): { day: string; month: string } {
+/** "Oct 21, 2026" for the feed's date column. */
+export function shortDate(iso: string): string {
   const { year, month, day } = parts(iso)
-  return {
-    day: String(day).padStart(2, '0'),
-    month: `${MONTHS[month - 1].slice(0, 3).toLowerCase()} ${String(year).slice(2)}`,
-  }
+  return `${MONTHS[month - 1].slice(0, 3)} ${day}, ${year}`
 }
 
 export const KIND_LABEL: Record<FeedKind, string> = {
@@ -43,6 +40,14 @@ export const KIND_LABEL: Record<FeedKind, string> = {
   lab: 'Lab',
   launch: 'Launch',
   release: 'Release',
+}
+
+/** The hero's second button, worded for whatever kind the newest piece is. */
+export const LATEST_VERB: Record<FeedKind, string> = {
+  essay: 'Read the latest essay',
+  lab: 'Open the latest experiment',
+  launch: 'See the latest project',
+  release: 'See the latest release',
 }
 
 export const KIND_VERB: Record<FeedKind, string> = {

@@ -8,10 +8,10 @@ import {
   type ManifestEntry,
   PUBLIC_CONTENT_KINDS,
 } from '@/lib/terminal/types'
-import { TERMINAL_THEMES, type TerminalTheme } from './commands/meta'
 import type { FsBodies } from './fsClient'
 import type { ExecShell } from './shell'
 import type { TerminalHandle } from './Terminal'
+import { TERMINAL_THEMES, type TerminalTheme } from './theme'
 
 const READ_BODY_LIMIT = 8000
 const MAX_QUERY_LENGTH = 120
@@ -223,7 +223,7 @@ export function registerAgentTools(deps: AgentToolDeps): () => void {
       inputSchema: {
         additionalProperties: false,
         properties: {
-          kind: { enum: ['about', 'now', 'resume', 'project', 'post', 'lab'], type: 'string' },
+          kind: { enum: ['about', 'resume', 'project', 'post', 'lab'], type: 'string' },
           query: { maxLength: MAX_QUERY_LENGTH, type: 'string' },
         },
         required: ['query'],
@@ -267,23 +267,11 @@ export function registerAgentTools(deps: AgentToolDeps): () => void {
     }),
     tool({
       annotations: { readOnlyHint: true },
-      description: 'Show what Stefanie Jane is focused on right now.',
-      execute: async () => {
-        track('whats_now')
-        const { focus, location, nowBody, nowUpdated } = deps.broadcast
-        return { body: nowBody, focus, location, updated: nowUpdated }
-      },
-      inputSchema: { additionalProperties: false, properties: {}, type: 'object' },
-      name: 'whats_now',
-      title: "What's now",
-    }),
-    tool({
-      annotations: { readOnlyHint: true },
       description: 'Get public site status counts and latest content links.',
       execute: async () => {
         track('get_site_status')
-        const { focus, labCount, latestPost, latestProject, latestShip, postCount, projectCount } = deps.broadcast
-        return { focus, labCount, latestPost, latestProject, latestShip, postCount, projectCount }
+        const { flagships, labCount, latestPost, latestShip, postCount, projectCount } = deps.broadcast
+        return { flagships, labCount, latestPost, latestShip, postCount, projectCount }
       },
       inputSchema: { additionalProperties: false, properties: {}, type: 'object' },
       name: 'get_site_status',

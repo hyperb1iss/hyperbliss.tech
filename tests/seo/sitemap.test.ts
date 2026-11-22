@@ -4,6 +4,7 @@ import { GET } from '@/sitemap.xml/route'
 // Mock the markdown functions
 vi.mock('@/lib/markdown', () => ({
   getAllMarkdownSlugs: vi.fn(),
+  getMarkdownContent: vi.fn(async () => ({ frontmatter: { date: '2026-04-08' } })),
 }))
 
 describe('Sitemap Generation', () => {
@@ -38,8 +39,10 @@ describe('Sitemap Generation', () => {
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/projects\/project-1\/<\/loc>/)
     expect(content).toMatch(/<loc>https:\/\/hyperbliss.tech\/lab\/regex-nightmares\/<\/loc>/)
 
-    // Check required elements
-    expect(content).toMatch(/<lastmod>/)
+    // lastmod comes from a real publish date, and is left out where there is none
+    expect(content).toMatch(/blog\/post-1\/<\/loc>\s*<lastmod>2026-04-08T00:00:00.000Z<\/lastmod>/)
+    expect(content).not.toMatch(/projects\/project-1\/<\/loc>\s*<lastmod>/)
+    expect(content).not.toMatch(/hyperbliss.tech\/<\/loc>\s*<lastmod>/)
     expect(content).toMatch(/<changefreq>/)
     expect(content).toMatch(/<priority>/)
   })

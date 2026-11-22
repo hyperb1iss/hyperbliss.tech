@@ -1,18 +1,15 @@
 // app/lib/metadata.ts
 import { Metadata } from 'next'
-import { TECH_TAGS } from './constants'
+import { BASE_URL, COMPANY_LEGAL_NAME, COMPANY_NAME, FOUNDER_NAME, SITE_DESCRIPTION } from './company'
 import { DEFAULT_OG_IMAGE_URL, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Constants for site metadata
-const AUTHOR_NAME = 'Stefanie Jane'
-const BASE_URL = 'https://hyperbliss.tech'
-const SITE_TITLE = '@hyperb1iss | Stefanie Jane'
-const SITE_DESCRIPTION =
-  "Stefanie Jane's personal site: open source developer tools, terminal interfaces, and infrastructure for AI agents, plus essays and lab experiments."
-const SITE_NAME = '🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹'
+const AUTHOR_NAME = FOUNDER_NAME
+const SITE_TITLE = COMPANY_NAME
+export const SITE_NAME = COMPANY_NAME
 const OG_LOCALE = 'en_US'
 
-// Generated SilkCircuit terminal card — see app/api/og
+// The site's generated social card, rendered by app/api/og
 const DEFAULT_OG_IMAGE = {
   alt: SITE_DESCRIPTION,
   height: OG_IMAGE_HEIGHT,
@@ -50,32 +47,26 @@ const siteMetadata: Metadata = {
       { sizes: '16x16', type: 'image/png', url: '/favicon-16x16.png' },
       { sizes: '32x32', type: 'image/png', url: '/favicon-32x32.png' },
     ],
-    other: [{ color: '#5bbad5', rel: 'mask-icon', url: '/safari-pinned-tab.svg' }],
   },
   keywords: [
-    AUTHOR_NAME,
-    'Stefanie Jane Kondik',
-    'Stefanie Jane',
-    'Stefanie Kondik',
-    'hyperb1iss',
+    COMPANY_NAME,
     'hyperbliss',
-    'Stefanie Jane developer',
-    'Stefanie Jane portfolio',
-    'open source developer',
-    'creative technologist',
+    'Hypercolor',
+    'Sibyl',
+    'unifly',
+    'RGB lighting',
+    'agent memory',
+    'terminal tools',
+    'open source software',
     'AI engineering',
     'agentic AI',
     'Seattle',
+    AUTHOR_NAME,
+    'Stefanie Jane Kondik',
+    'Stefanie Kondik',
+    'hyperb1iss',
     'cyanogen',
     'cyanogenmod',
-    'android',
-    'android developer',
-    'futuristic web design',
-    'full stack engineer portfolio',
-    'tech blog',
-    'open source projects',
-    'indie dev blog',
-    ...Array.from(TECH_TAGS),
   ],
   metadataBase: new URL(BASE_URL),
   openGraph: {
@@ -89,9 +80,8 @@ const siteMetadata: Metadata = {
   },
   other: {
     'source-code': 'https://github.com/hyperb1iss/hyperbliss.tech',
-    'view-source': 'SilkCircuit terminal homepage; try /api/fs?path=/now.md for the content-backed shell.',
   },
-  publisher: AUTHOR_NAME,
+  publisher: COMPANY_LEGAL_NAME,
   robots: {
     follow: true,
     googleBot: {

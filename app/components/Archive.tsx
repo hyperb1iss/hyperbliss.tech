@@ -41,7 +41,12 @@ export default function Archive({ years }: ArchiveProps) {
   let order = 0.5
   return (
     <PageLayout>
-      <PageTitle lede="Every essay, lab experiment, release, and launch, newest first.">Archive</PageTitle>
+      <PageTitle
+        lede="Essays, lab experiments, launches, and the latest release of each project, newest first."
+        tint="cyan"
+      >
+        Archive
+      </PageTitle>
       <div style={{ maxWidth: '96rem' }}>
         {years.map(({ year, items }) => {
           const startOrder = order

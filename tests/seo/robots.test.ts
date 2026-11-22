@@ -14,6 +14,7 @@ describe('Robots.txt Generation', () => {
       'User-agent: *',
       'Allow: /',
       'Allow: /api/og',
+      'Allow: /api/rss',
       'Disallow: /api/*',
       'Disallow: /_next/*',
       'Disallow: /static/*',

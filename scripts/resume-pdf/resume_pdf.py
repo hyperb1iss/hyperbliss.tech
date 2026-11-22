@@ -203,6 +203,8 @@ async def create_styled_resume_async(input_path, output_path=None):
     <html>
     <head>
         <meta charset="UTF-8">
+        <!-- Becomes the PDF's title; without it the file is named after a temp path. -->
+        <title>Stefanie Jane, Resume</title>
         <style>
             @import url(
                 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&display=swap'
@@ -568,7 +570,11 @@ async def create_styled_resume_async(input_path, output_path=None):
 
     # Convert HTML to PDF using Playwright
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
+        try:
+            browser = await p.chromium.launch()
+        except Exception:
+            # No bundled Chromium installed: use the system's Chrome instead.
+            browser = await p.chromium.launch(channel="chrome")
         page = await browser.new_page()
 
         # Write HTML to a temp file for proper file:// URL loading

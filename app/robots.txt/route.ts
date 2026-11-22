@@ -19,6 +19,7 @@ export async function GET(): Promise<Response> {
         allow: [
           '/',
           '/api/og', // Social-card renderer — scrapers (Twitterbot) must be able to fetch og:image
+          '/api/rss', // The feed every page advertises in its head
         ],
         disallow: [
           '/api/*', // Prevent crawling of API routes

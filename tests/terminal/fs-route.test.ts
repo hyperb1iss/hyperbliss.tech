@@ -7,10 +7,10 @@ const request = (url: string) => new Request(url)
 
 describe('/api/fs', () => {
   it('serves a known virtual filesystem body', async () => {
-    const response = await GET(request('https://hyperbliss.tech/api/fs?path=/now.md'))
+    const response = await GET(request('https://hyperbliss.tech/api/fs?path=/about.md'))
     expect(response.status).toBe(200)
     const body = (await response.json()) as Record<string, string>
-    expect(body['/now.md']).toEqual(expect.any(String))
+    expect(body['/about.md']).toEqual(expect.any(String))
   })
 
   it('rejects off-manifest paths before reading bodies', async () => {
@@ -20,7 +20,7 @@ describe('/api/fs', () => {
   })
 
   it('rejects huge path arrays', async () => {
-    const paths = Array.from({ length: 65 }, () => '/now.md')
+    const paths = Array.from({ length: 65 }, () => '/about.md')
     const response = await GET(
       request(`https://hyperbliss.tech/api/fs?paths=${encodeURIComponent(JSON.stringify(paths))}`),
     )

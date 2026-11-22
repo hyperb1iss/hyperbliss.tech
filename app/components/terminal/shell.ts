@@ -5,7 +5,7 @@
 // line runs in one exec so compound forms, subshells, and pipes stay correct.
 
 import { type ContentKind, type Manifest, PUBLIC_CONTENT_KINDS } from '@/lib/terminal/types'
-import type { ShellRunner } from './executor'
+import { notFound, type ShellRunner } from './executor'
 import type { FsBodies } from './fsClient'
 import { tokenize } from './parser'
 import { text } from './render'
@@ -367,7 +367,7 @@ export function createShellSession({ createBash = defaultCreateBash, fetchBodies
     } catch (error) {
       if (isAbortError(error)) return
       if (error instanceof ShellUnavailableError) {
-        ctx.print(text('shell unavailable — run the command again to retry loading it', 'stderr'))
+        ctx.print(text('shell unavailable, run the command again to retry loading it', 'stderr'))
         return
       }
       ctx.print(text(`shell error: ${error instanceof Error ? error.message : String(error)}`, 'stderr'))
@@ -375,7 +375,10 @@ export function createShellSession({ createBash = defaultCreateBash, fetchBodies
     }
 
     if (result.stdout.length > 0) ctx.print(text(result.stdout, 'stdout'))
-    if (result.stderr.length > 0) ctx.print(text(result.stderr, 'stderr'))
+    // A lone unknown command gets our own line, which can suggest a real one.
+    const unknown = result.exitCode === 127 ? /^bash: (\S+): command not found$/.exec(result.stderr)?.[1] : undefined
+    if (unknown) notFound(unknown, ctx)
+    else if (result.stderr.length > 0) ctx.print(text(result.stderr, 'stderr'))
   }
 
   return {

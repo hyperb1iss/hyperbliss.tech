@@ -1,34 +1,32 @@
 // Text content commands: about, contact (alias social), resume.
-// Self-registers on import. Reads content from ctx (manifest); social links are
-// static app data.
+// Self-registers on import. Reads content from ctx (manifest); the company's
+// accounts are static app data.
 
-import { SOCIAL_LINKS } from '@/lib/socials'
+import { CONTACT_EMAIL } from '@/lib/company'
+import { COMPANY_LINKS } from '@/lib/socials'
 import type { ContentKind, Manifest } from '@/lib/terminal/types'
 import { registry } from '../registry'
 import { text } from '../render'
 import { Accent, Block, Heading, Muted, TermLink } from './ui'
 
-const CONTACT_EMAIL = 'stef@hyperbliss.tech'
-
 const find = (manifest: Manifest, kind: ContentKind) => manifest.entries.find((e) => e.kind === kind)
 
 registry.register({
-  aliases: ['whoami'],
   group: 'content',
   name: 'about',
   run: (_args, ctx) => {
     const about = find(ctx.manifest, 'about')
     return (
       <Block>
-        <Heading>{about?.title ?? 'Stefanie Jane'}</Heading>
-        <div>{about?.summary ?? 'Creative technologist, open-source maker.'}</div>
+        <Heading>Hyperbliss Technologies</Heading>
+        <div>An independent software company in Seattle, founded by Stefanie Jane.</div>
         <div>
-          <Muted>creator of CyanogenMod / LineageOS · building developer tools, terminal UIs, and AI agents.</Muted>
+          <Muted>We make open source tools for light, memory, and the terminal.</Muted>
         </div>
         <div>
           <Muted>→ </Muted>
           <TermLink href={about?.href ?? '/about/'} navigate={ctx.navigate}>
-            read the full story
+            the company and its founder
           </TermLink>
           <Muted> · try </Muted>
           <Accent>contact</Accent>
@@ -38,7 +36,7 @@ registry.register({
       </Block>
     )
   },
-  summary: 'who I am',
+  summary: 'who we are',
 })
 
 registry.register({
@@ -47,8 +45,8 @@ registry.register({
   name: 'contact',
   run: (_args, ctx) => (
     <Block>
-      <Heading>reach me</Heading>
-      {SOCIAL_LINKS.map((s) => (
+      <Heading>reach us</Heading>
+      {COMPANY_LINKS.map((s) => (
         <div key={s.label}>
           <Muted>{s.label.padEnd(10, ' ')}</Muted>
           <TermLink href={s.href} navigate={ctx.navigate}>
@@ -62,13 +60,9 @@ registry.register({
           {CONTACT_EMAIL}
         </TermLink>
       </div>
-      <div>
-        <Muted>psst — try </Muted>
-        <Accent>ssh hyperbliss.tech</Accent>
-      </div>
     </Block>
   ),
-  summary: 'ways to reach me',
+  summary: 'ways to reach us',
 })
 
 registry.register({
@@ -91,5 +85,5 @@ registry.register({
       </Block>
     )
   },
-  summary: 'professional summary',
+  summary: "the founder's resume",
 })

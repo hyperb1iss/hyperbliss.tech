@@ -85,7 +85,7 @@ export default function MatrixRain() {
   }, [])
 
   if (reduced) {
-    return <Static>the matrix has you ▒▒▒ (motion reduced)</Static>
+    return <Static>the matrix has you</Static>
   }
   return <Canvas aria-label="Matrix digital rain animation" ref={canvasRef} />
 }

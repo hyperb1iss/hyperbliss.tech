@@ -8,13 +8,14 @@ const mobileMenuIconContainerStyles = css`
   display: none;
   width: 44px;
   height: 44px;
-  padding: 7px;
+  /* A 24 by 21 glyph inside the 44px touch target; the lines sit 7px apart,
+     which is the distance the open state travels to cross them. */
+  padding: 11.5px 10px;
   border: none;
   background: transparent;
   cursor: pointer;
-  margin-right: 1rem;
+  margin-right: 0.4rem;
   z-index: 1100;
-  filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.7));
   outline: none;
   -webkit-tap-highlight-color: transparent;
 
@@ -32,10 +33,9 @@ const mobileMenuIconContainerStyles = css`
 
 const menuLineStyles = css`
   width: 100%;
-  height: 3px;
-  background-color: var(--color-accent);
-  border-radius: 4px;
-  box-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+  height: 2px;
+  background-color: #f4f0ff;
+  border-radius: 2px;
 `
 
 /**
@@ -55,7 +55,7 @@ interface MobileMenuIconProps {
 const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu }) => {
   const topLineVariants = {
     closed: { rotate: 0, translateY: 0 },
-    open: { rotate: 45, translateY: 10 },
+    open: { rotate: 45, translateY: 7 },
   }
 
   const middleLineVariants = {
@@ -65,7 +65,7 @@ const MobileMenuIcon: React.FC<MobileMenuIconProps> = ({ menuOpen, toggleMenu })
 
   const bottomLineVariants = {
     closed: { rotate: 0, translateY: 0 },
-    open: { rotate: -45, translateY: -10 },
+    open: { rotate: -45, translateY: -7 },
   }
 
   return (

@@ -353,7 +353,7 @@ The eternal shame: it happily validates February 31st. It also matches P alone (
     segments: [
       {
         color: 'cyan',
-        description: 'Four digits for the year. No range validation — year 9999 is fine, year 0000 is also fine.',
+        description: 'Four digits for the year. No range validation: year 9999 is fine, year 0000 is also fine.',
         label: 'Year',
         pattern: '\\d{4}',
       },
@@ -383,7 +383,7 @@ The eternal shame: it happily validates February 31st. It also matches P alone (
       },
       {
         color: 'purple',
-        description: 'Seconds go up to 60, not 59 — because leap seconds are a real thing that ISO 8601 accommodates.',
+        description: 'Seconds go up to 60, not 59, because leap seconds are a real thing that ISO 8601 accommodates.',
         label: 'Seconds (00-60)',
         pattern: '[0-5]\\d|60',
       },
@@ -404,12 +404,12 @@ The eternal shame: it happily validates February 31st. It also matches P alone (
       {
         color: 'pink',
         description:
-          'Time portion of the duration: hours, minutes, seconds (with optional fractional). P alone with no components still matches — invalid per spec.',
+          'Time portion of the duration: hours, minutes, seconds (with optional fractional). P alone with no components still matches, which is invalid per spec.',
         label: 'Duration time components',
         pattern: 'T(?:\\d+H)?(?:\\d+M)?(?:\\d+(?:\\.\\d+)?S)?',
       },
     ],
-    subtitle: 'Both datetimes and durations in one pattern — the ISO 8601 equivalent of a mullet.',
+    subtitle: 'Both datetimes and durations in one pattern: the ISO 8601 equivalent of a mullet.',
     testCases: [
       { input: '2024-01-15T10:30:00Z', label: 'UTC datetime', shouldMatch: true },
       { input: '2024-02-31T00:00:00Z', label: 'Feb 31 (oops)', shouldMatch: true },
@@ -427,7 +427,7 @@ The eternal shame: it happily validates February 31st. It also matches P alone (
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {
     bodyCount: {
-      content: `On November 13, 2009, a Stack Overflow user asked "RegEx match open tags except XHTML self-contained tags." User bobince replied with what became [the most legendary answer in the site's history](https://stackoverflow.com/a/1732454). It begins "You can't parse [X]HTML with regex" and escalates into full Lovecraftian horror, warning that attempting to do so will summon Zalgo. The answer has over 4,000 upvotes and was locked for historical preservation. Jeff Atwood wrote it up as ["Parsing Html The Cthulhu Way."](https://blog.codinghorror.com/parsing-html-the-cthulhu-way/) The core technical point: HTML is not a regular language — regular expressions are provably insufficient to parse it. People still try.`,
+      content: `On November 13, 2009, a Stack Overflow user asked "RegEx match open tags except XHTML self-contained tags." User bobince replied with what became [the most legendary answer in the site's history](https://stackoverflow.com/a/1732454). It begins "You can't parse [X]HTML with regex" and escalates into full Lovecraftian horror, warning that attempting to do so will summon Zalgo. The answer has over 4,000 upvotes and was locked for historical preservation. Jeff Atwood wrote it up as ["Parsing Html The Cthulhu Way."](https://blog.codinghorror.com/parsing-html-the-cthulhu-way/) The core technical point: HTML is not a regular language, so regular expressions are provably insufficient to parse it. People still try.`,
       emoji: '🪦',
       label: 'Body count',
     },
@@ -454,7 +454,7 @@ It fails on nested identical tags. It exists as a monument to the gap between "t
       {
         color: 'green',
         description:
-          'Matches double-quoted attribute values. The trailing [\'"]* absorbs stray quotes — already a red flag.',
+          'Matches double-quoted attribute values. The trailing [\'"]* absorbs stray quotes, already a red flag.',
         label: 'Double-quoted attribute',
         pattern: `"[^"]*"['"]*`,
       },
@@ -481,7 +481,7 @@ It fails on nested identical tags. It exists as a monument to the gap between "t
       {
         color: 'orange',
         description:
-          'Matches tag content lazily, stopping at the "matching" close tag. But \\1 references a non-capturing group — this backreference is broken in most engines.',
+          'Matches tag content lazily, stopping at the "matching" close tag. But \\1 references a non-capturing group, so this backreference is broken in most engines.',
         label: 'Content between tags',
         pattern: '(?:(?!<\\1[\\s>])[\\s\\S])*?',
       },
@@ -555,7 +555,7 @@ The non-ASCII requirement is the twist of the knife. Combined with the banned-su
       {
         color: 'pink',
         description:
-          'The twist of the knife. Your password must contain a non-ASCII character — an emoji, accented letter, or CJK character. This technically improves entropy while practically guaranteeing a sticky note.',
+          'The twist of the knife. Your password must contain a non-ASCII character: an emoji, accented letter, or CJK character. This technically improves entropy while practically guaranteeing a sticky note.',
         label: 'Requires non-ASCII (!)',
         pattern: '(?=.*[^\\x00-\\x7F])',
       },
@@ -686,7 +686,7 @@ The named color section is the neat part. Instead of listing all 148 CSS named c
       {
         color: 'purple',
         description:
-          "Adds optional 2-digit alpha. Combined with the 3-or-6 base, this allows lengths 3, 5, 6, and 8 — but 5-digit hex isn't valid CSS. A bug.",
+          "Adds optional 2-digit alpha. Combined with the 3-or-6 base, this allows lengths 3, 5, 6, and 8, but 5-digit hex isn't valid CSS. A bug.",
         label: 'Optional hex alpha',
         pattern: '(?:[0-9a-fA-F]{2})?',
       },
@@ -712,7 +712,7 @@ The named color section is the neat part. Instead of listing all 148 CSS named c
       {
         color: 'pink',
         description:
-          'Instead of listing all 148 named colors, this groups them by suffix. "blue", "aliceblue", "royalblue" all match one branch. Clever compression — but only covers a subset.',
+          'Instead of listing all 148 named colors, this groups them by suffix. "blue", "aliceblue", "royalblue" all match one branch. Clever compression, but it only covers a subset.',
         label: 'Named colors (blue family)',
         pattern: '(?:alice|cadet|cornflower|dark|deep|dodger|light|medium|midnight|powder|royal|sky|slate|steel)?blue',
       },
@@ -768,7 +768,7 @@ Then there are special cases: fe80: link-local addresses with zone IDs (%eth0), 
       {
         color: 'purple',
         description:
-          'One to seven groups followed by a trailing colon — the :: is at the end, compressing trailing zero groups.',
+          'One to seven groups followed by a trailing colon: the :: is at the end, compressing trailing zero groups.',
         label: ':: at end',
         pattern: '(?:[0-9a-fA-F]{1,4}:){1,7}:',
       },
@@ -931,7 +931,7 @@ Works in PCRE (PHP, R) and Perl. JavaScript, Python's re, Rust's regex, and Go's
       {
         color: 'pink',
         description:
-          "PCRE's recursive subpattern. Re-invokes the ENTIRE pattern at the current position. This is the wild part — it makes the regex equivalent to a pushdown automaton, punching through the Chomsky hierarchy ceiling.",
+          "PCRE's recursive subpattern. Re-invokes the ENTIRE pattern at the current position. This is the wild part: it makes the regex equivalent to a pushdown automaton, punching through the Chomsky hierarchy ceiling.",
         label: 'Recursive self-call (!)',
         pattern: '(?R)',
       },
@@ -944,7 +944,7 @@ Works in PCRE (PHP, R) and Perl. JavaScript, Python's re, Rust's regex, and Go's
       {
         color: 'cyan',
         description:
-          'Must reach end of string. The anchors are part of the recursion, which is a subtlety — deeply nested inputs can fail in some engines where the recursive call insists on matching full-string anchors at an interior position.',
+          'Must reach end of string. The anchors are part of the recursion, which is a subtlety: deeply nested inputs can fail in some engines where the recursive call insists on matching full-string anchors at an interior position.',
         label: 'End anchor',
         pattern: '$',
       },
@@ -978,7 +978,7 @@ Works in PCRE (PHP, R) and Perl. JavaScript, Python's re, Rust's regex, and Go's
 
 The first branch catches 0 and 1 (neither prime). The second branch captures a group of 2+ characters, then tries to fill the rest of the string with exact copies. If it can, the string length is divisible by the group length, so the number is composite.
 
-For input "1111111" (7), the engine tries factor 2 — can "11" tile the remaining 5? No. Tries factor 3 — can "111" tile 4? No. Keeps going. None work. The match fails, meaning 7 is prime. A regex engine doing trial division through brute-force backtracking.`,
+For input "1111111" (7), the engine tries factor 2: can "11" tile the remaining 5? No. Tries factor 3: can "111" tile 4? No. Keeps going. None work. The match fails, meaning 7 is prime. A regex engine doing trial division through brute-force backtracking.`,
     id: 13,
     jsCompatible: true,
     jsRegex: '^1?$|^(11+?)\\1+$',
@@ -1014,7 +1014,7 @@ For input "1111111" (7), the engine tries factor 2 — can "11" tile the remaini
       {
         color: 'green',
         description:
-          'Tries to fill the remaining string with exact copies of the captured group. If it can, the string length is divisible by the group length — the number is composite.',
+          'Tries to fill the remaining string with exact copies of the captured group. If it can, the string length is divisible by the group length, so the number is composite.',
         label: 'Tile the rest with copies',
         pattern: '\\1+',
       },
@@ -1142,7 +1142,7 @@ The capture groups are functioning as CPU registers. This is not a regex. This i
       {
         color: 'cyan',
         description:
-          "Matches one or two x's — both are Fibonacci numbers (F(1)=1, F(2)=2). The base case for the sequence.",
+          "Matches one or two x's. Both are Fibonacci numbers (F(1)=1, F(2)=2). The base case for the sequence.",
         label: 'Base case: 1 or 2',
         pattern: 'xx?',
       },
@@ -1243,7 +1243,7 @@ The simpler (.*)\\1 matches any string repeated twice, which is a different thin
       {
         color: 'yellow',
         description:
-          'The true quine matches ONLY itself — not any repeated string, not a generic self-reference, but specifically its own source text.',
+          'The true quine matches ONLY itself: not any repeated string, not a generic self-reference, but specifically its own source text.',
         label: 'End anchor',
         pattern: '$',
       },
@@ -1332,7 +1332,7 @@ It also handles roughly 40% of valid SQL. No subqueries in FROM. No CTEs. No win
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {
     bodyCount: {
-      content: `GitHub's Atom editor used regex-based syntax highlighting and suffered persistent catastrophic backtracking. Users reported multi-minute hangs on large files where Sublime Text did the same job in two seconds. This exact category of problem — regex matching regex-like structures — was a major driver behind Neovim's adoption of [tree-sitter](https://tree-sitter.github.io/tree-sitter/) as a replacement for regex-based highlighting.`,
+      content: `GitHub's Atom editor used regex-based syntax highlighting and suffered persistent catastrophic backtracking. Users reported multi-minute hangs on large files where Sublime Text did the same job in two seconds. This exact category of problem (regex matching regex-like structures) was a major driver behind Neovim's adoption of [tree-sitter](https://tree-sitter.github.io/tree-sitter/) as a replacement for regex-based highlighting.`,
       emoji: '🪦',
       label: 'Body count',
     },
@@ -1350,7 +1350,7 @@ It's necessarily incomplete. Regex syntax differs across PCRE, ECMAScript, POSIX
     segments: [
       {
         color: 'cyan',
-        description: 'Matches backslash followed by any character — the universal escape mechanism in regex syntax.',
+        description: 'Matches backslash followed by any character: the universal escape mechanism in regex syntax.',
         label: 'Escaped characters',
         pattern: '(?:\\\\.)',
       },
@@ -1433,7 +1433,7 @@ In practice, the engine locks up on inputs as short as 15-20 characters. This is
       },
       {
         color: 'green',
-        description: 'First nesting. Creates O(2^n) backtracking paths — the classic catastrophic pattern.',
+        description: 'First nesting. Creates O(2^n) backtracking paths: the classic catastrophic pattern.',
         label: 'Level 2: O(2^n)',
         pattern: '(a+)+',
       },
@@ -1522,7 +1522,7 @@ Between the catch-all's broad acceptance and the missing prefix enforcement, thi
       {
         color: 'orange',
         description:
-          'Nine or ten digits with optional separators between each. Very permissive — accepts many invalid number formats.',
+          'Nine or ten digits with optional separators between each. Very permissive: it accepts many invalid number formats.',
         label: 'UK digit sequence',
         pattern: '(?:\\d[\\s.-]?){9,10}',
       },
@@ -1536,7 +1536,7 @@ Between the catch-all's broad acceptance and the missing prefix enforcement, thi
       {
         color: 'pink',
         description:
-          'Six to twelve digits — so broad that "123456" matches as a valid German phone number. The catch-all in the specific branches.',
+          'Six to twelve digits, so broad that "123456" matches as a valid German phone number. The catch-all in the specific branches.',
         label: 'German digit sequence',
         pattern: '(?:\\d[\\s.-]?){6,12}',
       },

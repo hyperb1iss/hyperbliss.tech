@@ -9,7 +9,7 @@ export default async function Blog() {
 }
 
 export const metadata = generatePageMetadata(
-  'Blog',
-  'Articles by Stefanie Jane on software engineering, open source, and creative technology.',
+  'Writing',
+  'Field notes on developer tools, terminal interfaces, creative coding, and building with AI.',
   '/blog/',
 )

@@ -1,128 +1,92 @@
-// Standard-ish Unix commands, themed to the hyperbliss stack. Registry commands
-// win over the shell, so these give `ps`, `dmesg`, `uptime`, and friends real
-// (if playful) output instead of a "command not found". Self-registers on import.
+// The Unix staples a visitor types out of habit, answered with real numbers
+// from this page and this browser instead of "command not found" (registry
+// commands win over the shell). Nothing here is invented: dmesg is the page's
+// own load timeline, free is the tab's heap, df is the content tree.
+// Self-registers on import.
 
 import { styled } from '../../../../styled-system/jsx'
 import { registry } from '../registry'
 import { text } from '../render'
-import { Block, Muted, Ok } from './ui'
+import StatusBoard from '../StatusBoard'
+import { Accent, Muted } from './ui'
 
 const Pre = styled.pre`
   margin: 0;
+  /* Opt out of the global boxed code block: this is plain console output. */
+  font-size: inherit;
+  line-height: inherit;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
   font-family: var(--font-mono);
   white-space: pre;
   overflow-x: auto;
-  color: var(--text-primary);
+  color: var(--term-ink);
   padding: var(--space-1) 0;
+
+  /* On a phone a long line wraps instead of hiding past the edge. */
+  @media (max-width: 640px) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 `
 
 const pad2 = (n: number) => n.toString().padStart(2, '0')
-const clock = (d: Date) => `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`
+/** The day the content was built, in the visitor's own timezone like `date`. */
+const builtOn = (iso: string) => {
+  const at = new Date(iso)
+  return Number.isNaN(at.getTime())
+    ? iso.slice(0, 10)
+    : `${at.getFullYear()}-${pad2(at.getMonth() + 1)}-${pad2(at.getDate())}`
+}
+const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`
 
-// ── uptime ──────────────────────────────────────────────────────────────────
+/** How long this page has been open, as uptime prints it. */
+function sessionAge(): string {
+  const mins = Math.floor((typeof performance === 'undefined' ? 0 : performance.now()) / 60000)
+  if (mins < 1) return 'less than a minute'
+  if (mins < 60) return `${mins} min`
+  return `${Math.floor(mins / 60)}:${pad2(mins % 60)}`
+}
 
 registry.register({
   group: 'fun',
   name: 'uptime',
-  run: () => text(` ${clock(new Date())} up 42 days,  13:37,  1 user,  load average: 0.42, 0.37, 0.31`, 'system'),
-  summary: 'how long the dream has been running',
+  run: (_args, ctx) => {
+    const now = new Date()
+    const b = ctx.broadcast
+    return text(
+      ` ${pad2(now.getHours())}:${pad2(now.getMinutes())} up ${sessionAge()},  1 guest,  ${count(b.projectCount, 'project')}, ${count(b.postCount, 'essay')}, ${count(b.labCount, 'experiment')}`,
+    )
+  },
+  summary: 'how long you have been here',
 })
-
-// ── ps / top ────────────────────────────────────────────────────────────────
-
-const PROCS: Array<[string, string, string, string]> = [
-  ['1', '?', '00:00:01', '/sbin/init'],
-  ['42', 'tty1', '13:37:00', 'cyberscape --particles=5000'],
-  ['108', 'tty1', '00:04:20', 'silkcircuit --theme=neon'],
-  ['256', 'tty1', '02:11:09', 'sibyl --recall --watch'],
-  ['420', 'tty1', '00:09:18', 'chromacat < /dev/dreams'],
-  ['512', 'tty1', '00:00:42', 'git-iris commit --magic'],
-  ['1024', 'tty1', '07:30:00', 'ghostty --gpu'],
-  ['2048', 'pts/0', '00:00:00', 'ps aux'],
-]
-
-const psTable = () => {
-  const header = `${'PID'.padEnd(6)} ${'TTY'.padEnd(8)} ${'TIME'.padEnd(9)} CMD`
-  const rows = PROCS.map(([pid, tty, t, cmd]) => `${pid.padEnd(6)} ${tty.padEnd(8)} ${t.padEnd(9)} ${cmd}`)
-  return <Pre>{[header, ...rows].join('\n')}</Pre>
-}
 
 registry.register({
   aliases: ['top', 'htop'],
   group: 'fun',
   name: 'ps',
-  run: () => psTable(),
-  summary: 'what is running (everything, always)',
+  run: (_args, ctx) => {
+    // The real projects, listed as if each were running here.
+    const projects = ctx.manifest.entries.filter((e) => e.kind === 'project').slice(0, 8)
+    const rows = [
+      ['1', '?', 'init'],
+      ...projects.map((p, i) => [String(42 + i * 61), 'tty1', p.path.replace(/^.*\//, '').replace(/\.md$/, '')]),
+      [String(42 + projects.length * 61), 'pts/0', 'ps'],
+    ]
+    const header = `${'PID'.padEnd(6)} ${'TTY'.padEnd(7)} CMD`
+    return (
+      <Pre>{[header, ...rows.map(([pid, tty, cmd]) => `${pid.padEnd(6)} ${tty.padEnd(7)} ${cmd}`)].join('\n')}</Pre>
+    )
+  },
+  summary: 'the projects, as running processes',
 })
-
-// ── dmesg ───────────────────────────────────────────────────────────────────
-
-const DMESG = [
-  '[    0.000000] hyperbliss kernel 6.6.6-silk booting',
-  '[    0.042000] silkcircuit: neon subsystem online',
-  '[    0.137000] cyberscape: particle field initialized (5000 nodes)',
-  '[    0.420000] gpu: webgl context acquired, shaders compiled',
-  '[    1.024000] fs: virtual content tree mounted at /',
-  '[    1.337000] shell: just-bash ready',
-  '[    2.718000] axolotl0: regenerating limbs (this is fine)',
-  '[    3.141000] net: vibes synchronized',
-  '[    3.330000] terminal: ready ✦',
-]
-
-registry.register({
-  group: 'fun',
-  name: 'dmesg',
-  run: () => <Pre>{DMESG.join('\n')}</Pre>,
-  summary: 'kernel ring buffer (mostly good news)',
-})
-
-// ── free ────────────────────────────────────────────────────────────────────
-
-registry.register({
-  group: 'fun',
-  name: 'free',
-  run: () => (
-    <Pre>
-      {[
-        `${''.padEnd(7)}${'total'.padStart(8)}${'used'.padStart(8)}${'free'.padStart(8)}`,
-        `${'Mem:'.padEnd(7)}${'16384'.padStart(8)}${'13370'.padStart(8)}${'3014'.padStart(8)}`,
-        `${'Swap:'.padEnd(7)}${'2048'.padStart(8)}${'42'.padStart(8)}${'2006'.padStart(8)}`,
-      ].join('\n')}
-    </Pre>
-  ),
-  summary: 'memory, mostly spent on ideas',
-})
-
-// ── df ──────────────────────────────────────────────────────────────────────
-
-registry.register({
-  group: 'fun',
-  name: 'df',
-  run: () => (
-    <Pre>
-      {[
-        `${'Filesystem'.padEnd(14)}${'Size'.padStart(6)}${'Used'.padStart(6)}${'Avail'.padStart(7)}  Mounted on`,
-        `${'/dev/silk0'.padEnd(14)}${'24P'.padStart(6)}${'18P'.padStart(6)}${'6P'.padStart(7)}  /`,
-        `${'content'.padEnd(14)}${'∞'.padStart(6)}${'—'.padStart(6)}${'∞'.padStart(7)}  /content`,
-      ].join('\n')}
-    </Pre>
-  ),
-  summary: 'disk usage (plenty of room to dream)',
-})
-
-// ── whoami / date / uname ─────────────────────────────────────────────────────
 
 registry.register({
   group: 'fun',
   name: 'whoami',
-  run: () => (
-    <Block>
-      <div>
-        <Ok>guest</Ok>
-      </div>
-      <Muted>be anyone here — but if you want the real one, try `about`</Muted>
-    </Block>
-  ),
+  run: () => text('guest'),
   summary: 'who you are right now',
 })
 
@@ -130,12 +94,185 @@ registry.register({
   group: 'fun',
   name: 'date',
   run: () => text(new Date().toString()),
-  summary: 'the current moment',
+  summary: 'the current date and time',
 })
+
+// ── dmesg: this page's real load timeline ────────────────────────────────────
+
+const stamp = (ms: number) => `[${(Math.max(0, ms) / 1000).toFixed(6).padStart(11)}]`
+
+/** The browser engine and version, read from the user agent. */
+function engine(): string {
+  const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent
+  const hit =
+    ua.match(/(Firefox)\/([\d.]+)/) ??
+    ua.match(/(Edg)\/([\d.]+)/) ??
+    ua.match(/(Chrome)\/([\d.]+)/) ??
+    ua.match(/Version\/([\d.]+).*(Safari)/)
+  if (!hit) return 'browser'
+  const [name, version] = hit[2] === 'Safari' ? [hit[2], hit[1]] : [hit[1], hit[2]]
+  return `${name === 'Edg' ? 'Edge' : name}/${version.split('.')[0]}`
+}
+
+const platform = () => (typeof navigator === 'undefined' ? 'web' : navigator.platform || 'web')
+
+registry.register({
+  group: 'fun',
+  name: 'dmesg',
+  run: (_args, ctx) => {
+    const nav = performance.getEntriesByType?.('navigation')[0] as PerformanceNavigationTiming | undefined
+    const files = ctx.manifest.entries
+    const bytes = files.reduce((sum, e) => sum + e.bytes, 0)
+    const loaded = nav?.loadEventEnd || nav?.domContentLoadedEventEnd || 0
+    const lines: Array<[number, string]> = [[0, `hyperbliss console booting on ${engine()} (${platform()})`]]
+    if (nav) {
+      lines.push([nav.responseStart, 'net: first byte'])
+      lines.push([nav.domInteractive, 'dom: interactive'])
+      if (nav.loadEventEnd) {
+        const kb = nav.transferSize ? `, ${Math.round(nav.transferSize / 1024)} kB document` : ''
+        lines.push([nav.loadEventEnd, `page: load complete${kb}`])
+      }
+    }
+    lines.push([loaded, `display: ${window.innerWidth}x${window.innerHeight} @${window.devicePixelRatio}x`])
+    if (navigator.hardwareConcurrency) lines.push([loaded, `cpu: ${navigator.hardwareConcurrency} logical cores`])
+    if (document.fonts) lines.push([loaded, `fonts: ${document.fonts.size} faces`])
+    lines.push([loaded, `vfs: mounted ${files.length} files (${Math.round(bytes / 1024)} kB) at /`])
+    lines.push([loaded, `theme: ${document.documentElement.getAttribute('data-terminal-theme') ?? 'silk'}`])
+    lines.push([performance.now(), 'console: you ran dmesg'])
+    return <Pre>{lines.map(([ms, line]) => `${stamp(ms)} ${line}`).join('\n')}</Pre>
+  },
+  summary: "this page's real boot log",
+})
+
+// ── free: the tab's JavaScript heap ─────────────────────────────────────────
+
+interface HeapInfo {
+  jsHeapSizeLimit: number
+  usedJSHeapSize: number
+}
+
+registry.register({
+  group: 'fun',
+  name: 'free',
+  run: () => {
+    const heap = (performance as Performance & { memory?: HeapInfo }).memory
+    const device = (navigator as Navigator & { deviceMemory?: number }).deviceMemory
+    if (!heap) {
+      return text(
+        device
+          ? `this browser keeps its heap private; the device reports about ${device} GB of memory`
+          : 'this browser keeps its memory numbers private',
+      )
+    }
+    const mb = (n: number) => String(Math.round(n / 1048576)).padStart(8)
+    const rows = [
+      `${''.padEnd(7)}${'total'.padStart(8)}${'used'.padStart(8)}${'free'.padStart(8)}`,
+      `${'Heap:'.padEnd(7)}${mb(heap.jsHeapSizeLimit)}${mb(heap.usedJSHeapSize)}${mb(heap.jsHeapSizeLimit - heap.usedJSHeapSize)}`,
+    ]
+    if (device) rows.push(`${'Device:'.padEnd(7)}${String(device * 1024).padStart(8)}`)
+    return <Pre>{`${rows.join('\n')}\n(MB, this tab's JavaScript heap)`}</Pre>
+  },
+  summary: "this tab's memory",
+})
+
+// ── df: the content tree ────────────────────────────────────────────────────
+
+registry.register({
+  group: 'fun',
+  name: 'df',
+  run: (_args, ctx) => {
+    const mounts = new Map<string, { bytes: number; files: number }>()
+    for (const e of ctx.manifest.entries) {
+      const dir = e.path.split('/').length > 2 ? `/${e.path.split('/')[1]}` : '/'
+      const m = mounts.get(dir) ?? { bytes: 0, files: 0 }
+      m.bytes += e.bytes
+      m.files += 1
+      mounts.set(dir, m)
+    }
+    const kb = (n: number) => `${(n / 1024).toFixed(1)}K`.padStart(9)
+    const rows = [...mounts.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([dir, m]) => `${'content'.padEnd(11)}${kb(m.bytes)}${String(m.files).padStart(7)}  ${dir}`)
+    return (
+      <Pre>
+        {[`${'Filesystem'.padEnd(11)}${'Size'.padStart(9)}${'Files'.padStart(7)}  Mounted on`, ...rows].join('\n')}
+      </Pre>
+    )
+  },
+  summary: 'how big the content tree is',
+})
+
+// ── uname ───────────────────────────────────────────────────────────────────
 
 registry.register({
   group: 'fun',
   name: 'uname',
-  run: () => text('Hyperbliss SilkCircuit 6.6.6-neon x86_64 GNU/Linux'),
-  summary: 'system identity',
+  run: (_args, ctx) => text(`Hyperbliss console ${builtOn(ctx.broadcast.generatedAt)} ${engine()} ${platform()}`),
+  summary: 'what this console is running on',
+})
+
+// ── cal: this month, today marked ───────────────────────────────────────────
+
+registry.register({
+  group: 'fun',
+  name: 'cal',
+  run: () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const title = now.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+    const first = new Date(year, month, 1).getDay()
+    const days = new Date(year, month + 1, 0).getDate()
+    const cells: Array<number | null> = [...Array(first).fill(null), ...Array.from({ length: days }, (_, i) => i + 1)]
+    const weeks: Array<Array<number | null>> = []
+    for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
+    return (
+      <Pre>
+        {`${title.padStart(Math.floor((20 + title.length) / 2))}\n`}
+        <Muted>{'Su Mo Tu We Th Fr Sa\n'}</Muted>
+        {weeks.map((week) => (
+          <span key={`week-${week.find((d) => d !== null)}`}>
+            {week.map((day, i) => {
+              const cell = day === null ? '  ' : String(day).padStart(2)
+              const gap = i < week.length - 1 ? ' ' : ''
+              return day === now.getDate() ? (
+                <span key="today">
+                  <Accent>{cell}</Accent>
+                  {gap}
+                </span>
+              ) : (
+                cell + gap
+              )
+            })}
+            {'\n'}
+          </span>
+        ))}
+      </Pre>
+    )
+  },
+  summary: 'this month, with today lit',
+})
+
+// ── reboot / exit ───────────────────────────────────────────────────────────
+
+registry.register({
+  aliases: ['restart'],
+  group: 'fun',
+  name: 'reboot',
+  run: (_args, ctx) => {
+    ctx.clear()
+    return <StatusBoard />
+  },
+  summary: 'clear the screen and light the sign again',
+})
+
+registry.register({
+  aliases: ['quit', 'logout'],
+  group: 'fun',
+  name: 'exit',
+  run: () => {
+    // The console closes on Escape; exit presses it.
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+  },
+  summary: 'close the console',
 })

@@ -1,7 +1,8 @@
-// Easter eggs: ssh, sudo. Self-registers on import. `contact` teases `ssh`, so
-// these ship with P1; the rest of T4.3 (a game) lands in P4.
+// Easter eggs: ssh, sudo, matrix, glow, hello. Self-registers on import.
 
+import { TAGLINE } from '@/lib/company'
 import { styled } from '../../../../styled-system/jsx'
+import LedSign from '../LedSign'
 import MatrixRain from '../MatrixRain'
 import { registry } from '../registry'
 import { text } from '../render'
@@ -11,18 +12,17 @@ import { Accent, Block, Muted, Ok } from './ui'
 const Banner = styled.pre`
   margin: 0;
   font-family: var(--font-mono);
-  color: var(--silk-circuit-cyan);
+  color: var(--term-accent);
   line-height: 1.2;
-  text-shadow: 0 0 10px rgba(0, 255, 240, 0.4);
 `
 
-// An ssh-style login banner. Pure ASCII only: Space Mono is a display
-// monospace that won't tile box-drawing or star glyphs to one cell, so the old
+// An ssh-style login banner. Pure ASCII only: the console's mono face
+// won't tile box-drawing or star glyphs to one cell, so the old
 // ┌─┐ box drifted apart. The rule width is derived from the title so it never
 // needs hand-counting when the text changes.
 function welcomeBanner(): string {
   const title = 'welcome to hyperbliss.tech'
-  const body = 'you are already inside <3'
+  const body = 'you are already here'
   const width = Math.max(40, title.length + 8)
   const head = `-- ${title} `
   const top = head + '-'.repeat(width - head.length)
@@ -47,9 +47,7 @@ registry.register({
         <div>
           <Muted>type </Muted>
           <Accent>help</Accent>
-          <Muted> to look around, or </Muted>
-          <Accent>neofetch</Accent>
-          <Muted> for the tour.</Muted>
+          <Muted> to look around.</Muted>
         </div>
       </Block>
     )
@@ -65,7 +63,7 @@ registry.register({
   run: (args) => {
     const rest = args.join(' ')
     if (/make me a sandwich/i.test(rest)) return text('okay. 🥪', 'ok')
-    return text(`sudo: a password is required — and you're a guest here 😏 (nice try)`, 'stderr')
+    return text('sudo: a password is required, and you are a guest here', 'stderr')
   },
   summary: 'superuser do (you wish)',
 })
@@ -106,4 +104,23 @@ registry.register({
     )
   },
   summary: 'copy a link that replays this session',
+})
+
+// The tagline on the wall. Reads the same source as the hero, so it follows
+// whatever the tagline becomes.
+registry.register({
+  group: 'fun',
+  hidden: true,
+  name: 'glow',
+  run: () => <LedSign text={TAGLINE} />,
+  summary: 'light the tagline',
+})
+
+registry.register({
+  aliases: ['hi', 'hey'],
+  group: 'fun',
+  hidden: true,
+  name: 'hello',
+  run: () => <LedSign text="HELLO <3" />,
+  summary: 'say hi back',
 })

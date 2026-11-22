@@ -1,24 +1,16 @@
-// Rich content commands: projects, blog, lab, now. Self-registers on import.
+// Rich content commands: projects, blog, lab. Self-registers on import.
 // Reads everything from ctx (manifest + broadcast) so it's testable and stays
 // fresh as content changes.
 
 import type { ContentKind, Manifest, ManifestEntry } from '@/lib/terminal/types'
 import { registry } from '../registry'
-import { OutputText, text } from '../render'
+import { text } from '../render'
 import type { TerminalContext } from '../types'
-import { Accent, Block, Heading, ListRow, Muted, Ok, Pink, Tag, TagRow, TermLink } from './ui'
+import { splitTitle } from './entries'
+import { Accent, Block, Heading, ListRow, Muted, Ok, Pink, TermLink } from './ui'
 
 const byKind = (manifest: Manifest, kind: ContentKind): ManifestEntry[] =>
   manifest.entries.filter((e) => e.kind === kind)
-
-const tags = (entry: ManifestEntry, max = 4) =>
-  entry.tags.length > 0 ? (
-    <TagRow>
-      {entry.tags.slice(0, max).map((t) => (
-        <Tag key={t}>{t}</Tag>
-      ))}
-    </TagRow>
-  ) : null
 
 function ProjectsView({ ctx }: { ctx: TerminalContext }) {
   const projects = byKind(ctx.manifest, 'project')
@@ -29,10 +21,10 @@ function ProjectsView({ ctx }: { ctx: TerminalContext }) {
         <ListRow key={p.path}>
           {p.emoji && <span>{p.emoji}</span>}
           <TermLink href={p.href ?? '/projects/'} navigate={ctx.navigate}>
-            {p.title}
+            {splitTitle(p.title)[0]}
           </TermLink>
           {p.latestVersion && <Ok>v{p.latestVersion}</Ok>}
-          {tags(p, 3)}
+          {splitTitle(p.title)[1] && <Muted>{splitTitle(p.title)[1]}</Muted>}
         </ListRow>
       ))}
       <div>
@@ -40,8 +32,8 @@ function ProjectsView({ ctx }: { ctx: TerminalContext }) {
         <TermLink href="/projects/" navigate={ctx.navigate}>
           browse all projects
         </TermLink>
-        <Muted> · tip: </Muted>
-        <Accent>ls projects | grep rust</Accent>
+        <Muted> · type a name for its card: </Muted>
+        <Accent>hypercolor</Accent>
       </div>
     </Block>
   )
@@ -82,10 +74,12 @@ function BlogView({ ctx }: { ctx: TerminalContext }) {
 
 function LabView({ ctx }: { ctx: TerminalContext }) {
   const experiments = byKind(ctx.manifest, 'lab')
-  if (experiments.length === 0) return text('lab: nothing here yet — check back soon')
+  if (experiments.length === 0) return text('lab: nothing here yet, check back soon')
   return (
     <Block>
-      <Heading>lab · {experiments.length} experiments</Heading>
+      <Heading>
+        lab · {experiments.length} {experiments.length === 1 ? 'experiment' : 'experiments'}
+      </Heading>
       {experiments.map((exp) => (
         <div key={exp.path}>
           <ListRow>
@@ -115,62 +109,12 @@ function LabView({ ctx }: { ctx: TerminalContext }) {
   )
 }
 
-/** Light prose rendering: headings and bullets, everything as safe text. */
-function Prose({ body }: { body: string }) {
-  const lines = body.split('\n')
-  return (
-    <>
-      {lines.map((line, i) => {
-        const key = `${i}-${line.slice(0, 8)}`
-        if (line.startsWith('## ')) {
-          return (
-            <div key={key}>
-              <Accent>{line.slice(3)}</Accent>
-            </div>
-          )
-        }
-        if (line.startsWith('- ')) {
-          return (
-            <div key={key}>
-              <Muted> • </Muted>
-              <OutputText>{line.slice(2)}</OutputText>
-            </div>
-          )
-        }
-        return (
-          <div key={key}>
-            <OutputText>{line}</OutputText>
-          </div>
-        )
-      })}
-    </>
-  )
-}
-
-function NowView({ ctx }: { ctx: TerminalContext }) {
-  const { broadcast } = ctx
-  return (
-    <Block>
-      <Heading>now</Heading>
-      <div>
-        <Accent>{broadcast.focus}</Accent>
-      </div>
-      {broadcast.nowBody && <Prose body={broadcast.nowBody} />}
-      {broadcast.nowUpdated && (
-        <div>
-          <Muted>updated {broadcast.nowUpdated}</Muted>
-        </div>
-      )}
-    </Block>
-  )
-}
-
 registry.register({
   aliases: ['repos'],
   group: 'content',
   name: 'projects',
   run: (_args, ctx) => <ProjectsView ctx={ctx} />,
-  summary: 'open-source projects I maintain',
+  summary: 'the products and open source we make',
 })
 
 registry.register({
@@ -178,7 +122,7 @@ registry.register({
   group: 'content',
   name: 'blog',
   run: (_args, ctx) => <BlogView ctx={ctx} />,
-  summary: 'things I have written',
+  summary: 'the essays',
 })
 
 registry.register({
@@ -186,11 +130,4 @@ registry.register({
   name: 'lab',
   run: (_args, ctx) => <LabView ctx={ctx} />,
   summary: 'interactive experiments',
-})
-
-registry.register({
-  group: 'content',
-  name: 'now',
-  run: (_args, ctx) => <NowView ctx={ctx} />,
-  summary: 'what I am working on right now',
 })

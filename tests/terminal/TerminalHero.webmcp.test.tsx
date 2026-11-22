@@ -59,7 +59,7 @@ describe('TerminalHero WebMCP registration', () => {
     installModelContext(modelContext)
 
     const rendered = render(<TerminalHero broadcast={testBroadcast} manifest={testManifest} />)
-    await waitFor(() => expect(modelContext.registered.size).toBe(7))
+    await waitFor(() => expect(modelContext.registered.size).toBe(6))
 
     rendered.unmount()
     await waitFor(() => expect(modelContext.registered.size).toBe(0))

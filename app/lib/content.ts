@@ -13,6 +13,7 @@ import {
   resolveMarkdownFile,
   resolveMarkdownFileOrNull,
 } from './contentCollections'
+import { extractHeadings } from './reading'
 
 export { readRawContentFile } from './contentCollections'
 
@@ -204,6 +205,15 @@ export interface ProjectSummary {
   coverImage: string | null
   /** Pinned position in the flagship trio (1 is first); null when unpinned. */
   featured?: number | null
+  /** One sentence that sells the product, shown big on its chapter; falls back to the title's tagline. */
+  pitch?: string | null
+  /** The product's own site, when it has one; the primary call to action. */
+  website?: string | null
+  /** A 16:10 product screenshot under /images, shown on flagship panels and the product page. */
+  screenshot?: string | null
+  screenshotAlt?: string | null
+  /** Whether the body has a heading with the `install` id the product page's call to action links to. */
+  hasInstall?: boolean
   latestVersion?: string | null
   releaseDate?: string | null
   releaseUrl?: string | null
@@ -222,7 +232,15 @@ export interface ProjectDetail {
   status: string | null
   image: string | null
   coverImage: string | null
+  website: string | null
+  screenshot: string | null
+  screenshotAlt: string | null
   body: string | null
+}
+
+/** True when the body renders a heading with the `install` id, the anchor product calls to action link to. */
+export function hasInstallSection(markdown: string): boolean {
+  return extractHeadings(markdown).some((heading) => heading.id === 'install')
 }
 
 export async function getAllProjectSlugs(): Promise<string[]> {
@@ -234,7 +252,7 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
   const projects: ProjectSummary[] = []
 
   for (const slug of slugs) {
-    const { data } = await readMarkdown(`projects/${slug}.md`)
+    const { data, content } = await readMarkdown(`projects/${slug}.md`)
     projects.push({
       category: (data.category as string) ?? null,
       coverImage: (data.coverImage as string) ?? null,
@@ -244,11 +262,16 @@ export async function getAllProjects(): Promise<ProjectSummary[]> {
       emoji: (data.emoji as string) ?? null,
       featured: typeof data.featured === 'number' ? data.featured : null,
       github: (data.github as string) ?? null,
+      hasInstall: hasInstallSection(content),
       image: (data.image as string) ?? null,
+      pitch: (data.pitch as string) ?? null,
+      screenshot: (data.screenshot as string) ?? null,
+      screenshotAlt: (data.screenshotAlt as string) ?? null,
       slug,
       status: (data.status as string) ?? null,
       tags: (data.tags as string[]) ?? null,
       title: data.title as string,
+      website: (data.website as string) ?? null,
     })
   }
 
@@ -278,10 +301,13 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
     emoji: (data.emoji as string) ?? null,
     github: (data.github as string) ?? null,
     image: (data.image as string) ?? null,
+    screenshot: (data.screenshot as string) ?? null,
+    screenshotAlt: (data.screenshotAlt as string) ?? null,
     slug,
     status: (data.status as string) ?? null,
     tags: (data.tags as string[]) ?? null,
     title: data.title as string,
+    website: (data.website as string) ?? null,
   }
 }
 
@@ -310,11 +336,30 @@ export interface AboutSection {
   contactReasons: ContactReason[] | null
 }
 
-/** The front page's byline block: who is behind the label, in two lines. */
+/** The front page's opening: the hero headline, one line per entry, and the intro under it. */
 export interface FrontSection {
   bio: string | null
+  /** Hero headline lines; one of them is set in the accent colors. */
+  headline: string[] | null
+  /** Which headline line takes the accent, counted from 0. Defaults to the last. */
+  headlineAccent: number | null
   /** The front page's opening sentence. `{hyperbliss}` and `{name}` are rendered as the brand mark and the About link. */
   tagline: string | null
+}
+
+export interface Principle {
+  title: string
+  description: string
+}
+
+/** The company half of the About page: who publishes the software, how it works, how to reach it. */
+export interface CompanySection {
+  lede: string | null
+  principles: Principle[] | null
+  contactIntro: string | null
+  contactEmail: string | null
+  legalName: string | null
+  location: string | null
 }
 
 export interface PageData {
@@ -323,6 +368,7 @@ export interface PageData {
   description: string
   front: FrontSection | null
   about: AboutSection | null
+  company: CompanySection | null
 }
 
 /** Raw JSON shape — matches the files in content/pages/ */
@@ -345,7 +391,17 @@ interface RawPageJson {
   }
   front?: {
     bio?: string
+    headline?: string[]
+    headlineAccent?: number
     tagline?: string
+  }
+  company?: {
+    lede?: string
+    principles?: Array<{ title?: string; description?: string }>
+    contactIntro?: string
+    contactEmail?: string
+    legalName?: string
+    location?: string
   }
 }
 
@@ -375,10 +431,24 @@ export async function getPage(slug: string): Promise<PageData> {
           profileImageAlt: raw.about.profileImageAlt ?? null,
         }
       : null,
+    company: raw.company
+      ? {
+          contactEmail: raw.company.contactEmail ?? null,
+          contactIntro: raw.company.contactIntro ?? null,
+          lede: raw.company.lede ?? null,
+          legalName: raw.company.legalName ?? null,
+          location: raw.company.location ?? null,
+          principles: raw.company.principles
+            ? raw.company.principles.map((p) => ({ description: p.description ?? '', title: p.title ?? '' }))
+            : null,
+        }
+      : null,
     description: raw.description,
     front: raw.front
       ? {
           bio: raw.front.bio ?? null,
+          headline: Array.isArray(raw.front.headline) ? raw.front.headline : null,
+          headlineAccent: typeof raw.front.headlineAccent === 'number' ? raw.front.headlineAccent : null,
           tagline: raw.front.tagline ?? null,
         }
       : null,
@@ -404,144 +474,5 @@ export async function getResume(): Promise<ResumeData> {
     body: content || null,
     description: (data.description as string) ?? null,
     title: (data.title as string) ?? 'Resume',
-  }
-}
-
-// ============================================================
-// Now (current focus — drives the terminal broadcast)
-// ============================================================
-
-export interface NowData {
-  title: string
-  emoji: string | null
-  focus: string | null
-  updated: string | null
-  location: string | null
-  body: string | null
-}
-
-export async function getNow(): Promise<NowData> {
-  const { data, content } = await readMarkdown('now.md')
-
-  return {
-    body: content || null,
-    emoji: (data.emoji as string) ?? null,
-    focus: (data.focus as string) ?? null,
-    location: (data.location as string) ?? null,
-    title: (data.title as string) ?? 'Now',
-    updated: (data.updated as string) ?? null,
-  }
-}
-
-// ============================================================
-// Site Config
-// ============================================================
-
-export interface SiteConfig {
-  seo: {
-    siteTitle: string
-    siteDescription: string
-    siteName: string
-    authorName: string
-    twitterHandle: string | null
-    keywords: string[] | null
-    ogImage: string | null
-  }
-  navigation: Array<{ label: string; href: string }>
-  socialLinks: Array<{ label: string; href: string; icon: string | null }>
-  techTags: string[] | null
-  notFound: {
-    title: string | null
-    subtitle: string | null
-    description: string | null
-    messages: string[] | null
-    primaryButtonText: string | null
-    primaryButtonLink: string | null
-    secondaryButtonText: string | null
-    secondaryButtonLink: string | null
-  } | null
-  footer: {
-    brandText: string | null
-    copyrightName: string | null
-    copyrightYear: number | null
-    madeWithText: string | null
-  } | null
-}
-
-/** Raw JSON shape — matches content/config/site.json */
-interface RawSiteConfigJson {
-  seo?: {
-    siteTitle?: string
-    siteDescription?: string
-    siteName?: string
-    authorName?: string
-    twitterHandle?: string
-    keywords?: string[]
-    ogImage?: string
-  }
-  navigation?: Array<{ label?: string; href?: string }>
-  socialLinks?: Array<{ label?: string; href?: string; icon?: string }>
-  techTags?: string[]
-  notFound?: {
-    title?: string
-    subtitle?: string
-    description?: string
-    messages?: string[]
-    primaryButtonText?: string
-    primaryButtonLink?: string
-    secondaryButtonText?: string
-    secondaryButtonLink?: string
-  }
-  footer?: {
-    brandText?: string
-    copyrightName?: string
-    copyrightYear?: number
-    madeWithText?: string
-  }
-}
-
-export async function getSiteConfig(): Promise<SiteConfig> {
-  const raw = await readJsonContent<RawSiteConfigJson>('config/site.json')
-
-  return {
-    footer: raw.footer
-      ? {
-          brandText: raw.footer.brandText ?? null,
-          copyrightName: raw.footer.copyrightName ?? null,
-          copyrightYear: raw.footer.copyrightYear ?? null,
-          madeWithText: raw.footer.madeWithText ?? null,
-        }
-      : null,
-    navigation: (raw.navigation ?? []).map((n) => ({
-      href: n.href ?? '',
-      label: n.label ?? '',
-    })),
-    notFound: raw.notFound
-      ? {
-          description: raw.notFound.description ?? null,
-          messages: raw.notFound.messages ?? null,
-          primaryButtonLink: raw.notFound.primaryButtonLink ?? null,
-          primaryButtonText: raw.notFound.primaryButtonText ?? null,
-          secondaryButtonLink: raw.notFound.secondaryButtonLink ?? null,
-          secondaryButtonText: raw.notFound.secondaryButtonText ?? null,
-          subtitle: raw.notFound.subtitle ?? null,
-          title: raw.notFound.title ?? null,
-        }
-      : null,
-    seo: {
-      authorName: raw.seo?.authorName ?? '',
-      keywords: raw.seo?.keywords ?? null,
-      ogImage: raw.seo?.ogImage ?? null,
-      siteDescription: raw.seo?.siteDescription ?? '',
-      siteName: raw.seo?.siteName ?? '',
-      siteTitle: raw.seo?.siteTitle ?? '',
-      twitterHandle: raw.seo?.twitterHandle ?? null,
-    },
-    socialLinks: (raw.socialLinks ?? []).map((s) => ({
-      href: s.href ?? '',
-      icon: s.icon ?? null,
-      label: s.label ?? '',
-    })),
-    techTags: raw.techTags ?? null,
   }
 }

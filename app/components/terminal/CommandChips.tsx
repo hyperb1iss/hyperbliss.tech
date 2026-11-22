@@ -1,6 +1,6 @@
 'use client'
 
-// Clickable command chips below the terminal. Real <button>s — the primary
+// Quick command keys inside the console frame, under the prompt. Real <button>s — the primary
 // mobile navigation, so visitors never need the soft keyboard (§5.7).
 
 import { styled } from '../../../styled-system/jsx'
@@ -9,44 +9,45 @@ import { chipCategory } from './analytics'
 const Row = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
-  justify-content: center;
-  padding: var(--space-3) var(--space-2) 0;
+  gap: 0.8rem;
+  padding: 1.2rem 2rem 1.4rem;
+
+  @media (max-width: 640px) {
+    padding: 1.2rem 1.4rem 1.4rem;
+  }
 `
 
 const Chip = styled.button`
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  background: rgba(20, 20, 35, 0.7);
-  border: 1px solid rgba(162, 89, 255, 0.35);
-  border-radius: var(--radius-full);
-  padding: var(--space-1-5) var(--space-4);
+  font-size: 1.3rem;
+  color: var(--term-soft);
+  background: rgba(244, 240, 255, 0.05);
+  border: 1px solid rgba(244, 240, 255, 0.16);
+  border-radius: 0.8rem;
+  padding: 0.6rem 1.2rem;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-silk);
   min-height: 36px;
-
-  &::before {
-    content: '$ ';
-    color: var(--silk-circuit-cyan);
-    opacity: 0.7;
-  }
+  transition:
+    color var(--duration-fast) var(--ease-silk),
+    border-color var(--duration-fast) var(--ease-silk),
+    background var(--duration-fast) var(--ease-silk),
+    transform var(--duration-fast) var(--ease-silk);
 
   &:hover,
   &:focus-visible {
-    color: var(--text-primary);
-    border-color: var(--silk-circuit-cyan);
-    box-shadow: 0 0 14px rgba(0, 255, 240, 0.25);
+    color: #ffffff;
+    border-color: var(--term-accent);
+    background: rgba(128, 255, 234, 0.1);
     outline: none;
     transform: translateY(-1px);
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.97);
   }
 `
 
-const DEFAULT_CHIPS = ['help', 'neofetch', 'projects', 'blog', 'now', 'contact', 'ssh hyperbliss.tech']
+const DEFAULT_CHIPS = ['help', 'projects', 'blog', 'lab', 'about', 'contact', 'led hello <3', 'theme matrix']
 
 export interface CommandChipsProps {
   commands?: string[]
