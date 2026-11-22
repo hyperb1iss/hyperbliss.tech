@@ -385,6 +385,8 @@
 }
 
 .markdown-prose__link {
+  /* A bare URL in a footnote wraps instead of running off a phone. */
+  overflow-wrap: anywhere;
   color: #d946ef;
   text-decoration: none;
   position: relative;
@@ -609,6 +611,7 @@
 }
 
 .markdown-prose__inline-code {
+  overflow-wrap: anywhere;
   font-size: clamp(1.4rem, 1vw, 1.8rem);
   background: linear-gradient(135deg, rgba(217, 70, 239, 0.2), rgba(255, 117, 216, 0.1), rgba(30, 25, 45, 0.8));
   color: #ff75d8;

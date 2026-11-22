@@ -18,7 +18,11 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { also: ['/resume'], href: '/about', label: 'About' },
 ]
 
-/** Footer columns. Products follow the flagship order set by `featured` in content/projects. */
+/**
+ * Footer columns. Products are typed here, in the flagship order set by
+ * `featured` in content/projects; tests/navigation.test.ts fails when the two
+ * drift, so a new flagship or a renamed slug cannot leave this list behind.
+ */
 export const FOOTER_COLUMNS: ReadonlyArray<{ title: string; links: readonly NavItem[] }> = [
   {
     links: [

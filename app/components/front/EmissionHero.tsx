@@ -272,8 +272,8 @@ interface EmissionHeroProps {
   /** The line set in the accent colors, counted from 0. Defaults to the last. */
   accent?: number
   intro: ReactNode
-  /** Link for the secondary action: the newest essay, when there is one. */
-  essayHref: string | null
+  /** The secondary action: the newest long-form piece, when there is one. */
+  latest: { href: string; label: string } | null
 }
 
 /** Sets a closing full stop, question or exclamation mark off from the word. */
@@ -288,7 +288,7 @@ function splitStop(line: string): ReactNode {
   )
 }
 
-export default function EmissionHero({ headline, accent, intro, essayHref }: EmissionHeroProps) {
+export default function EmissionHero({ headline, accent, intro, latest }: EmissionHeroProps) {
   const accentLine = accent !== undefined && accent >= 0 && accent < headline.length ? accent : headline.length - 1
   const longest = Math.max(...headline.map((line) => line.length))
   return (
@@ -322,7 +322,7 @@ export default function EmissionHero({ headline, accent, intro, essayHref }: Emi
           <Intro>{intro}</Intro>
           <Ctas>
             <Primary href="#products">See the products</Primary>
-            {essayHref && <Secondary href={essayHref}>Read the latest essay</Secondary>}
+            {latest && <Secondary href={latest.href}>{latest.label}</Secondary>}
           </Ctas>
         </Row>
       </Content>

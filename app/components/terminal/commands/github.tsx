@@ -64,7 +64,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
     return (
       <Block>
         <Heading>gh · live activity</Heading>
-        <Muted>quiet right now: nothing public in the last few days</Muted>
+        <Muted>quiet right now: nothing public in the last {state.windowDays} days</Muted>
       </Block>
     )
   }

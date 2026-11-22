@@ -42,6 +42,14 @@ export const KIND_LABEL: Record<FeedKind, string> = {
   release: 'Release',
 }
 
+/** The hero's second button, worded for whatever kind the newest piece is. */
+export const LATEST_VERB: Record<FeedKind, string> = {
+  essay: 'Read the latest essay',
+  lab: 'Open the latest experiment',
+  launch: 'See the latest project',
+  release: 'See the latest release',
+}
+
 export const KIND_VERB: Record<FeedKind, string> = {
   essay: 'Read the essay',
   lab: 'Open the experiment',

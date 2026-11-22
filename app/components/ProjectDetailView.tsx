@@ -8,7 +8,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import type { CSSProperties } from 'react'
+import { type CSSProperties, Fragment } from 'react'
 import type { ProjectSummary } from '@/lib/content'
 import { shortName, tagline } from '@/lib/feed'
 import type { RepoStats } from '@/lib/github'
@@ -90,7 +90,19 @@ export default function ProjectDetailView({
             ))}
         </div>
         <h1 className="project-detail__title">
-          <span className="project-detail__name">{name}</span>
+          <span className="project-detail__name">
+            {/* A dotted name (hyperbliss.tech) may break after its dot on a phone. */}
+            {name.split('.').map((part, index, parts) => (
+              <Fragment key={`${index}-${part}`}>
+                {part}
+                {index < parts.length - 1 && (
+                  <>
+                    .<wbr />
+                  </>
+                )}
+              </Fragment>
+            ))}
+          </span>
           {/* The space keeps the accessible name from reading as "SibylMemory";
               the flex gap draws the visual separation. */}
           {sub && (

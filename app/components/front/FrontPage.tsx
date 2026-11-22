@@ -12,6 +12,7 @@ import { styled } from '../../../styled-system/jsx'
 import ProductChapter from '../projects/ProductChapter'
 import EmissionHero from './EmissionHero'
 import FeedList from './FeedList'
+import { LATEST_VERB } from './format'
 import LeadStory from './LeadStory'
 import { displayInk } from './neon'
 import Reveal from './Reveal'
@@ -160,9 +161,9 @@ export default function FrontPage({ lead, items, featured, front }: FrontPagePro
     <>
       <EmissionHero
         accent={front?.headlineAccent ?? undefined}
-        essayHref={lead?.href ?? null}
         headline={headline}
         intro={renderTagline(intro)}
+        latest={lead ? { href: lead.href, label: LATEST_VERB[lead.kind] } : null}
       />
       <Wrap>
         {featured.length > 0 && (
