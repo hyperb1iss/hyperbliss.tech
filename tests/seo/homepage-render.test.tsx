@@ -81,15 +81,7 @@ const featured = pickFeatured(entries, 3)
 
 const html = renderToStaticMarkup(
   <PageLoadProvider>
-    <TerminalHome
-      featured={featured}
-      front={front}
-      items={items}
-      lead={lead}
-      posts={posts}
-      projects={projects}
-      siteConfig={null}
-    />
+    <TerminalHome featured={featured} front={front} items={items} lead={lead} posts={posts} projects={projects} />
   </PageLoadProvider>,
 )
 const withoutNoscript = html.replace(/<noscript>[\s\S]*?<\/noscript>/g, '')

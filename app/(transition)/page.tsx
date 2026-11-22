@@ -4,7 +4,7 @@ import { buildFeed, splitLead } from '@/lib/feed'
 import { getReleasesForProjects, getRepoStatsForProjects, type RepoStats } from '@/lib/github'
 import { type ProjectEntry, pickFeatured } from '@/lib/projectLanes'
 import type { ReleaseLike } from '@/lib/terminal/releases'
-import { getAllLab, getAllPosts, getAllProjects, getPage, getSiteConfig } from '../lib/content'
+import { getAllLab, getAllPosts, getAllProjects, getPage } from '../lib/content'
 
 // Ceiling for the route's ISR window. The events feed underneath fetches with
 // a 5 minute revalidate and the shortest fetch window wins, so the page
@@ -14,9 +14,8 @@ export const revalidate = 3600
 
 export default async function Home() {
   try {
-    const [pageData, siteConfig, posts, projects, labExperiments] = await Promise.all([
+    const [pageData, posts, projects, labExperiments] = await Promise.all([
       getPage('home'),
-      getSiteConfig().catch(() => null),
       getAllPosts(),
       getAllProjects(),
       getAllLab(),
@@ -59,7 +58,6 @@ export default async function Home() {
         lead={lead}
         posts={posts}
         projects={projects}
-        siteConfig={siteConfig}
       />
     )
   } catch {

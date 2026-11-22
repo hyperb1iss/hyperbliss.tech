@@ -1,7 +1,7 @@
 // Helpers for folding GitHub releases into the broadcast. The caller fetches
-// releases for only a curated few "currently shipping" repos (§5.10); these
-// pure helpers pick the newest as the headline ship and map versions onto
-// project entries. An empty map yields a null ship — a supported state.
+// the latest release of every project with a repo; these pure helpers pick
+// the newest as the headline ship and map versions onto project entries. An
+// empty map yields a null ship, which is a supported state.
 
 import type { ProjectSummary } from '../content'
 import type { BroadcastShip } from './types'

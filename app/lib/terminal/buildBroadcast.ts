@@ -1,7 +1,7 @@
 // Server-side builder: the "announce everything" broadcast painted by neofetch
 // and read by native commands. Pure and synchronous. Releases are fetched by
-// the caller (only a curated few — §5.10) and passed in; an empty/missing ship
-// is a supported state (the broadcast still renders).
+// the caller and passed in; an empty or missing ship is a supported state
+// (the broadcast still renders).
 
 import type { LabSummary, PostSummary, ProjectSummary } from '../content'
 import type { Broadcast, BroadcastShip } from './types'

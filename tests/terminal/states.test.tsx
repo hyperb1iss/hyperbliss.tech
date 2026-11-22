@@ -25,7 +25,7 @@ describe('degraded states', () => {
     expect(out).not.toContain('release') // release line dropped, no crash
   })
 
-  it('neofetch survives an empty corpus / missing now', async () => {
+  it('neofetch survives an empty corpus', async () => {
     const empty: Broadcast = {
       flagships: [],
       generatedAt: 'x',

@@ -57,8 +57,8 @@ const panelStyles = css`
 `
 
 // Caps the console to the space under the nav and scrolls internally, so on
-// short phones (body scroll locked while open) the command chips below the
-// terminal stay reachable instead of falling off-screen.
+// short phones (page scroll locked while open) the command keys in its footer
+// stay reachable instead of falling off-screen.
 const scrollStyles = css`
   width: 100%;
   max-width: 960px;

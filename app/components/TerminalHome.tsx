@@ -3,7 +3,8 @@
 // Keep this a server component so the content corpus never becomes hydration
 // payload.
 
-import type { FrontSection, PostSummary, ProjectSummary, SiteConfig } from '@/lib/content'
+import { SITE_DESCRIPTION } from '@/lib/company'
+import type { FrontSection, PostSummary, ProjectSummary } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
 import type { ProjectEntry } from '@/lib/projectLanes'
 import FrontPage from './front/FrontPage'
@@ -16,12 +17,11 @@ interface TerminalHomeProps {
   items: FeedItem[]
   featured: ProjectEntry[]
   front: FrontSection | null
-  siteConfig?: SiteConfig | null
 }
 
 const DEFAULT_SUMMARY = 'An independent software company in Seattle. Open source at the core.'
 
-export default function TerminalHome({ posts, projects, lead, items, featured, front, siteConfig }: TerminalHomeProps) {
+export default function TerminalHome({ posts, projects, lead, items, featured, front }: TerminalHomeProps) {
   return (
     <>
       <FrontPage featured={featured} front={front} items={items} lead={lead} />
@@ -32,7 +32,7 @@ export default function TerminalHome({ posts, projects, lead, items, featured, f
           aboutTitle="Hyperbliss Technologies"
           posts={posts.map((p) => ({ slug: p.slug, title: p.displayTitle }))}
           projects={projects.map((p) => ({ description: p.description, slug: p.slug, title: p.displayTitle }))}
-          siteDescription={siteConfig?.seo?.siteDescription}
+          siteDescription={SITE_DESCRIPTION}
         />
       </noscript>
     </>

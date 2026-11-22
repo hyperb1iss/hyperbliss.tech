@@ -351,7 +351,7 @@ export default function Terminal({
         'input',
       )
       historyRef.current.add(raw)
-      onCommandCategory?.(categoryOf(raw))
+      onCommandCategory?.(categoryOf(raw, registry))
       const controller = new AbortController()
       activeControllersRef.current.add(controller)
 

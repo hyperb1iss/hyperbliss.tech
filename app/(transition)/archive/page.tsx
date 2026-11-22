@@ -1,6 +1,6 @@
 // app/(transition)/archive/page.tsx
-// The whole feed, by year: every essay, lab experiment, release, and project
-// launch. The front page shows the newest ten and links here for the rest.
+// The whole feed, by year: essays, lab experiments, project launches, and each
+// project's latest release. The front page shows the newest few and links here.
 
 import Archive from '@/components/Archive'
 import { buildFeed, groupByYear } from '@/lib/feed'

@@ -1,6 +1,6 @@
-// Live GitHub activity command (`gh` / `activity` / `stats`). Self-registers on
+// Live GitHub activity command (`gh` / `github` / `activity` / `stats`). Self-registers on
 // import. Fetches the cached /api/activity summary on mount and renders recent
-// pushes, PRs, releases, a commits/day sparkline, and the repos being touched.
+// pushes, PRs, releases, a pushes-per-day sparkline, and the repos being touched.
 // The relative times are a snapshot from when the command ran (like a real CLI).
 
 import { useEffect, useState } from 'react'
