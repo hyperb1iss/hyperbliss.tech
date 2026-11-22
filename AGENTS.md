@@ -2,14 +2,15 @@
 
 ## Overview
 
-hyperbliss.tech is a cutting-edge portfolio site showcasing technical mastery
-through interactive cyberpunk aesthetics. The site features a living particle
-system (CyberScape) that responds to content, user behavior, and environmental
-context.
+hyperbliss.tech is the company site for Hyperbliss Technologies LLC, an
+independent open source software company. It presents the products
+(Hypercolor, Sibyl, unifly), the essays, the lab, and the founder, in a visual
+language called Emission. The header carries a living particle system
+(CyberScape), and a pull-down terminal console sits on every page.
 
-**Tech Stack**: Next.js 16.0, React 19.2, TypeScript 5.9, Panda CSS
-(zero-runtime CSS-in-JS), WebGL/Three.js **Architecture**: App Router, Server
-Components, Edge Functions **Deployment**: Netlify with performance optimization
+**Tech Stack**: Next.js (App Router, a canary release), React, TypeScript,
+Panda CSS (zero-runtime CSS-in-JS), Canvas2D with gl-matrix. Exact versions
+live in `package.json`; do not copy them here. **Deployment**: Netlify
 
 ## 🎯 Current State
 
@@ -28,17 +29,25 @@ Components, Edge Functions **Deployment**: Netlify with performance optimization
 
 ```
 /(transition)/
-├── Home — Front page, one column: intro, pulse line, lead story, Building trio, feed
-├── About — Personal narrative (the CyanogenMod story lives here)
+├── Home — Hero with the tagline, the three flagship products, the lead essay, the feed
+├── About — The company, how it works, then the founder (the CyanogenMod story)
 ├── Blog — "Writing" in the nav; essays at /blog/<slug>
-├── Projects — Flagship trio, lanes, live GitHub facts, detail pages
+├── Projects — "Products" in the nav; product lines, live GitHub facts, detail pages
 ├── Lab — Interactive experiments
-└── Resume — Professional summary
+├── Archive — The whole feed by year
+└── Resume — The founder's resume, linked from About
 ```
 
 The pull-down terminal console mounts on every route from
-`TransitionShell`; the header (logo, nav, CyberScape band, handle) is the
-one piece of chrome that survived the 2026 redesign unchanged in shape.
+`TransitionShell`. Its handle hangs under the header (logo, nav, CyberScape
+band).
+
+### One source for repeated facts
+
+The tagline and site description live in `content/pages/home.json`, and the
+company name, URL, and contact address in `app/lib/company.ts`, which also
+re-exports the tagline. The hero, footer, social card, metadata, and feeds
+read from there. Do not retype any of them in a component.
 
 ## 🎨 Design System
 
@@ -54,9 +63,12 @@ $light-gray: #e0e0e0; // Text clarity
 
 ### Typography
 
-- **Headings**: Orbitron (futuristic, uppercase)
-- **Body**: Rajdhani (clean, technical)
-- **Code**: Space Mono (monospace precision)
+- **Display**: Archivo, set wide and heavy (titles, the hero)
+- **Body**: Sora
+- **Code and labels**: Geist Mono
+
+Fonts are loaded in `app/styles/fonts.ts`. Root font-size is 62.5%, so 1rem
+is 10px.
 
 ### Animation Principles
 
@@ -115,7 +127,7 @@ pnpm format          # Biome + Prettier formatting
 ### Core Systems
 
 - `app/cyberscape/CyberScape.ts` — Header particle system
-- `app/components/front/` — Front page (lead, Building strip, Pulse, feed, entrance)
+- `app/components/front/` — Front page (hero, product chapters, lead story, feed)
 - `app/components/terminal/` — Pull-down console and its commands
 - `app/lib/feed.ts` — Merges essays, lab, releases, launches into the feed
 - `app/lib/github.ts` — Releases, repo stats, activity. With GITHUB_TOKEN
@@ -123,20 +135,27 @@ pnpm format          # Biome + Prettier formatting
   request an hour; without a token it falls back to REST per repo, and one
   rate-limit hit parks all calls until GitHub's reset
 - `app/lib/navigation.ts` — Nav labels and routes
+- `app/lib/company.ts` — Company name, URL, tagline, description (see above)
 - `app/components/Header.tsx` — Main navigation
 
 ### Configuration
 
 - `next.config.mjs` — Next.js settings
 - `netlify.toml` — Deployment config
-- `jest.config.ts` — Test configuration
+- `vitest.config.ts` — Test configuration
 
 ### Content
 
-- `src/posts/` — Blog markdown files
-- `src/projects/` — Project descriptions
-- `docs/style-guide.md` — Original design documentation
-- `docs/STYLE_GUIDE_2.0.md` — Updated style guide
+- `content/posts/` — Essays (markdown)
+- `content/projects/` — Product and project pages (markdown; `featured: N`
+  in frontmatter pins the flagships and their order)
+- `content/pages/` — Home and About copy (JSON)
+- `content/resume/resume.md` — The resume; regenerate `public/resume.pdf`
+  after editing it with
+  `uv run --project scripts/resume-pdf resume-pdf content/resume/resume.md`
+- `docs/` — Design and planning records from earlier rounds (the style
+  guides and the `*_PLAN.md` files). They describe the site as it was
+  planned at the time, not as it is; trust the code over them
 
 ## 🚨 Critical Boundaries
 
@@ -168,18 +187,17 @@ pnpm format          # Biome + Prettier formatting
 - Fun but not fluffy
 - Peer-level collaboration
 
-## 📊 Current Performance
+## 📊 Performance Targets
 
-- **Particle Count**: ~1000-5000 adaptive based on device
-- **Frame Rate**: 60fps on modern devices
-- **Lighthouse Scores**: 90+ Performance, 100 Accessibility
-- **Load Time**: < 2s on fast connections
-- **Bundle Size**: Optimized with code splitting
+- **Frame Rate**: 60fps, including with the console open
+- **Particle Count**: adapts to the device (`app/cyberscape/CyberScapeConfig.ts`)
+- **Motion**: every looping animation honors `prefers-reduced-motion`, and
+  anything that animates forever stays on the compositor or pauses off screen
 
 ## 🔗 Resources
 
 - [Next.js Docs](https://nextjs.org/docs)
-- [Framer Motion](https://www.framer.com/motion/)
+- [Motion (Framer Motion)](https://motion.dev/)
 
 <!-- BEGIN:nextjs-agent-rules -->
 

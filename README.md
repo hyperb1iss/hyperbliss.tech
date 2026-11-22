@@ -1,31 +1,35 @@
-# 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ✨ ⎊ ⨳ ✵ ⊹
+# 🌠 𝓱 𝔂 𝓹 𝓮 𝓻 𝓫 𝟏 𝓲 𝓼 𝓼 ⎊ ⨳ ✵ ⊹
 
 <div align="center">
 
 [![Netlify](https://img.shields.io/badge/NETLIFY-DEPLOYED-8a2be2?style=for-the-badge&logo=netlify&logoColor=white)](https://app.netlify.com/sites/hyperb1iss/deploys)
-[![TypeScript](https://img.shields.io/badge/TYPESCRIPT-6.0-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/NEXT.JS-16.2-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/REACT-19.2-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TYPESCRIPT-STRICT-a259ff?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/NEXT.JS-APP_ROUTER-b967ff?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/REACT-19-ff75d8?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![Panda CSS](https://img.shields.io/badge/PANDA-CSS-ff57e8?style=for-the-badge&logo=css3&logoColor=white)](https://panda-css.com/)
 [![License](https://img.shields.io/badge/LICENSE-CC_BY--NC--SA-00fff0?style=for-the-badge)](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 </div>
 
-Welcome to the source code of [hyperbliss.tech](https://hyperbliss.tech), a
-cybernetic sanctuary crafted by Stefanie Jane. 🔮👩‍💻⚡
+Welcome to the source code of [hyperbliss.tech](https://hyperbliss.tech), the
+home of Hyperbliss Technologies. 🔮
 
-This is home base: blog, projects, resume, and an interactive particle system
-called CyberScape that turns the header into a living, breathing neon
-dreamscape. A place for nerds, ADHD catgirls, and magical creatures.
+This is home base: the products, the essays, the lab, and an interactive
+particle system called CyberScape that turns the header into a living neon
+field. A place for nerds, ADHD catgirls, and magical creatures.
 
 ## 🌌 What's Inside
 
 - 🌠 **CyberScape**: A custom Canvas2D particle system with 3D projections,
   wireframe shapes, glitch effects, and chromatic aberration, all reacting to
   your cursor
-- 📜 **Blog**: Technical deep-dives on creative coding, terminal design, AI
+- 📜 **Writing**: Technical deep-dives on creative coding, terminal design, AI
   agent orchestration, and the demoscene
-- 🔧 **Projects**: 24 open source projects across Rust, TypeScript, and Python
+- 🔧 **Products**: Hypercolor, Sibyl, unifly, and the open source around them,
+  with live versions and stars from GitHub
+- 🧪 **Lab**: Interactive experiments
+- 🪄 **Console**: A pull-down terminal on every page, with a real shell over the
+  site's content and an LED wall to write on
 - 🎨 **SilkCircuit aesthetic**: Purple gradients, neon cyan accents, and plasma
   pink everywhere
 
@@ -33,7 +37,7 @@ dreamscape. A place for nerds, ADHD catgirls, and magical creatures.
 
 | Layer     | Tools                                                      |
 | --------- | ---------------------------------------------------------- |
-| Framework | Next.js 16, React 19, TypeScript 6                         |
+| Framework | Next.js (App Router), React, TypeScript                    |
 | Styling   | Panda CSS (zero-runtime CSS-in-JS)                         |
 | Animation | Framer Motion, CyberScape (custom particle system)         |
 | Content   | Markdown + gray-matter, read from `content/` at build time |
@@ -41,7 +45,7 @@ dreamscape. A place for nerds, ADHD catgirls, and magical creatures.
 | Linting   | Biome + Prettier (markdown/YAML only)                      |
 | Deploy    | Netlify                                                    |
 
-## 🚀 Quick Start
+## ⚡ Quick Start
 
 ```bash
 git clone https://github.com/hyperb1iss/hyperbliss.tech.git
@@ -68,15 +72,15 @@ dance.
 
 ```
 app/
-  (transition)/       Routes (home, about, blog, projects, resume)
+  (transition)/       Routes (home, about, blog, projects, lab, archive, resume)
   components/         React components
   cyberscape/         The particle system that makes the header glow
   lib/                Content loading, metadata, utilities
 content/
   posts/              Blog posts (markdown)
   projects/           Project pages (markdown)
-  pages/              Page configs (JSON)
-  config/             Site config
+  lab/                Lab experiments (markdown)
+  pages/              Page copy (JSON)
   resume/             Resume (markdown)
 tests/                Vitest tests
 styled-system/        Panda CSS generated styles
