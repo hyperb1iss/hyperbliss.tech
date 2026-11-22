@@ -112,14 +112,18 @@ const headlineStyles = css`
   font-stretch: 125%;
   font-weight: 900;
   /* Sized so the longest line fills the row: this face sets about 0.9em
-     per character, and the row is about 86vw wide on a phone. */
-  font-size: clamp(3.4rem, calc(86vw / (var(--fit, 10) * 0.9)), var(--cap, 13.6rem));
+     per character, and the row is the viewport less the side padding. */
+  font-size: clamp(3.4rem, calc((100vw - 13.6rem) / (var(--fit, 10) * 0.9)), var(--cap, 13.6rem));
   line-height: 0.9;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #f6f2ff;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    font-size: clamp(3.4rem, calc((100vw - 4.4rem) / (var(--fit, 10) * 0.9)), var(--cap, 13.6rem));
+  }
 
   /* Two lines leave room for taller type than three. */
   &[data-short='true'] {
@@ -166,6 +170,8 @@ const glowStyles = css`
 
   &::before {
     content: attr(data-text);
+    /* The empty alt text keeps the copy out of the heading's accessible name. */
+    content: attr(data-text) / '';
     position: absolute;
     inset: 0;
     white-space: nowrap;

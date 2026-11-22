@@ -36,7 +36,10 @@
     color: var(--text-primary);
     background-color: var(--silk-void-black);
 
-    overflow-x: hidden;
+    /* clip, not hidden: hidden would make body a scroll container (html
+       already hides the overflow), and every position: sticky inside it
+       would stop sticking. */
+    overflow-x: clip;
     position: relative;
     z-index: 0;
   }
