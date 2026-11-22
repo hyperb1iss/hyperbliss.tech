@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LabSummary, PostSummary, ProjectSummary } from '@/lib/content'
-import { buildFeed, type FeedRelease, groupByYear, shippingList, shortName, splitLead, toIsoDay } from '@/lib/feed'
+import { buildFeed, type FeedRelease, groupByYear, shortName, splitLead, toIsoDay } from '@/lib/feed'
 import { summarizeRelease } from '@/lib/github'
 
 const post = (slug: string, date: string | null, title = slug): PostSummary => ({
@@ -158,30 +158,6 @@ describe('shortName', () => {
     expect(shortName('Sibyl: Build With Agents That Remember')).toBe('Sibyl')
     expect(shortName('DroidMind')).toBe('DroidMind')
     expect(shortName(': odd')).toBe(': odd')
-  })
-})
-
-describe('shippingList', () => {
-  it('lists released projects newest release first with project links', () => {
-    expect(shippingList(input.projects, releases)).toEqual([
-      {
-        href: '/projects/opaline/',
-        publishedAt: '2026-07-14T18:00:00Z',
-        slug: 'opaline',
-        title: 'Opaline',
-        version: '0.4.2',
-      },
-      {
-        href: '/projects/sibyl/',
-        publishedAt: '2026-06-30T09:00:00Z',
-        slug: 'sibyl',
-        title: 'Sibyl',
-        version: '1.3.1',
-      },
-    ])
-  })
-  it('respects the cap', () => {
-    expect(shippingList(input.projects, releases, 1)).toHaveLength(1)
   })
 })
 

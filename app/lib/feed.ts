@@ -48,7 +48,7 @@ const LONG_FORM: readonly FeedKind[] = ['essay', 'lab']
 
 /**
  * Project titles carry a tagline after a colon ("Sibyl: Build With Agents That
- * Remember"). The feed and rail want the name alone.
+ * Remember"). The feed and the front page strip want the name alone.
  */
 export function shortName(title: string): string {
   const idx = title.indexOf(':')
@@ -195,26 +195,4 @@ export function groupByYear(feed: FeedItem[]): Array<{ year: string; items: Feed
     else groups.set(year, [item])
   }
   return [...groups.entries()].sort(([a], [b]) => b.localeCompare(a)).map(([year, items]) => ({ items, year }))
-}
-
-/** Projects with a known release, newest release first, for the Shipping rail. */
-export function shippingList(
-  projects: ProjectSummary[],
-  releases: Map<string, FeedRelease>,
-  limit = 6,
-): Array<{ slug: string; title: string; version: string; href: string; publishedAt: string }> {
-  const rows: Array<{ slug: string; title: string; version: string; href: string; publishedAt: string }> = []
-  for (const project of projects) {
-    const release = releases.get(project.slug)
-    if (!release) continue
-    rows.push({
-      href: `/projects/${project.slug}/`,
-      publishedAt: release.publishedAt,
-      slug: project.slug,
-      title: shortName(project.title),
-      version: release.version,
-    })
-  }
-  rows.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-  return rows.slice(0, limit)
 }

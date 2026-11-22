@@ -312,10 +312,7 @@ export interface AboutSection {
 
 /** The front page's byline block: who is behind the label, in two lines. */
 export interface FrontSection {
-  role: string | null
   bio: string | null
-  photo: string | null
-  photoAlt: string | null
   /** The front page's opening sentence. `{hyperbliss}` and `{name}` are rendered as the brand mark and the About link. */
   tagline: string | null
 }
@@ -347,10 +344,7 @@ interface RawPageJson {
     contactReasons?: Array<{ title?: string; description?: string }>
   }
   front?: {
-    role?: string
     bio?: string
-    photo?: string
-    photoAlt?: string
     tagline?: string
   }
 }
@@ -385,9 +379,6 @@ export async function getPage(slug: string): Promise<PageData> {
     front: raw.front
       ? {
           bio: raw.front.bio ?? null,
-          photo: raw.front.photo ?? null,
-          photoAlt: raw.front.photoAlt ?? null,
-          role: raw.front.role ?? null,
           tagline: raw.front.tagline ?? null,
         }
       : null,

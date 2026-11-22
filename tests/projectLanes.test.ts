@@ -67,6 +67,13 @@ describe('sortEntries', () => {
     ])
     expect(sorted.map((e) => e.project.slug)).toEqual(['released', 'pushed', 'starry', 'a-name', 'b-name'])
   })
+  it('falls back to launch date before name when GitHub answered nothing', () => {
+    const newer = entry('zeta', 'web')
+    newer.project.date = '2026-05-01'
+    const older = entry('alpha', 'web')
+    older.project.date = '2025-02-01'
+    expect(sortEntries([older, newer]).map((e) => e.project.slug)).toEqual(['zeta', 'alpha'])
+  })
 })
 
 describe('groupByLane', () => {

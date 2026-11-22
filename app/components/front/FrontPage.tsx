@@ -1,52 +1,44 @@
-// The landing page under the header: the newest long-form piece leads, the
-// merged feed runs beneath it, and a quiet rail carries who, now, shipping,
-// and elsewhere. Server component: everything here is crawlable HTML.
+// The landing page under the header, one column: the intro sentence, a
+// computed pulse line, the newest long-form piece, the flagship trio, then the
+// merged feed. Server component: everything here is crawlable HTML.
 
 import Link from 'next/link'
-import type { FrontSection, NowData } from '@/lib/content'
+import type { FrontSection } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
-import { css, cx } from '../../../styled-system/css'
+import type { ActivitySummary } from '@/lib/github'
+import type { ProjectEntry } from '@/lib/projectLanes'
 import { styled } from '../../../styled-system/jsx'
+import Building from './Building'
 import FeedList from './FeedList'
 import LeadStory from './LeadStory'
 import { neonTitle } from './neon'
-import Rail, { type ShippingRow } from './Rail'
+import Pulse from './Pulse'
 import Reveal from './Reveal'
 
 export interface FrontPageProps {
   lead: FeedItem | null
   items: FeedItem[]
-  shipping: ShippingRow[]
-  now: NowData
+  featured: ProjectEntry[]
+  activity: ActivitySummary | null
   front: FrontSection | null
   projectCount: number
 }
 
 const Wrap = styled.div`
   width: 100%;
-  max-width: 144rem;
+  max-width: 116rem;
   margin: 0 auto;
   padding: 4.8rem 6.4rem 6.4rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 32rem;
-  column-gap: 7.2rem;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 
   @media (max-width: 1024px) {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 5.6rem;
     padding: 3.2rem 2.4rem 4.8rem;
   }
 `
 
-const Main = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-`
-
 const Intro = styled.p`
-  grid-column: 1 / -1;
   font-size: clamp(2rem, 1.7rem + 0.8vw, 2.7rem);
   font-weight: 300;
   line-height: 1.4;
@@ -63,8 +55,15 @@ const Intro = styled.p`
   & a:hover {
     color: var(--silk-steel-50);
   }
+`
 
-  @media (max-width: 1024px) {
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin-bottom: 5.6rem;
+
+  &:last-of-type {
     margin-bottom: 0;
   }
 `
@@ -122,11 +121,6 @@ const Foot = styled.div`
   }
 `
 
-const introRow = 'front-intro'
-const introRowStyles = css`
-  grid-column: 1 / -1;
-`
-
 const NAME = 'Stefanie Jane'
 
 /**
@@ -153,32 +147,47 @@ function renderTagline(tagline: string) {
   })
 }
 
-export default function FrontPage({ lead, items, shipping, now, front, projectCount }: FrontPageProps) {
+export default function FrontPage({ lead, items, featured, activity, front, projectCount }: FrontPageProps) {
   const tagline = front?.tagline ?? "Hey, I'm {name}, and {hyperbliss} is where I make things."
+  const buildingStart = 1.6
+  const feedStart = buildingStart + featured.length * 0.3 + 0.8
   return (
     <Wrap>
-      <Reveal as="div" className={cx(introRow, introRowStyles)} order={0}>
+      <Reveal order={0}>
         <Intro>{renderTagline(tagline)}</Intro>
       </Reveal>
-      <Main>
+      <Reveal order={0.3}>
+        <Pulse activity={activity} />
+      </Reveal>
+      <Section aria-labelledby="front-latest">
         <Reveal order={0.5}>
-          <Marker>Latest</Marker>
+          <Marker id="front-latest">Latest</Marker>
         </Reveal>
         {lead && (
           <Reveal order={1}>
             <LeadStory item={lead} />
           </Reveal>
         )}
-        <FeedList heading={null} items={items} startOrder={1.5} />
-        <Reveal order={1.5 + items.length * 0.5}>
+      </Section>
+      {featured.length > 0 && (
+        <Section aria-labelledby="front-building">
+          <Reveal order={buildingStart - 0.3}>
+            <Marker id="front-building">Building</Marker>
+          </Reveal>
+          <Building entries={featured} projectCount={projectCount} startOrder={buildingStart} />
+        </Section>
+      )}
+      <Section aria-labelledby="front-recently">
+        <Reveal order={feedStart - 0.3}>
+          <Marker id="front-recently">Recently</Marker>
+        </Reveal>
+        <FeedList heading={null} items={items} startOrder={feedStart} />
+        <Reveal order={feedStart + items.length * 0.5}>
           <Foot>
             <Link href="/archive/">Everything, by year →</Link>
           </Foot>
         </Reveal>
-      </Main>
-      <Reveal order={2}>
-        <Rail front={front} now={now} projectCount={projectCount} shipping={shipping} />
-      </Reveal>
+      </Section>
     </Wrap>
   )
 }

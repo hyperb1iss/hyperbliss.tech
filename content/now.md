@@ -8,9 +8,9 @@ location: 'Seattle, WA'
 
 ## What I'm doing now
 
-This site just got a new front door: the newest thing first, everything
-else in one feed, and a quiet rail for what's shipping. The terminal is
-still here. Pull the handle or run `help`.
+This site just got a new front door: the newest thing first, the three
+projects with the most gravity, and everything else in one feed. The
+terminal is still here. Pull the handle or run `help`.
 
 ## Currently shipping
 
