@@ -14,6 +14,11 @@ describe('encodeSession', () => {
 })
 
 describe('decodeSession', () => {
+  it('never encodes or replays a command that closes or wipes the console', () => {
+    expect(encodeSession(['led hi', 'exit', 'reboot', 'help'])).toBe('led%20hi;help')
+    expect(decodeSession('#neofetch;exit;quit;logout;reboot;help')).toEqual(['neofetch', 'help'])
+  })
+
   it('parses a hash into commands', () => {
     expect(decodeSession('#neofetch;projects')).toEqual(['neofetch', 'projects'])
     expect(decodeSession('cat%20about.md')).toEqual(['cat about.md'])

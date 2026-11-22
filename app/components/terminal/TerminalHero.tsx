@@ -87,6 +87,14 @@ export interface TerminalHeroProps {
   broadcast: Broadcast
 }
 
+function safeDecode(value: string): string {
+  try {
+    return decodeURIComponent(value)
+  } catch {
+    return value
+  }
+}
+
 export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps) {
   const router = useRouter()
   const handleRef = useRef<TerminalHandle | null>(null)
@@ -96,7 +104,10 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   // Terminal sees both at once and boots exactly once (§5.6, T4.2).
   const [boot, setBoot] = useState<{ phase: BootPhase; replay: string[] }>({ phase: 'pending', replay: [] })
   useEffect(() => {
-    setBoot({ phase: resolveBootPhase(readBootInputs()), replay: decodeSession(window.location.hash) })
+    // A hash that names an element on the page is an anchor link, not a session.
+    const hash = window.location.hash
+    const isAnchor = hash.length > 1 && document.getElementById(safeDecode(hash.slice(1))) !== null
+    setBoot({ phase: resolveBootPhase(readBootInputs()), replay: isAnchor ? [] : decodeSession(hash) })
   }, [])
 
   // File bodies are fetched under the manifest's content version, so a deploy

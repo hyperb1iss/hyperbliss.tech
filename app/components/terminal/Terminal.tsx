@@ -188,7 +188,12 @@ const VisuallyHidden = styled.label`
 const Hint = styled.span`
   position: absolute;
   left: 0;
+  right: 0;
   top: 0;
+  /* One line always: wrapped, it would spill over the keys below. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   pointer-events: none;
   color: var(--text-muted);
 
@@ -532,7 +537,7 @@ export default function Terminal({
           />
           {input.length === 0 && (
             <Hint aria-hidden={focused} id="terminal-hint">
-              {focused ? <span className="blink">▍</span> : <>try &apos;help&apos; · or tap a command below</>}
+              {focused ? <span className="blink">▍</span> : <>try &apos;help&apos; or tap a command</>}
             </Hint>
           )}
         </InputCaret>

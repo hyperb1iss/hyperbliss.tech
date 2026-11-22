@@ -3,7 +3,8 @@
 // column by column, and any cell flashes white under the pointer and fades
 // back, so the wall can be painted on. Colors come from the console theme.
 
-import type { CSSProperties } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import { css } from '../../../styled-system/css'
 
 // A 5x7 dot-matrix face. The heart stands in for "<3".
@@ -143,9 +144,8 @@ const trackStyles = css`
     max-width: none;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    padding-left: 0;
-    animation: none;
+  [data-live='false'] > & {
+    animation-play-state: paused;
   }
 `
 
@@ -163,6 +163,18 @@ const cellStyles = css`
     animation:
       led-on 0.45s ease-out backwards,
       led-wave 5s linear infinite;
+  }
+
+  /* The wave repaints every lit cell each frame, so a sign scrolled out of
+     the log holds its colors instead of animating where nobody can see. */
+  [data-live='false'] &[data-lit='true'] {
+    animation-play-state: running, paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-lit='true'] {
+      animation: none;
+    }
   }
 
   &:hover {
@@ -183,9 +195,27 @@ interface LedSignProps {
   scroll?: boolean
 }
 
+/** Whether the element is on screen; true until the observer says otherwise. */
+function useOnScreen<T extends Element>() {
+  const ref = useRef<T>(null)
+  const [onScreen, setOnScreen] = useState(true)
+  useEffect(() => {
+    const node = ref.current
+    if (!node || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver(([entry]) => setOnScreen(entry.isIntersecting))
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, onScreen] as const
+}
+
 export default function LedSign({ text, label, cell, lineChars, scroll = false }: LedSignProps) {
+  const [ref, onScreen] = useOnScreen<HTMLDivElement>()
+  // A marquee is motion by definition; with reduced motion it wraps instead.
+  const reducedMotion = useReducedMotion()
+  const sliding = scroll && !reducedMotion
   const clean = ledText(text)
-  const lines = scroll ? [clean].filter(Boolean) : ledLines(clean, lineChars)
+  const lines = sliding ? [clean].filter(Boolean) : ledLines(clean, lineChars)
   const walls = (
     <>
       {lines.map((line, lineIndex) => {
@@ -215,11 +245,11 @@ export default function LedSign({ text, label, cell, lineChars, scroll = false }
       })}
     </>
   )
-  if (scroll) {
+  if (sliding) {
     // About eight cells a second, however long the text is.
     const seconds = Math.max(6, Math.round((clean.length * 6 + 40) / 8))
     return (
-      <div aria-label={label ?? text} className={frameStyles} role="img">
+      <div aria-label={label ?? text} className={frameStyles} data-live={onScreen} ref={ref} role="img">
         <div className={trackStyles} style={{ '--scroll-time': `${seconds}s` } as CSSProperties}>
           {walls}
         </div>
@@ -227,7 +257,7 @@ export default function LedSign({ text, label, cell, lineChars, scroll = false }
     )
   }
   return (
-    <div aria-label={label ?? text} className={stackStyles} role="img">
+    <div aria-label={label ?? text} className={stackStyles} data-live={onScreen} ref={ref} role="img">
       {walls}
     </div>
   )

@@ -21,11 +21,14 @@ export function setFsVersion(version: string | undefined): void {
 const versioned = (url: string) => (fsVersion ? `${url}${url.includes('?') ? '&' : '?'}v=${fsVersion}` : url)
 
 async function fetchBatch(paths: readonly string[], signal?: AbortSignal): Promise<void> {
+  const version = fsVersion
   const url = versioned(`/api/fs/?paths=${encodeURIComponent(JSON.stringify(paths))}`)
   const bodies = await fetch(url, { signal }).then((res) => {
     if (!res.ok) throw new Error(`/api/fs responded ${res.status}`)
     return res.json() as Promise<FsBodies>
   })
+  // The files changed while this was in flight: these bodies are the old ones.
+  if (version !== fsVersion) return
   Object.assign(bodyCache, bodies)
 }
 
@@ -43,12 +46,14 @@ function registerBatch(paths: readonly string[], signal?: AbortSignal): Promise<
 
 export async function fetchFsBodies(paths?: readonly string[], signal?: AbortSignal): Promise<FsBodies> {
   if (!paths) {
+    const version = fsVersion
     allCache ??= fetch(versioned('/api/fs/'), { signal })
       .then((res) => {
         if (!res.ok) throw new Error(`/api/fs responded ${res.status}`)
         return res.json() as Promise<FsBodies>
       })
       .then((bodies) => {
+        if (version !== fsVersion) return bodies
         Object.assign(bodyCache, bodies)
         return bodyCache
       })
