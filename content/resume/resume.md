@@ -19,7 +19,7 @@ I also run Hyperbliss Technologies, an independent company making open source to
 
 ### Programming Languages
 
-[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://golang.org/) | [Java](https://www.java.com/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | [Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) | [Perl](https://www.perl.org/) | [Python](https://www.python.org/) | [Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) | [TypeScript](https://www.typescriptlang.org/)
+[C](<https://en.wikipedia.org/wiki/C_(programming_language)>) | [C++](https://en.wikipedia.org/wiki/C%2B%2B) | [Go](https://go.dev/) | [Java](https://www.java.com/) | [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) | [Kotlin](https://kotlinlang.org/) | [Node.js](https://nodejs.org/) | [Perl](https://www.perl.org/) | [Python](https://www.python.org/) | [Ruby](https://www.ruby-lang.org/) | [Rust](https://www.rust-lang.org/) | [TypeScript](https://www.typescriptlang.org/)
 
 ### Technical Expertise
 
@@ -35,7 +35,7 @@ Mentoring | Product Strategy | Project Management | Software Development Lifecyc
 
 ## 🏢 Experience
 
-### [Gradial](https://www.gradial.ai/)
+### [Gradial](https://www.gradial.com/)
 
 #### Principal Software Engineer
 
@@ -49,7 +49,7 @@ _(May 2025 - Present)_
 - Built the authentication and permissions systems the applications run on
 - Led performance work across the stack
 - **Technologies:** [TypeScript](https://www.typescriptlang.org/),
-  [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
+  [Next.js](https://nextjs.org/), [React](https://react.dev/), [Python](https://www.python.org/), [Kubernetes](https://kubernetes.io/)
 
 ### [Mason](https://www.bymason.com/)
 
@@ -59,7 +59,7 @@ _(May 2024 - May 2025)_
 
 - Led multiple new AI product initiatives
 - **Technologies:** Java, C++, Kotlin, Go, Python,
-  [Node.js](https://nodejs.org/), [React](https://reactjs.org/), [Django](https://www.djangoproject.com/), [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
+  [Node.js](https://nodejs.org/), [React](https://react.dev/), [Django](https://www.djangoproject.com/), [FastAPI](https://fastapi.tiangolo.com/), [AWS](https://aws.amazon.com/), [Kubernetes](https://kubernetes.io/), [PostgreSQL](https://www.postgresql.org/)
 
 #### Director of Software Engineering
 
@@ -94,13 +94,13 @@ _(April 2015 - Present)_
 - Advise on product development and technical architecture
 - Contribute to company growth strategy and industry positioning
 
-### [Oculus VR](https://www.oculus.com/)
+### [Oculus VR](https://en.wikipedia.org/wiki/Reality_Labs)
 
 #### Systems Software Engineer
 
 _(April 2017 - March 2019)_
 
-- Helped launch [Oculus Go](https://www.oculus.com/go/), the first
+- Helped launch [Oculus Go](https://en.wikipedia.org/wiki/Oculus_Go), the first
   self-contained VR headset
 - Focused on OS software, audio systems, power optimization, and soft realtime
   scheduling
