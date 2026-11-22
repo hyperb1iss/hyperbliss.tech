@@ -62,7 +62,8 @@ const releases = new Map<string, FeedRelease>([
   ],
 ])
 
-const { lead, items } = splitLead(buildFeed({ lab, posts, projects, releases }), 10)
+const launched = new Map(projects.map((p) => [p.slug, `${p.date}T00:00:00Z`]))
+const { lead, items } = splitLead(buildFeed({ lab, launched, posts, projects, releases }), 10)
 const entries: ProjectEntry[] = projects.map((project) => {
   const release = releases.get(project.slug)
   return {
@@ -70,7 +71,9 @@ const entries: ProjectEntry[] = projects.map((project) => {
     releaseDate: release?.publishedAt ?? null,
     releaseUrl: release?.url ?? null,
     stats:
-      project.slug === 'sibyl' ? { archived: false, forks: 3, language: 'Rust', pushedAt: null, stars: 412 } : null,
+      project.slug === 'sibyl'
+        ? { archived: false, createdAt: null, forks: 3, language: 'Rust', pushedAt: null, stars: 412 }
+        : null,
     version: release?.version ?? null,
   }
 })

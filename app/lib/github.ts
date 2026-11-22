@@ -242,6 +242,8 @@ export interface RepoStats {
   forks: number
   language: string | null
   pushedAt: string | null
+  /** When the repository was created: the one launch date nobody types. */
+  createdAt: string | null
   archived: boolean
 }
 
@@ -277,10 +279,12 @@ export async function getRepoStats(githubUrl: string): Promise<RepoStats | null>
       forks_count?: number
       language?: string | null
       pushed_at?: string | null
+      created_at?: string | null
       archived?: boolean
     }
     const stats: RepoStats = {
       archived: Boolean(repo.archived),
+      createdAt: repo.created_at ?? null,
       forks: repo.forks_count ?? 0,
       language: repo.language ?? null,
       pushedAt: repo.pushed_at ?? null,
@@ -321,6 +325,7 @@ const FACTS_FRAGMENT = `fragment Facts on Repository {
   stargazerCount
   forkCount
   pushedAt
+  createdAt
   isArchived
   primaryLanguage { name }
   latestRelease { tagName name description publishedAt url isPrerelease isDraft }
@@ -349,6 +354,7 @@ interface GraphQLRepo {
   stargazerCount?: number
   forkCount?: number
   pushedAt?: string | null
+  createdAt?: string | null
   isArchived?: boolean
   primaryLanguage?: { name: string } | null
   latestRelease?: GraphQLRelease | null
@@ -381,6 +387,7 @@ function factsFromNode(node: GraphQLRepo): RepoFacts {
     release: releaseFromNode(node.latestRelease),
     stats: {
       archived: Boolean(node.isArchived),
+      createdAt: node.createdAt ?? null,
       forks: node.forkCount ?? 0,
       language: node.primaryLanguage?.name ?? null,
       pushedAt: node.pushedAt ?? null,

@@ -37,11 +37,15 @@ export interface FeedInput {
   projects: ProjectSummary[]
   /** Project slug → latest release. */
   releases: Map<string, FeedRelease>
+  /**
+   * Project slug → the day its repository was created. A project gets a
+   * launch row only from this, never from a date typed into its frontmatter:
+   * those were entered in batches and were wrong by a year or more.
+   */
+  launched?: Map<string, string>
 }
 
 export interface FeedOptions {
-  /** Include project launches (first publish date). Defaults to true. */
-  launches?: boolean
   /** Include patch releases (x.y.z with z above 0). Defaults to true; the front page leaves them to the archive. */
   patches?: boolean
 }
@@ -77,12 +81,12 @@ export function tagline(title: string): string | null {
 
 /** Essays only, newest first, for the Blog index. */
 export function essayFeed(posts: PostSummary[]): FeedItem[] {
-  return buildFeed({ lab: [], posts, projects: [], releases: new Map() }, { launches: false })
+  return buildFeed({ lab: [], posts, projects: [], releases: new Map() })
 }
 
 /** Lab experiments only, newest first, for the Lab index. */
 export function labFeed(lab: LabSummary[]): FeedItem[] {
-  return buildFeed({ lab, posts: [], projects: [], releases: new Map() }, { launches: false })
+  return buildFeed({ lab, posts: [], projects: [], releases: new Map() })
 }
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/
@@ -103,7 +107,7 @@ export function toIsoDay(value: string | null | undefined): string | null {
 
 /** Build the merged feed, newest first. Items without a usable date are dropped. */
 export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem[] {
-  const { launches = true, patches = true } = options
+  const { patches = true } = options
   const items: FeedItem[] = []
 
   for (const post of input.posts) {
@@ -160,9 +164,9 @@ export function buildFeed(input: FeedInput, options: FeedOptions = {}): FeedItem
     })
   }
 
-  if (launches) {
+  if (input.launched) {
     for (const project of input.projects) {
-      const date = toIsoDay(project.date)
+      const date = toIsoDay(input.launched.get(project.slug))
       if (!date) continue
       items.push({
         date,

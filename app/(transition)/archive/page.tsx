@@ -4,7 +4,7 @@
 
 import Archive from '@/components/Archive'
 import { buildFeed, groupByYear } from '@/lib/feed'
-import { getReleasesForProjects } from '@/lib/github'
+import { getReleasesForProjects, getRepoStatsForProjects } from '@/lib/github'
 import type { ReleaseLike } from '@/lib/terminal/releases'
 import { getAllLab, getAllPosts, getAllProjects } from '../../lib/content'
 import { generatePageMetadata } from '../../lib/generateMetadata'
@@ -14,19 +14,24 @@ export const revalidate = 3600
 
 export const metadata = generatePageMetadata(
   'Archive',
-  'Every essay, lab experiment, release, and project launch on hyperbliss.tech, newest first.',
+  'Essays, lab experiments, project launches, and the latest release of everything we make, newest first.',
   '/archive/',
 )
 
 export default async function ArchivePage() {
   const [posts, projects, lab] = await Promise.all([getAllPosts(), getAllProjects(), getAllLab()])
   const withRepo = projects.filter((p) => p.github)
+  const repos = withRepo.map((p) => ({ github: p.github, slug: p.slug }))
   let releases = new Map<string, ReleaseLike>()
+  const launched = new Map<string, string>()
   try {
-    releases = await getReleasesForProjects(withRepo.map((p) => ({ github: p.github, slug: p.slug })))
+    // Both read the same cached facts batch, so this is one GitHub request.
+    const [latest, stats] = await Promise.all([getReleasesForProjects(repos), getRepoStatsForProjects(repos)])
+    releases = latest
+    for (const [slug, { createdAt }] of stats) if (createdAt) launched.set(slug, createdAt)
   } catch {
     // Rate-limited or offline: the archive still lists local content.
   }
-  const years = groupByYear(buildFeed({ lab, posts, projects, releases }))
+  const years = groupByYear(buildFeed({ lab, launched, posts, projects, releases }))
   return <Archive years={years} />
 }

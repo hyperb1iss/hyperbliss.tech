@@ -65,14 +65,19 @@ const releases = new Map<string, FeedRelease>([
 
 const input = {
   lab: [lab('regex-nightmares', '2026-04-07', 'Regex Nightmares')],
+  // Launch rows come from repo creation dates, never from frontmatter.
+  launched: new Map([
+    ['sibyl', '2025-01-26T08:00:00Z'],
+    ['opaline', '2026-02-01T08:00:00Z'],
+  ]),
   posts: [
     post('loop-engineering', '2026-07-21', 'Get Loopy'),
     post('how-i-ai', '2026-05-27', 'How I AI'),
     post('undated', null),
   ],
   projects: [
-    project('sibyl', '2025-01-26', 'Sibyl: Build With Agents That Remember'),
-    project('opaline', '2026-02-01', 'Opaline'),
+    project('sibyl', '2019-01-01', 'Sibyl: Build With Agents That Remember'),
+    project('opaline', '2019-01-01', 'Opaline'),
     project('orphan-release', null),
   ],
   releases,
@@ -123,8 +128,8 @@ describe('buildFeed', () => {
     expect(feed.find((item) => item.id === 'essay:loop-engineering')?.external).toBe(false)
   })
 
-  it('can leave launches out', () => {
-    const noLaunches = buildFeed(input, { launches: false })
+  it('lists no launches without real creation dates', () => {
+    const noLaunches = buildFeed({ ...input, launched: undefined })
     expect(noLaunches.some((item) => item.kind === 'launch')).toBe(false)
     expect(noLaunches).toHaveLength(5)
   })

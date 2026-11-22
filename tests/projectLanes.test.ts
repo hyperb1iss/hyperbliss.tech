@@ -46,6 +46,7 @@ const entry = (
 
 const stats = (stars: number, pushedAt: string, archived = false) => ({
   archived,
+  createdAt: null,
   forks: 0,
   language: 'Rust',
   pushedAt,

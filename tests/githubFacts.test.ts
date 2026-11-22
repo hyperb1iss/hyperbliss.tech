@@ -14,6 +14,7 @@ import {
 const project = (slug: string, owner = 'hyperb1iss') => ({ github: `https://github.com/${owner}/${slug}`, slug })
 
 const node = (stars: number, release: string | null = null, extra: Record<string, unknown> = {}) => ({
+  createdAt: '2025-01-26T00:00:00Z',
   forkCount: 2,
   isArchived: false,
   latestRelease: release
