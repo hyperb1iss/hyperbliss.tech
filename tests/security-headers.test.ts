@@ -13,7 +13,7 @@ describe('security headers', () => {
     })
   })
 
-  it('preserves privacy policy entries and enables WebMCP tools for self', async () => {
+  it('preserves privacy policy entries and names no origin-trial features', async () => {
     const headers = await config.headers()
     const globalHeaders = headers.find((entry) => entry.source === '/(.*)')?.headers ?? []
     const permissions = globalHeaders.find((header) => header.key === 'Permissions-Policy')?.value
@@ -21,6 +21,8 @@ describe('security headers', () => {
     expect(permissions).toContain('camera=()')
     expect(permissions).toContain('microphone=()')
     expect(permissions).toContain('geolocation=()')
-    expect(permissions).toContain('tools=(self)')
+    // WebMCP's `tools` defaults to self; naming it logs a console error in
+    // every browser without the origin trial.
+    expect(permissions).not.toContain('tools')
   })
 })

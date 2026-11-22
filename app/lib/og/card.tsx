@@ -7,6 +7,7 @@
 // wash weighed twice that.
 
 import type { ReactElement } from 'react'
+import { TAGLINE_ACCENT, TAGLINE_LINES } from '../company'
 
 export const OG_WIDTH = 1200
 export const OG_HEIGHT = 630
@@ -51,8 +52,8 @@ const LABEL_INK: Record<OgKind, string> = {
   site: '#ff9bdc',
 }
 
-/** The site card's headline; the last line is set in the accent cyan. */
-const SITE_HEADLINE = ['MADE TO', 'GLOW.']
+/** The site card's headline is the hero's; its lit line is set in the accent cyan. */
+const SITE_HEADLINE = TAGLINE_LINES.map((line) => line.toUpperCase())
 const SITE_ACCENT = '#80ffea'
 const SITE_SUBTITLE = 'Open source tools for light, memory, and the terminal.'
 
@@ -134,7 +135,7 @@ export function OgCard({ kind, title, subtitle, meta, logoSrc, lightSrc }: OgCar
           {isSite ? (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {SITE_HEADLINE.map((line, index) => {
-                const lit = index === SITE_HEADLINE.length - 1
+                const lit = index === TAGLINE_ACCENT
                 // The full stop is its own box, pulled in by hand: the face's own
                 // kerning tucks it under the arm of the W.
                 const stop = line.endsWith('.')

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import RegexNightmares from '../../../components/lab/RegexNightmares'
 import StructuredData from '../../../components/StructuredData'
+import { BASE_URL } from '../../../lib/company'
+import siteMetadata, { SITE_NAME } from '../../../lib/metadata'
 import { buildOgImageUrl, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from '../../../lib/ogImage'
 import { generateArticleSchema, generateBreadcrumbSchema } from '../../../lib/structuredData'
 
-const BASE_URL = 'https://hyperbliss.tech'
 const TITLE = 'Regex Nightmares'
 const DESCRIPTION =
   '21 regular expressions dissected down to the molecular level. Interactive step-throughs, live testers, and the real-world disasters they caused.'
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
     images: [OG_IMAGE],
     locale: 'en_US',
     publishedTime: '2026-04-08',
-    siteName: 'Hyperbliss',
+    siteName: SITE_NAME,
     tags: ['regex', 'interactive', 'deep-dive', 'security', 'ReDoS'],
     title: TITLE,
     type: 'article',
@@ -56,11 +57,10 @@ export const metadata: Metadata = {
   },
   title: TITLE,
   twitter: {
-    card: 'summary_large_image',
-    creator: '@hyperb1iss',
+    ...siteMetadata.twitter,
     description: DESCRIPTION,
     images: [OG_IMAGE.url],
-    title: `${TITLE} | The Lab | Hyperbliss`,
+    title: TITLE,
   },
 }
 

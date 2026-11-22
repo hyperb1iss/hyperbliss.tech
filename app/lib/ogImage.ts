@@ -1,8 +1,7 @@
 // app/lib/ogImage.ts
 
+import { BASE_URL, TAGLINE } from './company'
 import type { OgKind } from './og/card'
-
-const BASE_URL = 'https://hyperbliss.tech'
 
 export interface OgImageParams {
   kind: OgKind
@@ -29,4 +28,6 @@ export function buildOgImageUrl({ kind, title, subtitle, meta }: OgImageParams):
   return `${BASE_URL}/api/og/?${params.toString()}`
 }
 
-export const DEFAULT_OG_IMAGE_URL = buildOgImageUrl({ kind: 'site' })
+// The site card draws the tagline itself; naming it in the URL is what makes
+// a new tagline a new URL, so caches and scrapers fetch the new card.
+export const DEFAULT_OG_IMAGE_URL = buildOgImageUrl({ kind: 'site', title: TAGLINE })

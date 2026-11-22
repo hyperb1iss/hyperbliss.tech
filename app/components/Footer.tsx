@@ -9,10 +9,11 @@ import Link from 'next/link'
 import { FaRss } from 'react-icons/fa6'
 import { css } from '../../styled-system/css'
 import { styled } from '../../styled-system/jsx'
+import { COMPANY_LEGAL_NAME, TAGLINE } from '../lib/company'
 import { FOOTER_COLUMNS } from '../lib/navigation'
 import { COMPANY_LINKS } from '../lib/socials'
 
-const LEGAL_NAME = 'Hyperbliss Technologies LLC'
+const LEGAL_NAME = COMPANY_LEGAL_NAME
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // Panda CSS Styles
@@ -201,7 +202,7 @@ const Footer: React.FC = () => {
         <Top>
           <BrandSection>
             <Image alt="hyperbliss" className={brandLogoStyles} height={70} src="/images/logo.png" width={350} />
-            <BrandLine>Made to glow. Open source, from Seattle.</BrandLine>
+            <BrandLine>{TAGLINE} Open source, from Seattle.</BrandLine>
           </BrandSection>
 
           {FOOTER_COLUMNS.map((column) => (

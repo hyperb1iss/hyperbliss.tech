@@ -4,6 +4,7 @@
 // everything here is crawlable HTML.
 
 import Link from 'next/link'
+import { TAGLINE_LINES } from '@/lib/company'
 import type { FrontSection } from '@/lib/content'
 import type { FeedItem } from '@/lib/feed'
 import type { ProjectEntry } from '@/lib/projectLanes'
@@ -21,8 +22,6 @@ export interface FrontPageProps {
   featured: ProjectEntry[]
   front: FrontSection | null
 }
-
-const DEFAULT_HEADLINE = ['Made to', 'glow.']
 
 const Wrap = styled.div`
   width: 100%;
@@ -153,7 +152,7 @@ function renderTagline(tagline: string) {
 }
 
 export default function FrontPage({ lead, items, featured, front }: FrontPageProps) {
-  const headline = front?.headline?.length ? front.headline : DEFAULT_HEADLINE
+  const headline = front?.headline?.length ? front.headline : [...TAGLINE_LINES]
   const intro =
     front?.tagline ?? 'Hyperbliss Technologies makes open source software for light, memory, and the terminal.'
   const feedStart = 2

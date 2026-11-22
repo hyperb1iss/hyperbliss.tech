@@ -2,26 +2,27 @@
 
 import { Feed } from 'feed'
 import { NextResponse } from 'next/server'
+import { BASE_URL, COMPANY_LEGAL_NAME, COMPANY_NAME, CONTACT_EMAIL, FOUNDER_NAME } from '@/lib/company'
 import { MARKDOWN_COLLECTIONS, type MarkdownDirectory } from '@/lib/contentCollections'
 import { getAllMarkdownSlugs, getMarkdownContent } from '@/lib/markdown'
 
 const AUTHOR = {
-  email: 'stefanie@hyperbliss.tech',
-  link: 'https://hyperbliss.tech/about',
-  name: 'Stefanie Jane',
+  email: CONTACT_EMAIL,
+  link: `${BASE_URL}/about/`,
+  name: FOUNDER_NAME,
 }
 
 export async function GET() {
   const feed = new Feed({
     author: AUTHOR,
-    copyright: `All rights reserved ${new Date().getFullYear()}, Stefanie Jane`,
-    description: "Stefanie Jane's personal blog, lab experiments, and more.",
-    favicon: 'https://hyperbliss.tech/favicon.ico',
-    id: 'https://hyperbliss.tech/',
-    image: 'https://hyperbliss.tech/images/logo.png',
+    copyright: `© ${new Date().getFullYear()} ${COMPANY_LEGAL_NAME}`,
+    description: `Essays and lab experiments from ${COMPANY_NAME}.`,
+    favicon: `${BASE_URL}/favicon.ico`,
+    id: `${BASE_URL}/`,
+    image: `${BASE_URL}/images/logo.png`,
     language: 'en',
-    link: 'https://hyperbliss.tech/',
-    title: 'Hyperbliss',
+    link: `${BASE_URL}/`,
+    title: COMPANY_NAME,
   })
 
   const feedDirectories: MarkdownDirectory[] = ['posts', 'lab']
@@ -43,8 +44,8 @@ export async function GET() {
       content: item.content,
       date: new Date(item.frontmatter.date),
       description: item.frontmatter.excerpt,
-      id: `https://hyperbliss.tech/${item.routeSegment}/${item.slug}`,
-      link: `https://hyperbliss.tech/${item.routeSegment}/${item.slug}`,
+      id: `${BASE_URL}/${item.routeSegment}/${item.slug}/`,
+      link: `${BASE_URL}/${item.routeSegment}/${item.slug}/`,
       title: item.frontmatter.title,
     })
   }

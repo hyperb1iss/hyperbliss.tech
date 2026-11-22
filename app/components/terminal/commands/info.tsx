@@ -2,13 +2,12 @@
 // Self-registers on import. Reads content from ctx (manifest); the company's
 // accounts are static app data.
 
+import { CONTACT_EMAIL } from '@/lib/company'
 import { COMPANY_LINKS } from '@/lib/socials'
 import type { ContentKind, Manifest } from '@/lib/terminal/types'
 import { registry } from '../registry'
 import { text } from '../render'
 import { Accent, Block, Heading, Muted, TermLink } from './ui'
-
-const CONTACT_EMAIL = 'stef@hyperbliss.tech'
 
 const find = (manifest: Manifest, kind: ContentKind) => manifest.entries.find((e) => e.kind === kind)
 

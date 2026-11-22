@@ -1,17 +1,12 @@
 // app/lib/metadata.ts
 import { Metadata } from 'next'
-import { TECH_TAGS } from './constants'
+import { BASE_URL, COMPANY_LEGAL_NAME, COMPANY_NAME, FOUNDER_NAME, SITE_DESCRIPTION } from './company'
 import { DEFAULT_OG_IMAGE_URL, OG_IMAGE_HEIGHT, OG_IMAGE_WIDTH } from './ogImage'
 
 // Constants for site metadata
-const AUTHOR_NAME = 'Stefanie Jane'
-const COMPANY_NAME = 'Hyperbliss Technologies'
-const COMPANY_LEGAL_NAME = 'Hyperbliss Technologies LLC'
-const BASE_URL = 'https://hyperbliss.tech'
+const AUTHOR_NAME = FOUNDER_NAME
 const SITE_TITLE = COMPANY_NAME
-const SITE_DESCRIPTION =
-  'Hyperbliss Technologies makes open source tools for light, memory, and the terminal: Hypercolor for RGB lighting, Sibyl for agent memory, and unifly for UniFi networks.'
-const SITE_NAME = COMPANY_NAME
+export const SITE_NAME = COMPANY_NAME
 const OG_LOCALE = 'en_US'
 
 // The site's generated social card, rendered by app/api/og
@@ -52,7 +47,6 @@ const siteMetadata: Metadata = {
       { sizes: '16x16', type: 'image/png', url: '/favicon-16x16.png' },
       { sizes: '32x32', type: 'image/png', url: '/favicon-32x32.png' },
     ],
-    other: [{ color: '#5bbad5', rel: 'mask-icon', url: '/safari-pinned-tab.svg' }],
   },
   keywords: [
     COMPANY_NAME,
@@ -73,7 +67,6 @@ const siteMetadata: Metadata = {
     'hyperb1iss',
     'cyanogen',
     'cyanogenmod',
-    ...Array.from(TECH_TAGS),
   ],
   metadataBase: new URL(BASE_URL),
   openGraph: {
@@ -87,7 +80,6 @@ const siteMetadata: Metadata = {
   },
   other: {
     'source-code': 'https://github.com/hyperb1iss/hyperbliss.tech',
-    'view-source': 'SilkCircuit terminal homepage; try /api/fs?path=/about.md for the content-backed shell.',
   },
   publisher: COMPANY_LEGAL_NAME,
   robots: {

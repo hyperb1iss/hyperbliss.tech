@@ -4,6 +4,8 @@ import TransitionShell from './components/TransitionShell'
 import { getTerminalData } from './lib/terminal/getTerminalData'
 
 export const metadata: Metadata = {
+  // Replaces the root's canonical, which would name the home page.
+  alternates: {},
   description: 'This page does not exist. Head back to Hyperbliss Technologies.',
   robots: {
     follow: false,
