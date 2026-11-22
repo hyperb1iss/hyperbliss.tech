@@ -12,7 +12,6 @@ import { Accent, Block, Heading, Muted, TermLink } from './ui'
 const find = (manifest: Manifest, kind: ContentKind) => manifest.entries.find((e) => e.kind === kind)
 
 registry.register({
-  aliases: ['whoami'],
   group: 'content',
   name: 'about',
   run: (_args, ctx) => {

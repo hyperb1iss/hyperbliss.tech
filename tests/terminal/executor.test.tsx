@@ -83,6 +83,29 @@ describe('execute', () => {
     expect(h.printedText()).toContain("did you mean 'help'")
   })
 
+  it('prints the card for a product typed by name, before the shell sees it', async () => {
+    const h = makeHarness()
+    const runShell = vi.fn(async () => {})
+    await execute('sibyl', h.ctx, runShell)
+    expect(runShell).not.toHaveBeenCalled()
+    expect(h.printedText()).toContain('Sibyl')
+    expect(h.printedText()).toContain('open the page')
+  })
+
+  it('leaves a name with arguments or a pipe to the shell', async () => {
+    const h = makeHarness()
+    const runShell = vi.fn(async () => {})
+    await execute('sibyl --help', h.ctx, runShell)
+    await execute('sibyl | cat', h.ctx, runShell)
+    expect(runShell).toHaveBeenCalledTimes(2)
+  })
+
+  it('suggests a product name for a near miss', async () => {
+    const h = makeHarness()
+    await execute(':chromacta', h.ctx)
+    expect(h.printedText()).toContain("did you mean 'chromacat'")
+  })
+
   it('native wins over shell with no force sentinel', async () => {
     const h = makeHarness()
     const native = vi.fn()
@@ -113,7 +136,7 @@ describe('execute', () => {
   it('! without a loaded shell prints a friendly error', async () => {
     const h = makeHarness()
     await execute('!ls', h.ctx)
-    expect(h.printedText()).toContain('shell unavailable')
+    expect(h.printedText()).toContain('shell is still loading')
   })
 
   it(': forces native dispatch and falls back to did-you-mean if missing', async () => {

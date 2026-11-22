@@ -1,6 +1,8 @@
-// Easter eggs: ssh, sudo, matrix. Self-registers on import.
+// Easter eggs: ssh, sudo, matrix, glow, hello. Self-registers on import.
 
+import { TAGLINE } from '@/lib/company'
 import { styled } from '../../../../styled-system/jsx'
+import LedSign from '../LedSign'
 import MatrixRain from '../MatrixRain'
 import { registry } from '../registry'
 import { text } from '../render'
@@ -14,8 +16,8 @@ const Banner = styled.pre`
   line-height: 1.2;
 `
 
-// An ssh-style login banner. Pure ASCII only: Space Mono is a display
-// monospace that won't tile box-drawing or star glyphs to one cell, so the old
+// An ssh-style login banner. Pure ASCII only: the console's mono face
+// won't tile box-drawing or star glyphs to one cell, so the old
 // ┌─┐ box drifted apart. The rule width is derived from the title so it never
 // needs hand-counting when the text changes.
 function welcomeBanner(): string {
@@ -102,4 +104,23 @@ registry.register({
     )
   },
   summary: 'copy a link that replays this session',
+})
+
+// The tagline on the wall. Reads the same source as the hero, so it follows
+// whatever the tagline becomes.
+registry.register({
+  group: 'fun',
+  hidden: true,
+  name: 'glow',
+  run: () => <LedSign text={TAGLINE} />,
+  summary: 'light the tagline',
+})
+
+registry.register({
+  aliases: ['hi', 'hey'],
+  group: 'fun',
+  hidden: true,
+  name: 'hello',
+  run: () => <LedSign text="HELLO <3" />,
+  summary: 'say hi back',
 })

@@ -162,7 +162,7 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
   }, [])
 
   return (
-    <HeroWrap aria-label="Interactive terminal — explore hyperbliss.tech">
+    <HeroWrap aria-label="Interactive terminal: explore hyperbliss.tech">
       <Frame>
         <Terminal
           autoFocusInput={autoFocus}
@@ -178,7 +178,11 @@ export default function TerminalHero({ manifest, broadcast }: TerminalHeroProps)
         />
       </Frame>
       <CommandPalette
-        onClose={() => setPaletteOpen(false)}
+        onClose={() => {
+          setPaletteOpen(false)
+          // Back to the prompt, so typing continues where it left off.
+          handleRef.current?.focus()
+        }}
         onRun={(command) => {
           trackTerminalCommand(`palette:${command}`)
           handleRef.current?.run(command)

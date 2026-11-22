@@ -31,7 +31,7 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
 
   useEffect(() => {
     let cancelled = false
-    fetch('/api/activity')
+    fetch('/api/activity/')
       .then((r) => (r.ok ? (r.json() as Promise<ActivitySummary>) : Promise.reject(new Error('http'))))
       .then((data) => {
         if (!cancelled) setState(data.ok ? data : 'error')
@@ -118,9 +118,9 @@ function ActivityView({ ctx }: { ctx: TerminalContext }) {
 }
 
 registry.register({
-  aliases: ['activity', 'stats'],
+  aliases: ['github', 'activity', 'stats'],
   group: 'content',
   name: 'gh',
   run: (_args, ctx) => <ActivityView ctx={ctx} />,
-  summary: 'live github activity: recent pushes, PRs, releases',
+  summary: 'live GitHub activity',
 })

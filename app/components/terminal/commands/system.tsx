@@ -24,9 +24,22 @@ const Pre = styled.pre`
   overflow-x: auto;
   color: var(--term-ink);
   padding: var(--space-1) 0;
+
+  /* On a phone a long line wraps instead of hiding past the edge. */
+  @media (max-width: 640px) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
 `
 
 const pad2 = (n: number) => n.toString().padStart(2, '0')
+/** The day the content was built, in the visitor's own timezone like `date`. */
+const builtOn = (iso: string) => {
+  const at = new Date(iso)
+  return Number.isNaN(at.getTime())
+    ? iso.slice(0, 10)
+    : `${at.getFullYear()}-${pad2(at.getMonth() + 1)}-${pad2(at.getDate())}`
+}
 const count = (n: number, noun: string) => `${n} ${noun}${n === 1 ? '' : 's'}`
 
 /** How long this page has been open, as uptime prints it. */
@@ -47,7 +60,7 @@ registry.register({
       ` ${pad2(now.getHours())}:${pad2(now.getMinutes())} up ${sessionAge()},  1 guest,  ${count(b.projectCount, 'project')}, ${count(b.postCount, 'essay')}, ${count(b.labCount, 'experiment')}`,
     )
   },
-  summary: 'how long you have been here, and what is on the box',
+  summary: 'how long you have been here',
 })
 
 registry.register({
@@ -194,7 +207,7 @@ registry.register({
 registry.register({
   group: 'fun',
   name: 'uname',
-  run: (_args, ctx) => text(`Hyperbliss console ${ctx.broadcast.generatedAt.slice(0, 10)} ${engine()} ${platform()}`),
+  run: (_args, ctx) => text(`Hyperbliss console ${builtOn(ctx.broadcast.generatedAt)} ${engine()} ${platform()}`),
   summary: 'what this console is running on',
 })
 

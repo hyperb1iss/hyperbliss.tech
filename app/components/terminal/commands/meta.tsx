@@ -16,6 +16,18 @@ const GROUP_LABELS: Record<CommandGroup, string> = {
 }
 const GROUP_ORDER: CommandGroup[] = ['meta', 'content', 'fun', 'shell']
 
+/* Two columns once there is room, so the whole list fits without scrolling. */
+const Groups = styled.div`
+  @media (min-width: 900px) {
+    columns: 2;
+    column-gap: var(--space-8);
+  }
+
+  & > div {
+    break-inside: avoid;
+  }
+`
+
 const CmdGrid = styled.div`
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -42,19 +54,21 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
   return (
     <Block>
       <Heading>hyperbliss console · type a command, or pick one below</Heading>
-      {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
-        <div key={g}>
-          <Muted>{GROUP_LABELS[g]}</Muted>
-          <CmdGrid>
-            {groups.get(g)?.map((c) => (
-              <div key={c.name} style={{ display: 'contents' }}>
-                <span className="name">{c.name}</span>
-                <span className="sum">{c.summary}</span>
-              </div>
-            ))}
-          </CmdGrid>
-        </div>
-      ))}
+      <Groups>
+        {GROUP_ORDER.filter((g) => groups.has(g)).map((g) => (
+          <div key={g}>
+            <Muted>{GROUP_LABELS[g]}</Muted>
+            <CmdGrid>
+              {groups.get(g)?.map((c) => (
+                <div key={c.name} style={{ display: 'contents' }}>
+                  <span className="name">{c.name}</span>
+                  <span className="sum">{c.summary}</span>
+                </div>
+              ))}
+            </CmdGrid>
+          </div>
+        ))}
+      </Groups>
       <div>
         <Muted>tips</Muted>
         <div>
@@ -62,8 +76,8 @@ function HelpAll({ ctx }: { ctx: TerminalContext }) {
           <Pink>!cmd</Pink> forces shell · <Pink>:cmd</Pink> forces native
         </div>
         <div>
-          real shell commands work too: <Accent>ls</Accent> <Accent>cat</Accent> <Accent>grep</Accent>{' '}
-          <Accent>find</Accent> <Accent>echo</Accent> over the content tree · <Accent>share</Accent> a session
+          <Accent>ls</Accent> <Accent>cat</Accent> <Accent>grep</Accent> <Accent>find</Accent> and pipes work on every
+          file here · type a product&apos;s name for its card · <Accent>share</Accent> a session
         </div>
       </div>
     </Block>
@@ -123,8 +137,8 @@ registry.register({
     ctx.setTheme(name)
     return <LedSign cell="0.9rem" text={name} />
   },
-  summary: 'recolor the console: silk, matrix, amber, ice',
-  usage: 'theme <silk|matrix|amber|ice>',
+  summary: `recolor: ${TERMINAL_THEMES.join(', ')}`,
+  usage: `theme <${TERMINAL_THEMES.join('|')}>`,
 })
 
 registry.register({
@@ -135,8 +149,8 @@ registry.register({
     const message = ledText(args.join(' ')) || 'HELLO'
     return <LedSign text={message} />
   },
-  summary: 'write on the LED wall (try: led hello world <3)',
-  usage: 'led <text>',
+  summary: 'write on the LED wall',
+  usage: 'led hello world <3',
 })
 
 registry.register({
@@ -150,6 +164,8 @@ registry.register({
 
 registry.register({
   group: 'meta',
+  // For people wiring a browser agent to the site; not something to browse to.
+  hidden: true,
   name: 'agent',
   run: async () => {
     const { getRegisteredAgentToolNames, isWebMcpEnabled } = await import('../webmcp')

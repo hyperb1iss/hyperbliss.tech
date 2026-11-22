@@ -1,4 +1,4 @@
-// Rich content commands: projects, blog, lab, now. Self-registers on import.
+// Rich content commands: projects, blog, lab. Self-registers on import.
 // Reads everything from ctx (manifest + broadcast) so it's testable and stays
 // fresh as content changes.
 
@@ -6,19 +6,11 @@ import type { ContentKind, Manifest, ManifestEntry } from '@/lib/terminal/types'
 import { registry } from '../registry'
 import { text } from '../render'
 import type { TerminalContext } from '../types'
-import { Accent, Block, Heading, ListRow, Muted, Ok, Pink, Tag, TagRow, TermLink } from './ui'
+import { splitTitle } from './entries'
+import { Accent, Block, Heading, ListRow, Muted, Ok, Pink, TermLink } from './ui'
 
 const byKind = (manifest: Manifest, kind: ContentKind): ManifestEntry[] =>
   manifest.entries.filter((e) => e.kind === kind)
-
-const tags = (entry: ManifestEntry, max = 4) =>
-  entry.tags.length > 0 ? (
-    <TagRow>
-      {entry.tags.slice(0, max).map((t) => (
-        <Tag key={t}>{t}</Tag>
-      ))}
-    </TagRow>
-  ) : null
 
 function ProjectsView({ ctx }: { ctx: TerminalContext }) {
   const projects = byKind(ctx.manifest, 'project')
@@ -29,10 +21,10 @@ function ProjectsView({ ctx }: { ctx: TerminalContext }) {
         <ListRow key={p.path}>
           {p.emoji && <span>{p.emoji}</span>}
           <TermLink href={p.href ?? '/projects/'} navigate={ctx.navigate}>
-            {p.title}
+            {splitTitle(p.title)[0]}
           </TermLink>
           {p.latestVersion && <Ok>v{p.latestVersion}</Ok>}
-          {tags(p, 3)}
+          {splitTitle(p.title)[1] && <Muted>{splitTitle(p.title)[1]}</Muted>}
         </ListRow>
       ))}
       <div>
@@ -40,8 +32,8 @@ function ProjectsView({ ctx }: { ctx: TerminalContext }) {
         <TermLink href="/projects/" navigate={ctx.navigate}>
           browse all projects
         </TermLink>
-        <Muted> · tip: </Muted>
-        <Accent>ls projects | grep rust</Accent>
+        <Muted> · type a name for its card: </Muted>
+        <Accent>hypercolor</Accent>
       </div>
     </Block>
   )
@@ -85,7 +77,9 @@ function LabView({ ctx }: { ctx: TerminalContext }) {
   if (experiments.length === 0) return text('lab: nothing here yet, check back soon')
   return (
     <Block>
-      <Heading>lab · {experiments.length} experiments</Heading>
+      <Heading>
+        lab · {experiments.length} {experiments.length === 1 ? 'experiment' : 'experiments'}
+      </Heading>
       {experiments.map((exp) => (
         <div key={exp.path}>
           <ListRow>

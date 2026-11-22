@@ -180,7 +180,9 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
   }, [isConsoleOpen, setConsoleOpen, setIsExpanded])
 
   // Open is always deliberate, so treat it as a focused overlay: Escape closes
-  // and body scroll locks on every breakpoint while the console is down.
+  // and the page behind stops scrolling on every breakpoint while the console
+  // is down. The lock goes on the root element, which is what scrolls; body
+  // only clips.
   useEffect(() => {
     if (!isConsoleOpen) return
     const onKey = (e: KeyboardEvent) => {
@@ -191,12 +193,13 @@ export default function TerminalConsole({ manifest, broadcast }: TerminalConsole
     }
     window.addEventListener('keydown', onKey)
 
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    const root = document.documentElement
+    const prevOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
 
     return () => {
       window.removeEventListener('keydown', onKey)
-      document.body.style.overflow = prevOverflow
+      root.style.overflow = prevOverflow
     }
   }, [isConsoleOpen, close])
 

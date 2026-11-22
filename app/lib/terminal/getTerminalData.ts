@@ -50,13 +50,26 @@ export async function getTerminalData(): Promise<TerminalData> {
     // Fall back to the manifest's summary-based estimates.
   }
 
+  // The console lists the flagships first, then whatever shipped most
+  // recently, so `projects` and `ps` lead with what is alive instead of with
+  // whichever file carries the newest hand-typed date.
+  const shippedAt = (slug: string) => Date.parse(releases.get(slug)?.publishedAt ?? '') || 0
+  const pinned = (featured: number | null | undefined) =>
+    typeof featured === 'number' ? featured : Number.POSITIVE_INFINITY
+  const ordered = [...projects].sort(
+    (a, b) =>
+      pinned(a.featured) - pinned(b.featured) ||
+      shippedAt(b.slug) - shippedAt(a.slug) ||
+      a.title.localeCompare(b.title),
+  )
+
   const manifest = buildManifest({
     about: aboutPage?.about ?? null,
     company: aboutPage?.company ?? null,
     generatedAt,
     lab,
     posts,
-    projects,
+    projects: ordered,
     releases: versionsMap(releases),
     resume,
     sizes,

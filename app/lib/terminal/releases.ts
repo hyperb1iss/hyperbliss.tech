@@ -21,7 +21,8 @@ export function versionsMap(releases: Map<string, ReleaseLike>): Record<string, 
 
 /** Newest release across the curated set, or null if there are none. */
 export function pickLatestShip(releases: Map<string, ReleaseLike>, projects: ProjectSummary[]): BroadcastShip | null {
-  const titleBySlug = new Map(projects.map((p) => [p.slug, p.title]))
+  // The product's name without its tagline: "unifly", not "unifly: UniFi from the Terminal".
+  const titleBySlug = new Map(projects.map((p) => [p.slug, p.title.split(':')[0].trim()]))
   let best: BroadcastShip | null = null
   for (const [slug, release] of releases) {
     const candidate: BroadcastShip = {

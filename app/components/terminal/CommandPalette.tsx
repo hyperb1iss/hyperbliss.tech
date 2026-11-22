@@ -157,6 +157,8 @@ export default function CommandPalette({ registry, open, onClose, onRun }: Comma
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault()
+        // Close the palette only: the console's own Escape listens on window.
+        e.stopPropagation()
         onClose()
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()

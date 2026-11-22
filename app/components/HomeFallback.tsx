@@ -58,7 +58,7 @@ export default function HomeFallbackContent({
         {projects.map((p) => (
           <li key={p.slug}>
             <a href={`/projects/${p.slug}/`}>{p.title}</a>
-            {p.description ? ` — ${p.description}` : ''}
+            {p.description ? `: ${p.description}` : ''}
           </li>
         ))}
       </ul>

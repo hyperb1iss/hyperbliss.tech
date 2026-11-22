@@ -393,12 +393,18 @@ export default function Terminal({
     }
   }, [abortActiveCommands])
 
-  // Autoscroll to newest output. `log` is the re-run trigger; the body reads
-  // the ref so we always pin to the latest scrollHeight.
+  // Follow the newest output. When one command prints more than the log can
+  // show, hold its own prompt line at the top instead, so long output (help)
+  // reads from its first line. `log` is the re-run trigger.
   // biome-ignore lint/correctness/useExhaustiveDependencies: log drives the re-run, ref is read in-body
   useEffect(() => {
     const el = logRef.current
-    if (el) el.scrollTop = el.scrollHeight
+    if (!el) return
+    const prompts = el.querySelectorAll<HTMLElement>('[data-stream="input"]')
+    const last = prompts[prompts.length - 1]
+    const top = last ? last.getBoundingClientRect().top - el.getBoundingClientRect().top + el.scrollTop : 0
+    const padding = Number.parseFloat(getComputedStyle(el).paddingTop) || 0
+    el.scrollTop = last && el.scrollHeight - top > el.clientHeight ? top - padding : el.scrollHeight
   }, [log])
 
   useEffect(() => {
@@ -511,13 +517,15 @@ export default function Terminal({
 
       <OutputLog aria-label="Terminal output" aria-live="polite" ref={logRef} role="log" tabIndex={0}>
         {log.map((e) => (
-          <Row key={e.id}>{e.node}</Row>
+          <Row data-stream={e.stream} key={e.id}>
+            {e.node}
+          </Row>
         ))}
       </OutputLog>
 
       <InputForm onSubmit={submit}>
         <PromptLabel cwd={cwd} />
-        <VisuallyHidden htmlFor="terminal-input">Terminal input — type a command and press Enter</VisuallyHidden>
+        <VisuallyHidden htmlFor="terminal-input">Terminal input: type a command and press Enter</VisuallyHidden>
         <InputCaret>
           <StyledInput
             aria-describedby="terminal-hint"
